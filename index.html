@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.11.0   |   Ngày: 26/08/2026
+ Phiên bản: V1.12.0   |   Ngày: 26/08/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -114,6 +114,8 @@
               md5 phần thân: d815322e6a9bd6c36b05286336cb4652
  V1.11.0 – 26/08/2026 – Nhập Excel cho kỳ thi và thí sinh.
               md5 phần thân: 01891304592fcda58c80e3b2afb16b50
+ V1.12.0 – 26/08/2026 – Nhập khách tiềm năng từ Excel.
+              md5 phần thân: 3958cfad02ede76353828bb9b5695a73
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -346,10 +348,17 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.11.0';
+const PHIEN_BAN = 'V1.12.0';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.12.0', ngay:'26/08/2026', muc:[
+    {loai:'Mới', nd:'Nhập khách tiềm năng vào phễu tư vấn từ Excel. Có cột năm sinh riêng cho trường hợp chỉ biết năm mà không rõ ngày, hệ thống vẫn tính được tuổi để gợi ý xếp lớp.'},
+    {loai:'Mới', nd:'Khách tiềm năng có thêm trường ghi chú, hiện ngay trên phễu tư vấn để tư vấn viên nắm bối cảnh trước khi gọi.'},
+    {loai:'Cải tiến', nd:'Bỏ trống ngày hẹn liên hệ thì không đếm hạn, tránh báo đỏ hàng loạt khi nhập data thô số lượng lớn.'},
+    {loai:'Sửa lỗi', nd:'Hàm kiểm tra quá hạn liên hệ trả về chuỗi rỗng thay vì đúng hoặc sai khi khách chưa đặt hạn. Không sai kết quả hiển thị nhưng dễ gây lỗi khi so sánh về sau.'},
+    {loai:'Cải tiến', nd:'Cấp quyền nhập dữ liệu từ Excel cho vị trí Tư vấn tuyển sinh và Marketing, vì khách tiềm năng là việc của hai bộ phận này.'}
+  ]},
   {v:'V1.11.0', ngay:'26/08/2026', muc:[
     {loai:'Mới', nd:'Nhập từ Excel thêm hai loại: kỳ thi và thí sinh dự thi. Thứ tự bắt buộc là kỳ thi trước, thí sinh sau.'},
     {loai:'Mới', nd:'Nhập kỳ thi kiểm tra loại kỳ thi có hợp lệ không, ngày thi có thật không, và trùng với kỳ đã có chưa. Nhập thí sinh kiểm tra kỳ thi có tồn tại không, trùng tên trong cùng kỳ và cùng môn thì báo lỗi.'},
@@ -562,11 +571,11 @@ const QUYEN_MAC_DINH = {
   'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu'],
   'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe'],
   'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong'],
-  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC'],
+  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu'],
   'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT'],
   'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn'],
   'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','thuTien','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn'],
-  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc'],
+  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu'],
   'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetHoanPhi'],
   'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn']
 };
@@ -2819,6 +2828,11 @@ function xepLoaiTuDiem(tb){
   if(v >= 7) return 'Khá';
   return 'Cần cải thiện';
 }
+function tuoiTuNamSinh(nam){
+  const n = Number(nam);
+  if(!n || n < 1900) return null;
+  return new Date().getFullYear() - n;
+}
 function tuoiTuNgaySinh(ns){
   if(!ns) return null;
   const d = new Date(ns+'T00:00:00'), n = new Date();
@@ -2828,8 +2842,9 @@ function tuoiTuNgaySinh(ns){
   return t;
 }
 function leadQuaHan(l){
-  return l.hanLienHe && l.hanLienHe < todayISO() &&
-    ['Đã nhập học','Không chuyển đổi'].indexOf(l.trangThai) < 0;
+  if(!l.hanLienHe) return false;
+  if(['Đã nhập học','Không chuyển đổi'].indexOf(l.trangThai) >= 0) return false;
+  return l.hanLienHe < todayISO();
 }
 function soLanGoi(l){ return (l.cuocGoi||[]).length; }
 
@@ -2942,7 +2957,8 @@ function viewPheu(){
 function dongLead(l){
   const n = soLanGoi(l);
   const cuoi = (l.cuocGoi||[])[n-1];
-  const tuoi = tuoiTuNgaySinh(l.ngaySinh);
+  const tuoi = tuoiTuNgaySinh(l.ngaySinh) !== null
+    ? tuoiTuNgaySinh(l.ngaySinh) : tuoiTuNamSinh(l.namSinh);
   const qh = leadQuaHan(l);
   let h = '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
     + '<div><b>'+esc(l.hoTen)+'</b>'
@@ -2952,6 +2968,7 @@ function dongLead(l){
     h += '<div class="small muted">TB '+fmtNum(l.diemTB,1)+' · '+esc(l.xepLoai||'')+'</div>';
   h += '<div class="small muted">PH '+esc(l.sdtPH||'chưa có SĐT')
     + ' · '+(l.phuTrachTen? 'phụ trách '+esc(l.phuTrachTen) : '<span style="color:var(--warn);">chưa giao phụ trách</span>')+'</div>';
+  if(l.ghiChu) h += '<div class="small muted">'+esc(l.ghiChu)+'</div>';
   if(cuoi) h += '<div class="small" style="color:var(--warn);">Lần '+n+' ('+fmtDate(cuoi.ngay)+'): '+esc(cuoi.ketQuaTen||'')+'</div>';
   if(l.lyDoKhongChuyenDoi) h += '<div class="small muted">Lý do: '+esc(l.lyDoKhongChuyenDoi)+'</div>';
   h += '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">';
@@ -2992,13 +3009,16 @@ function formLead(id){
       + NGUON_KHACH.map(function(n){ return '<option '+(v.nguon===n?'selected':'')+'>'+esc(n)+'</option>'; }).join('')+'</select>'
     +'<label>Người phụ trách tư vấn</label><select id="mLPhuTrach">'+optNguoi+'</select>'
     +'<label>Hẹn liên hệ trước ngày</label><input type="date" id="mLHan" value="'+esc(v.hanLienHe||addDaysISO(todayISO(),2))+'">'
-    +'<div class="small muted">Quá ngày này mà chưa liên hệ, hệ thống báo đỏ.</div>'
+    +'<div class="small muted">Quá ngày này mà chưa liên hệ, hệ thống báo đỏ. Để trống thì không đếm hạn.</div>'
+    +'<label>Ghi chú</label><input id="mLGhiChu" value="'+esc(v.ghiChu||'')+'">'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
     +'<button class="btn btn-primary btn-block" onclick="luuLead('+(l?"'"+l.id+"'":'null')+')">Lưu</button></div>'
     +(l && hasPerm('quanLyLead')? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaLead(\''+l.id+'\',this)">Xoá</button>':'')
   );
 }
 function luuLead(id){
+  const cu = id? leadList.find(function(x){ return x.id===id; }) : null;
+  const v_ghiChu_cu = cu? (cu.ghiChu||'') : '';
   const hoTen=$('mLTen').value.trim();
   if(!hoTen){ showToast('Nhập họ tên học sinh'); return; }
   const ptId = $('mLPhuTrach').value;
@@ -3007,7 +3027,8 @@ function luuLead(id){
     hoTen:hoTen, ngaySinh:$('mLNS').value, khoi:$('mLKhoi').value.trim(),
     truong:$('mLTruong').value.trim(), tenPH:$('mLPH').value.trim(), sdtPH:$('mLSDT').value.trim(),
     nguon:$('mLNguon').value, phuTrachUserId:ptId, phuTrachTen: pt? pt.hoTen : '',
-    hanLienHe:$('mLHan').value
+    hanLienHe:$('mLHan').value,
+    ghiChu: ($('mLGhiChu')? $('mLGhiChu').value.trim() : (v_ghiChu_cu||''))
   };
   if(!id){ data.trangThai='Chưa gọi'; data.cuocGoi=[]; data.ngayTao=todayISO(); }
   const p = id? db.collection('fcv_lead').doc(id).update(data) : db.collection('fcv_lead').add(data);
@@ -3139,7 +3160,8 @@ function viewXepLop(){
   h += '<div class="card">';
   if(!ds.length) h += emptyBox('📝','Chưa có khách nào chờ kiểm tra đầu vào');
   else h += ds.map(function(l){
-    const tuoi = tuoiTuNgaySinh(l.ngaySinh);
+    const tuoi = tuoiTuNgaySinh(l.ngaySinh) !== null
+      ? tuoiTuNgaySinh(l.ngaySinh) : tuoiTuNamSinh(l.namSinh);
     const daCoDiem = (l.diemTB!==undefined && l.diemTB!=='' && l.diemTB!==null);
     return '<div class="list-row"><div style="min-width:0;"><div><b>'+esc(l.hoTen)+'</b>'
       + (tuoi!==null? ' <span class="small muted">· '+tuoi+' tuổi</span>':'')
@@ -3169,7 +3191,8 @@ function tinhTBXepLop(){
 function viewXepLopChiTiet(){
   const l = leadList.find(function(x){ return x.id===xlLeadId; });
   if(!l){ xlLeadId=null; return viewXepLop(); }
-  const tuoi = tuoiTuNgaySinh(l.ngaySinh);
+  const tuoi = tuoiTuNgaySinh(l.ngaySinh) !== null
+    ? tuoiTuNgaySinh(l.ngaySinh) : tuoiTuNamSinh(l.namSinh);
 
   let h = '<div class="card"><div class="row"><div><h3 style="margin:0;">'+esc(l.hoTen)+'</h3>'
     + '<div class="small muted">'+(l.ngaySinh? 'Sinh '+fmtDate(l.ngaySinh)+' · ':'')
@@ -6594,6 +6617,22 @@ const MAU_NHAP = {
       {key:'dongYHinhAnh', nhan:'Đã có văn bản đồng ý hình ảnh', batBuoc:false, vd:'x hoặc để trống'}
     ]
   },
+  khachTiemNang: {
+    ten: 'Khách tiềm năng · phễu tư vấn', collection: 'fcv_lead',
+    cot: [
+      {key:'hoTen',      nhan:'Họ và tên học sinh', batBuoc:true,  vd:'Lâm Gia Huy'},
+      {key:'ngaySinh',   nhan:'Ngày sinh',          batBuoc:false, vd:'12/03/2018'},
+      {key:'namSinh',    nhan:'Năm sinh',           batBuoc:false, vd:'2018 nếu không rõ ngày'},
+      {key:'khoi',       nhan:'Khối lớp ở trường',  batBuoc:false, vd:'2'},
+      {key:'truong',     nhan:'Trường đang học',    batBuoc:false, vd:'Tiểu học Hà Huy Giáp'},
+      {key:'tenPH',      nhan:'Họ tên phụ huynh',   batBuoc:false, vd:'Lâm Văn Nam'},
+      {key:'sdtPH',      nhan:'SĐT phụ huynh',      batBuoc:false, vd:'0398113060'},
+      {key:'nguon',      nhan:'Nguồn biết đến',     batBuoc:false, vd:'Sự kiện'},
+      {key:'phuTrach',   nhan:'Người phụ trách',    batBuoc:false, vd:'Quách Thị Thuý Ngọc'},
+      {key:'hanLienHe',  nhan:'Hẹn liên hệ trước ngày', batBuoc:false, vd:'để trống thì không đếm hạn'},
+      {key:'ghiChu',     nhan:'Ghi chú',            batBuoc:false, vd:'Voucher 50% · quan tâm Cambridge'}
+    ]
+  },
   kyThi: {
     ten: 'Kỳ thi', collection: 'fcv_kythi',
     cot: [
@@ -6781,6 +6820,7 @@ function docFileNhap(){
   reader.readAsArrayBuffer(f);
 }
 
+function re4(v){ return String(v||'').replace(/\D/g,''); }
 function phanTichFile(wb){
   const m = MAU_NHAP[nlLoai];
   const ws = wb.worksheets[0];
@@ -6837,6 +6877,22 @@ function phanTichFile(wb){
         else if(data.maHV) daThayMa[data.maHV] = r;
         if(!d.loi && data.ngaySinh && !chuanHoaNgay(data.ngaySinh))
           d.loi = 'Ngày sinh sai định dạng, dùng dd/mm/yyyy';
+      }
+      else if(nlLoai==='khachTiemNang'){
+        if(data.ngaySinh && !chuanHoaNgay(data.ngaySinh))
+          d.loi = 'Ngày sinh sai định dạng, dùng dd/mm/yyyy';
+        else if(data.namSinh && !/^\d{4}$/.test(String(data.namSinh).trim()))
+          d.loi = 'Năm sinh phải là 4 chữ số';
+        else if(data.hanLienHe && !chuanHoaNgay(data.hanLienHe))
+          d.loi = 'Ngày hẹn liên hệ sai định dạng';
+        else {
+          const k4 = stripDia(data.hoTen)+'|'+re4(data.sdtPH);
+          if(leadList.some(function(l){
+              return stripDia(l.hoTen)===stripDia(data.hoTen) && re4(l.sdtPH)===re4(data.sdtPH); }))
+            d.loi = 'Khách này đã có trong phễu tư vấn';
+          else if(daThayMa[k4]) d.loi = 'Trùng với dòng '+daThayMa[k4];
+          else daThayMa[k4] = r;
+        }
       }
       else if(nlLoai==='kyThi'){
         const ngay = chuanHoaNgay(data.ngayThi);
@@ -6955,6 +7011,19 @@ function nạpDuLieu(){
         tenPH:v.tenPH||'', sdtPH:v.sdtPH||'', truong:v.truong||'', nguon:v.nguon||'',
         dongYHinhAnh: (dy==='x'||dy==='co'||dy==='1'||dy==='true'),
         ngayTao: todayISO(), ghiChu:'Nhập từ Excel'});
+    }
+    if(nlLoai==='khachTiemNang'){
+      let ns = chuanHoaNgay(v.ngaySinh);
+      const nam = String(v.namSinh||'').trim();
+      const pt = usersList.find(function(u){ return stripDia(u.hoTen)===stripDia(v.phuTrach||''); });
+      return db.collection('fcv_lead').add({
+        hoTen:v.hoTen, ngaySinh:ns, namSinh: nam,
+        khoi:v.khoi||'', truong:v.truong||'',
+        tenPH:v.tenPH||'', sdtPH:v.sdtPH||'', nguon:v.nguon||'Khác',
+        phuTrachUserId: pt? pt.id : '', phuTrachTen: pt? pt.hoTen : '',
+        hanLienHe: chuanHoaNgay(v.hanLienHe),
+        ghiChu: v.ghiChu||'',
+        trangThai:'Chưa gọi', cuocGoi:[], ngayTao: todayISO()});
     }
     if(nlLoai==='kyThi'){
       return db.collection('fcv_kythi').add({
