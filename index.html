@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.12.0   |   Ngày: 26/08/2026
+ Phiên bản: V1.13.0   |   Ngày: 26/08/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -116,6 +116,10 @@
               md5 phần thân: 01891304592fcda58c80e3b2afb16b50
  V1.12.0 – 26/08/2026 – Nhập khách tiềm năng từ Excel.
               md5 phần thân: 3958cfad02ede76353828bb9b5695a73
+ V1.13.0 – 26/08/2026 – Phiếu đánh giá năng lực BM-HV-02,
+   quy trình 5 bước, vị trí Giáo viên có tài khoản riêng.
+   Collection mới: fcv_phieutest.
+              md5 phần thân: 229b23c42a25c05919c3ac07c9e462d5
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -348,10 +352,19 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.12.0';
+const PHIEN_BAN = 'V1.13.0';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.13.0', ngay:'26/08/2026', muc:[
+    {loai:'Mới', nd:'Làm lại toàn bộ phần kiểm tra đầu vào theo đúng phiếu BM-HV-02/FLIC: năm kỹ năng Nghe, Nói, Đọc, Viết, Từ vựng và Ngữ pháp với bốn mức Chưa đạt, Cơ bản, Khá, Tốt; trình độ CEFR; lộ trình và mục tiêu đầu ra; ba ô nhận xét của giáo viên; ý kiến phụ huynh.'},
+    {loai:'Mới', nd:'Quy trình 5 bước: Tư vấn tạo phiếu và giao giáo viên, giáo viên nhận phiếu, thực hiện test và ghi kết quả, bàn giao về Tư vấn, tư vấn phụ huynh và lưu kết quả. Chỉ xếp lớp được sau khi xong bước 5.'},
+    {loai:'Mới', nd:'In phiếu BM-HV-02 đúng khổ A4 để giáo viên cầm đi test, và in lại phiếu đã điền để lưu hồ sơ hai bản.'},
+    {loai:'Mới', nd:'Vị trí Giáo viên đứng lớp có tài khoản riêng, gắn với danh mục giáo viên. Giáo viên chỉ thấy phiếu test được giao cho mình, không thấy phễu tư vấn và thông tin khách hàng.'},
+    {loai:'Mới', nd:'Chặn bàn giao khi chưa chấm đủ năm kỹ năng, chưa chọn CEFR hoặc chưa ghi lớp đề xuất. Bàn giao xong giáo viên không sửa được kết quả nữa.'},
+    {loai:'Cải tiến', nd:'Mục con trong tab ẩn hiện theo quyền, nên giáo viên vào tab Tuyển sinh chỉ thấy đúng phần việc của mình.'},
+    {loai:'Cải tiến', nd:'Bỏ cách chấm bằng điểm số Nghe và Đọc-Viết cùng thang xếp loại tự động. Cách đó không có trong biểu mẫu thật của Trung tâm.'}
+  ]},
   {v:'V1.12.0', ngay:'26/08/2026', muc:[
     {loai:'Mới', nd:'Nhập khách tiềm năng vào phễu tư vấn từ Excel. Có cột năm sinh riêng cho trường hợp chỉ biết năm mà không rõ ngày, hệ thống vẫn tính được tuổi để gợi ý xếp lớp.'},
     {loai:'Mới', nd:'Khách tiềm năng có thêm trường ghi chú, hiện ngay trên phễu tư vấn để tư vấn viên nắm bối cảnh trước khi gọi.'},
@@ -482,6 +495,7 @@ const VI_TRI = [
   {ma:'FLIC-HCKT-01', ten:'CV Hành chính – Kế toán',                   bcCho:'FLIC-PGD-01'},
   {ma:'FLIC-TVTS-01', ten:'CV Tư vấn tuyển sinh',                      bcCho:'FLIC-PGD-01'},
   {ma:'FLIC-KTTC-01', ten:'Trưởng bộ phận Kế toán – Tài chính',        bcCho:'FLIC-GD-01'},
+  {ma:'FLIC-GV-01',   ten:'Giáo viên đứng lớp',                        bcCho:'FLIC-CM-00'},
   {ma:'FLIC-CM-00',   ten:'Bộ phận Chuyên môn (PGĐ giữ tạm)',          bcCho:'FLIC-PGD-01'}
 ];
 function tenViTri(ma){ const v = VI_TRI.find(x=>x.ma===ma); return v? v.ten : (ma||'—'); }
@@ -545,6 +559,10 @@ const PERM_LIST = [
   {key:'capChungChi',     label:'Cấp phát chứng chỉ',    nhom:'Khảo thí'},
   {key:'quanLyKhoDe',     label:'Quản lý kho đề',        nhom:'Khảo thí'},
   {key:'quanLyLead',      label:'Quản lý khách tiềm năng', nhom:'Tuyển sinh'},
+  {key:'xemPhieuTest',    label:'Xem phiếu đánh giá năng lực', nhom:'Tuyển sinh'},
+  {key:'taoPhieuTest',    label:'Tạo và giao phiếu test', nhom:'Tuyển sinh'},
+  {key:'nhapKetQuaTest',  label:'Nhập kết quả test',     nhom:'Tuyển sinh'},
+  {key:'tuVanSauTest',    label:'Tư vấn và chốt sau test', nhom:'Tuyển sinh'},
   {key:'ghiCuocGoi',      label:'Ghi cuộc gọi tư vấn',   nhom:'Tuyển sinh'},
   {key:'chotNhapHoc',     label:'Chốt nhập học',         nhom:'Tuyển sinh'},
   {key:'suaBangGia',      label:'Sửa bảng giá và ưu đãi', nhom:'Tuyển sinh'},
@@ -567,17 +585,18 @@ const CAP_XUNG_DOT = [
 
 /* Quyền mặc định theo vị trí */
 const QUYEN_MAC_DINH = {
-  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu'],
-  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu'],
+  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest'],
+  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest'],
   'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe'],
-  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong'],
-  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu'],
+  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest'],
+  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest'],
   'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT'],
   'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn'],
   'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','thuTien','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn'],
-  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu'],
+  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest'],
   'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetHoanPhi'],
-  'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn']
+  'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn','xemPhieuTest','tuVanSauTest'],
+  'FLIC-GV-01':   ['xemTuyenSinh','xemPhieuTest','nhapKetQuaTest']
 };
 
 /* Nhân sự thực tế – dùng cho nút tạo nhanh tài khoản */
@@ -613,7 +632,7 @@ let usersList = [], lopList = [], hocVienList = [], ghiDanhList = [],
     khoDeList = [], phoiList = [], dinhMucList = [], doiSoatList = [],
     hoanPhiList = [], hoaDonList = [], bcNgayList = [], giaoVienList = [],
     hocBuList = [], phanAnhList = [], yeuCauTTList = [], chienDichList = [],
-    chiPhiQCList = [], dinhMucTTList = [], activityList = [];
+    chiPhiQCList = [], dinhMucTTList = [], phieuTestList = [], activityList = [];
 let settings = {nguongNguyCap:6, nguongDuoiChuan:12, hanMucPGD:10000000,
   kiemNhiem: {'FLIC-CM-00':'FLIC-PGD-01', 'FLIC-KTTC-01':'FLIC-PGD-01'},
   khoaBatBuocChungChi: 2024, phiLayMuon: 100000, tyLeTruongTra: 25,
@@ -952,6 +971,7 @@ function listenAll(){
   bind('fcv_chiendich', function(v){ chienDichList=v; });
   bind('fcv_chiphiqc',  function(v){ chiPhiQCList=v; });
   bind('fcv_dinhmuctt', function(v){ dinhMucTTList=v; });
+  bind('fcv_phieutest', function(v){ phieuTestList=v; });
   db.collection('fcv_activitylog').orderBy('ts','desc').limit(150).onSnapshot(function(snap){
     activityList = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
     if(currentTab==='heThong') render();
@@ -1092,7 +1112,11 @@ const SECTIONS = {
   hocVu:    [{k:'lop',ten:'Danh mục lớp'},{k:'hocVien',ten:'Học viên'},{k:'diemDanh',ten:'Điểm danh'},
              {k:'choXep',ten:'Chờ xếp lớp'},{k:'giaoVien',ten:'Giáo viên'},{k:'hocBu',ten:'Học bù'},
              {k:'tkb',ten:'Thời khoá biểu'},{k:'phanAnh',ten:'Phản ánh'}],
-  tuyenSinh:[{k:'pheu',ten:'Phễu tư vấn'},{k:'xepLop',ten:'Kiểm tra đầu vào'},{k:'bangGia',ten:'Bảng giá và ưu đãi'},{k:'kichBan',ten:'Kịch bản tư vấn'},{k:'nguon',ten:'Hiệu quả nguồn'}],
+  tuyenSinh:[{k:'pheu',ten:'Phễu tư vấn',can:'quanLyLead'},
+             {k:'xepLop',ten:'Kiểm tra đầu vào',can:'xemPhieuTest'},
+             {k:'bangGia',ten:'Bảng giá và ưu đãi'},
+             {k:'kichBan',ten:'Kịch bản tư vấn'},
+             {k:'nguon',ten:'Hiệu quả nguồn',can:'quanLyLead'}],
   truyenThong:[{k:'yeuCau',ten:'Phiếu yêu cầu'},{k:'chienDich',ten:'Chiến dịch và chi phí'},{k:'dinhMucTT',ten:'Định mức thời gian'}],
   khaoThi:  [{k:'kyThi',ten:'Kỳ thi'},{k:'thiSinh',ten:'Thí sinh'},{k:'khoDe',ten:'Kho đề'},{k:'phoi',ten:'Phôi và cấp phát'},{k:'dinhMuc',ten:'Định mức chi'}],
   baoCao:   [{k:'ngay',ten:'Báo cáo ngày'},{k:'tuan',ten:'Báo cáo tuần'},{k:'thang',ten:'Báo cáo tháng'}],
@@ -1105,9 +1129,10 @@ const SECTIONS = {
 function switchTab(tab){
   currentTab = tab;
   document.querySelectorAll('#tabbar button').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===tab); });
-  const secs = SECTIONS[tab];
-  if(secs){
-    if(!currentSection[tab]) currentSection[tab]=secs[0].k;
+  const secs = (SECTIONS[tab]||[]).filter(function(x){ return !x.can || hasPerm(x.can); });
+  if(secs.length){
+    if(!currentSection[tab] || !secs.some(function(x){ return x.k===currentSection[tab]; }))
+      currentSection[tab]=secs[0].k;
     $('secTabWrap').innerHTML = '<div class="section-tab">'+secs.map(function(s){
       return '<button class="'+(currentSection[tab]===s.k?'active':'')+'" onclick="switchSection(\''+tab+'\',\''+s.k+'\')">'+esc(s.ten)+'</button>';
     }).join('')+'</div>';
@@ -2820,14 +2845,6 @@ const FAQ_MAC_DINH = [
 ];
 
 /* --- Tính toán --- */
-function xepLoaiTuDiem(tb){
-  if(tb===null || tb===undefined || tb==='') return '';
-  const v = Number(tb);
-  if(v >= 9) return 'Xuất sắc';
-  if(v >= 8) return 'Giỏi';
-  if(v >= 7) return 'Khá';
-  return 'Cần cải thiện';
-}
 function tuoiTuNamSinh(nam){
   const n = Number(nam);
   if(!n || n < 1900) return null;
@@ -2964,8 +2981,12 @@ function dongLead(l){
     + '<div><b>'+esc(l.hoTen)+'</b>'
     + (l.khoi? ' <span class="small muted">· khối '+esc(l.khoi)+'</span>':'')
     + (tuoi!==null? ' <span class="small muted">· '+tuoi+' tuổi</span>':'')+'</div>';
-  if(l.diemTB!==undefined && l.diemTB!=='' && l.diemTB!==null)
-    h += '<div class="small muted">TB '+fmtNum(l.diemTB,1)+' · '+esc(l.xepLoai||'')+'</div>';
+  const ptCua = phieuTestList.filter(function(x){ return x.leadId===l.id; });
+  if(ptCua.length){
+    const pt0 = ptCua[ptCua.length-1];
+    h += '<div class="small muted">Phiếu test '+esc(pt0.soPhieu)+' · '+esc(pt0.trangThai)
+      + (pt0.cefr? ' · '+esc(pt0.cefr):'')+'</div>';
+  }
   h += '<div class="small muted">PH '+esc(l.sdtPH||'chưa có SĐT')
     + ' · '+(l.phuTrachTen? 'phụ trách '+esc(l.phuTrachTen) : '<span style="color:var(--warn);">chưa giao phụ trách</span>')+'</div>';
   if(l.ghiChu) h += '<div class="small muted">'+esc(l.ghiChu)+'</div>';
@@ -3148,29 +3169,98 @@ function ketLuanKhongChuyenDoi(leadId){
 /* ================= KIỂM TRA ĐẦU VÀO VÀ XẾP LỚP ================= */
 let xlLeadId = null;
 
+/* ================= PHIẾU ĐÁNH GIÁ NĂNG LỰC · BM-HV-02 ================= */
+const KY_NANG_TEST = [
+  {key:'nghe',  ten:'Nghe (Listening)'},
+  {key:'noi',   ten:'Nói (Speaking)'},
+  {key:'doc',   ten:'Đọc (Reading)'},
+  {key:'viet',  ten:'Viết (Writing)'},
+  {key:'tuVung',ten:'Từ vựng & Ngữ pháp'}
+];
+const MUC_DAT = ['Chưa đạt','Cơ bản','Khá','Tốt'];
+const MAU_MUC = {'Chưa đạt':'danger','Cơ bản':'warn','Khá':'info','Tốt':'ok'};
+const CEFR = ['Pre-A1','A1','A2','B1','B2','Trên B2'];
+const HINH_THUC_TEST = ['Phỏng vấn','Bài viết','Kết hợp'];
+const Y_KIEN_PH = ['Đồng ý đăng ký lớp đề xuất','Cần thêm thời gian cân nhắc','Đề nghị lớp khác'];
+const TT_PHIEU_TEST = ['Đã giao giáo viên','Đang test','Đã bàn giao','Đã tư vấn'];
+
+const BUOC_TEST = [
+  {so:1, ten:'Tư vấn tạo phiếu và giao giáo viên', ai:'Tư vấn tuyển sinh'},
+  {so:2, ten:'Giáo viên nhận phiếu, điền thông tin', ai:'Giáo viên'},
+  {so:3, ten:'Thực hiện test và ghi kết quả', ai:'Giáo viên'},
+  {so:4, ten:'Bàn giao phiếu về Tư vấn tuyển sinh', ai:'Giáo viên'},
+  {so:5, ten:'Tư vấn phụ huynh và lưu kết quả', ai:'Tư vấn tuyển sinh'}
+];
+
+function buocHienTai(pt){
+  if(pt.trangThai==='Đã tư vấn') return 5;
+  if(pt.trangThai==='Đã bàn giao') return 4;
+  if(pt.trangThai==='Đang test') return 3;
+  return 1;
+}
+function soPhieuTestMoi(){
+  const nam = todayISO().slice(0,4);
+  let max = 0;
+  phieuTestList.forEach(function(p){
+    const m = new RegExp('^(\\\\d+)/'+nam+'$').exec(p.soPhieu||'');
+    if(m){ const n=parseInt(m[1],10); if(n>max) max=n; }
+  });
+  return String(max+1).padStart(3,'0')+'/'+nam;
+}
+function gvCuaToi(){
+  if(currentUser.maViTri!=='FLIC-GV-01') return null;
+  return currentUser.gvId || null;
+}
+function phieuTestThayDuoc(){
+  const gv = gvCuaToi();
+  if(gv) return phieuTestList.filter(function(p){ return p.gvId===gv; });
+  return phieuTestList.slice();
+}
+function tomTatKyNang(pt){
+  const kn = pt.kyNang||{};
+  return KY_NANG_TEST.filter(function(k){ return kn[k.key] && kn[k.key].muc; }).length;
+}
+
+/* --- Danh sách --- */
 function viewXepLop(){
   if(xlLeadId) return viewXepLopChiTiet();
-  const ds = leadList.filter(function(l){
-    return ['Đã nhập học','Không chuyển đổi'].indexOf(l.trangThai) < 0;
-  }).sort(function(a,b){ return (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
+  const ds = phieuTestThayDuoc().sort(function(a,b){ return (b.ngayTao||'').localeCompare(a.ngayTao||''); });
+  const laGv = !!gvCuaToi();
 
-  let h = '<div class="card"><h3>Kiểm tra đầu vào và xếp lớp</h3>'
-    + '<div class="small muted">Điểm bài kiểm tra chỉ để tham khảo. Học vụ quyết định lớp dựa trên năng lực, phản xạ và độ tuổi. '
-    + 'Đổi lớp về sau tự do, chỉ cần ghi lý do.</div></div>';
+  let h = '<div class="card"><div class="row wrap"><div><h3 style="margin:0;">Phiếu đánh giá năng lực</h3>'
+    + '<div class="small muted" style="margin-top:4px;">Mẫu BM-HV-02/FLIC · quy trình 5 bước</div></div>'
+    + (hasPerm('taoPhieuTest')?'<button class="btn btn-primary" onclick="formPhieuTest()">+ Tạo phiếu test</button>':'')
+    + '</div>'
+    + (laGv? '<div class="small muted" style="margin-top:8px;">Đang xem phiếu được giao cho '
+        + esc((giaoVienList.find(function(g){ return g.id===gvCuaToi(); })||{}).tenGoi||'bạn')+'.</div>':'')
+    + '</div>';
+
+  const dem = function(tt){ return ds.filter(function(p){ return p.trangThai===tt; }).length; };
+  h += '<div class="grid" style="margin-bottom:12px;">'
+    + '<div class="stat"><div class="lbl">Chờ giáo viên nhận</div><div class="val">'+dem('Đã giao giáo viên')+'</div></div>'
+    + '<div class="stat"><div class="lbl">Đang test</div><div class="val">'+dem('Đang test')+'</div></div>'
+    + '<div class="stat"><div class="lbl">Chờ tư vấn</div><div class="val" style="color:var(--warn);">'+dem('Đã bàn giao')+'</div></div>'
+    + '<div class="stat"><div class="lbl">Đã tư vấn xong</div><div class="val" style="color:var(--ok);">'+dem('Đã tư vấn')+'</div></div>'
+    + '</div>';
+
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📝','Chưa có khách nào chờ kiểm tra đầu vào');
-  else h += ds.map(function(l){
-    const tuoi = tuoiTuNgaySinh(l.ngaySinh) !== null
-      ? tuoiTuNgaySinh(l.ngaySinh) : tuoiTuNamSinh(l.namSinh);
-    const daCoDiem = (l.diemTB!==undefined && l.diemTB!=='' && l.diemTB!==null);
-    return '<div class="list-row"><div style="min-width:0;"><div><b>'+esc(l.hoTen)+'</b>'
-      + (tuoi!==null? ' <span class="small muted">· '+tuoi+' tuổi</span>':'')
-      + (l.khoi? ' <span class="small muted">· khối '+esc(l.khoi)+'</span>':'')+'</div>'
-      + '<div class="small muted">'+(daCoDiem
-          ? 'TB '+fmtNum(l.diemTB,1)+' · '+esc(l.xepLoai||'')
-          : '<span style="color:var(--warn);">chưa có kết quả kiểm tra</span>')+'</div>'
-      + (l.nhanXet? '<div class="small muted">'+esc(l.nhanXet)+'</div>':'')
-      + '</div><button class="btn btn-sm btn-primary" onclick="moXepLop(\''+l.id+'\')">Mở</button></div>';
+  if(!ds.length) h += emptyBox('📝', laGv? 'Chưa có phiếu test nào được giao cho bạn' : 'Chưa có phiếu test nào');
+  else h += ds.map(function(p){
+    const b = buocHienTai(p);
+    const ttMau = {'Đã giao giáo viên':'gray','Đang test':'info','Đã bàn giao':'warn','Đã tư vấn':'ok'};
+    return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
+      + '<div><b>'+esc(p.hoTen)+'</b> <span class="small muted">· phiếu '+esc(p.soPhieu)+'</span></div>'
+      + '<div class="small muted">'+(p.ngayKiemTra? 'Kiểm tra '+fmtDate(p.ngayKiemTra)+' · ':'')
+      + 'GV '+esc(p.gvTen||'chưa giao')+(p.hinhThuc? ' · '+esc(p.hinhThuc):'')+'</div>'
+      + (p.cefr? '<div class="small muted">Trình độ '+esc(p.cefr)
+          +(p.lopDeXuat? ' · đề xuất '+esc(p.lopDeXuat):'')+'</div>':'')
+      + (tomTatKyNang(p)? '<div class="small muted">Đã chấm '+tomTatKyNang(p)+'/5 kỹ năng</div>':'')
+      + '<div class="small muted" style="margin-top:3px;">Bước '+b+'/5 · '+esc(BUOC_TEST[b-1].ten)+'</div>'
+      + '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">'
+      + '<button class="btn btn-sm btn-primary" onclick="moXepLop(\''+p.id+'\')">Mở phiếu</button>'
+      + '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">In phiếu</button>'
+      + '</div></div>'
+      + '<div style="text-align:right;flex-shrink:0;">'+badge(ttMau[p.trangThai]||'gray', p.trangThai||'Mới')+'</div></div>';
   }).join('');
   h += '</div>';
   return h;
@@ -3178,101 +3268,386 @@ function viewXepLop(){
 function moXepLop(id){ xlLeadId = id; render(); }
 function dongXepLop(){ xlLeadId = null; render(); }
 
-function tinhTBXepLop(){
-  const n = parseFloat($('xlNghe').value), d = parseFloat($('xlDocViet').value);
-  const el = $('xlTB'), lo = $('xlXepLoai');
-  if(isNaN(n) && isNaN(d)){ el.value=''; lo.textContent=''; return; }
-  const a = isNaN(n)?0:n, b = isNaN(d)?0:d;
-  const c = (isNaN(n)||isNaN(d)) ? (a+b) : (a+b)/2;
-  el.value = fmtNum(c,1);
-  lo.textContent = xepLoaiTuDiem(c);
+/* --- Tạo phiếu --- */
+function formPhieuTest(){
+  const dsLead = leadList.filter(function(l){
+    return ['Đã nhập học','Không chuyển đổi'].indexOf(l.trangThai)<0; })
+    .sort(function(a,b){ return (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
+  const optGv = giaoVienList.filter(function(g){ return g.trangThai!=='Ngừng dạy'; })
+    .map(function(g){ return '<option value="'+g.id+'">'+esc(g.tenGoi||g.hoTen)+'</option>'; }).join('');
+  openModal('<h3>Tạo phiếu đánh giá năng lực</h3>'
+    +'<div class="small muted">Số phiếu '+esc(soPhieuTestMoi())+' · mẫu BM-HV-02/FLIC</div>'
+    +'<label>Chọn từ phễu tư vấn</label><select id="mPTLead" onchange="dienTuLead()">'
+      +'<option value="">— nhập tay, không lấy từ phễu —</option>'
+      + dsLead.map(function(l){ return '<option value="'+l.id+'">'+esc(l.hoTen)
+          +(l.sdtPH? ' · '+esc(l.sdtPH):'')+'</option>'; }).join('')+'</select>'
+    +'<label>Họ và tên học viên</label><input id="mPTTen">'
+    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày sinh</label><input type="date" id="mPTNS"></div>'
+    +'<div style="flex:1;"><label>Năm sinh</label><input id="mPTNam" placeholder="nếu không rõ ngày"></div></div>'
+    +'<label>Trường / lớp đang học</label><input id="mPTTruong">'
+    +'<label>Điện thoại phụ huynh</label><input id="mPTSdt">'
+    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày kiểm tra</label><input type="date" id="mPTNgay" value="'+todayISO()+'"></div>'
+    +'<div style="flex:1;"><label>Hình thức</label><select id="mPTHinhThuc">'
+      + HINH_THUC_TEST.map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select></div></div>'
+    +'<label>Giáo viên đánh giá</label><select id="mPTGv"><option value="">— chọn giáo viên —</option>'+optGv+'</select>'
+    +'<div class="small muted">Giao cho ai thì người đó đăng nhập sẽ thấy phiếu này.</div>'
+    +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    +'<button class="btn btn-primary btn-block" onclick="luuPhieuTest()">Tạo phiếu</button></div>');
+}
+function dienTuLead(){
+  const l = leadList.find(function(x){ return x.id===$('mPTLead').value; });
+  if(!l) return;
+  $('mPTTen').value = l.hoTen||'';
+  $('mPTNS').value = l.ngaySinh||'';
+  $('mPTNam').value = l.namSinh||'';
+  $('mPTTruong').value = (l.truong||'') + (l.khoi? (l.truong?' · ':'')+'lớp '+l.khoi : '');
+  $('mPTSdt').value = l.sdtPH||'';
+}
+function luuPhieuTest(){
+  const ten = $('mPTTen').value.trim();
+  if(!ten){ showToast('Nhập họ tên học viên'); return; }
+  const gv = giaoVienList.find(function(g){ return g.id===$('mPTGv').value; });
+  if(!gv){ showToast('Chọn giáo viên đánh giá'); return; }
+  const nam = $('mPTNam').value.trim();
+  if(nam && !/^\d{4}$/.test(nam)){ showToast('Năm sinh phải là 4 chữ số'); return; }
+  db.collection('fcv_phieutest').add({
+    soPhieu: soPhieuTestMoi(), leadId: $('mPTLead').value,
+    hoTen: ten, ngaySinh: $('mPTNS').value, namSinh: nam,
+    truongLop: $('mPTTruong').value.trim(), sdtPH: $('mPTSdt').value.trim(),
+    ngayKiemTra: $('mPTNgay').value, hinhThuc: $('mPTHinhThuc').value,
+    gvId: gv.id, gvTen: gv.tenGoi||gv.hoTen,
+    nvTuVanTen: currentUser.hoTen,
+    kyNang: {}, trangThai: 'Đã giao giáo viên',
+    ngayTao: todayISO(),
+    lichSu: [{ts:Date.now(), nguoi:currentUser.hoTen, hanhDong:'Tạo phiếu và giao '+(gv.tenGoi||gv.hoTen)}]
+  }).then(function(){
+    closeModal(); showToast('✅ Đã tạo phiếu, in ra giao giáo viên');
+    logAct('Tạo phiếu test cho '+ten);
+  }).catch(fsErr);
 }
 
+/* --- Chi tiết phiếu --- */
 function viewXepLopChiTiet(){
-  const l = leadList.find(function(x){ return x.id===xlLeadId; });
-  if(!l){ xlLeadId=null; return viewXepLop(); }
-  const tuoi = tuoiTuNgaySinh(l.ngaySinh) !== null
-    ? tuoiTuNgaySinh(l.ngaySinh) : tuoiTuNamSinh(l.namSinh);
+  const p = phieuTestList.find(function(x){ return x.id===xlLeadId; });
+  if(!p){ xlLeadId=null; return viewXepLop(); }
+  const b = buocHienTai(p);
+  const laGvPhieuNay = gvCuaToi() ? (p.gvId===gvCuaToi()) : false;
+  const suaDuocKetQua = hasPerm('nhapKetQuaTest') && (laGvPhieuNay || !gvCuaToi())
+                        && ['Đã giao giáo viên','Đang test'].indexOf(p.trangThai)>=0;
+  const tuoi = p.ngaySinh? tuoiTuNgaySinh(p.ngaySinh) : tuoiTuNamSinh(p.namSinh);
 
-  let h = '<div class="card"><div class="row"><div><h3 style="margin:0;">'+esc(l.hoTen)+'</h3>'
-    + '<div class="small muted">'+(l.ngaySinh? 'Sinh '+fmtDate(l.ngaySinh)+' · ':'')
-    + (tuoi!==null? '<b>'+tuoi+' tuổi</b> · ':'')
-    + (l.khoi? 'khối '+esc(l.khoi)+' · ':'')+'PH '+esc(l.sdtPH||'')+'</div></div>'
-    + '<button class="btn btn-sm" onclick="dongXepLop()">Đóng</button></div></div>';
+  let h = '<div class="card"><div class="row wrap"><div style="min-width:0;">'
+    + '<h3 style="margin:0;">'+esc(p.hoTen)+'</h3>'
+    + '<div class="small muted">Phiếu '+esc(p.soPhieu)+' · BM-HV-02/FLIC</div>'
+    + '<div class="small muted">'+(tuoi!==null? tuoi+' tuổi · ':'')
+    + esc(p.truongLop||'')+(p.sdtPH? ' · PH '+esc(p.sdtPH):'')+'</div>'
+    + '<div class="small muted">Kiểm tra '+fmtDate(p.ngayKiemTra)+' · '+esc(p.hinhThuc||'')
+    + ' · GV '+esc(p.gvTen||'')+'</div></div>'
+    + '<div style="display:flex;gap:6px;">'
+    + '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">In phiếu</button>'
+    + '<button class="btn btn-sm" onclick="dongXepLop()">Đóng</button></div></div></div>';
 
-  h += '<div class="card"><h3>Kết quả bài kiểm tra <span class="small muted" style="font-weight:400;">— để tham khảo</span></h3>'
-    + '<div class="row" style="gap:8px;">'
-    + '<div style="flex:1;"><label style="margin-top:0;">Nghe</label><input id="xlNghe" type="number" step="0.1" value="'+esc(l.diemNghe||'')+'" oninput="tinhTBXepLop()"></div>'
-    + '<div style="flex:1;"><label style="margin-top:0;">Đọc – Viết</label><input id="xlDocViet" type="number" step="0.1" value="'+esc(l.diemDocViet||'')+'" oninput="tinhTBXepLop()"></div>'
-    + '<div style="flex:1;"><label style="margin-top:0;">Trung bình</label><input id="xlTB" value="'+(l.diemTB!==undefined&&l.diemTB!==''?fmtNum(l.diemTB,1):'')+'" disabled>'
-    + '<div class="small muted" id="xlXepLoai">'+esc(l.xepLoai||'')+'</div></div></div>'
-    + '<label>Nhận xét năng lực và phản xạ <b>— căn cứ chính để xếp lớp</b></label>'
-    + '<textarea id="xlNhanXet" placeholder="VD: bé nghe hiểu tốt, phản xạ trả lời còn chậm, phát âm rõ, ngại nói trước lớp đông">'+esc(l.nhanXet||'')+'</textarea>'
-    + '<button class="btn btn-block" style="margin-top:10px;" onclick="luuKetQuaTest(\''+l.id+'\')">Lưu kết quả kiểm tra</button>'
-    + '</div>';
+  /* Tiến độ 5 bước */
+  h += '<div class="card"><h3>Tiến độ</h3>';
+  BUOC_TEST.forEach(function(x){
+    const xong = x.so < b || (x.so===b && p.trangThai==='Đã tư vấn');
+    const dang = x.so === b && p.trangThai!=='Đã tư vấn';
+    h += '<div class="list-row"><div style="min-width:0;flex:1;">'
+      + '<div class="'+(xong?'muted':'')+'">'
+      + (xong? '<span style="color:var(--ok);">✔</span> ' : (dang? '<span style="color:var(--warn);">◐</span> ' : '<span class="muted">○</span> '))
+      + x.so+' · '+esc(x.ten)+'</div>'
+      + '<div class="small muted" style="margin-left:20px;">'+esc(x.ai)+'</div></div></div>';
+  });
+  h += '</div>';
 
+  /* Kết quả từng kỹ năng */
+  h += '<div class="card"><h3>Kết quả đánh giá từng kỹ năng</h3>';
+  if(suaDuocKetQua){
+    KY_NANG_TEST.forEach(function(k){
+      const v = (p.kyNang||{})[k.key] || {};
+      h += '<div style="border-top:1px solid var(--border);padding:9px 0;">'
+        + '<div style="font-size:13px;font-weight:700;margin-bottom:5px;">'+esc(k.ten)+'</div>'
+        + '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">'
+        + MUC_DAT.map(function(m){
+            return '<button class="btn btn-sm '+(v.muc===m?'btn-primary':'')+'" style="border-radius:20px;" '
+              + 'onclick="chonMucKyNang(\''+p.id+'\',\''+k.key+'\',\''+m+'\')">'+m+'</button>'; }).join('')
+        + '</div>'
+        + '<input id="kn_'+k.key+'" placeholder="Nội dung cần cải thiện" value="'+esc(v.canCaiThien||'')+'" '
+        + 'onchange="luuCaiThien(\''+p.id+'\',\''+k.key+'\',this.value)">'
+        + '</div>';
+    });
+  } else {
+    KY_NANG_TEST.forEach(function(k){
+      const v = (p.kyNang||{})[k.key] || {};
+      h += '<div class="list-row"><div style="min-width:0;flex:1;">'
+        + '<div style="font-size:13px;">'+esc(k.ten)+'</div>'
+        + (v.canCaiThien? '<div class="small muted">'+esc(v.canCaiThien)+'</div>':'')
+        + '</div><div style="text-align:right;">'
+        + (v.muc? badge(MAU_MUC[v.muc]||'gray', v.muc) : badge('gray','chưa chấm'))+'</div></div>';
+    });
+  }
+  h += '</div>';
+
+  /* Kết luận */
+  h += '<div class="card"><h3>Kết luận và đề xuất lộ trình</h3>';
+  if(suaDuocKetQua){
+    h += '<label style="margin-top:0;">Trình độ hiện tại theo CEFR</label>'
+      + '<select id="ptCefr"><option value="">— chọn —</option>'
+      + CEFR.map(function(c){ return '<option '+(p.cefr===c?'selected':'')+'>'+c+'</option>'; }).join('')+'</select>'
+      + '<label>Lớp hoặc chương trình đề xuất</label><input id="ptLop" value="'+esc(p.lopDeXuat||'')+'">'
+      + '<label>Lộ trình đề xuất</label><input id="ptLoTrinh" value="'+esc(p.loTrinh||'')+'" placeholder="VD: 8 tuần, 2 buổi mỗi tuần">'
+      + '<label>Mục tiêu đầu ra dự kiến</label><input id="ptMucTieu" value="'+esc(p.mucTieu||'')+'">'
+      + '<label>Điểm mạnh của học viên</label><textarea id="ptDiemManh">'+esc(p.diemManh||'')+'</textarea>'
+      + '<label>Nội dung cần ưu tiên cải thiện</label><textarea id="ptCanCaiThien">'+esc(p.canCaiThien||'')+'</textarea>'
+      + '<label>Khuyến nghị dành cho phụ huynh</label><textarea id="ptKhuyenNghi">'+esc(p.khuyenNghi||'')+'</textarea>'
+      + '<div class="row" style="margin-top:12px;gap:8px;">'
+      + '<button class="btn btn-block" onclick="luuKetLuanTest(\''+p.id+'\',false)">Lưu tạm</button>'
+      + '<button class="btn btn-primary btn-block" onclick="luuKetLuanTest(\''+p.id+'\',true)">Bàn giao về Tư vấn</button></div>'
+      + '<div class="small muted" style="margin-top:6px;">Bàn giao xong không sửa được kết quả nữa.</div>';
+  } else {
+    h += '<div class="row"><span class="muted">Trình độ CEFR</span><span><b>'+esc(p.cefr||'—')+'</b></span></div>'
+      + '<div class="row"><span class="muted">Lớp đề xuất</span><span>'+esc(p.lopDeXuat||'—')+'</span></div>'
+      + '<div class="row"><span class="muted">Lộ trình</span><span>'+esc(p.loTrinh||'—')+'</span></div>'
+      + '<div class="row"><span class="muted">Mục tiêu đầu ra</span><span>'+esc(p.mucTieu||'—')+'</span></div>'
+      + (p.diemManh? '<div class="small" style="margin-top:8px;"><b>Điểm mạnh:</b> '+esc(p.diemManh)+'</div>':'')
+      + (p.canCaiThien? '<div class="small"><b>Cần cải thiện:</b> '+esc(p.canCaiThien)+'</div>':'')
+      + (p.khuyenNghi? '<div class="small"><b>Khuyến nghị phụ huynh:</b> '+esc(p.khuyenNghi)+'</div>':'');
+  }
+  h += '</div>';
+
+  /* Bước 5: tư vấn */
+  if(p.trangThai==='Đã bàn giao' && hasPerm('tuVanSauTest')){
+    h += '<div class="card" style="border-color:var(--warn);"><h3>Bước 5 · Tư vấn phụ huynh</h3>'
+      + '<label style="margin-top:0;">Ý kiến của phụ huynh</label>'
+      + '<select id="ptYKien" onchange="doiYKienPH()">'
+      + Y_KIEN_PH.map(function(y){ return '<option>'+y+'</option>'; }).join('')+'</select>'
+      + '<div id="ptLopKhacWrap" style="display:none;"><label>Lớp phụ huynh đề nghị</label>'
+      + '<input id="ptLopKhac"></div>'
+      + '<label>Ý kiến khác</label><input id="ptYKhac">'
+      + '<button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="hoanTatTuVan(\''+p.id+'\')">Lưu kết quả tư vấn</button>'
+      + '</div>';
+  }
+  else if(p.trangThai==='Đã tư vấn'){
+    h += '<div class="card"><h3>Ý kiến phụ huynh</h3>'
+      + '<div class="small">'+esc(p.yKienPH||'')
+      + (p.lopKhac? ' · lớp đề nghị: '+esc(p.lopKhac):'')+'</div>'
+      + (p.yKienKhac? '<div class="small muted">'+esc(p.yKienKhac)+'</div>':'')
+      + '<div class="small muted" style="margin-top:6px;">Tư vấn bởi '+esc(p.nguoiTuVan||'')+' ngày '+fmtDate(p.ngayTuVan)+'</div>'
+      + '</div>';
+    h += khoiXepLopSauTest(p, tuoi);
+  }
+
+  return h;
+}
+
+function chonMucKyNang(id, key, muc){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  const kn = Object.assign({}, p.kyNang||{});
+  const cu = kn[key] || {};
+  kn[key] = {muc: (cu.muc===muc? '' : muc), canCaiThien: cu.canCaiThien||''};
+  const data = {kyNang:kn};
+  if(p.trangThai==='Đã giao giáo viên') data.trangThai='Đang test';
+  db.collection('fcv_phieutest').doc(id).update(data).catch(fsErr);
+}
+function luuCaiThien(id, key, val){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  const kn = Object.assign({}, p.kyNang||{});
+  kn[key] = Object.assign({muc:''}, kn[key]||{}, {canCaiThien:val});
+  db.collection('fcv_phieutest').doc(id).update({kyNang:kn}).catch(fsErr);
+}
+function luuKetLuanTest(id, banGiao){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  const data = {
+    cefr: $('ptCefr').value, lopDeXuat: $('ptLop').value.trim(),
+    loTrinh: $('ptLoTrinh').value.trim(), mucTieu: $('ptMucTieu').value.trim(),
+    diemManh: $('ptDiemManh').value.trim(), canCaiThien: $('ptCanCaiThien').value.trim(),
+    khuyenNghi: $('ptKhuyenNghi').value.trim()
+  };
+  if(banGiao){
+    const chuaCham = KY_NANG_TEST.filter(function(k){
+      return !((p.kyNang||{})[k.key]||{}).muc; });
+    if(chuaCham.length){
+      showToast('Còn '+chuaCham.length+' kỹ năng chưa chấm: '
+        + chuaCham.map(function(k){ return k.ten.split(' ')[0]; }).join(', '));
+      return;
+    }
+    if(!data.cefr){ showToast('Chọn trình độ CEFR trước khi bàn giao'); return; }
+    if(!data.lopDeXuat){ showToast('Ghi lớp hoặc chương trình đề xuất'); return; }
+    data.trangThai = 'Đã bàn giao';
+    data.ngayBanGiao = todayISO();
+    const ls = (p.lichSu||[]).slice();
+    ls.push({ts:Date.now(), nguoi:currentUser.hoTen, hanhDong:'Bàn giao phiếu về Tư vấn tuyển sinh'});
+    data.lichSu = ls;
+  }
+  db.collection('fcv_phieutest').doc(id).update(data).then(function(){
+    showToast(banGiao? '✅ Đã bàn giao về Tư vấn tuyển sinh' : '✅ Đã lưu tạm');
+    if(banGiao) logAct('Bàn giao phiếu test '+p.soPhieu);
+  }).catch(fsErr);
+}
+function doiYKienPH(){
+  const el = $('ptLopKhacWrap'); if(!el) return;
+  el.style.display = ($('ptYKien').value==='Đề nghị lớp khác') ? 'block' : 'none';
+}
+function hoanTatTuVan(id){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  const yk = $('ptYKien').value;
+  const lopKhac = $('ptLopKhac')? $('ptLopKhac').value.trim() : '';
+  if(yk==='Đề nghị lớp khác' && !lopKhac){ showToast('Ghi rõ lớp phụ huynh đề nghị'); return; }
+  const ls = (p.lichSu||[]).slice();
+  ls.push({ts:Date.now(), nguoi:currentUser.hoTen, hanhDong:'Tư vấn phụ huynh: '+yk});
+  db.collection('fcv_phieutest').doc(id).update({
+    trangThai:'Đã tư vấn', yKienPH:yk, lopKhac:lopKhac,
+    yKienKhac: $('ptYKhac').value.trim(),
+    nguoiTuVan: currentUser.hoTen, ngayTuVan: todayISO(), lichSu: ls
+  }).then(function(){ showToast('✅ Đã lưu kết quả tư vấn'); logAct('Tư vấn sau test: '+p.hoTen); }).catch(fsErr);
+}
+
+/* --- Xếp lớp sau khi tư vấn xong --- */
+function khoiXepLopSauTest(p, tuoi){
+  if(!hasPerm('chotNhapHoc')) return '';
   const lopMo = lopList.filter(function(x){ return x.trangThai==='Đang học' || x.trangThai==='Sắp khai giảng'; });
   const tuoiLop = function(lopId){
-    const hv = hocVienCuaLop(lopId).map(function(h){ return tuoiTuNgaySinh(h.ngaySinh); }).filter(function(t){ return t!==null; });
+    const hv = hocVienCuaLop(lopId).map(function(h){ return tuoiTuNgaySinh(h.ngaySinh); })
+      .filter(function(t){ return t!==null; });
     if(!hv.length) return null;
     return {min:Math.min.apply(null,hv), max:Math.max.apply(null,hv)};
   };
   const phuHop = lopMo.map(function(x){
     const tl = tuoiLop(x.id);
-    let diem = 0;
-    if(tuoi!==null && tl) diem = (tuoi>=tl.min-1 && tuoi<=tl.max+1) ? 2 : 0;
-    return {lop:x, tl:tl, uuTien:diem};
+    let uu = 0;
+    if(stripDia(x.maLop)===stripDia(p.lopDeXuat||'')) uu += 4;
+    if(tuoi!==null && tl && tuoi>=tl.min-1 && tuoi<=tl.max+1) uu += 2;
+    return {lop:x, tl:tl, uuTien:uu};
   }).sort(function(a,b){ return b.uuTien - a.uuTien; });
 
-  h += '<div class="card"><h3>Lớp đang mở'+(tuoi!==null? ' · gợi ý theo độ tuổi '+tuoi : '')+'</h3>'
-    + '<div class="small muted" style="margin-bottom:6px;">Học vụ chọn lớp. Danh sách chỉ để tham khảo, không phải chỉ định.</div>';
+  let h = '<div class="card"><h3>Xếp lớp</h3>'
+    + '<div class="small muted" style="margin-bottom:6px;">Giáo viên đề xuất <b>'+esc(p.lopDeXuat||'—')+'</b>'
+    + (tuoi!==null? ' · học viên '+tuoi+' tuổi':'')+'. Học vụ quyết định lớp cuối cùng.</div>';
   if(!phuHop.length) h += emptyBox('🏫','Chưa có lớp nào đang mở');
-  else h += phuHop.map(function(p){
-    const x = p.lop, m = mocSiSo(x), ss = siSoLop(x.id);
-    const g = timDongGia(x.nhomCT, x.capDo);
-    const conCho = m.toiDa - ss;
+  else h += phuHop.slice(0,8).map(function(q){
+    const x=q.lop, m=mocSiSo(x), ss=siSoLop(x.id), con=m.toiDa-ss;
     return '<div class="list-row"><div style="min-width:0;">'
-      + '<div><b>'+esc(x.maLop)+'</b> <span class="small muted">· '+esc(x.capDo||x.nhomCT||'')+'</span></div>'
-      + '<div class="small muted">'+esc(x.gvPhuTrach||'—')+' · '+esc(x.lichHoc||'')+' · '+esc(x.gioHoc||'')+' · '+esc(x.phongHoc||'')+'</div>'
-      + '<div class="small muted">'
-        + (p.tl? 'Độ tuổi trong lớp '+p.tl.min+'–'+p.tl.max+' · ' : 'Lớp chưa có học viên · ')
-        + (conCho>0? 'còn '+conCho+' chỗ' : '<span style="color:var(--danger);">đã đủ chỗ</span>')
-        + (x.hocPhi? ' · học phí '+fmtTien(x.hocPhi) : (g? ' · học phí '+fmtTien(g.hocPhi) : ''))
-        + '</div>'
-      + (ss < m.toiThieu? '<div class="small" style="color:var(--danger);">Sĩ số '+ss+' — lớp cần bổ sung</div>':'')
-      + '</div><button class="btn btn-sm '+(p.uuTien?'btn-primary':'')+'" onclick="chonLopChoLead(\''+l.id+'\',\''+x.id+'\')">Chọn</button></div>';
+      + '<div><b>'+esc(x.maLop)+'</b> <span class="small muted">· '+esc(x.capDo||x.nhomCT||'')+'</span>'
+      + (q.uuTien>=4? ' '+badge('ok','GV đề xuất'):'')+'</div>'
+      + '<div class="small muted">'+esc(tenGiaoVienCuaLop(x)||'—')+' · '+esc(x.lichHoc||'')+' · '+esc(x.gioHoc||'')+'</div>'
+      + '<div class="small muted">'+(q.tl? 'Độ tuổi '+q.tl.min+'–'+q.tl.max+' · ':'')
+      + (con>0? 'còn '+con+' chỗ':'<span style="color:var(--danger);">đã đủ</span>')+'</div></div>'
+      + '<button class="btn btn-sm '+(q.uuTien>=4?'btn-primary':'')+'" onclick="chonLopChoPhieuTest(\''+p.id+'\',\''+x.id+'\')">Chọn</button></div>';
   }).join('');
-  h += '<button class="btn btn-block" style="margin-top:10px;" onclick="dayVaoChoXep(\''+l.id+'\')">Không lớp nào phù hợp — đưa vào chờ xếp lớp</button>';
+  h += '<button class="btn btn-block" style="margin-top:10px;" onclick="dayPhieuVaoChoXep(\''+p.id+'\')">Chưa có lớp phù hợp — đưa vào chờ xếp lớp</button>';
   h += '</div>';
   return h;
 }
-function luuKetQuaTest(id){
-  const n = parseFloat($('xlNghe').value), d = parseFloat($('xlDocViet').value);
-  let tb = '';
-  if(!isNaN(n) || !isNaN(d)){
-    const a = isNaN(n)?0:n, b = isNaN(d)?0:d;
-    tb = (isNaN(n)||isNaN(d)) ? (a+b) : (a+b)/2;
-  }
-  db.collection('fcv_lead').doc(id).update({
-    diemNghe: isNaN(n)?'':n, diemDocViet: isNaN(d)?'':d,
-    diemTB: tb, xepLoai: xepLoaiTuDiem(tb),
-    nhanXet: $('xlNhanXet').value.trim(), ngayTest: todayISO()
-  }).then(function(){ showToast('✅ Đã lưu kết quả kiểm tra'); logAct('Lưu kết quả kiểm tra đầu vào'); }).catch(fsErr);
-}
-function chonLopChoLead(leadId, lopId){
-  if(!hasPerm('chotNhapHoc')){ showToast('Bạn không có quyền xếp lớp'); return; }
-  const l = leadList.find(function(x){ return x.id===leadId; });
+function chonLopChoPhieuTest(ptId, lopId){
+  const p = phieuTestList.find(function(x){ return x.id===ptId; });
   const lop = lopList.find(function(x){ return x.id===lopId; });
-  if(!confirm('Xếp '+l.hoTen+' vào lớp '+lop.maLop+'?\nHọc viên sẽ được tạo và ghi danh vào lớp.')) return;
-  taoHocVienTuLead(l, lopId);
+  if(!confirm('Xếp '+p.hoTen+' vào lớp '+lop.maLop+'?')) return;
+  const l = leadList.find(function(x){ return x.id===p.leadId; });
+  const nguon = l || {id:null, hoTen:p.hoTen, ngaySinh:p.ngaySinh, tenPH:'', sdtPH:p.sdtPH,
+                      truong:p.truongLop, nguon:'Khác', nhanXet:p.diemManh};
+  if(l) taoHocVienTuLead(l, lopId);
+  else {
+    db.collection('fcv_hocvien').add({
+      maHV: nextMaHV(), hoTen:p.hoTen, tenTA:'', ngaySinh:p.ngaySinh||'',
+      gioiTinh:'', tenPH:'', sdtPH:p.sdtPH||'', truong:p.truongLop||'',
+      nguon:'Khác', dongYHinhAnh:false, ngayTao:todayISO(),
+      ghiChu:'Từ phiếu test '+p.soPhieu
+    }).then(function(ref){
+      const ngayVao = (lop.ngayKG && lop.ngayKG<=todayISO())? lop.ngayKG : todayISO();
+      return db.collection('fcv_ghidanh').add({
+        lopId:lopId, hocVienId:ref.id, ngayVao:ngayVao, trangThai:'Đang học',
+        trangThaiHP:'Chưa đóng', trangThaiSach:'Chưa nhận',
+        nguoiTao:currentUser.hoTen, ts:Date.now()});
+    }).then(function(){
+      showToast('✅ '+p.hoTen+' đã vào lớp '+lop.maLop);
+      xlLeadId=null; render();
+    }).catch(fsErr);
+  }
+  db.collection('fcv_phieutest').doc(ptId).update({lopDaXep:lop.maLop}).catch(function(){});
 }
-function dayVaoChoXep(leadId){
-  const l = leadList.find(function(x){ return x.id===leadId; });
-  if(choXepLopList.some(function(x){ return x.leadId===leadId; })){ showToast('Bé đã có trong danh sách chờ xếp lớp'); return; }
+function dayPhieuVaoChoXep(ptId){
+  const p = phieuTestList.find(function(x){ return x.id===ptId; });
+  if(choXepLopList.some(function(x){ return x.phieuTestId===ptId; })){ showToast('Đã có trong danh sách chờ'); return; }
   db.collection('fcv_choxeplop').add({
-    hoTen:l.hoTen, sdt:l.sdtPH||'', lopCho:'', gioHoc:l.khungGioMongMuon||'',
-    ghiChu:'Từ kiểm tra đầu vào — '+(l.nhanXet||''), ngayDangKy:todayISO(), leadId:leadId
+    hoTen:p.hoTen, sdt:p.sdtPH||'', lopCho:p.lopDeXuat||'', gioHoc:'',
+    ghiChu:'Từ phiếu test '+p.soPhieu+(p.cefr? ' · trình độ '+p.cefr:''),
+    ngayDangKy:todayISO(), phieuTestId:ptId, leadId:p.leadId||''
   }).then(function(){ showToast('✅ Đã đưa vào chờ xếp lớp'); dongXepLop(); }).catch(fsErr);
+}
+
+/* --- In phiếu --- */
+function inPhieuTest(id){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  if(!p) return;
+  const o = function(v){ return v? '☒' : '☐'; };
+  const oNhieu = function(ds, cur){
+    return ds.map(function(x){ return o(stripDia(cur||'')===stripDia(x))+' '+x; }).join('&nbsp;&nbsp;');
+  };
+  const dong = function(a,b){ return '<tr><td class="l">'+a+'</td><td>'+esc(b||'')+'</td></tr>'; };
+  let kn = '';
+  KY_NANG_TEST.forEach(function(k){
+    const v = (p.kyNang||{})[k.key] || {};
+    kn += '<tr><td>'+esc(k.ten)+'</td><td>'+oNhieu(MUC_DAT, v.muc)+'</td><td>'+esc(v.canCaiThien||'')+'</td></tr>';
+  });
+  const html = '<html><head><meta charset="utf-8"><title>Phiếu '+esc(p.soPhieu)+'</title><style>'
+    + 'body{font-family:"Times New Roman",serif;font-size:13pt;margin:18mm 15mm;color:#000;}'
+    + 'table{width:100%;border-collapse:collapse;margin:6px 0;}'
+    + 'td,th{border:1px solid #000;padding:5px 7px;vertical-align:top;}'
+    + 'td.l{width:34%;background:#f2f2f2;}'
+    + 'h2{text-align:center;font-size:15pt;margin:4px 0;text-transform:uppercase;}'
+    + '.hd{display:flex;justify-content:space-between;font-size:11pt;}'
+    + '.sec{font-weight:bold;margin:12px 0 4px;}'
+    + '.line{border-bottom:1px dotted #000;height:20px;}'
+    + '.ky{display:flex;justify-content:space-between;margin-top:26px;text-align:center;font-size:11pt;}'
+    + '.ky div{width:32%;}'
+    + '.note{font-size:10pt;font-style:italic;margin-top:16px;}'
+    + '@media print{@page{size:A4;margin:14mm;}}'
+    + '</style></head><body>'
+    + '<div class="hd"><div><b>TRUNG TÂM NGOẠI NGỮ - TIN HỌC FLIC</b></div>'
+    + '<div>Mã biểu mẫu: BM-HV-02/FLIC<br>Số phiếu: '+esc(p.soPhieu)+'</div></div>'
+    + '<h2>Phiếu đánh giá năng lực<br>tiếng Anh đầu vào</h2>'
+    + '<div class="sec">I. THÔNG TIN HỌC VIÊN VÀ BUỔI KIỂM TRA</div><table>'
+    + dong('Họ và tên học viên', p.hoTen)
+    + dong('Ngày sinh', p.ngaySinh? fmtDate(p.ngaySinh) : (p.namSinh? 'Năm '+p.namSinh : ''))
+    + dong('Trường / lớp đang học', p.truongLop)
+    + dong('Điện thoại phụ huynh', p.sdtPH)
+    + dong('Ngày kiểm tra', fmtDate(p.ngayKiemTra))
+    + '<tr><td class="l">Hình thức kiểm tra</td><td>'+oNhieu(HINH_THUC_TEST, p.hinhThuc)+'</td></tr>'
+    + dong('Giáo viên đánh giá', p.gvTen)
+    + dong('Nhân viên tư vấn', p.nvTuVanTen)
+    + '</table>'
+    + '<div class="sec">II. KẾT QUẢ ĐÁNH GIÁ TỪNG KỸ NĂNG</div>'
+    + '<table><tr><th style="width:24%">Kỹ năng</th><th style="width:40%">Mức đạt được</th>'
+    + '<th>Nội dung cần cải thiện</th></tr>'+kn+'</table>'
+    + '<div class="sec">III. KẾT LUẬN VÀ ĐỀ XUẤT LỘ TRÌNH</div><table>'
+    + '<tr><td class="l">Trình độ hiện tại (tham chiếu CEFR)</td><td>'+oNhieu(CEFR, p.cefr)+'</td></tr>'
+    + dong('Lớp / chương trình đề xuất', p.lopDeXuat)
+    + dong('Lộ trình đề xuất (thời lượng, số buổi/tuần)', p.loTrinh)
+    + dong('Mục tiêu đầu ra dự kiến', p.mucTieu)
+    + '</table>'
+    + '<div class="sec">IV. NHẬN XÉT CỦA GIÁO VIÊN ĐÁNH GIÁ</div><table>'
+    + dong('Điểm mạnh của học viên', p.diemManh)
+    + dong('Nội dung cần ưu tiên cải thiện', p.canCaiThien)
+    + dong('Khuyến nghị dành cho phụ huynh', p.khuyenNghi)
+    + '</table>'
+    + '<div class="sec">V. Ý KIẾN CỦA PHỤ HUYNH / NGƯỜI GIÁM HỘ</div>'
+    + '<div style="border:1px solid #000;padding:7px;">'
+    + oNhieu(Y_KIEN_PH, p.yKienPH)
+    + (p.lopKhac? '<br>Lớp đề nghị: '+esc(p.lopKhac) : '')
+    + '<br>Ý kiến khác: '+esc(p.yKienKhac||'')+'</div>'
+    + '<div class="ky"><div>GIÁO VIÊN ĐÁNH GIÁ<br>(Ký, ghi rõ họ tên)</div>'
+    + '<div>NHÂN VIÊN TƯ VẤN<br>(Ký, ghi rõ họ tên)</div>'
+    + '<div>PHỤ HUYNH / NGƯỜI GIÁM HỘ<br>(Ký, ghi rõ họ tên)</div></div>'
+    + '<div class="note">Lưu ý: Kết quả đánh giá xác định cấp độ học phù hợp tại thời điểm kiểm tra '
+    + 'và có thể được điều chỉnh theo tiến bộ thực tế của học viên trong quá trình học. '
+    + 'Phiếu được lập thành 02 bản: Trung tâm lưu 01 bản, phụ huynh giữ 01 bản.</div>'
+    + '</body></html>';
+  const win = window.open('', '_blank');
+  if(!win){ showToast('Trình duyệt chặn cửa sổ in, cho phép rồi thử lại'); return; }
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){ try{ win.print(); }catch(e){} }, 350);
+  logAct('In phiếu test '+p.soPhieu);
 }
 
 /* ================= CHỐT NHẬP HỌC ================= */
@@ -7284,6 +7659,8 @@ function formTaiKhoan(id){
   );
 }
 function ganQuyenMacDinh(){
+  const gw=$('mUGvWrap');
+  if(gw) gw.style.display = ($('mUViTri').value==='FLIC-GV-01') ? 'block' : 'none';
   const ma = $('mUViTri').value;
   const mac = QUYEN_MAC_DINH[ma]||[];
   PERM_LIST.forEach(function(p){ const el=$('q_'+p.key); if(el) el.checked = mac.indexOf(p.key)>=0; });
