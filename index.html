@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.10.0   |   Ngày: 19/08/2026
+ Phiên bản: V1.11.0   |   Ngày: 26/08/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -110,6 +110,10 @@
  V1.10.0 – 19/08/2026 – Nhập dữ liệu từ Excel.
    THỨ TỰ NHẬP BẮT BUỘC: giáo viên → lớp → học viên → ghi danh.
               md5 phần thân: 4ad7eaf42849f92de844713db6ef53e3
+ V1.10.1 – 26/08/2026 – Nhập ghi danh khớp theo ID theo dõi lớp.
+              md5 phần thân: d815322e6a9bd6c36b05286336cb4652
+ V1.11.0 – 26/08/2026 – Nhập Excel cho kỳ thi và thí sinh.
+              md5 phần thân: 01891304592fcda58c80e3b2afb16b50
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -342,10 +346,18 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.10.0';
+const PHIEN_BAN = 'V1.11.0';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.11.0', ngay:'26/08/2026', muc:[
+    {loai:'Mới', nd:'Nhập từ Excel thêm hai loại: kỳ thi và thí sinh dự thi. Thứ tự bắt buộc là kỳ thi trước, thí sinh sau.'},
+    {loai:'Mới', nd:'Nhập kỳ thi kiểm tra loại kỳ thi có hợp lệ không, ngày thi có thật không, và trùng với kỳ đã có chưa. Nhập thí sinh kiểm tra kỳ thi có tồn tại không, trùng tên trong cùng kỳ và cùng môn thì báo lỗi.'},
+    {loai:'Cải tiến', nd:'Thí sinh nhập từ Excel vẫn được kiểm tra cảnh báo nhầm loại giấy: sinh viên khoá mới vào kỳ cấp chứng nhận sẽ bị đánh dấu.'}
+  ]},
+  {v:'V1.10.1', ngay:'26/08/2026', muc:[
+    {loai:'Cải tiến', nd:'Nhập ghi danh nhận cả ID theo dõi lớp, ví dụ SM1.2-20260720, để phân biệt các lớp trùng mã. Nếu ghi mã ngắn mà có nhiều lớp cùng mã thì báo lỗi kèm ví dụ ID theo dõi cần dùng.'}
+  ]},
   {v:'V1.10.0', ngay:'19/08/2026', muc:[
     {loai:'Mới', nd:'Nhập dữ liệu hàng loạt từ Excel cho bốn loại: giáo viên, lớp học, học viên, ghi danh. Ở Hệ thống → Nhập dữ liệu.'},
     {loai:'Mới', nd:'Tải file mẫu có sẵn tiêu đề cột và dòng ví dụ. Đọc theo tên tiêu đề nên thứ tự cột không quan trọng, cột thừa bị bỏ qua.'},
@@ -6582,10 +6594,35 @@ const MAU_NHAP = {
       {key:'dongYHinhAnh', nhan:'Đã có văn bản đồng ý hình ảnh', batBuoc:false, vd:'x hoặc để trống'}
     ]
   },
+  kyThi: {
+    ten: 'Kỳ thi', collection: 'fcv_kythi',
+    cot: [
+      {key:'ten',        nhan:'Tên kỳ thi',   batBuoc:true,  vd:'Cambridge VN290 · 06/09/2026'},
+      {key:'loai',       nhan:'Loại kỳ thi',  batBuoc:true,  vd:'Cambridge VN290'},
+      {key:'khoa',       nhan:'Khoá',         batBuoc:false, vd:'Khóa 13'},
+      {key:'ngayThi',    nhan:'Ngày thi',     batBuoc:true,  vd:'06/09/2026'},
+      {key:'gioThi',     nhan:'Giờ thi',      batBuoc:false, vd:'08:00 – 11:00'},
+      {key:'phongThi',   nhan:'Phòng thi',    batBuoc:false, vd:'G202, G203'},
+      {key:'lePhi',      nhan:'Lệ phí mỗi thí sinh', batBuoc:false, vd:'600000'},
+      {key:'soLuongDuKien', nhan:'Số lượng dự kiến', batBuoc:false, vd:'120'}
+    ]
+  },
+  thiSinh: {
+    ten: 'Thí sinh dự thi', collection: 'fcv_thisinh',
+    cot: [
+      {key:'tenKyThi',   nhan:'Tên kỳ thi',   batBuoc:true,  vd:'Cambridge VN290 · 06/09/2026'},
+      {key:'hoTen',      nhan:'Họ và tên',    batBuoc:true,  vd:'Nguyễn Hồng Ngọc Hân'},
+      {key:'loaiTS',     nhan:'Đối tượng',    batBuoc:false, vd:'Thí sinh tự do hoặc Sinh viên DNTU'},
+      {key:'mssv',       nhan:'Mã số sinh viên', batBuoc:false, vd:'2200145'},
+      {key:'khoaSV',     nhan:'Khoá (năm)',   batBuoc:false, vd:'2025'},
+      {key:'monThi',     nhan:'Môn hoặc trình độ thi', batBuoc:false, vd:'FLYERS · trên giấy'},
+      {key:'daNopLePhi', nhan:'Đã nộp lệ phí', batBuoc:false, vd:'x hoặc để trống'}
+    ]
+  },
   ghiDanh: {
     ten: 'Ghi danh học viên vào lớp', collection: 'fcv_ghidanh',
     cot: [
-      {key:'maLop',      nhan:'Mã lớp',        batBuoc:true,  vd:'SM2.2'},
+      {key:'maLop',      nhan:'Mã lớp',        batBuoc:true,  vd:'SM2.2 hoặc SM2.2-20260630'},
       {key:'maHV',       nhan:'Mã học viên',   batBuoc:false, vd:'HV0001'},
       {key:'hoTen',      nhan:'Họ tên học viên', batBuoc:false, vd:'Lê Duy Khôi'},
       {key:'ngayVao',    nhan:'Ngày vào lớp',  batBuoc:false, vd:'để trống thì lấy ngày khai giảng'},
@@ -6607,6 +6644,7 @@ function viewNhapLieu(){
   let h = '<div class="card"><h3>Nhập dữ liệu từ Excel</h3>'
     + '<div class="small muted" style="line-height:1.7;">Nhập theo đúng thứ tự: '
     + '<b>Giáo viên → Lớp học → Học viên → Ghi danh</b>. '
+    + 'Riêng khảo thí: <b>Kỳ thi → Thí sinh</b>. '
     + 'Làm sai thứ tự thì lớp không gắn được giáo viên, ghi danh không tìm thấy học viên.</div>'
     + '<label>Loại dữ liệu</label><select id="nlLoai" onchange="doiLoaiNhap()">'
     + Object.keys(MAU_NHAP).map(function(k){
@@ -6800,10 +6838,53 @@ function phanTichFile(wb){
         if(!d.loi && data.ngaySinh && !chuanHoaNgay(data.ngaySinh))
           d.loi = 'Ngày sinh sai định dạng, dùng dd/mm/yyyy';
       }
-      else if(nlLoai==='ghiDanh'){
-        const lop = lopList.find(function(l){ return stripDia(l.maLop)===stripDia(data.maLop); });
-        if(!lop) d.loi = 'Không tìm thấy lớp "'+data.maLop+'". Nhập lớp trước.';
+      else if(nlLoai==='kyThi'){
+        const ngay = chuanHoaNgay(data.ngayThi);
+        if(!ngay) d.loi = 'Ngày thi sai định dạng, dùng dd/mm/yyyy';
         else {
+          const lt = LOAI_KY_THI.find(function(x){
+            return stripDia(x.ten)===stripDia(data.loai) || stripDia(x.ma)===stripDia(data.loai); });
+          if(!lt) d.loi = 'Loại kỳ thi không hợp lệ. Dùng một trong: '
+            + LOAI_KY_THI.map(function(x){ return x.ten; }).join(' / ');
+          else {
+            d.maLoai = lt.ma;
+            const k2 = stripDia(data.ten)+'|'+ngay;
+            if(kyThiList.some(function(k){ return stripDia(k.ten)===stripDia(data.ten) && k.ngayThi===ngay; }))
+              d.loi = 'Kỳ thi này đã có trong hệ thống';
+            else if(daThayMa[k2]) d.loi = 'Trùng với dòng '+daThayMa[k2];
+            else daThayMa[k2] = r;
+          }
+        }
+      }
+      else if(nlLoai==='thiSinh'){
+        const cung = kyThiList.filter(function(k){ return stripDia(k.ten)===stripDia(data.tenKyThi); });
+        if(!cung.length) d.loi = 'Không tìm thấy kỳ thi "'+data.tenKyThi+'". Nhập kỳ thi trước.';
+        else if(cung.length > 1) d.loi = 'Có '+cung.length+' kỳ thi trùng tên, cần đặt tên khác nhau';
+        else {
+          d.kyThiId = cung[0].id;
+          const k3 = cung[0].id+'|'+stripDia(data.hoTen)+'|'+stripDia(data.monThi||'');
+          if(thiSinhList.some(function(t){
+              return t.kyThiId===cung[0].id && stripDia(t.hoTen)===stripDia(data.hoTen)
+                  && stripDia(t.monThi||'')===stripDia(data.monThi||''); }))
+            d.loi = 'Thí sinh đã có trong kỳ thi này';
+          else if(daThayMa[k3]) d.loi = 'Trùng với dòng '+daThayMa[k3];
+          else daThayMa[k3] = r;
+        }
+      }
+      else if(nlLoai==='ghiDanh'){
+        /* Khớp theo ID theo dõi trước, vì có thể có nhiều lớp trùng mã */
+        const khoa = stripDia(data.maLop);
+        let lop = lopList.find(function(l){ return stripDia(l.idTheoDoi||'')===khoa; });
+        if(!lop){
+          const cungMa = lopList.filter(function(l){ return stripDia(l.maLop)===khoa; });
+          if(cungMa.length > 1){
+            d.loi = 'Có '+cungMa.length+' lớp cùng mã "'+data.maLop+'". Ghi rõ ID theo dõi, ví dụ '
+                  + cungMa[0].idTheoDoi;
+          }
+          else lop = cungMa[0];
+        }
+        if(!d.loi && !lop) d.loi = 'Không tìm thấy lớp "'+data.maLop+'". Nhập lớp trước.';
+        if(!d.loi && lop){
           let hv = null;
           if(data.maHV) hv = hocVienList.find(function(x){ return x.maHV===data.maHV; });
           if(!hv && data.hoTen){
@@ -6874,6 +6955,27 @@ function nạpDuLieu(){
         tenPH:v.tenPH||'', sdtPH:v.sdtPH||'', truong:v.truong||'', nguon:v.nguon||'',
         dongYHinhAnh: (dy==='x'||dy==='co'||dy==='1'||dy==='true'),
         ngayTao: todayISO(), ghiChu:'Nhập từ Excel'});
+    }
+    if(nlLoai==='kyThi'){
+      return db.collection('fcv_kythi').add({
+        ten:v.ten, loai:d.maLoai, khoa:v.khoa||'',
+        ngayThi:chuanHoaNgay(v.ngayThi), gioThi:v.gioThi||'', phongThi:v.phongThi||'',
+        lePhi:Number(v.lePhi)||0, soLuongDuKien:Number(v.soLuongDuKien)||0,
+        phuTrachUserId:currentUser.id, phuTrachTen:currentUser.hoTen,
+        trangThai:'Chuẩn bị', vanBan:{}, hoiDong:[],
+        buoc: BUOC_MAC_DINH.map(function(b,i){ return {so:i+1, gd:b.gd, ten:b.ten, xong:false, nguoi:'', ghiChu:''}; }),
+        ts: Date.now()});
+    }
+    if(nlLoai==='thiSinh'){
+      const nop = stripDia(v.daNopLePhi||'');
+      const doiTuong = stripDia(v.loaiTS||'').indexOf('dntu')>=0 ? 'DNTU' : 'TuDo';
+      const ky = kyThiList.find(function(k){ return k.id===d.kyThiId; });
+      return db.collection('fcv_thisinh').add({
+        kyThiId:d.kyThiId, hoTen:v.hoTen, loaiTS:doiTuong,
+        mssv:v.mssv||'', khoaSV:v.khoaSV||'', monThi:v.monThi||'',
+        daNopLePhi: (nop==='x'||nop==='co'||nop==='1'||nop==='true'),
+        canhBaoKhoa: (doiTuong==='DNTU' && ky)? canhBaoKhoaThiSinh(ky, v.khoaSV) : '',
+        ketQua:'Chưa có', ngayDangKy:todayISO()});
     }
     if(nlLoai==='ghiDanh'){
       const lop = lopList.find(function(l){ return l.id===d.lopId; });
