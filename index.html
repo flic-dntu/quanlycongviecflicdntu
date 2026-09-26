@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.14.1   |   Ngày: 26/09/2026
+ Phiên bản: V1.15.0   |   Ngày: 26/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -133,6 +133,9 @@
  V1.14.1 – 26/09/2026 – Cấp quyền quanLyLead cho GĐ, PGĐ và HV
    để thấy đủ mục con tab Tuyển sinh.
               md5 phần thân: 2a1b9a6532140af577615687289e6097
+ V1.15.0 – 26/09/2026 – Xoá phiếu test, đánh lại số phiếu trùng,
+   nhập khách thẳng vào lô dữ liệu.
+              md5 phần thân: 145e347d081def5bd989ec3ffdef265b
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -365,10 +368,17 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.14.1';
+const PHIEN_BAN = 'V1.15.0';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.15.0', ngay:'26/09/2026', muc:[
+    {loai:'Mới', nd:'Xoá được phiếu đánh giá năng lực chưa hoàn tất tư vấn, bấm hai lần xác nhận và ghi nhật ký. Phiếu đã tư vấn xong là hồ sơ nên không xoá được, cần bỏ thì huỷ kèm lý do.'},
+    {loai:'Mới', nd:'Tự phát hiện phiếu trùng số và có nút đánh lại số theo thứ tự ngày tạo, mỗi năm chạy lại từ 001. Dùng cho các phiếu tạo trước ngày 26/09/2026 khi lỗi cấp số còn tồn tại.'},
+    {loai:'Mới', nd:'Màn Lô dữ liệu có nút Thêm khách lẻ và Nhập từ Excel. Mỗi lô có nút Nhập khách riêng, bấm là sang màn nhập dữ liệu với lô chọn sẵn.'},
+    {loai:'Cải tiến', nd:'Nhập khách tiềm năng chọn lô ngay trên màn hình, áp cho cả file, không phải gõ tên lô vào Excel nữa. Khách nhập vào lấy luôn nguồn và ngày thu thập của lô. Bỏ chọn lô thì quay lại đọc theo cột Tên lô của từng dòng như cũ.'},
+    {loai:'Cải tiến', nd:'File mẫu tải từ một lô cụ thể thì điền sẵn tên lô, nguồn và ngày vào dòng ví dụ, tên file kèm tên lô.'}
+  ]},
   {v:'V1.14.1', ngay:'26/09/2026', muc:[
     {loai:'Sửa lỗi', nd:'Ban Giám đốc và Học vụ không có quyền quản lý khách tiềm năng nên vào tab Tuyển sinh không thấy năm mục Điều hành, Phễu tư vấn, Lô dữ liệu, Lọc trùng và Hiệu quả nguồn. Nay đã cấp đủ, không sinh vi phạm phân tách nhiệm vụ nào.'},
     {loai:'Cải tiến', nd:'Thêm phép thử tự động kiểm tra mọi vị trí đều thấy đúng mục con trong tab, và không vai nào vào tab mà thấy trống rỗng.'}
@@ -3716,7 +3726,15 @@ function viewLoDuLieu(){
     + '<div class="small muted" style="margin-top:4px;">Mỗi đợt thu thập là một lô, có tên, nguồn và ngày. '
     + 'Nhờ đó đo được sự kiện nào mang về bao nhiêu học viên.</div></div>'
     + (hasPerm('quanLyLead')? '<button class="btn btn-primary btn-sm" onclick="formLoMoi()">+ Tạo lô</button>':'')
-    + '</div></div>';
+    + '</div>'
+    + (hasPerm('quanLyLead')
+       ? '<div class="row wrap" style="margin-top:10px;gap:8px;">'
+         + '<button class="btn btn-block" onclick="formLead()">+ Thêm khách lẻ</button>'
+         + (hasPerm('nhapDuLieu')
+            ? '<button class="btn btn-block" onclick="nhapVaoLo(\'\')">📄 Nhập từ Excel</button>' : '')
+         + '</div>'
+       : '')
+    + '</div>';
 
   h += '<div class="card">';
   if(!los.length) h += emptyBox('📦','Chưa có khách tiềm năng nào');
@@ -4168,6 +4186,20 @@ function viewXepLop(){
        ? '<div class="card"><div class="row"><span class="small">Đang lọc: <b>'+esc(ptLoc)+'</b></span>'
          + '<button class="btn btn-sm" onclick="locPhieuTest(\'tatCa\')">Bỏ lọc</button></div></div>' : '');
 
+  const trungSo = laGv ? [] : phieuTestTrungSo();
+  if(trungSo.length){
+    h += '<div class="card" style="border-color:var(--warn);">'
+      + '<div class="small" style="color:#8a5a06;line-height:1.7;">'
+      + '<b>⚠️ ' + trungSo.length + ' số phiếu đang bị trùng:</b> '
+      + esc(trungSo.map(function(x){ return x.soPhieu + ' (' + x.ds.length + ' phiếu)'; }).join(' · '))
+      + '<br>Phiếu tạo trước ngày 26/09/2026 bị lỗi cấp số. Xoá phiếu tạo thử, '
+      + 'hoặc đánh lại số nếu là phiếu thật.</div>'
+      + (hasPerm('taoPhieuTest')
+         ? '<button class="btn btn-sm btn-primary" style="margin-top:9px;" onclick="danhLaiSoPhieuTest()">Đánh lại số phiếu</button>'
+         : '')
+      + '</div>';
+  }
+
   h += '<div class="card">';
   if(!ds.length) h += emptyBox('📝', laGv? 'Chưa có phiếu test nào được giao cho bạn' : 'Chưa có phiếu test nào');
   else h += ds.map(function(p){
@@ -4184,6 +4216,7 @@ function viewXepLop(){
       + '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">'
       + '<button class="btn btn-sm btn-primary" onclick="moXepLop(\''+p.id+'\')">Mở phiếu</button>'
       + (p.trangThai==='Đã tư vấn'? '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">In phiếu</button>' : '')
+      + (xoaDuocPhieuTest(p)? '<button class="btn btn-sm btn-danger" onclick="xoaPhieuTest(\''+p.id+'\',this)">Xoá</button>' : '')
       + '</div></div>'
       + '<div style="text-align:right;flex-shrink:0;">'+badge(ttMau[p.trangThai]||'gray', p.trangThai||'Mới')+'</div></div>';
   }).join('');
@@ -4191,6 +4224,73 @@ function viewXepLop(){
   return h;
 }
 function moXepLop(id){ xlLeadId = id; render(); }
+
+/* Phiếu đã tư vấn xong là hồ sơ, không xoá. Chỉ xoá phiếu chưa hoàn tất. */
+function xoaDuocPhieuTest(p){
+  if(!p) return false;
+  if(p.trangThai === 'Đã tư vấn') return false;
+  if(!hasPerm('taoPhieuTest')) return false;
+  return true;
+}
+function xoaPhieuTest(id, btn){
+  const p = phieuTestList.find(function(x){ return x.id===id; });
+  if(!p) return;
+  if(!xoaDuocPhieuTest(p)){
+    showToast(p.trangThai === 'Đã tư vấn'
+      ? 'Phiếu đã tư vấn xong là hồ sơ, không xoá được'
+      : 'Bạn không có quyền xoá phiếu'); 
+    return;
+  }
+  if(!requestConfirm('xpt'+id, btn, '⚠️ Bấm lần nữa để xoá phiếu '+p.soPhieu)) return;
+  db.collection('fcv_phieutest').doc(id).delete().then(function(){
+    if(xlLeadId === id) xlLeadId = null;
+    showToast('Đã xoá phiếu '+p.soPhieu+' của '+p.hoTen);
+    logAct('Xoá phiếu đánh giá năng lực '+p.soPhieu+' · '+p.hoTen);
+    render();
+  }).catch(fsErr);
+}
+
+/* Phát hiện phiếu trùng số, đánh lại theo thứ tự ngày tạo */
+function phieuTestTrungSo(){
+  const dem = {};
+  phieuTestList.forEach(function(p){
+    const sp = p.soPhieu || '';
+    if(!sp) return;
+    (dem[sp] = dem[sp] || []).push(p);
+  });
+  return Object.keys(dem).filter(function(k){ return dem[k].length > 1; })
+    .map(function(k){ return {soPhieu: k, ds: dem[k]}; });
+}
+function danhLaiSoPhieuTest(){
+  if(!hasPerm('taoPhieuTest')){ showToast('Bạn không có quyền'); return; }
+  const trung = phieuTestTrungSo();
+  if(!trung.length){ showToast('Không có phiếu nào trùng số'); return; }
+  const soPhieuTrung = trung.reduce(function(s, x){ return s + x.ds.length; }, 0);
+  if(!confirm('Đánh lại số cho toàn bộ phiếu theo thứ tự ngày tạo?\n\n'
+    + trung.length + ' số đang bị trùng, ảnh hưởng ' + soPhieuTrung + ' phiếu.\n'
+    + 'Số phiếu sẽ chạy lại từ 001 theo năm. Nội dung phiếu giữ nguyên.')) return;
+
+  /* Sắp theo ngày tạo, rồi theo thời điểm lưu, để thứ tự ổn định */
+  const ds = phieuTestList.slice().sort(function(a, b){
+    const na = (a.ngayTao || a.ngayKiemTra || ''), nb = (b.ngayTao || b.ngayKiemTra || '');
+    if(na !== nb) return na.localeCompare(nb);
+    return String(a.id).localeCompare(String(b.id));
+  });
+  const demNam = {};
+  const viec = [];
+  ds.forEach(function(p){
+    const nam = (p.ngayTao || p.ngayKiemTra || todayISO()).slice(0, 4);
+    demNam[nam] = (demNam[nam] || 0) + 1;
+    const moi = String(demNam[nam]).padStart(3, '0') + '/' + nam;
+    if(moi !== p.soPhieu)
+      viec.push(db.collection('fcv_phieutest').doc(p.id).update({soPhieu: moi}));
+  });
+  if(!viec.length){ showToast('Số phiếu đã đúng thứ tự'); return; }
+  Promise.all(viec).then(function(){
+    showToast('✅ Đã đánh lại số cho ' + viec.length + ' phiếu');
+    logAct('Đánh lại số phiếu đánh giá năng lực: ' + viec.length + ' phiếu');
+  }).catch(fsErr);
+}
 function dongXepLop(){ xlLeadId = null; render(); }
 
 /* --- Tạo phiếu --- */
@@ -4290,6 +4390,7 @@ function viewXepLopChiTiet(){
     + '</div>'
     + '<div style="display:flex;gap:6px;">'
     + (p.trangThai==='Đã tư vấn'? '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">In phiếu lưu hồ sơ</button>' : '')
+    + (xoaDuocPhieuTest(p)? '<button class="btn btn-sm btn-danger" onclick="xoaPhieuTest(\''+p.id+'\',this)">Xoá phiếu</button>' : '')
     + '<button class="btn btn-sm" onclick="dongXepLop()">Đóng</button></div></div></div>';
 
   /* Tiến độ 5 bước */
@@ -8747,9 +8848,18 @@ const MAU_NHAP = {
   }
 };
 
-let nlLoai = 'giaoVien', nlKetQua = null, nlDangDoc = false;
+let nlLoai = 'giaoVien', nlKetQua = null, nlDangDoc = false, nlLoId = '';
 
 function doiLoaiNhap(){ nlLoai = $('nlLoai').value; nlKetQua = null; render(); }
+function doiLoNhap(){ nlLoId = $('nlLo').value; nlKetQua = null; render(); }
+/* Mở màn nhập dữ liệu với lô chọn sẵn */
+function nhapVaoLo(loId){
+  if(!hasPerm('nhapDuLieu')){ showToast('Bạn không có quyền nhập dữ liệu'); return; }
+  nlLoai = 'khachTiemNang';
+  nlLoId = loId || '';
+  nlKetQua = null;
+  switchSection('heThong', 'nhapLieu');
+}
 
 function viewNhapLieu(){
   if(!hasPerm('nhapDuLieu'))
@@ -8764,7 +8874,18 @@ function viewNhapLieu(){
     + '<label>Loại dữ liệu</label><select id="nlLoai" onchange="doiLoaiNhap()">'
     + Object.keys(MAU_NHAP).map(function(k){
         return '<option value="'+k+'" '+(nlLoai===k?'selected':'')+'>'+esc(MAU_NHAP[k].ten)+'</option>'; }).join('')
-    + '</select></div>';
+    + '</select>'
+    + (nlLoai === 'khachTiemNang'
+       ? '<label>Gắn cả file vào lô</label>'
+         + '<select id="nlLo" onchange="doiLoNhap()">'
+         + '<option value="">— theo cột Tên lô trong file —</option>'
+         + loDuLieuList.map(function(x){
+             return '<option value="'+x.id+'" '+(nlLoId===x.id?'selected':'')+'>'+esc(x.ten)+'</option>'; }).join('')
+         + '</select>'
+         + '<div class="small muted">Chọn lô ở đây thì mọi dòng trong file vào lô đó, '
+         + 'không cần gõ tên lô vào Excel. Để trống thì lấy theo cột Tên lô của từng dòng.</div>'
+       : '')
+    + '</div>';
 
   h += '<div class="card"><h3>Bước 1 · Tải file mẫu</h3>'
     + '<div class="small muted" style="margin-bottom:8px;">File mẫu có sẵn tiêu đề cột và một dòng ví dụ. '
@@ -8777,6 +8898,15 @@ function viewNhapLieu(){
     + '</tbody></table></div>'
     + '<div class="small muted" style="margin-top:8px;">Thứ tự cột không quan trọng, hệ thống đọc theo tên tiêu đề. '
     + 'Cột thừa sẽ bị bỏ qua.</div></div>';
+
+  if(nlLoai === 'khachTiemNang' && nlLoId){
+    const loDang = loDuLieuList.find(function(x){ return x.id === nlLoId; });
+    if(loDang)
+      h += '<div class="card" style="border-color:var(--info);"><div class="small">'
+        + '<b>Đang nhập vào lô: ' + esc(loDang.ten) + '</b><br>'
+        + '<span class="muted">Mọi khách trong file sẽ gắn lô này, nguồn '
+        + esc(loDang.nguon || 'chưa ghi') + ', ngày ' + fmtDate(loDang.ngayThuThap) + '.</span></div></div>';
+  }
 
   h += '<div class="card"><h3>Bước 2 · Chọn file và xem trước</h3>'
     + '<input type="file" id="nlFile" accept=".xlsx,.xls" onchange="docFileNhap()">'
@@ -8827,13 +8957,22 @@ function taiFileMau(){
   const ws = wb.addWorksheet(m.ten.slice(0,28));
   ws.addRow(m.cot.map(function(c){ return c.nhan; }));
   ws.getRow(1).font = {bold:true};
-  ws.addRow(m.cot.map(function(c){ return c.vd; }));
+  /* Nếu đang chọn lô thì điền sẵn tên lô và ngày vào dòng ví dụ */
+  const loMau = (nlLoai === 'khachTiemNang' && nlLoId)
+    ? loDuLieuList.find(function(x){ return x.id === nlLoId; }) : null;
+  ws.addRow(m.cot.map(function(c){
+    if(loMau && c.key === 'loTen') return loMau.ten;
+    if(loMau && c.key === 'ngayThuThap') return fmtDate(loMau.ngayThuThap);
+    if(loMau && c.key === 'nguon') return loMau.nguon || c.vd;
+    return c.vd;
+  }));
   m.cot.forEach(function(c,i){ ws.getColumn(i+1).width = Math.max(16, c.nhan.length+4); });
   wb.xlsx.writeBuffer().then(function(buf){
     const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'FLIC-Mau-nhap-'+nlLoai+'.xlsx';
+    a.download = 'FLIC-Mau-nhap-'+nlLoai
+      + (loMau ? '-'+stripDia(loMau.ten).replace(/[^a-z0-9]+/g,'-').slice(0,30) : '')+'.xlsx';
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
     showToast('📄 Đã tải file mẫu');
@@ -9092,15 +9231,20 @@ function nạpDuLieu(){
       let ns = chuanHoaNgay(v.ngaySinh);
       const nam = String(v.namSinh||'').trim();
       const pt = usersList.find(function(u){ return stripDia(u.hoTen)===stripDia(v.phuTrach||''); });
-      const loTen = (v.loTen||'').trim();
+      /* Lô chọn sẵn trên màn hình thắng cột trong file, để không sợ gõ sai tên */
+      const loChon = nlLoId ? loDuLieuList.find(function(x){ return x.id === nlLoId; }) : null;
+      const loTen = loChon ? loChon.ten : (v.loTen||'').trim();
+      const loId = loChon ? loChon.id
+        : (loTen ? 'lo-'+stripDia(loTen).replace(/[^a-z0-9]+/g,'-') : '');
       return db.collection('fcv_lead').add({
         nhapHangLoat: true,
         hoTen:v.hoTen, ngaySinh:ns, namSinh: nam,
         khoi:v.khoi||'', truong:v.truong||'',
         tenPH:v.tenPH||'', sdtPH: chuanSdt(v.sdtPH) || (v.sdtPH||''),
-        nguon:v.nguon||'Khác',
-        loId: loTen? 'lo-'+stripDia(loTen).replace(/[^a-z0-9]+/g,'-') : '',
-        loTen: loTen, ngayThuThap: chuanHoaNgay(v.ngayThuThap) || todayISO(),
+        nguon: (loChon && loChon.nguon) ? loChon.nguon : (v.nguon||'Khác'),
+        loId: loId, loTen: loTen,
+        ngayThuThap: chuanHoaNgay(v.ngayThuThap)
+          || (loChon ? loChon.ngayThuThap : '') || todayISO(),
         phuTrachUserId: pt? pt.id : '', phuTrachTen: pt? pt.hoTen : '',
         hanLienHe: chuanHoaNgay(v.hanLienHe),
         ghiChu: v.ghiChu||'',
