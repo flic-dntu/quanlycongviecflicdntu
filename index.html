@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.14.0   |   Ngày: 26/09/2026
+ Phiên bản: V1.14.1   |   Ngày: 26/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -130,6 +130,9 @@
    TƯƠNG THÍCH NGƯỢC: mọi trường mới đều có giá trị mặc định khi thiếu,
    dữ liệu nhập bằng V1.10–V1.13 đọc đúng, đã kiểm 52 phép thử riêng.
               md5 phần thân: fa3307f23d273ffd4bce8b277a878934
+ V1.14.1 – 26/09/2026 – Cấp quyền quanLyLead cho GĐ, PGĐ và HV
+   để thấy đủ mục con tab Tuyển sinh.
+              md5 phần thân: 2a1b9a6532140af577615687289e6097
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -362,10 +365,14 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.14.0';
+const PHIEN_BAN = 'V1.14.1';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.14.1', ngay:'26/09/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Ban Giám đốc và Học vụ không có quyền quản lý khách tiềm năng nên vào tab Tuyển sinh không thấy năm mục Điều hành, Phễu tư vấn, Lô dữ liệu, Lọc trùng và Hiệu quả nguồn. Nay đã cấp đủ, không sinh vi phạm phân tách nhiệm vụ nào.'},
+    {loai:'Cải tiến', nd:'Thêm phép thử tự động kiểm tra mọi vị trí đều thấy đúng mục con trong tab, và không vai nào vào tab mà thấy trống rỗng.'}
+  ]},
   {v:'V1.14.0', ngay:'26/09/2026', muc:[
     {loai:'Sửa lỗi', nd:'Điểm danh: đổi ngày trên buổi đã lưu tạo thêm một buổi mới nên lớp bị dư buổi. Nay hệ thống hỏi rõ là sửa ngày của buổi đang mở hay mở buổi khác.'},
     {loai:'Sửa lỗi', nd:'Số phiếu đánh giá năng lực luôn ra 001 vì biểu thức tìm số bị thừa dấu gạch chéo nên không bao giờ khớp. Nay cấp số đúng thứ tự, hai phiếu tạo liền nhau không trùng.'},
@@ -621,10 +628,10 @@ const CAP_XUNG_DOT = [
 
 /* Quyền mặc định theo vị trí */
 const QUYEN_MAC_DINH = {
-  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC'],
-  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC'],
+  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead'],
+  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead'],
   'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe'],
-  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest'],
+  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest','quanLyLead'],
   'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest'],
   'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT'],
   'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn'],
