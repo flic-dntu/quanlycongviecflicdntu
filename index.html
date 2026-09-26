@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.15.0   |   Ngày: 26/09/2026
+ Phiên bản: V1.15.1   |   Ngày: 26/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -136,6 +136,10 @@
  V1.15.0 – 26/09/2026 – Xoá phiếu test, đánh lại số phiếu trùng,
    nhập khách thẳng vào lô dữ liệu.
               md5 phần thân: 145e347d081def5bd989ec3ffdef265b
+ V1.15.1 – 26/09/2026 – Lô rỗng vẫn hiện, nút Nhập khách trên
+   từng lô. LƯU Ý: danh sách lô dựng từ CẢ loDuLieuList lẫn
+   leadList, đừng chỉ dựng từ một nguồn.
+              md5 phần thân: 35ac73cb84c326da6276aa826a3e1189
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -368,10 +372,15 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.15.0';
+const PHIEN_BAN = 'V1.15.1';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.15.1', ngay:'26/09/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Lô dữ liệu mới tạo mà chưa có khách nào thì không hiện ra trong danh sách, vì danh sách chỉ dựng từ khách chứ không từ lô. Tạo lô xong là lô biến mất, không có chỗ để nhập khách vào. Nay lô hiện ngay sau khi tạo, kèm nhắc chưa có khách và nút nhập khách.'},
+    {loai:'Sửa lỗi', nd:'Nút Nhập khách trên từng lô ở bản V1.15.0 không hiện với bất kỳ vị trí nào do đoạn mã thêm nút không được ghi vào file. Nay đã có, và bổ sung phép thử kiểm tra mọi vị trí tuyển sinh đều thấy nút.'},
+    {loai:'Cải tiến', nd:'Lô chưa có khách thì không hiện 0% chuyển đổi gây hiểu nhầm là làm kém, mà ghi rõ là chưa có số.'}
+  ]},
   {v:'V1.15.0', ngay:'26/09/2026', muc:[
     {loai:'Mới', nd:'Xoá được phiếu đánh giá năng lực chưa hoàn tất tư vấn, bấm hai lần xác nhận và ghi nhật ký. Phiếu đã tư vấn xong là hồ sơ nên không xoá được, cần bỏ thì huỷ kèm lý do.'},
     {loai:'Mới', nd:'Tự phát hiện phiếu trùng số và có nút đánh lại số theo thứ tự ngày tạo, mỗi năm chạy lại từ 001. Dùng cho các phiếu tạo trước ngày 26/09/2026 khi lỗi cấp số còn tồn tại.'},
@@ -3712,6 +3721,11 @@ function gopTatCaTrung(){
 /* --- Màn lô dữ liệu --- */
 function viewLoDuLieu(){
   const map = {};
+  /* Dựng trước từ danh sách lô đã tạo, để lô mới chưa có khách vẫn hiện ra */
+  loDuLieuList.forEach(function(x){
+    map[x.id] = {id: x.id, ten: x.ten, nguon: x.nguon || '',
+                 ngay: x.ngayThuThap || '', ds: []};
+  });
   leadList.forEach(function(l){
     const k = l.loId || '(nhập lẻ)';
     if(!map[k]) map[k] = {id: l.loId || '', ten: l.loTen || 'Nhập lẻ từng người',
@@ -3737,7 +3751,7 @@ function viewLoDuLieu(){
     + '</div>';
 
   h += '<div class="card">';
-  if(!los.length) h += emptyBox('📦','Chưa có khách tiềm năng nào');
+  if(!los.length) h += emptyBox('📦','Chưa có lô nào. Bấm Tạo lô để bắt đầu một đợt thu thập.');
   else h += los.map(function(lo){
     const tk = {tong: lo.ds.length,
       nhapHoc: lo.ds.filter(function(l){ return l.trangThai === 'Đã nhập học'; }).length,
@@ -3748,15 +3762,27 @@ function viewLoDuLieu(){
     return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
       + '<div><b>'+esc(lo.ten)+'</b></div>'
       + '<div class="small muted">'+(lo.ngay? fmtDate(lo.ngay)+' · ':'')+esc(lo.nguon||'chưa ghi nguồn')+'</div>'
-      + '<div class="small muted">'+tk.tong+' khách · đã liên hệ '+xong+' · nhập học '+tk.nhapHoc
-      + ' · không chuyển đổi '+tk.khong+'</div>'
-      + '<div style="margin-top:5px;background:var(--bg);border-radius:3px;height:7px;overflow:hidden;">'
-      + '<div style="width:'+Math.round(xong/Math.max(1,tk.tong)*100)+'%;height:7px;background:var(--primary);"></div></div>'
-      + '<div class="small muted" style="margin-top:3px;">Đã xử lý '+fmtNum(xong/Math.max(1,tk.tong)*100,0)+'%</div>'
+      + (tk.tong
+         ? '<div class="small muted">'+tk.tong+' khách · đã liên hệ '+xong+' · nhập học '+tk.nhapHoc
+           + ' · không chuyển đổi '+tk.khong+'</div>'
+         : '<div class="small" style="color:var(--warn);">Lô mới tạo, chưa có khách nào. '
+           + 'Bấm Nhập khách để đưa danh sách vào.</div>')
+      + (tk.tong
+         ? '<div style="margin-top:5px;background:var(--bg);border-radius:3px;height:7px;overflow:hidden;">'
+           + '<div style="width:'+Math.round(xong/Math.max(1,tk.tong)*100)+'%;height:7px;background:var(--primary);"></div></div>'
+           + '<div class="small muted" style="margin-top:3px;">Đã xử lý '+fmtNum(xong/Math.max(1,tk.tong)*100,0)+'%</div>'
+         : '')
       + '</div><div style="text-align:right;flex-shrink:0;">'
-      + '<div style="font-size:17px;font-weight:700;color:'+(tyLe>=15?'var(--ok)':(tyLe<5?'var(--warn)':'inherit'))+';">'
-      + fmtNum(tyLe,1)+'%</div><div class="small muted">chuyển đổi</div>'
-      + (lo.id && hasPerm('quanLyLead')? '<div style="margin-top:6px;"><button class="btn btn-sm" onclick="formSuaLo(\'' + lo.id + '\')">Sửa lô</button></div>':'')
+      + (tk.tong
+         ? '<div style="font-size:17px;font-weight:700;color:'+(tyLe>=15?'var(--ok)':(tyLe<5?'var(--warn)':'inherit'))+';">'
+           + fmtNum(tyLe,1)+'%</div><div class="small muted">chuyển đổi</div>'
+         : '<div class="small muted">chưa có số</div>')
+      + (lo.id && hasPerm('quanLyLead')
+         ? '<div style="margin-top:6px;display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap;">'
+           + (hasPerm('nhapDuLieu')
+              ? '<button class="btn btn-sm btn-primary" onclick="nhapVaoLo(\'' + lo.id + '\')">Nhập khách</button>' : '')
+           + '<button class="btn btn-sm" onclick="formSuaLo(\'' + lo.id + '\')">Sửa lô</button></div>'
+         : '')
       + '</div></div>';
   }).join('');
   h += '</div>';
