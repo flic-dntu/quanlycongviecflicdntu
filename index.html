@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.17.1   |   Ngày: 29/09/2026
+ Phiên bản: V1.18.0   |   Ngày: 29/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -160,6 +160,9 @@
    có nút Xem danh sách và Xoá ngay trên dòng.
    Màn gộp dùng biến ktnCon và giaCon để nhớ màn con đang xem.
               md5 phần thân: 7e12570a2b6f978926c4c101d28299ec
+ V1.18.0 – 29/09/2026 – Công cụ dọn khách tiềm năng và đợt.
+   Chỉ xoá fcv_lead và fcv_lodulieu, không đụng collection khác.
+              md5 phần thân: 46122e07baa16d43e72b4985fe889753
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -392,10 +395,13 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.17.1';
+const PHIEN_BAN = 'V1.18.0';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.18.0', ngay:'29/09/2026', muc:[
+    {loai:'Mới', nd:'Công cụ Dọn khách tiềm năng trong Hệ thống, chỉ Phó Giám đốc thấy. Xoá toàn bộ khách tiềm năng và đợt tuyển sinh để nhập lại từ đầu, giữ nguyên học viên, lớp, điểm danh, học phí, khảo thí và mọi phần khác. Màn hiện rõ bảng sẽ xoá và bảng giữ nguyên kèm số bản ghi, cảnh báo những liên kết sẽ mất, bắt gõ đúng chữ XOA KHACH mới mở nút, xoá theo lô 20 bản ghi và hiện tiến độ, ghi nhật ký.'}
+  ]},
   {v:'V1.17.1', ngay:'29/09/2026', muc:[
     {loai:'Sửa lỗi', nd:'Bảng đợt tuyển sinh không có dấu hiệu nào cho biết bấm vào dòng sẽ mở danh sách khách, và nút xoá đợt nằm sâu trong màn chi tiết nên đợt trùng không xoá được. Nay mỗi dòng có cột Thao tác với ba nút rõ ràng: Xem danh sách, Nhập, và Xoá màu đỏ cho đợt chưa có khách.'},
     {loai:'Cải tiến', nd:'Tab Tuyển sinh gom từ mười một mục xuống năm cho đỡ rối: Điều hành, Khách tiềm năng, Học viên, Kiểm tra đầu vào, Giá và kịch bản.'},
@@ -1282,7 +1288,7 @@ const SECTIONS = {
   taiChinh: [{k:'hocPhi',ten:'Học phí học viên'},{k:'doiSoat',ten:'Đối soát hai bên'},{k:'congNo',ten:'Công nợ'},{k:'hoanPhi',ten:'Hoàn phí và bảo lưu'},{k:'hoaDon',ten:'Hoá đơn chờ xuất'}],
   congViec: [{k:'choDuyet',ten:'Chờ tôi duyệt'},{k:'cuaToi',ten:'Việc của tôi'},{k:'tatCa',ten:'Tất cả'},{k:'quyTrinh',ten:'16 quy trình'}],
   inAn:     [{k:'phieu',ten:'Phiếu in'},{k:'congNo',ten:'Công nợ nhà in'},{k:'nhaIn',ten:'Nhà in'}],
-  heThong:  [{k:'toChuc',ten:'Sơ đồ tổ chức',can:'quanLyTaiKhoan'},{k:'taiKhoan',ten:'Tài khoản',can:'quanLyTaiKhoan'},{k:'thamSo',ten:'Tham số',can:'quanLyTaiKhoan'},{k:'nhapLieu',ten:'Nhập dữ liệu',can:'nhapDuLieu'},{k:'nhatKy',ten:'Nhật ký',can:'quanLyTaiKhoan'},{k:'banGiao',ten:'Nhật ký bàn giao'}]
+  heThong:  [{k:'toChuc',ten:'Sơ đồ tổ chức',can:'quanLyTaiKhoan'},{k:'taiKhoan',ten:'Tài khoản',can:'quanLyTaiKhoan'},{k:'thamSo',ten:'Tham số',can:'quanLyTaiKhoan'},{k:'nhapLieu',ten:'Nhập dữ liệu',can:'nhapDuLieu'},{k:'donKhach',ten:'Dọn khách tiềm năng',can:'suaThamSo'},{k:'nhatKy',ten:'Nhật ký',can:'quanLyTaiKhoan'},{k:'banGiao',ten:'Nhật ký bàn giao'}]
 };
 
 function switchTab(tab){
@@ -12178,6 +12184,121 @@ function nhapVaoLo(loId){
   switchSection('heThong', 'nhapLieu');
 }
 
+/* ================= DỌN KHÁCH TIỀM NĂNG ================= */
+/* Xoá toàn bộ khách tiềm năng và đợt để nhập lại từ đầu.
+   Không đụng tới học viên, lớp, điểm danh, khảo thí, tài chính. */
+
+function viewDonKhach(){
+  if(!hasPerm('suaThamSo'))
+    return '<div class="card">' + emptyBox('🔒', 'Chỉ Phó Giám đốc dùng được công cụ này') + '</div>';
+  const soKhach = leadList.length;
+  const soDot = loDuLieuList.length;
+  const daChot = leadList.filter(function(l){ return l.trangThai === 'Đã nhập học'; }).length;
+  const coTest = phieuTestList.filter(function(p){ return p.leadId; }).length;
+  const coBaoGia = baoGiaList.filter(function(b){ return b.leadId; }).length;
+
+  let h = '<div class="card" style="border-color:var(--danger);">'
+    + '<h3 style="color:var(--danger);">Dọn khách tiềm năng</h3>'
+    + '<div class="small muted" style="line-height:1.7;">Xoá toàn bộ khách tiềm năng và đợt tuyển sinh '
+    + 'để nhập lại từ đầu cho sạch. <b>Không đụng tới</b> học viên, lớp, điểm danh, học phí, '
+    + 'khảo thí và các phần khác.</div></div>';
+
+  h += '<div class="card"><h3>Sẽ xoá</h3>'
+    + '<div class="tbl-wrap"><table><thead><tr><th>Nhóm dữ liệu</th>'
+    + '<th style="text-align:right;">Số bản ghi</th></tr></thead><tbody>'
+    + '<tr><td>Khách tiềm năng</td><td style="text-align:right;font-weight:700;">' + soKhach + '</td></tr>'
+    + '<tr><td>Đợt tuyển sinh</td><td style="text-align:right;font-weight:700;">' + soDot + '</td></tr>'
+    + '</tbody></table></div></div>';
+
+  h += '<div class="card"><h3>Giữ nguyên</h3>'
+    + '<div class="tbl-wrap"><table><thead><tr><th>Nhóm dữ liệu</th>'
+    + '<th style="text-align:right;">Số bản ghi</th></tr></thead><tbody>'
+    + [['Học viên', hocVienList.length], ['Lớp học', lopList.length],
+       ['Lượt ghi danh', ghiDanhList.length], ['Buổi điểm danh', buoiHocList.length],
+       ['Kỳ thi', kyThiList.length], ['Thí sinh', thiSinhList.length],
+       ['Phiếu đánh giá năng lực', phieuTestList.length], ['Báo giá', baoGiaList.length]]
+      .map(function(x){
+        return '<tr><td>' + x[0] + '</td><td style="text-align:right;">' + x[1] + '</td></tr>'; }).join('')
+    + '</tbody></table></div></div>';
+
+  /* Cảnh báo những thứ sẽ mất liên kết */
+  const canhBao = [];
+  if(daChot) canhBao.push(daChot + ' khách đã nhập học sẽ bị xoá. Hồ sơ học viên của các em vẫn còn, '
+    + 'nhưng màn Học viên sẽ không còn biết ai chốt, từ nguồn nào, thuộc đợt nào.');
+  if(coTest) canhBao.push(coTest + ' phiếu đánh giá năng lực đang gắn với khách. '
+    + 'Phiếu vẫn còn nhưng mất liên kết ngược về khách.');
+  if(coBaoGia) canhBao.push(coBaoGia + ' báo giá đang gắn với khách, sẽ mất liên kết tương tự.');
+  if(canhBao.length){
+    h += '<div class="card" style="border-color:var(--warn);">'
+      + '<div class="small" style="color:#8a5a06;line-height:1.7;"><b>⚠️ Cần biết trước khi xoá</b><br>'
+      + canhBao.map(function(x){ return '· ' + esc(x); }).join('<br>') + '</div></div>';
+  }
+
+  h += '<div class="card" style="border-color:var(--danger);">'
+    + '<div class="small" style="color:var(--danger);line-height:1.7;">'
+    + '<b>Xoá rồi không lấy lại được.</b> Firestore không có thùng rác. '
+    + 'Chuẩn bị sẵn file Excel để nhập lại trước khi bấm.</div>'
+    + '<label>Gõ đúng dòng chữ <b>XOA KHACH</b> để xác nhận</label>'
+    + '<input id="dkXacNhan" placeholder="XOA KHACH" oninput="kiemTraXacNhanDon()">'
+    + '<button class="btn btn-danger btn-block" id="dkNut" style="margin-top:10px;" disabled '
+    + 'onclick="chayDonKhach()">Xoá ' + soKhach + ' khách và ' + soDot + ' đợt</button>'
+    + '<div id="dkTienDo" class="small muted" style="margin-top:8px;"></div></div>';
+  return h;
+}
+function kiemTraXacNhanDon(){
+  const el = $('dkXacNhan'), nut = $('dkNut');
+  if(!el || !nut) return;
+  nut.disabled = (el.value.trim().toUpperCase() !== 'XOA KHACH');
+}
+let dangDon = false;
+function chayDonKhach(){
+  if(!hasPerm('suaThamSo')){ showToast('Bạn không có quyền'); return; }
+  if(dangDon){ showToast('Đang xoá, chờ chạy xong'); return; }
+  const el = $('dkXacNhan');
+  if(!el || el.value.trim().toUpperCase() !== 'XOA KHACH'){
+    showToast('Gõ đúng XOA KHACH để xác nhận'); return;
+  }
+  const soKhach = leadList.length, soDot = loDuLieuList.length;
+  if(!soKhach && !soDot){ showToast('Không có gì để xoá'); return; }
+  if(!confirm('Xoá ' + soKhach + ' khách tiềm năng và ' + soDot + ' đợt tuyển sinh?\n\n'
+    + 'Không lấy lại được. Học viên, lớp, điểm danh, khảo thí và tài chính giữ nguyên.')) return;
+
+  dangDon = true;
+  const nut = $('dkNut');
+  if(nut){ nut.disabled = true; nut.textContent = 'Đang xoá…'; }
+  const tienDo = $('dkTienDo');
+  const ids = leadList.map(function(l){ return l.id; });
+  const idDot = loDuLieuList.map(function(d){ return d.id; });
+  let xong = 0;
+
+  /* Xoá theo lô 20 bản ghi để không nghẽn đường truyền */
+  const xoaLo = function(coll, ds, i){
+    if(i >= ds.length) return Promise.resolve();
+    const lo = ds.slice(i, i + 20);
+    return Promise.all(lo.map(function(id){
+      return db.collection(coll).doc(id).delete().catch(function(){ return null; });
+    })).then(function(){
+      xong += lo.length;
+      if(tienDo) tienDo.textContent = 'Đã xoá ' + xong + '/' + (ids.length + idDot.length) + ' bản ghi…';
+      return xoaLo(coll, ds, i + 20);
+    });
+  };
+  xoaLo('fcv_lead', ids, 0)
+    .then(function(){ return xoaLo('fcv_lodulieu', idDot, 0); })
+    .then(function(){
+      dangDon = false;
+      if(tienDo) tienDo.textContent = '';
+      showToast('✅ Đã xoá ' + soKhach + ' khách và ' + soDot + ' đợt');
+      logAct('Dọn dữ liệu: xoá ' + soKhach + ' khách tiềm năng và ' + soDot + ' đợt tuyển sinh');
+      render();
+    })
+    .catch(function(e){
+      dangDon = false;
+      if(nut){ nut.disabled = false; nut.textContent = 'Thử lại'; }
+      fsErr(e);
+    });
+}
+
 function viewNhapLieu(){
   if(!hasPerm('nhapDuLieu'))
     return '<div class="card">'+emptyBox('🔒','Bạn không có quyền nhập dữ liệu')+'</div>';
@@ -12631,6 +12752,7 @@ function viewHeThong(){
   if(sec==='taiKhoan')return viewTaiKhoan();
   if(sec==='thamSo')  return viewThamSo();
   if(sec==='nhapLieu')return viewNhapLieu();
+  if(sec==='donKhach')return viewDonKhach();
   if(sec==='nhatKy')  return viewNhatKy();
   if(sec==='banGiao') return viewNhatKyBanGiao();
   return '';
