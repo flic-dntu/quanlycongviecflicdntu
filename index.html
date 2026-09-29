@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.18.0   |   Ngày: 29/09/2026
+ Phiên bản: V1.18.1   |   Ngày: 29/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -163,6 +163,9 @@
  V1.18.0 – 29/09/2026 – Công cụ dọn khách tiềm năng và đợt.
    Chỉ xoá fcv_lead và fcv_lodulieu, không đụng collection khác.
               md5 phần thân: 46122e07baa16d43e72b4985fe889753
+ V1.18.1 – 29/09/2026 – Phiếu yêu cầu thiết kế hiện đủ brief
+   trên danh sách, thêm nút Xem phiếu kèm lịch sử xử lý.
+              md5 phần thân: 718dad2e9bf2b2e43729a9acc7b1ecc6
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -395,10 +398,13 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.18.0';
+const PHIEN_BAN = 'V1.18.1';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.18.1', ngay:'29/09/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Phiếu yêu cầu thiết kế lập đầy đủ brief nhưng danh sách chỉ hiện tên sản phẩm, kênh và định dạng. Bộ phận Thiết kế nhận việc mà không thấy mục tiêu, đối tượng, thông điệp chính hay lời kêu gọi hành động, lại không có nút nào để mở chi tiết. Nay brief hiện ngay trên dòng phiếu, và mọi người đều có nút Xem phiếu để mở toàn bộ nội dung kèm lịch sử xử lý.'}
+  ]},
   {v:'V1.18.0', ngay:'29/09/2026', muc:[
     {loai:'Mới', nd:'Công cụ Dọn khách tiềm năng trong Hệ thống, chỉ Phó Giám đốc thấy. Xoá toàn bộ khách tiềm năng và đợt tuyển sinh để nhập lại từ đầu, giữ nguyên học viên, lớp, điểm danh, học phí, khảo thí và mọi phần khác. Màn hiện rõ bảng sẽ xoá và bảng giữ nguyên kèm số bản ghi, cảnh báo những liên kết sẽ mất, bắt gõ đúng chữ XOA KHACH mới mở nút, xoá theo lô 20 bản ghi và hiện tiến độ, ghi nhật ký.'}
   ]},
@@ -11581,6 +11587,13 @@ function dongYeuCauTT(y){
     + '<div class="small muted">'+esc(y.loaiSanPham||'')+' · '+esc(y.kenh||'')+' · '+esc(y.dinhDang||'')+'</div>'
     + '<div class="small muted">Yêu cầu bởi '+esc(y.nguoiYeuCauTen||'')+' · hạn '+fmtDate(y.hanChot)
     + (cd? ' · chiến dịch '+esc(cd.ten):'')+'</div>'
+    + '<div class="small" style="margin-top:6px;border-left:3px solid var(--border);padding-left:8px;line-height:1.7;">'
+      + (y.mucTieu? '<div><b>Mục tiêu:</b> '+esc(y.mucTieu)+'</div>':'')
+      + (y.doiTuong? '<div><b>Đối tượng:</b> '+esc(y.doiTuong)+'</div>':'')
+      + (y.thongDiep? '<div><b>Thông điệp chính:</b> '+esc(y.thongDiep)+'</div>':'')
+      + (y.cta? '<div><b>Lời kêu gọi hành động:</b> '+esc(y.cta)+'</div>':'')
+      + (y.ghiChu? '<div><b>Ghi chú:</b> '+esc(y.ghiChu)+'</div>':'')
+      + '</div>'
     + (y.soVongSua? '<div class="small" style="color:var(--warn);">Đã sửa '+y.soVongSua+' vòng</div>':'')
     + (y.deNghiLuiHan? '<div class="small" style="color:var(--warn);">Đề nghị lùi hạn: '+esc(y.deNghiLuiHan)+'</div>':'')
     + (y.lyDoHuy? '<div class="small muted">Huỷ: '+esc(y.lyDoHuy)+' · '+esc(y.nguoiHuy||'')+'</div>':'')
@@ -11596,8 +11609,52 @@ function dongYeuCauTT(y){
     + '</div></div>';
   return h;
 }
+/* Xem toàn bộ phiếu như lúc lập, kèm lịch sử xử lý */
+function xemPhieuTT(id){
+  const y = yeuCauTTList.find(function(x){ return x.id === id; });
+  if(!y) return;
+  const cd = chienDichList.find(function(c){ return c.id === y.chienDichId; });
+  const dm = dinhMucTTList.find(function(d){
+    return stripDia(d.loaiSanPham || '') === stripDia(y.loaiSanPham || ''); });
+  const dong = function(nhan, gt){
+    return gt ? '<div style="margin-bottom:5px;"><b>' + esc(nhan) + ':</b> ' + esc(gt) + '</div>' : '';
+  };
+  openModal('<h3>' + esc(y.tieuDe) + '</h3>'
+    +'<div class="small muted">Phiếu ' + esc(y.maPhieu || '') + ' · mẫu BM-TT-01 · '
+    + 'lập bởi ' + esc(y.nguoiYeuCauTen || '') + ' ngày ' + fmtDate(y.ngayYeuCau) + '</div>'
+    +'<div class="card" style="margin:10px 0;background:#f7f9fc;"><div class="small">'
+    + dong('Loại sản phẩm', y.loaiSanPham)
+    + dong('Mục tiêu', y.mucTieu)
+    + dong('Đối tượng', y.doiTuong)
+    + dong('Thông điệp chính', y.thongDiep)
+    + dong('Lời kêu gọi hành động', y.cta)
+    + dong('Kênh', y.kenh)
+    + dong('Định dạng', y.dinhDang)
+    + dong('Thuộc chiến dịch', cd ? cd.ten : '')
+    + dong('Thời hạn', fmtDate(y.hanChot))
+    + dong('Ghi chú', y.ghiChu)
+    + (dm ? '<div class="small muted" style="margin-top:6px;">Định mức cho loại này: '
+        + dm.soNgay + ' ngày</div>' : '')
+    + (y.coHinhAnhHocVien
+       ? '<div class="small" style="margin-top:6px;color:var(--warn);">Sản phẩm có hình ảnh học viên · '
+         + (y.dsHocVienId || []).length + ' em</div>' : '')
+    + '</div></div>'
+    +'<div class="small"><b>Trạng thái:</b> ' + esc(y.trangThai || '')
+    + (y.linkSanPham
+       ? ' · <a href="' + esc(y.linkSanPham) + '" target="_blank" style="color:var(--primary);">mở sản phẩm</a>'
+       : '') + '</div>'
+    + ((y.lichSu || []).length
+       ? '<div style="margin-top:10px;"><b class="small">Lịch sử xử lý</b>'
+         + y.lichSu.slice().reverse().map(function(l){
+             return '<div class="small muted" style="margin-top:3px;">'
+               + fmtDate(new Date(l.ts).toISOString().slice(0, 10)) + ' · '
+               + esc(l.nguoi || '') + ': ' + esc(l.hanhDong || '') + '</div>'; }).join('')
+         + '</div>'
+       : '')
+    +'<button class="btn btn-block" style="margin-top:14px;" onclick="closeModal()">Đóng</button>');
+}
 function nutYeuCauTT(y, thieuAnh){
-  let n = '';
+  let n = '<button class="btn btn-sm" onclick="xemPhieuTT(\''+y.id+'\')">Xem phiếu</button>';
   if(y.trangThai==='Đã gửi' && hasPerm('sanXuatTT')){
     n += '<button class="btn btn-sm btn-primary" onclick="nhanViecTT(\''+y.id+'\')">Nhận việc</button>';
     n += '<button class="btn btn-sm" onclick="deNghiLuiHanTT(\''+y.id+'\')">Đề nghị lùi hạn</button>';
