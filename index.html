@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.17.0   |   Ngày: 28/09/2026
+ Phiên bản: V1.17.1   |   Ngày: 29/09/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -156,6 +156,10 @@
    Trường mới: thisinh.doiTacId/doiTacTen · quyền suaThamSo
    LƯU Ý: biểu đồ vẽ bằng SVG thuần trong file, không thư viện ngoài.
               md5 phần thân: 790430f622e3dc9f1417b9c098e5be2b
+ V1.17.1 – 29/09/2026 – Tab Tuyển sinh gom còn 5 mục; bảng đợt
+   có nút Xem danh sách và Xoá ngay trên dòng.
+   Màn gộp dùng biến ktnCon và giaCon để nhớ màn con đang xem.
+              md5 phần thân: 7e12570a2b6f978926c4c101d28299ec
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -388,10 +392,17 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.17.0';
+const PHIEN_BAN = 'V1.17.1';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.17.1', ngay:'29/09/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Bảng đợt tuyển sinh không có dấu hiệu nào cho biết bấm vào dòng sẽ mở danh sách khách, và nút xoá đợt nằm sâu trong màn chi tiết nên đợt trùng không xoá được. Nay mỗi dòng có cột Thao tác với ba nút rõ ràng: Xem danh sách, Nhập, và Xoá màu đỏ cho đợt chưa có khách.'},
+    {loai:'Cải tiến', nd:'Tab Tuyển sinh gom từ mười một mục xuống năm cho đỡ rối: Điều hành, Khách tiềm năng, Học viên, Kiểm tra đầu vào, Giá và kịch bản.'},
+    {loai:'Cải tiến', nd:'Khách tiềm năng gộp bốn màn cùng một nhóm dữ liệu, chuyển qua lại bằng nút bên trong: Phễu tư vấn, Theo đợt, Lọc trùng, Hiệu quả nguồn. Giá và kịch bản gộp ba màn: Bảng giá, Báo giá đã lập, Kịch bản tư vấn.'},
+    {loai:'Cải tiến', nd:'Bỏ mục Cảnh báo học vụ khỏi tab Tuyển sinh vì bên Học vụ đã có cùng một màn, để hai chỗ chỉ làm rối. Tư vấn tuyển sinh vẫn xem được ở Học vụ.'},
+    {loai:'Cải tiến', nd:'Cảnh báo trùng tên đợt ghi rõ cách xử lý từng trường hợp thay vì nói chung chung.'}
+  ]},
   {v:'V1.17.0', ngay:'28/09/2026', muc:[
     {loai:'Mới', nd:'Danh mục đối tác khảo thí: trung tâm ngoại ngữ, trường học, doanh nghiệp đưa thí sinh sang thi. Mỗi đối tác có người liên hệ, điện thoại, chiết khấu, ngày bắt đầu hợp tác. Đối tác đã có thí sinh thì không xoá được, chỉ bỏ đánh dấu Đang hợp tác.'},
     {loai:'Mới', nd:'Thí sinh chia ba nguồn thay vì hai: sinh viên DNTU, qua đối tác, tự do. Dữ liệu cũ không có đối tác vẫn tính là tự do nên không lệch số.'},
@@ -1260,16 +1271,10 @@ const SECTIONS = {
              {k:'giaoVien',ten:'Giáo viên'},{k:'hocBu',ten:'Học bù'},
              {k:'tkb',ten:'Thời khoá biểu'},{k:'phanAnh',ten:'Phản ánh'}],
   tuyenSinh:[{k:'dieuHanh',ten:'Điều hành',can:'quanLyLead'},
-             {k:'pheu',ten:'Phễu tư vấn',can:'quanLyLead'},
-             {k:'loDuLieu',ten:'Đợt tuyển sinh',can:'quanLyLead'},
-             {k:'locTrung',ten:'Lọc trùng',can:'quanLyLead'},
-             {k:'dsHocVien',ten:'Danh sách học viên',can:'quanLyLead'},
-             {k:'canhBaoTS',ten:'Cảnh báo học vụ',can:'quanLyLead'},
+             {k:'khach',ten:'Khách tiềm năng',can:'quanLyLead'},
+             {k:'dsHocVien',ten:'Học viên',can:'quanLyLead'},
              {k:'xepLop',ten:'Kiểm tra đầu vào',can:'xemPhieuTest'},
-             {k:'bangGia',ten:'Bảng giá và ưu đãi'},
-             {k:'baoGia',ten:'Báo giá đã lập'},
-             {k:'kichBan',ten:'Kịch bản tư vấn'},
-             {k:'nguon',ten:'Hiệu quả nguồn',can:'quanLyLead'}],
+             {k:'gia',ten:'Giá và kịch bản'}],
   truyenThong:[{k:'yeuCau',ten:'Phiếu yêu cầu'},{k:'chienDich',ten:'Chiến dịch và chi phí'},{k:'dinhMucTT',ten:'Định mức thời gian'}],
   khaoThi:  [{k:'kyThi',ten:'Kỳ thi'},{k:'thiSinh',ten:'Thí sinh'},{k:'doiTac',ten:'Đối tác'},{k:'khoDe',ten:'Kho đề'},{k:'phoi',ten:'Phôi và cấp phát'},{k:'dinhMuc',ten:'Định mức chi'}],
   baoCao:   [{k:'tongHop',ten:'Tổng hợp'},{k:'boPhan',ten:'Báo cáo bộ phận'},
@@ -1397,12 +1402,12 @@ function thuThapCanhBao(){
     them({tang:1, mau:'danger', soLuong:kQH.length,
       tieuDe: kQH.length + ' khách quá hạn gọi lại',
       chiTiet: kQH.slice(0,3).map(function(l){ return l.hoTen; }).join(' · '),
-      tab:'tuyenSinh', sec:'pheu'});
+      tab:'tuyenSinh', sec:'khach'});
     const chuaGiao = leadList.filter(function(l){
       return !l.phuTrachUserId && l.trangThai === 'Chưa gọi'; });
     them({tang:1, mau:'warn', soLuong:chuaGiao.length,
       tieuDe: chuaGiao.length + ' khách chưa giao người phụ trách',
-      tab:'tuyenSinh', sec:'pheu'});
+      tab:'tuyenSinh', sec:'khach'});
   }
   const viecQH = viecQuaHan().filter(function(v){
     return v.chuTri === currentUser.maViTri || (v.phoiHop || []).indexOf(currentUser.maViTri) >= 0
@@ -1516,11 +1521,11 @@ function thuThapCanhBao(){
     them({tang:2, mau:'danger', soLuong:bgChuaDuyet.length,
       tieuDe: bgChuaDuyet.length + ' báo giá khác khung chưa có người duyệt',
       chiTiet: bgChuaDuyet.slice(0,2).map(function(b){ return b.tenKhach; }).join(' · '),
-      tab:'tuyenSinh', sec:'baoGia'});
+      tab:'tuyenSinh', sec:'gia'});
     const faqCho = faqList.filter(function(f){ return f.trangThai === 'Chờ soạn'; });
     them({tang:2, mau:'warn', soLuong:faqCho.length,
       tieuDe: faqCho.length + ' câu hỏi của phụ huynh chờ soạn trả lời',
-      tab:'tuyenSinh', sec:'kichBan'});
+      tab:'tuyenSinh', sec:'gia'});
   }
 
   /* Báo cáo chưa chốt — nhắc người có trách nhiệm */
@@ -1566,7 +1571,7 @@ function thuThapCanhBao(){
     them({tang:3, mau:'gray', soLuong:thua,
       tieuDe: thua + ' bản ghi khách bị trùng',
       chiTiet: trung.length + ' nhóm trùng cả tên và số điện thoại',
-      nutTen: hasPerm('quanLyLead') ? 'Gộp' : 'Xem', tab:'tuyenSinh', sec:'locTrung'});
+      nutTen: hasPerm('quanLyLead') ? 'Gộp' : 'Xem', tab:'tuyenSinh', sec:'khach'});
   }
   if(hasPerm('xemHocVu')){
     const goTay = [];
@@ -3468,7 +3473,7 @@ function moTuViec(loai, id){
     const l = leadList.find(function(x){ return x.id === id; });
     filterLeadText = l ? (l.hoTen || '') : '';
     filterLeadNhom = 'tatCa';
-    switchSection('tuyenSinh', 'pheu'); return;
+    ktnCon = 'pheu'; switchSection('tuyenSinh', 'khach'); return;
   }
 }
 function moViec(id){
@@ -4613,6 +4618,8 @@ function tinhHocPhi(dongGia, uuDaiId, laHSSV){
 /* --- Điều hướng tab --- */
 function viewTuyenSinh(){
   const sec = currentSection.tuyenSinh || 'pheu';
+  if(sec==='khach')   return viewKhachTiemNang();
+  if(sec==='gia')     return viewGiaVaKichBan();
   if(sec==='dieuHanh')return viewDieuHanhTS();
   if(sec==='loDuLieu')return viewLoDuLieu();
   if(sec==='locTrung')return viewLocTrung();
@@ -4877,7 +4884,8 @@ function viewLoDuLieu(){
   let h = '<div class="card"><div class="row wrap"><div style="min-width:0;">'
     + '<h3 style="margin:0;">Đợt tuyển sinh</h3>'
     + '<div class="small muted" style="margin-top:4px;">Mỗi đợt thu thập là một dòng. '
-    + 'Bấm vào đợt để xem danh sách khách và tình trạng xử lý.</div></div>'
+    + 'Bấm <b>Xem danh sách</b> để mở danh sách khách của đợt đó. '
+    + 'Đợt chưa có khách nào thì xoá được ngay tại dòng.</div></div>'
     + (hasPerm('quanLyLead')
        ? '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
          + '<button class="btn btn-sm btn-primary" onclick="formLoMoi()">+ Đợt mới</button>'
@@ -4893,7 +4901,8 @@ function viewLoDuLieu(){
       + '<div class="small" style="color:#8a5a06;line-height:1.7;">'
       + '<b>⚠️ ' + trung.length + ' tên đợt bị trùng.</b> '
       + esc(trung.map(function(g){ return g[0].ten + ' (' + g.length + ' đợt)'; }).join(' · '))
-      + '<br>Đợt rỗng thì xoá bớt, đợt đã có khách thì đổi tên cho phân biệt.</div></div>';
+      + '<br>Đợt chưa có khách: bấm nút <b>Xoá</b> màu đỏ ở cột Thao tác. '
+      + 'Đợt đã có khách: bấm <b>Xem danh sách</b> rồi <b>Sửa đợt</b> để đổi tên.</div></div>';
   }
 
   h += '<div class="grid" style="margin-bottom:12px;">'
@@ -4914,7 +4923,7 @@ function viewLoDuLieu(){
       + '<th style="text-align:right;">Đã liên hệ</th>'
       + '<th style="text-align:right;">Chốt</th>'
       + '<th style="text-align:right;">Chuyển đổi</th>'
-      + '<th></th></tr></thead><tbody>';
+      + '<th style="text-align:right;">Thao tác</th></tr></thead><tbody>';
     h += dots.map(function(x){
       const mau = x.tyLe === null ? '' : (x.tyLe >= 15 ? 'color:var(--ok);'
         : (x.tyLe < 5 ? 'color:var(--warn);' : ''));
@@ -4928,8 +4937,13 @@ function viewLoDuLieu(){
         + '<td style="text-align:right;' + mau + '">'
         + (x.tyLe === null ? '—' : fmtNum(x.tyLe, 1) + '%') + '</td>'
         + '<td style="text-align:right;white-space:nowrap;">'
+        + '<button class="btn btn-sm btn-primary" onclick="event.stopPropagation();moChiTietLo(\''
+        + (x.id || '__le__') + '\')">Xem danh sách</button>'
         + (x.id && hasPerm('nhapDuLieu')
-           ? '<button class="btn btn-sm" onclick="event.stopPropagation();nhapVaoLo(\'' + x.id + '\')">Nhập</button>'
+           ? ' <button class="btn btn-sm" onclick="event.stopPropagation();nhapVaoLo(\'' + x.id + '\')">Nhập</button>'
+           : '')
+        + (x.id && !x.tong && hasPerm('quanLyLead')
+           ? ' <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();xoaDot(\'' + x.id + '\',this)">Xoá</button>'
            : '')
         + '</td></tr>';
     }).join('');
@@ -5127,7 +5141,8 @@ function moKhachTuDot(leadId){
   loDangXem = null;
   filterLeadText = (leadList.find(function(x){ return x.id === leadId; }) || {}).hoTen || '';
   filterLeadNhom = 'tatCa';
-  switchSection('tuyenSinh', 'pheu');
+  ktnCon = 'pheu';
+  switchSection('tuyenSinh', 'khach');
 }
 function xoaDot(loId, btn){
   if(!hasPerm('quanLyLead')){ showToast('Bạn không có quyền'); return; }
@@ -6593,6 +6608,47 @@ function hocVienCuaLead(l){
       && (!sdt || chuanSdt(h.sdtPH) === sdt); }) || null;
 }
 
+/* ===== HAI MÀN GỘP: Khách tiềm năng và Giá kịch bản ===== */
+let ktnCon = 'pheu';      /* pheu | dot | locTrung | nguon */
+let giaCon = 'bangGia';   /* bangGia | baoGia | kichBan */
+function doiConKTN(k){ ktnCon = k; loDangXem = null; render(); }
+function doiConGia(k){ giaCon = k; render(); }
+
+function thanhCon(ds, dangChon, hamDoi){
+  return '<div class="card" style="padding:9px 12px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">'
+    + ds.map(function(x){
+        return '<button class="btn btn-sm ' + (dangChon === x.k ? 'btn-primary' : '') + '" '
+          + 'onclick="' + hamDoi + '(\'' + x.k + '\')">' + esc(x.ten)
+          + (x.dem ? ' · ' + x.dem : '') + '</button>'; }).join('')
+    + '</div></div>';
+}
+
+function viewKhachTiemNang(){
+  const chuaGoi = leadList.filter(function(l){ return l.trangThai === 'Chưa gọi'; }).length;
+  const soDot = gomCacDot().length;
+  const soTrung = timTrungLead('ca2').reduce(function(s, g){ return s + g.bo.length; }, 0);
+  let h = thanhCon([
+    {k: 'pheu', ten: 'Phễu tư vấn', dem: leadList.length},
+    {k: 'dot', ten: 'Theo đợt', dem: soDot},
+    {k: 'locTrung', ten: 'Lọc trùng', dem: soTrung || ''},
+    {k: 'nguon', ten: 'Hiệu quả nguồn'}
+  ], ktnCon, 'doiConKTN');
+  if(ktnCon === 'dot')      return h + viewLoDuLieu();
+  if(ktnCon === 'locTrung') return h + viewLocTrung();
+  if(ktnCon === 'nguon')    return h + viewHieuQuaNguon();
+  return h + viewPheu();
+}
+function viewGiaVaKichBan(){
+  let h = thanhCon([
+    {k: 'bangGia', ten: 'Bảng giá và ưu đãi'},
+    {k: 'baoGia', ten: 'Báo giá đã lập', dem: baoGiaList.length || ''},
+    {k: 'kichBan', ten: 'Kịch bản tư vấn'}
+  ], giaCon, 'doiConGia');
+  if(giaCon === 'baoGia')  return h + viewBaoGia();
+  if(giaCon === 'kichBan') return h + viewKichBanMoi();
+  return h + viewBangGia();
+}
+
 function viewDieuHanhTS(){
   const ds = leadTheoPhamVi();
   const dem = function(tt){ return ds.filter(function(l){ return l.trangThai === tt; }).length; };
@@ -6688,7 +6744,8 @@ function viewDieuHanhTS(){
 function moPheuTu(loc){
   filterLeadNhom = (loc === 'nong') ? 'tatCa' : (loc === 'quaHan' ? 'quaHan'
     : (loc === 'chuaGoi' ? 'chuaGoi' : 'dangTheoDuoi'));
-  switchSection('tuyenSinh', 'pheu');
+  ktnCon = 'pheu';
+  switchSection('tuyenSinh', 'khach');
 }
 function xemHoSoTuTuyenSinh(hocVienId){
   if(!hasPerm('xemHocVu')){ showToast('Bạn không có quyền xem hồ sơ học vụ'); return; }
