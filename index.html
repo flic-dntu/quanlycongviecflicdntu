@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.21.0   |   Ngày: 02/10/2026
+ Phiên bản: V1.21.1   |   Ngày: 09/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -190,6 +190,34 @@
    VAN_BAN_CAMBRIDGE, GIAI_DOAN_CAMBRIDGE, BAN_CAMBRIDGE —
    chọn qua boMocCuaLoai, vanBanApDung, giaiDoanCuaLoai, banApDung.
               md5 phần thân: 8141d0ae88f8ed6e2c525c2a06822cd6
+ V1.21.1 – 09/10/2026 – Sửa 6 lỗi tồn trong V1.21.0; làm theo góp
+   ý của chuyên viên Khảo thí, Hành chính và Học vụ; thêm tab mới
+   Lịch ca làm việc chuyển từ file Excel sang phần mềm.
+   LỖI ĐÃ SỬA
+   - Hai hàm trùng tên luuBaoGia làm tab In ấn không lưu được báo
+     giá nhà in. Đổi hàm của In ấn thành luuBaoGiaNhaIn.
+   - Quyền treo: cấp quyền làm việc mà thiếu quyền xem tab thì tab
+     không hiện. Nay có bảng NHOM_CAN_XEM cho cả 10 nhóm, hệ thống
+     tự bù quyền xem khi lưu tài khoản.
+   - Vị trí FLIC-CM-00 thiếu xemTuyenSinh trong bộ quyền mặc định.
+   - 21 dòng mã lặp của bộ lọc học viên; hàm viewCongNo không nơi
+     nào gọi; hai dòng tìm phần tử mUGvWrap không tồn tại;
+     khoá taiSan lặp hai lần trong SECTIONS.
+   TRƯỜNG MỚI
+   - ghidanh.doiSoatHP/ngayDoiSoatHP/nguoiDoiSoatHP
+     · ghidanh.nguoiXacNhanSach/nguoiGhiChuHV/ngayGhiChuHV
+     · lichSuThu[].nganHang · thisinh.ngaySinh/gioiTinh/tenPH/
+       sdtPH/sdt/email · doitac.email · users.gvId
+   - Collection mới: fcv_lichca (mỗi document là một tuần).
+   LƯU Ý
+   - Lịch ca dùng bộ hằng CA_LAM_VIEC, NGAY_TUAN_LV, CA_PHAI_TRUC,
+     CAP_TRUC_MAC_DINH, VI_TRI_KHONG_TRUC_CA, VI_TRI_HANH_CHINH.
+     Giờ trong ngày tính bằng cách hợp khoảng rồi trừ chồng lấn
+     (gioTrongNgay) — đã đối chiếu khớp tuyệt đối 36 ô giờ/ngày
+     và 6 tổng tuần với file Excel Lịch đăng ký ca FLIC V1.0.0.
+   - Chỉ tiêu tuần chỉ cộng nợ từ tuần ĐÃ CHỐT, tránh cộng số
+     còn thay đổi được.
+   - Ba quyền mới: xemLichCa, dangKyCa, duyetLichCa.
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -292,6 +320,40 @@
   th{background:#f7f9fc;font-size:11.5px;color:var(--muted);font-weight:700;}
   .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 
+  .chip{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;
+    border:1px solid var(--border);background:#fff;margin-right:5px;margin-bottom:3px;white-space:nowrap;}
+  .chip-sach-co{color:#0f7a4a;border-color:#b7e3cd;background:#eefaf4;}
+  .chip-sach-chua{color:#b36a00;border-color:#f7dca8;background:#fff8ea;}
+  .chip-sach-khong{color:var(--muted);}
+  .chip-no{color:#b3242a;border-color:#f6c7c9;background:#fdf1f1;}
+  /* Lịch ca */
+  .lc-bang{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .lc-bang th,.lc-bang td{border:1px solid var(--border);padding:6px 7px;text-align:center;}
+  .lc-bang th{background:#f7f9fc;font-weight:700;font-size:11.5px;}
+  .lc-ngay{background:#f7f9fc;font-weight:700;text-align:left !important;white-space:nowrap;}
+  .lc-ca{background:#fbfcfe;text-align:left !important;white-space:nowrap;
+    font-size:11.5px;color:var(--muted);}
+  .lc-toi td{background:#fffaf0;}
+  .lc-toi .lc-ca{background:#fff6e8;}
+  .lc-sua{cursor:pointer;}
+  .lc-sua:hover{background:#eef6fd !important;}
+  .lc-tong td{background:#f7f9fc;font-weight:700;}
+  .lc-v{display:inline-block;padding:2px 7px;border-radius:5px;font-weight:600;font-size:11.5px;}
+  .lc-x{background:#e8f5ee;color:#0f7a4a;}
+  .lc-gio{background:#eef4fd;color:#1a4e9c;}
+  .lc-off{background:#f2f4f7;color:var(--muted);}
+  .lc-om{background:#fdf1f1;color:#b3242a;}
+  .lc-trong{color:#c7ced9;}
+  .lc-ngay-dt{font-weight:700;font-size:13px;margin:12px 0 2px;}
+  .lc-dong{border-top:1px solid var(--border);padding:9px 0;display:flex;
+    justify-content:space-between;align-items:center;gap:8px;}
+  .dd-row{align-items:flex-start;}
+  .dd-row .dd-btns,.dd-row .btn-gc{margin-top:1px;}
+  .btn-gc{padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;
+    font-size:13px;color:var(--muted);cursor:pointer;flex-shrink:0;}
+  .btn-gc.co{border-color:var(--info);color:var(--info);background:#eef4fd;}
+  .gc-em{font-size:12px;color:var(--info);background:#f4f8fe;border-left:3px solid var(--info);
+    padding:5px 9px;border-radius:0 6px 6px 0;margin-top:5px;}
   .dd-btns{display:flex;gap:4px;flex-shrink:0;}
   .dd{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:700;color:var(--muted);min-width:38px;}
   .dd.on-cm{background:var(--ok);color:#fff;border-color:var(--ok);}
@@ -398,6 +460,7 @@
     <button data-tab="khaoThi" onclick="switchTab('khaoThi')">📝 Khảo thí</button>
     <button data-tab="taiChinh" onclick="switchTab('taiChinh')">💰 Tài chính</button>
     <button data-tab="congViec" onclick="switchTab('congViec')">✅ Công việc</button>
+    <button data-tab="lichCa" onclick="switchTab('lichCa')">🗓️ Lịch ca</button>
     <button data-tab="taiSan" onclick="switchTab('taiSan')">📦 Tài sản</button>
     <button data-tab="inAn" onclick="switchTab('inAn')">🖨️ In ấn</button>
     <button data-tab="baoCao" onclick="switchTab('baoCao')">📊 Báo cáo</button>
@@ -428,10 +491,25 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.21.0';
+const PHIEN_BAN = 'V1.21.1';
 const NGAY_PHIEN_BAN = '17/08/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.21.1', ngay:'09/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Tab In ấn không lưu được báo giá nhà in. Nguyên nhân: hàm lưu báo giá nhà in và hàm lưu báo giá học phí cho khách trùng tên luuBaoGia, hàm sau đè hàm trước nên chuyên viên bấm Lưu thì chạy nhầm sang báo giá học phí. Đổi tên hàm của In ấn thành luuBaoGiaNhaIn.'},
+    {loai:'Sửa lỗi', nd:'Cấp quyền làm việc cho chuyên viên nhưng tab không hiện lên, vì thiếu quyền xem tab tương ứng. Lỗi này lặp ba lần ở ba bộ phận khác nhau. Nay có bảng NHOM_CAN_XEM ánh xạ cả mười nhóm quyền sang quyền xem tab; khi lưu tài khoản hệ thống tự bù quyền xem còn thiếu và báo rõ đã thêm quyền nào. Vị trí Bộ phận Chuyên môn thiếu sẵn quyền xem Tuyển sinh trong bộ mặc định, đã bổ sung.'},
+    {loai:'Sửa lỗi', nd:'Dọn mã thừa: hai mươi mốt dòng lặp của bộ lọc học viên, hàm viewCongNo không nơi nào gọi, hai dòng tìm phần tử mUGvWrap không tồn tại, khoá taiSan lặp hai lần trong bảng SECTIONS.'},
+    {loai:'Mới', nd:'Tab Khảo thí nhập Excel thí sinh ngay trên từng kỳ thi, không phải sang tab Hệ thống. Gắn sẵn kỳ nên file Excel khỏi cần cột Tên kỳ thi, chuyên viên không gõ sai tên kỳ được.'},
+    {loai:'Mới', nd:'Form thí sinh bổ sung ngày sinh, giới tính, họ tên người giám hộ, điện thoại người giám hộ, điện thoại thí sinh và email. Trước đây nhập Excel thì có dữ liệu nhưng mở form ra không thấy và không sửa được. Danh sách thí sinh cảnh báo em nào còn thiếu thông tin bắt buộc để đăng ký với Hội đồng. Form đối tác thêm ô email.'},
+    {loai:'Mới', nd:'Màn Học phí học viên hiện ghi chú của Học vụ ngay dưới tên học viên, kèm trạng thái tái đăng ký, nên Kế toán rà soát lần hai không phải mở thêm tab Cảnh báo. Thêm nút Xác nhận đối soát cho người có quyền xacNhanDoiSoat: hỏi lại toàn bộ khoản thu và cảnh báo nếu có khoản chưa ghi số phiếu. Ô đầu màn cho biết đã rà bao nhiêu em.'},
+    {loai:'Mới', nd:'Ghi nhận thu bằng chuyển khoản hoặc quẹt thẻ phải chọn ngân hàng nhận tiền, bỏ trống thì chặn, để còn đối chiếu sao kê. Danh mục ngân hàng sửa trong Hệ thống rồi Tham số.'},
+    {loai:'Mới', nd:'Học vụ đánh dấu học viên đã nhận sách thì ghi luôn ngày nhận và người xác nhận, để đối soát với phiếu xuất kho của Hành chính. Trước đây ngày chỉ được ghi khi xuất kho qua phiếu, Học vụ đánh dấu tay thì mất dấu vết.'},
+    {loai:'Cải tiến', nd:'Màn điểm danh hiện nhãn tình trạng sách kèm ngày nhận và nhãn nợ học phí của từng em, thêm nút ghi chú riêng từng em, và khối Cần báo phụ huynh gom sẵn các em vắng nhiều, chưa nhận sách hoặc còn nợ. Sửa lỗi dòng cảnh báo vắng liên tiếp đè mất tên tiếng Anh và mã học viên.'},
+    {loai:'Mới', nd:'Form tài khoản thêm ô nối tài khoản vị trí Giáo viên với hồ sơ trong Danh mục giáo viên. Chưa nối thì thầy cô thấy phiếu test của mọi người thay vì chỉ phiếu được giao, nên hệ thống cảnh báo khi lưu và đánh dấu ở danh sách tài khoản.'},
+    {loai:'Mới', nd:'Phiếu đánh giá năng lực in kèm mục Học phí và ưu đãi áp dụng, để phụ huynh vừa đọc nhận xét của giáo viên vừa biết học phí. Khách chưa có báo giá thì in bình thường, không có mục này. Báo giá chốt khác khung mà chưa có người duyệt thì không in được phần học phí, vì Quyết định 14 cấm cam kết giá ngoài khung. Cấp độ báo giá lệch lớp giáo viên đề xuất thì hỏi lại trước khi in. Khách có nhiều báo giá thì chọn bản muốn in.'},
+    {loai:'Mới', nd:'Tab Lịch ca làm việc, chuyển từ file Excel Lịch đăng ký ca FLIC V1.0.0 sang phần mềm. Ba ca mỗi ngày: sáng 08:00–11:30, hành chính 13:00–17:30, tối 15:30–20:00. Giờ trong ngày tính bằng cách hợp các khung giờ rồi trừ phần chồng lấn, nên hành chính cộng tối ra bảy giờ chứ không phải chín. Chỉ tiêu bốn mươi tám giờ một tuần cộng giờ nợ tuần trước. Khác file Excel ở hai chỗ: cột người lấy từ danh sách tài khoản nên thêm chuyên viên là tự có cột, và giờ nợ tuần trước tự lấy từ tuần đã chốt chứ không nhập tay.'},
+    {loai:'Mới', nd:'Lịch ca cảnh báo ca chưa có người trực, gom theo bộ phận và ghi rõ thiếu ca nào. Chỉ tính là có trực khi người đó phủ kín khung giờ ca, đăng ký 15:00–19:30 cho ca tối 15:30–20:00 vẫn là thiếu. Vị trí Hành chính không đăng ký được ca tối. Chuyên viên chỉ sửa cột của mình và phải xong trước hạn đăng ký, mặc định 17h thứ bảy tuần trước. Chốt tuần thì khoá lại, chênh lệch chuyển sang chỉ tiêu tuần sau.'}
+  ]},
   {v:'V1.21.0', ngay:'02/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Cảnh báo học vụ hiện một học viên thành nhiều dòng vì nguy cơ bỏ học là cảnh báo gộp lại thành dòng riêng. Nay mỗi học viên một dòng liệt kê đủ vấn đề, nguy cơ bỏ học thành nhãn. Nút Đã xử lý đóng cả cụm một lần ghi chú, hoặc Xử lý một phần để chọn từng vấn đề. Ô đếm theo học viên thay vì theo cảnh báo.'},
     {loai:'Mới', nd:'Xuất và in bảng điểm danh theo mẫu giấy của Trung tâm: mỗi buổi một cột, ô ghi X có mặt, P vắng phép, A vắng không phép, chú giải và chỗ ký giảng viên. Buổi trước ngày học viên vào lớp để trống, không tính là vắng. Sheet thứ hai tổng hợp số buổi và chuyên cần từng em để thanh toán hợp đồng giảng dạy. Xuất được cả lớp đã kết thúc.'},
@@ -771,6 +849,9 @@ const PERM_LIST = [
   {key:'deNghiXuatKho',   label:'Đề nghị xuất kho',      nhom:'Tài sản'},
   {key:'duyetXuatKho',    label:'Duyệt xuất kho',        nhom:'Tài sản'},
   {key:'xemTaiSan',       label:'Xem tài sản và kho',    nhom:'Tài sản'},
+  {key:'xemLichCa',      label:'Xem Lịch ca',          nhom:'Xem'},
+  {key:'dangKyCa',       label:'Đăng ký ca của mình',  nhom:'Lịch ca'},
+  {key:'duyetLichCa',    label:'Sửa và chốt lịch ca',  nhom:'Lịch ca'},
   {key:'suaThamSo',       label:'Sửa tham số hệ thống', nhom:'Hệ thống'},
   {key:'quanLyTaiKhoan',  label:'Quản lý tài khoản',     nhom:'Hệ thống'},
   {key:'nhapDuLieu',      label:'Nhập dữ liệu từ Excel', nhom:'Hệ thống'},
@@ -786,18 +867,18 @@ const CAP_XUNG_DOT = [
 
 /* Quyền mặc định theo vị trí */
 const QUYEN_MAC_DINH = {
-  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','xemTaiSan','duyetXuatKho','deNghiXuatKho'],
-  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','suaThamSo','xemTaiSan','duyetXuatKho','deNghiXuatKho'],
-  'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe','nhapDuLieu','xemHeThong','xemTaiSan','deNghiXuatKho'],
-  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest','quanLyLead','xemTaiSan','deNghiXuatKho'],
-  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest','xemHeThong','xemTaiSan','deNghiXuatKho'],
-  'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT','xemTaiSan','deNghiXuatKho'],
-  'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn'],
-  'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','thuTien','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn','xemTaiSan','quanLyKho','deNghiXuatKho','nhapDuLieu','xemHeThong'],
-  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','xemHeThong','xemTaiSan','deNghiXuatKho'],
-  'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetHoanPhi'],
-  'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn','xemPhieuTest','tuVanSauTest'],
-  'FLIC-GV-01':   ['xemTuyenSinh','xemPhieuTest','nhapKetQuaTest']
+  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
+  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','suaThamSo','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
+  'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe','nhapDuLieu','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest','quanLyLead','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','xemLichCa','dangKyCa'],
+  'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','thuTien','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn','xemTaiSan','quanLyKho','deNghiXuatKho','nhapDuLieu','xemHeThong','xemLichCa','dangKyCa'],
+  'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetHoanPhi','xemLichCa','dangKyCa'],
+  'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn','xemTuyenSinh','xemPhieuTest','tuVanSauTest','xemLichCa','dangKyCa'],
+  'FLIC-GV-01':   ['xemTuyenSinh','xemPhieuTest','nhapKetQuaTest','xemLichCa','dangKyCa']
 };
 
 /* Nhân sự thực tế – dùng cho nút tạo nhanh tài khoản */
@@ -826,6 +907,7 @@ const TRANG_THAI_VIEC = ['Mới tạo','Đang làm','Chờ xác nhận','Chờ p
 
 /* ================= TRẠNG THÁI ỨNG DỤNG ================= */
 let currentUser = null;
+let lichCaList = [];
 let usersList = [], lopList = [], hocVienList = [], ghiDanhList = [],
     buoiHocList = [], bcSiSoList = [], congViecList = [], choXepLopList = [],
     phieuInList = [], nhaInList = [], leadList = [], bangGiaList = [],
@@ -1128,7 +1210,7 @@ function startApp(){
 }
 
 function applyTabPerms(){
-  const map={tongQuan:null, hocVu:'xemHocVu', tuyenSinh:'xemTuyenSinh', khaoThi:'xemKhaoThi', truyenThong:'xemTruyenThong', taiChinh:'xemTaiChinh', congViec:'xemCongViec', taiSan:'xemTaiSan', inAn:'xemInAn', baoCao:'xemBaoCao', heThong:'xemHeThong'};
+  const map={tongQuan:null, hocVu:'xemHocVu', tuyenSinh:'xemTuyenSinh', khaoThi:'xemKhaoThi', truyenThong:'xemTruyenThong', taiChinh:'xemTaiChinh', congViec:'xemCongViec', lichCa:'xemLichCa', taiSan:'xemTaiSan', inAn:'xemInAn', baoCao:'xemBaoCao', heThong:'xemHeThong'};
   document.querySelectorAll('#tabbar button').forEach(function(b){
     const k=map[b.dataset.tab];
     b.style.display = (!k || hasPerm(k)) ? '' : 'none';
@@ -1166,6 +1248,7 @@ function listenAll(){
   bind('fcv_lephicap',  function(v){ lePhiCapList=v; });
   bind('fcv_khohang',   function(v){ khoHangList=v; });
   bind('fcv_phieukho',  function(v){ phieuKhoList=v; });
+  bind('fcv_lichca',    function(v){ lichCaList=v; });
   bind('fcv_phoi',      function(v){ phoiList=v; });
   bind('fcv_dinhmuc',   function(v){ dinhMucList=v; });
   bind('fcv_doisoat',   function(v){ doiSoatList=v; });
@@ -1197,6 +1280,23 @@ function listenAll(){
 /* ================= TÍNH TOÁN NGHIỆP VỤ ================= */
 function siSoLop(lopId){
   return ghiDanhList.filter(function(g){ return g.lopId===lopId && g.trangThai==='Đang học'; }).length;
+}
+/* Ghi danh đang học của một em trong một lớp */
+function ghiDanhCuaHocVien(hocVienId, lopId){
+  return ghiDanhList.find(function(g){
+    return g.hocVienId === hocVienId && g.lopId === lopId && g.trangThai === 'Đang học';
+  }) || null;
+}
+/* Nhãn tình trạng sách kèm ngày nhận, để đối soát với phiếu xuất kho */
+function nhanSachCuaGhiDanh(gd){
+  if(!gd) return '';
+  const tt = gd.trangThaiSach || 'Chưa nhận';
+  if(tt === 'Đã nhận')
+    return '<span class="chip chip-sach-co">📗 Sách'
+      + (gd.ngayNhanSach ? ' ' + fmtDate(gd.ngayNhanSach).slice(0, 5) : '') + '</span>';
+  if(tt === 'Không mua')
+    return '<span class="chip chip-sach-khong">Không mua sách</span>';
+  return '<span class="chip chip-sach-chua">📕 Chưa nhận sách</span>';
 }
 function hocVienCuaLop(lopId){
   const ids = ghiDanhList.filter(function(g){ return g.lopId===lopId && g.trangThai==='Đang học'; })
@@ -1276,10 +1376,49 @@ function kiemTraXungDotQuyen(quyen){
   });
   return out;
 }
-/* Tài khoản tạo từ phiên bản cũ sẽ thiếu quyền của các tab bổ sung sau này */
+/* ============ QUYỀN TREO: cấp quyền làm việc mà thiếu quyền vào tab ============
+   Mỗi nhóm quyền trong PERM_LIST thuộc về một tab. Muốn dùng được quyền của nhóm
+   thì phải có quyền XEM tab đó, nếu không quyền sẽ "treo": có mà không vào được.
+   Bảng dưới là ánh xạ nhóm → quyền xem tương ứng, dùng chung cho mọi nơi kiểm tra. */
+const NHOM_CAN_XEM = {
+  'Học vụ':      'xemHocVu',
+  'Báo cáo':     'xemBaoCao',
+  'Công việc':   'xemCongViec',
+  'Truyền thông':'xemTruyenThong',
+  'Tài chính':   'xemTaiChinh',
+  'Khảo thí':    'xemKhaoThi',
+  'Tuyển sinh':  'xemTuyenSinh',
+  'In ấn':       'xemInAn',
+  'Tài sản':     'xemTaiSan',
+  'Hệ thống':    'xemHeThong',
+  'Lịch ca':     'xemLichCa'
+};
+/* Từ một bộ quyền, trả về danh sách quyền XEM đang bị thiếu. */
+function quyenXemConThieu(quyen){
+  const can = {};
+  PERM_LIST.forEach(function(p){
+    if(p.nhom === 'Xem') return;            /* chính nó là quyền xem */
+    if(!quyen || !quyen[p.key]) return;     /* không cấp quyền này thì không cần xem */
+    const xem = NHOM_CAN_XEM[p.nhom];
+    if(!xem) return;
+    if(xem === p.key) return;               /* xemTaiSan nằm trong nhóm Tài sản */
+    if(!quyen[xem]) can[xem] = true;
+  });
+  return Object.keys(can);
+}
+/* Tài khoản tạo từ phiên bản cũ sẽ thiếu quyền của các tab bổ sung sau này.
+   Gộp hai nguồn thiếu: (a) thiếu so với quyền mặc định của vị trí,
+   (b) quyền treo — được cấp lẻ một quyền làm việc nhưng không có quyền xem tab. */
 function quyenConThieu(u){
   const mac = QUYEN_MAC_DINH[u.maViTri] || [];
-  return mac.filter(function(k){ return !(u.quyen && u.quyen[k]); });
+  const thieu = mac.filter(function(k){ return !(u.quyen && u.quyen[k]); });
+  /* (b) tính trên bộ quyền SAU KHI đã bù phần (a), để không báo thừa */
+  const q = Object.assign({}, u.quyen || {});
+  thieu.forEach(function(k){ q[k] = true; });
+  quyenXemConThieu(q).forEach(function(k){
+    if(thieu.indexOf(k) < 0) thieu.push(k);
+  });
+  return thieu;
 }
 function dsTaiKhoanThieuQuyen(){
   return usersList.map(function(u){ return {u:u, thieu:quyenConThieu(u)}; })
@@ -1362,7 +1501,7 @@ const SECTIONS = {
              {k:'dieuHanh',ten:'Điều hành'},{k:'ngay',ten:'Báo cáo ngày'},{k:'tuan',ten:'Báo cáo tuần'},{k:'thang',ten:'Báo cáo tháng'}],
   taiChinh: [{k:'hocPhi',ten:'Học phí học viên'},{k:'doiSoat',ten:'Đối soát hai bên'},{k:'congNo',ten:'Công nợ'},{k:'hoanPhi',ten:'Hoàn phí và bảo lưu'},{k:'hoaDon',ten:'Hoá đơn chờ xuất'}],
   congViec: [{k:'choDuyet',ten:'Chờ tôi duyệt'},{k:'cuaToi',ten:'Việc của tôi'},{k:'tatCa',ten:'Tất cả'},{k:'quyTrinh',ten:'16 quy trình'}],
-  taiSan:   [{k:'kho',ten:'Kho và tài sản'}],
+  lichCa:   [{k:'tuan',ten:'Lịch tuần'},{k:'gioCong',ten:'Giờ công'},{k:'daChot',ten:'Lịch sử chốt'}],
   taiSan:   [{k:'kho',ten:'Kho và tài sản'}],
   inAn:     [{k:'phieu',ten:'Phiếu in'},{k:'congNo',ten:'Công nợ nhà in'},{k:'nhaIn',ten:'Nhà in'}],
   heThong:  [{k:'toChuc',ten:'Sơ đồ tổ chức',can:'quanLyTaiKhoan'},{k:'taiKhoan',ten:'Tài khoản',can:'quanLyTaiKhoan'},{k:'thamSo',ten:'Tham số',can:'quanLyTaiKhoan'},{k:'nhapLieu',ten:'Nhập dữ liệu',can:'nhapDuLieu'},{k:'donKhach',ten:'Dọn khách tiềm năng',can:'suaThamSo'},{k:'nhatKy',ten:'Nhật ký',can:'quanLyTaiKhoan'},{k:'banGiao',ten:'Nhật ký bàn giao'}]
@@ -1399,6 +1538,7 @@ function render(){
     else if(currentTab==='khaoThi') el.innerHTML = viewKhaoThi();
     else if(currentTab==='taiChinh') el.innerHTML = viewTaiChinh();
     else if(currentTab==='congViec') el.innerHTML = viewCongViec();
+    else if(currentTab==='lichCa') el.innerHTML = viewLichCaTab();
     else if(currentTab==='taiSan') el.innerHTML = viewKhoTab();
     else if(currentTab==='inAn') el.innerHTML = viewInAn();
     else if(currentTab==='baoCao') el.innerHTML = viewBaoCaoTab();
@@ -1962,28 +2102,6 @@ function luuRa(ghiDanhId){
 }
 
 /* --------- HỌC VIÊN --------- */
-function doiLocHV(){
-  ['text','tuNgay','denNgay','lopId','nhomCT','hocPhi','trangThai','nguon','loId','phuTrach']
-    .forEach(function(k){
-      const el = $('lhv_' + k);
-      if(el) locHV[k] = el.value;
-    });
-  const cb = $('lhv_canTaiPhi');
-  if(cb) locHV.canTaiPhi = cb.checked;
-  render();
-}
-function xoaLocHV(){ locHV = Object.assign({}, LOC_HV_MAC_DINH); render(); }
-function moRongLoc(){ locMoRong = !locMoRong; render(); }
-function demLocDangBat(){
-  let n = 0;
-  Object.keys(LOC_HV_MAC_DINH).forEach(function(k){
-    if(k === 'text') return;
-    if(locHV[k] !== LOC_HV_MAC_DINH[k]) n++;
-  });
-  return n;
-}
-
-/* Thông tin gộp của một học viên, dùng cho cả lọc lẫn hiển thị */
 /* ================= BỘ LỌC HỌC VIÊN DÙNG CHUNG ================= */
 /* Một bộ lọc, hai màn dùng: Học vụ sắp theo lớp, Tuyển sinh sắp theo ngày chốt */
 const LOC_HV_MAC_DINH = {
@@ -3283,6 +3401,8 @@ function setDdGhiChu(v){ ddGhiChu = v; }
 let ddLopId = null, ddNgay = null, ddBuoiSo = 1, ddData = {}, ddGvDungGio = true, ddGhiChu = '', ddDocId = null;
 
 let ddXemKetThuc = false;
+/* Ghi chú riêng từng em vừa sửa trong phiên này, để màn hiện ngay không chờ tải lại */
+let ddGhiChuEm = {};
 function doiXemLopKetThuc(){ ddXemKetThuc = !ddXemKetThuc; render(); }
 function viewChonLopDiemDanh(){
   if(ddLopId) return viewDiemDanh();
@@ -3674,15 +3794,56 @@ function viewDiemDanh(){
   else h += '<div style="padding:0 14px;">'+hv.map(function(x){
     const st = ddData[x.id]||'';
     const vlt = vangLienTiep(ddLopId, x.id);
-    return '<div class="list-row"><div style="min-width:0;flex:1;"><div>'+esc(x.hoTen)+'</div>'
-      + '<div class="small" style="color:'+(vlt>=3?'var(--danger)':'var(--muted)')+';">'
-      + (vlt>=3? 'Vắng '+vlt+' buổi liên tiếp — cần liên hệ phụ huynh' : esc((x.tenTA?x.tenTA+' · ':'')+(x.maHV||'')))+'</div></div>'
+    const gd = ghiDanhCuaHocVien(x.id, ddLopId);
+    const no = gd ? conNoCua(gd) : 0;
+    const gc = gd ? (ddGhiChuEm[gd.id] !== undefined ? ddGhiChuEm[gd.id] : (gd.ghiChuHocVu || '')) : '';
+    return '<div class="list-row dd-row"><div style="min-width:0;flex:1;">'
+      + '<div>'+esc(x.hoTen)+'</div>'
+      /* Mã học viên luôn hiện, không bị cảnh báo đè như trước */
+      + '<div class="small muted" style="margin:3px 0 4px;">'
+      + esc((x.tenTA? x.tenTA+' · ' : '')+(x.maHV||'—'))+'</div>'
+      + (gd ? '<div>' + nhanSachCuaGhiDanh(gd)
+              + (no > 0 ? '<span class="chip chip-no">Nợ '+fmtTien(no)+'đ</span>' : '')
+              + '</div>'
+            : '')
+      + (vlt>=3
+         ? '<div class="small" style="color:var(--danger);margin-top:4px;">'
+           + '⚠️ Vắng '+vlt+' buổi liên tiếp — cần liên hệ phụ huynh</div>'
+         : '')
+      + (gc ? '<div class="gc-em">💬 '+esc(gc)+'</div>' : '')
+      + '</div>'
+      + (gd && hasPerm('suaHocVien')
+         ? '<button class="btn-gc'+(gc?' co':'')+'" title="Ghi chú riêng em này" '
+           + 'onclick="formGhiChuEm(\''+gd.id+'\')">💬</button>'
+         : '')
       + '<div class="dd-btns">'
       + '<button class="dd '+(st==='CM'?'on-cm':'')+'" onclick="setDD(\''+x.id+'\',\'CM\')">✓</button>'
       + '<button class="dd '+(st==='P'?'on-p':'')+'" onclick="setDD(\''+x.id+'\',\'P\')">P</button>'
       + '<button class="dd '+(st==='K'?'on-k':'')+'" onclick="setDD(\''+x.id+'\',\'K\')">K</button>'
       + '</div></div>';
   }).join('')+'</div>';
+
+  /* Khối gom các em cần báo phụ huynh sau buổi này */
+  h += (function(){
+    const can = [];
+    hv.forEach(function(x){
+      const gd = ghiDanhCuaHocVien(x.id, ddLopId);
+      const vlt = vangLienTiep(ddLopId, x.id);
+      const ly = [];
+      if(vlt >= 3) ly.push('vắng '+vlt+' buổi liên tiếp');
+      if(gd && gd.trangThaiSach === 'Chưa nhận') ly.push('chưa nhận sách');
+      if(gd && conNoCua(gd) > 0) ly.push('còn nợ học phí '+fmtTien(conNoCua(gd))+'đ');
+      if(ly.length) can.push({ten: x.hoTen, ly: ly.join(', ')});
+    });
+    if(!can.length) return '';
+    return '<div style="padding:10px 14px;border-top:1px solid var(--border);background:#fffaf0;">'
+      + '<div class="small" style="font-weight:700;color:#8a5a06;margin-bottom:6px;">'
+      + '🔔 Cần báo phụ huynh sau buổi này ('+can.length+' em)</div>'
+      + can.map(function(c){
+          return '<div class="small" style="padding:4px 0;color:#6b4b06;">• <b>'
+            + esc(c.ten)+'</b> — '+esc(c.ly)+'</div>'; }).join('')
+      + '</div>';
+  })();
 
   h += '<div style="padding:12px 14px;border-top:1px solid var(--border);background:#f7f9fc;">'
     + '<input id="ddGhiChu" placeholder="Ghi chú buổi học (nếu có)" value="'+esc(ddGhiChu)+'" oninput="setDdGhiChu(this.value)">'
@@ -3738,6 +3899,50 @@ function moBuoiDaLuu(buoiId){
   ddLopId = b.lopId; ddNgay = b.ngay;
   napBuoi();
   render();
+}
+/* Ghi chú riêng cho một em, lưu kèm người ghi và ngày.
+   Dùng chung trường ghiChuHocVu với màn Tình trạng học viên, nên Kế toán
+   cũng thấy ghi chú này bên màn Tài chính — khỏi phải mở hai tab. */
+function formGhiChuEm(gdId){
+  if(!hasPerm('suaHocVien')){ showToast('Bạn không có quyền ghi chú'); return; }
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  const hienTai = ddGhiChuEm[gdId] !== undefined ? ddGhiChuEm[gdId] : (gd.ghiChuHocVu || '');
+  openModal('<h3>Ghi chú học viên</h3>'
+    +'<div class="small muted">'+esc(tenHocVien(gd.hocVienId))+' · lớp '+esc(maLopCua(gd.lopId))+'</div>'
+    +'<label>Nội dung cần theo dõi</label>'
+    +'<textarea id="mGCEm" style="min-height:90px;" '
+    +'placeholder="VD: Mẹ báo em bị ốm, xin nghỉ hết tuần này">'+esc(hienTai)+'</textarea>'
+    +'<div class="small muted">Ghi chú này hiện ở màn điểm danh và cả màn Học phí của Kế toán, '
+    +'để hai bên nắm cùng một thông tin mà không phải mở hai nơi.</div>'
+    +'<div class="row" style="margin-top:14px;gap:8px;">'
+    +'<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    +'<button class="btn btn-primary btn-block" onclick="luuGhiChuEm(\''+gdId+'\')">Lưu</button></div>'
+    + (hienTai
+       ? '<button class="btn btn-danger btn-block" style="margin-top:8px;" '
+         + 'onclick="xoaGhiChuEm(\''+gdId+'\',this)">Xoá ghi chú</button>' : ''));
+}
+function luuGhiChuEm(gdId){
+  if(!hasPerm('suaHocVien')){ showToast('Bạn không có quyền ghi chú'); return; }
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  const nd = $('mGCEm').value.trim();
+  const kem = nd ? (nd + ' — ' + fmtDate(todayISO()) + ', ' + currentUser.hoTen) : '';
+  db.collection('fcv_ghidanh').doc(gdId).update({
+    ghiChuHocVu: kem, nguoiGhiChuHV: nd ? currentUser.hoTen : '',
+    ngayGhiChuHV: nd ? todayISO() : ''
+  }).then(function(){
+    ddGhiChuEm[gdId] = kem;
+    closeModal();
+    showToast(nd ? '✅ Đã lưu ghi chú' : 'Đã xoá ghi chú');
+    logAct((nd ? 'Ghi chú' : 'Xoá ghi chú') + ' học viên ' + tenHocVien(gd.hocVienId));
+    render();
+  }).catch(fsErr);
+}
+function xoaGhiChuEm(gdId, btn){
+  if(!requestConfirm('xgc' + gdId, btn, '⚠️ Bấm lần nữa để xoá')) return;
+  $('mGCEm').value = '';
+  luuGhiChuEm(gdId);
 }
 function xoaBuoiDiemDanh(buoiId, btn){
   if(!hasPerm('diemDanh')){ showToast('Bạn không có quyền điểm danh'); return; }
@@ -4777,7 +4982,7 @@ function formBaoGia(phieuId){
     +'<label>Ảnh báo giá (không bắt buộc)</label><input type="file" id="mBGAnh" accept="image/*">'
     +'<div class="small muted">Có thể chụp ảnh tờ báo giá, hoặc bỏ trống và chỉ nhập số liệu.</div>'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
-    +'<button class="btn btn-primary btn-block" id="btnLuuBG" onclick="luuBaoGia(\''+phieuId+'\')">Lưu báo giá</button></div>');
+    +'<button class="btn btn-primary btn-block" id="btnLuuBG" onclick="luuBaoGiaNhaIn(\''+phieuId+'\')">Lưu báo giá</button></div>');
 }
 function tinhThanhTien(soLuong){
   const dg = Number($('mBGDonGia').value)||0;
@@ -4801,7 +5006,7 @@ function nenAnh(file, cb){
   reader.onerror = function(){ cb(null); };
   reader.readAsDataURL(file);
 }
-function luuBaoGia(phieuId){
+function luuBaoGiaNhaIn(phieuId){
   const p = phieuInList.find(function(x){ return x.id===phieuId; });
   const nhaIn = $('mBGNhaIn').value.trim();
   const donGia = Number($('mBGDonGia').value)||0;
@@ -6338,7 +6543,7 @@ function viewXepLopChiTiet(){
     + (p.lopDaXep? '<div class="small" style="color:var(--ok);">Đã xếp vào lớp '+esc(p.lopDaXep)+'</div>' : '')
     + '</div>'
     + '<div style="display:flex;gap:6px;">'
-    + (p.trangThai==='Đã tư vấn'? '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">In phiếu lưu hồ sơ</button>' : '')
+    + (p.trangThai==='Đã tư vấn'? '<button class="btn btn-sm" onclick="inPhieuTest(\''+p.id+'\')">🖨 In phiếu cho phụ huynh</button>' : '')
     + (xoaDuocPhieuTest(p)? '<button class="btn btn-sm btn-danger" onclick="xoaPhieuTest(\''+p.id+'\',this)">Xoá phiếu</button>' : '')
     + '<button class="btn btn-sm" onclick="dongXepLop()">Đóng</button></div></div></div>';
 
@@ -6423,7 +6628,41 @@ function viewXepLopChiTiet(){
       + '<button class="btn btn-primary btn-block" style="margin-top:12px;" onclick="hoanTatTuVan(\''+p.id+'\')">Lưu kết quả tư vấn</button>'
       + '</div>';
   }
-  else if(p.trangThai==='Đã tư vấn'){
+  /* Báo giá sẽ in kèm — cho tư vấn viên biết trước khi bấm in */
+  if(p.trangThai === 'Đã tư vấn'){
+    const dsBG = baoGiaCuaPhieuTest(p);
+    if(!dsBG.length){
+      h += '<div class="card" style="border-color:var(--warn);">'
+        + '<div class="small"><b>Chưa có báo giá cho khách này</b></div>'
+        + '<div class="small muted">Phiếu in ra sẽ không có mục học phí. '
+        + 'Muốn in kèm học phí thì vào Tuyển sinh → Giá và kịch bản, '
+        + 'tính học phí rồi bấm "Lưu báo giá cho khách".</div></div>';
+    } else {
+      const bg0 = dsBG[0];
+      const ok0 = baoGiaInDuoc(bg0);
+      const lech = baoGiaLechDeXuat(p, bg0);
+      h += '<div class="card" style="border-color:'
+        + (ok0.duoc ? (lech ? 'var(--warn)' : 'var(--ok)') : 'var(--danger)') + ';">'
+        + '<h3>Học phí in kèm phiếu</h3>'
+        + '<div class="small"><b>' + esc(bg0.capDo || '—') + '</b> · '
+        + fmtTien(bg0.soChot) + 'đ'
+        + (bg0.giamTheoKhung ? ' · ' + esc(bg0.tenUuDai || '') + ' giảm '
+           + fmtTien(bg0.giamTheoKhung) + 'đ' : '')
+        + '</div>'
+        + '<div class="small muted">Lập ' + fmtDate(bg0.ngayLap)
+        + (bg0.nguoiLap ? ' bởi ' + esc(bg0.nguoiLap) : '')
+        + (dsBG.length > 1 ? ' · khách có ' + dsBG.length + ' báo giá, bấm In để chọn' : '')
+        + '</div>'
+        + (ok0.duoc ? '' : '<div class="small" style="color:var(--danger);">⚠️ '
+           + esc(ok0.lyDo) + '</div>')
+        + (lech ? '<div class="small" style="color:var(--warn);">⚠️ Cấp độ báo giá ('
+           + esc(bg0.capDo || '—') + ') khác lớp giáo viên đề xuất ('
+           + esc(p.lopDeXuat || '—') + ')</div>' : '')
+        + '</div>';
+    }
+  }
+
+  if(p.trangThai==='Đã tư vấn'){
     h += '<div class="card"><h3>Ý kiến phụ huynh</h3>'
       + '<div class="small">'+esc(p.yKienPH||'')
       + (p.lopKhac? ' · lớp đề nghị: '+esc(p.lopKhac):'')+'</div>'
@@ -6591,13 +6830,112 @@ function dayPhieuVaoChoXep(ptId){
 }
 
 /* --- In phiếu --- */
-function inPhieuTest(id){
+/* ============ GỘP HỌC PHÍ VÀO PHIẾU ĐÁNH GIÁ ============
+   Phụ huynh nhận một tờ, vừa thấy nhận xét của giáo viên vừa thấy học phí.
+   Nối qua leadId: phiếu test và báo giá cùng trỏ về một khách trong phễu. */
+
+/* Số ngày báo giá còn hiệu lực, sửa được trong Hệ thống → Tham số */
+function hieuLucBaoGia(){ return Number(settings.hieuLucBaoGia) || 15; }
+
+/* Mọi báo giá của khách trong phiếu này, mới nhất trước */
+function baoGiaCuaPhieuTest(p){
+  if(!p || !p.leadId) return [];
+  return baoGiaList.filter(function(b){ return b.leadId === p.leadId; })
+    .sort(function(a, b){ return (b.ts || 0) - (a.ts || 0); });
+}
+
+/* Báo giá có in lên phiếu được không.
+   QĐ 14 cấm cam kết giá ngoài khung; in lên giấy có chữ ký ba bên là
+   cam kết bằng văn bản, nên báo giá khác khung phải có người duyệt. */
+function baoGiaInDuoc(b){
+  if(!b) return {duoc: false, lyDo: 'Khách chưa có báo giá nào'};
+  if(b.khacKhung && !(b.nguoiDuyet || '').trim())
+    return {duoc: false, lyDo: 'Báo giá chốt khác khung ' + fmtTien(b.soChot)
+      + 'đ nhưng chưa chọn người duyệt. QĐ 14 cấm cam kết giá ngoài khung đã duyệt.'};
+  return {duoc: true, lyDo: ''};
+}
+
+/* Cấp độ trong báo giá có khớp với lớp giáo viên đề xuất không.
+   Lệch nhau mà vẫn in thì phụ huynh cầm tờ giấy tự mâu thuẫn. */
+function baoGiaLechDeXuat(p, b){
+  if(!p || !b) return false;
+  const dx = stripDia(p.lopDeXuat || '').trim();
+  if(!dx) return false;
+  const cap = stripDia(b.capDo || '').trim();
+  if(!cap) return false;
+  return dx.indexOf(cap) < 0 && cap.indexOf(dx) < 0;
+}
+
+/* Khách có nhiều báo giá thì để tư vấn viên chọn bản in kèm, không tự đoán */
+function formChonBaoGiaIn(phieuId, ds){
+  openModal('<h3>Chọn báo giá in kèm phiếu</h3>'
+    +'<div class="small muted">Khách này có ' + ds.length + ' báo giá. '
+    +'Chọn bản muốn in lên phiếu cho phụ huynh.</div>'
+    + ds.map(function(b){
+        const ok = baoGiaInDuoc(b);
+        return '<div class="list-row"><div style="min-width:0;flex:1;">'
+          + '<div><b>' + esc(b.capDo || '—') + '</b> · ' + fmtTien(b.soChot) + 'đ</div>'
+          + '<div class="small muted">' + esc(b.nhomCT || '')
+          + ' · lập ' + fmtDate(b.ngayLap)
+          + (b.nguoiLap ? ' · ' + esc(b.nguoiLap) : '') + '</div>'
+          + (b.khacKhung
+             ? '<div class="small" style="color:var(--warn);">Khác khung'
+               + (b.nguoiDuyet ? ' · duyệt bởi ' + esc(b.nguoiDuyet) : '')
+               + (b.lyDo ? ' · ' + esc(b.lyDo) : '') + '</div>'
+             : '')
+          + (ok.duoc ? '' : '<div class="small" style="color:var(--danger);">Không in được: '
+             + esc(ok.lyDo) + '</div>')
+          + '</div>'
+          + (ok.duoc
+             ? '<button class="btn btn-sm btn-primary" onclick="inPhieuTest(\''
+               + phieuId + '\',\'' + b.id + '\')">In bản này</button>'
+             : '')
+          + '</div>'; }).join('')
+    +'<div class="row" style="margin-top:14px;gap:8px;">'
+    +'<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    +'<button class="btn btn-block" onclick="inPhieuTest(\''+phieuId+'\',\'__khong__\')">'
+    +'In không kèm học phí</button></div>');
+}
+
+function inPhieuTest(id, baoGiaId){
   const p = phieuTestList.find(function(x){ return x.id===id; });
   if(!p) return;
   if(p.trangThai!=='Đã tư vấn'){
     showToast('Chỉ in được phiếu đã hoàn tất tư vấn. Phiếu này đang ở bước '+buocHienTai(p)+'/3.');
     return;
   }
+
+  /* ---- Chọn báo giá để in kèm ---- */
+  const dsBG = baoGiaCuaPhieuTest(p);
+  let bg = null;
+  if(baoGiaId === '__khong__'){
+    bg = null;                                  /* người dùng chọn in không kèm giá */
+  } else if(baoGiaId){
+    bg = dsBG.find(function(x){ return x.id === baoGiaId; }) || null;
+  } else if(dsBG.length > 1){
+    /* Nhiều báo giá thì để chị tư vấn chọn, không tự đoán */
+    formChonBaoGiaIn(p.id, dsBG);
+    return;
+  } else {
+    bg = dsBG[0] || null;
+  }
+
+  if(bg){
+    const ok = baoGiaInDuoc(bg);
+    if(!ok.duoc){
+      if(!confirm('⚠️ KHÔNG IN ĐƯỢC HỌC PHÍ LÊN PHIẾU\n\n' + ok.lyDo
+        + '\n\nIn phiếu không kèm học phí?')) return;
+      bg = null;
+    }
+  }
+  if(bg && baoGiaLechDeXuat(p, bg)){
+    if(!confirm('⚠️ CẤP ĐỘ KHÔNG KHỚP\n\n'
+      + 'Giáo viên đề xuất: ' + (p.lopDeXuat || '—') + '\n'
+      + 'Báo giá lập cho: ' + (bg.capDo || '—') + '\n\n'
+      + 'In ra thì mục III và mục V trên phiếu sẽ mâu thuẫn nhau.\n'
+      + 'Vẫn in?')) return;
+  }
+
   const o = function(v){ return v? '☒' : '☐'; };
   const oNhieu = function(ds, cur){
     return ds.map(function(x){ return o(stripDia(cur||'')===stripDia(x))+' '+x; }).join('&nbsp;&nbsp;');
@@ -6620,6 +6958,9 @@ function inPhieuTest(id){
     + '.ky{display:flex;justify-content:space-between;margin-top:26px;text-align:center;font-size:11pt;}'
     + '.ky div{width:32%;}'
     + '.note{font-size:10pt;font-style:italic;margin-top:16px;}'
+    + '.tien{text-align:right;white-space:nowrap;}'
+    + 'tr.tong td{font-weight:bold;background:#f2f2f2;}'
+    + '.ghi-nho{font-size:10pt;font-style:italic;margin-top:5px;}'
     + '@media print{@page{size:A4;margin:14mm;}}'
     + '</style></head><body>'
     + '<div class="hd"><div><b>TRUNG TÂM NGOẠI NGỮ - TIN HỌC FLIC</b></div>'
@@ -6649,7 +6990,44 @@ function inPhieuTest(id){
     + dong('Nội dung cần ưu tiên cải thiện', p.canCaiThien)
     + dong('Khuyến nghị dành cho phụ huynh', p.khuyenNghi)
     + '</table>'
-    + '<div class="sec">V. Ý KIẾN CỦA PHỤ HUYNH / NGƯỜI GIÁM HỘ</div>'
+    /* Mục V chỉ in khi có báo giá hợp lệ. Không có thì các mục sau lùi số lại. */
+    + (bg
+       ? '<div class="sec">V. HỌC PHÍ VÀ ƯU ĐÃI ÁP DỤNG</div><table>'
+         + dong('Chương trình', (bg.nhomCT || '') + (bg.capDo ? ' · ' + bg.capDo : ''))
+         + (bg.soBuoi ? dong('Số buổi', bg.soBuoi + ' buổi') : '')
+         + '<tr><td class="l">Học phí theo khung</td><td class="tien">'
+           + fmtTien(bg.giaGoc) + ' đ</td></tr>'
+         + (bg.soBuoi
+            ? '<tr><td class="l">Đơn giá mỗi buổi</td><td class="tien">'
+              + fmtTien(Math.round((Number(bg.soChot) || 0) / bg.soBuoi)) + ' đ</td></tr>'
+            : '')
+         + (bg.giamTheoKhung
+            ? '<tr><td class="l">Ưu đãi: ' + esc(bg.tenUuDai || bg.uuDaiTen || '')
+              + '</td><td class="tien">− ' + fmtTien(bg.giamTheoKhung) + ' đ</td></tr>'
+            : '')
+         + (bg.khacKhung
+            ? '<tr><td class="l">Mức duyệt riêng</td><td class="tien">'
+              + fmtTien(bg.soChot) + ' đ</td></tr>'
+            : '')
+         + '<tr class="tong"><td class="l">Học phí phải đóng</td><td class="tien">'
+           + fmtTien(bg.soChot) + ' đ</td></tr>'
+         + (bg.lePhiThi
+            ? '<tr><td class="l">Lệ phí thi và cấp chứng chỉ</td><td class="tien">'
+              + fmtTien(bg.lePhiThi)
+              + ' đ <i>(khoản riêng, không gộp vào học phí)</i></td></tr>'
+            : '')
+         + '</table>'
+         + '<div class="ghi-nho">Báo giá lập ngày ' + fmtDate(bg.ngayLap)
+         + (bg.nguoiLap ? ' bởi ' + esc(bg.nguoiLap) : '')
+         + ', có giá trị trong ' + hieuLucBaoGia() + ' ngày. '
+         + (bg.khacKhung
+            ? 'Mức duyệt riêng theo phê duyệt của ' + esc(bg.nguoiDuyet) + '.'
+              + (bg.lyDo ? ' Lý do: ' + esc(bg.lyDo) + '.' : '')
+            : 'Mức học phí áp dụng theo khung giá đã được Ban Giám đốc phê duyệt.')
+         + '</div>'
+       : '')
+    + '<div class="sec">' + (bg ? 'VI' : 'V')
+      + '. Ý KIẾN CỦA PHỤ HUYNH / NGƯỜI GIÁM HỘ</div>'
     + '<div style="border:1px solid #000;padding:7px;">'
     + oNhieu(Y_KIEN_PH, p.yKienPH)
     + (p.lopKhac? '<br>Lớp đề nghị: '+esc(p.lopKhac) : '')
@@ -6666,7 +7044,9 @@ function inPhieuTest(id){
   win.document.write(html);
   win.document.close();
   setTimeout(function(){ try{ win.print(); }catch(e){} }, 350);
-  logAct('In phiếu test '+p.soPhieu);
+  closeModal();
+  logAct('In phiếu test '+p.soPhieu
+    + (bg ? ' kèm học phí '+fmtTien(bg.soChot)+'đ' : ' không kèm học phí'));
 }
 
 /* ================= CHỐT NHẬP HỌC ================= */
@@ -7935,6 +8315,8 @@ function formDoiTac(id){
     +'<div class="row" style="gap:8px;">'
     +'<div style="flex:1;"><label>Người liên hệ</label><input id="mDTNguoi" value="' + esc(v.nguoiLienHe || '') + '"></div>'
     +'<div style="flex:1;"><label>Điện thoại</label><input id="mDTDienThoai" value="' + esc(v.dienThoai || '') + '"></div></div>'
+    +'<label>Email</label><input id="mDTEmail" value="' + esc(v.email || '') + '" '
+    +'placeholder="Email nhận danh sách và kết quả thi">'
     +'<label>Địa chỉ</label><input id="mDTDiaChi" value="' + esc(v.diaChi || '') + '">'
     +'<div class="row" style="gap:8px;">'
     +'<div style="flex:1;"><label>Chiết khấu mỗi thí sinh</label>'
@@ -7958,6 +8340,7 @@ function luuDoiTac(id){
   }
   const data = {ten: ten, loai: $('mDTLoai').value,
     nguoiLienHe: $('mDTNguoi').value.trim(), dienThoai: $('mDTDienThoai').value.trim(),
+    email: $('mDTEmail') ? $('mDTEmail').value.trim() : '',
     diaChi: $('mDTDiaChi').value.trim(), chietKhau: Number($('mDTChietKhau').value) || 0,
     ngayBatDau: $('mDTNgayBD').value, ghiChu: $('mDTGhiChu').value.trim(),
     dangHopTac: $('mDTDangHT').checked};
@@ -9209,7 +9592,7 @@ function viewThiSinh(){
   h += '<div class="card"><div class="row wrap" style="gap:8px;">'
     + '<input id="fTsText" placeholder="Tìm tên, mã số sinh viên…" value="'+esc(filterTsText)+'" oninput="setFilterTs()" style="flex:1;min-width:160px;">'
     + (hasPerm('quanLyThiSinh')?'<button class="btn btn-primary" onclick="formThiSinh(\''+tsKyId+'\')">+ Thêm thí sinh</button>':'')
-    + (hasPerm('nhapDuLieu')?'<button class="btn" onclick="nhapThiSinhExcel()">Nhập Excel</button>':'')
+    + (hasPerm('nhapDuLieu')?'<button class="btn" onclick="nhapThiSinhExcel(\''+tsKyId+'\')">📥 Nhập Excel vào kỳ này</button>':'')
     + (k && k.loai === 'CAMBRIDGE'
        ? '<button class="btn" onclick="xuatDsVN290(\''+tsKyId+'\')">Xuất mẫu VN290</button>' : '')
     + '</div></div>';
@@ -9229,6 +9612,19 @@ function viewThiSinh(){
       + (t.daNopLePhi? '<span style="color:var(--ok);">đã nộp lệ phí</span>' : '<span style="color:var(--warn);">chưa nộp lệ phí</span>')
       + (t.diem!==undefined && t.diem!==''? ' · điểm '+fmtNum(t.diem,1) : '')
       + '</div>'
+      + (function(){
+          const bit = [];
+          if(t.ngaySinh) bit.push(fmtDate(t.ngaySinh));
+          if(t.gioiTinh) bit.push(esc(t.gioiTinh));
+          const lh = (t.sdtPH || t.sdt || '').trim();
+          if(lh) bit.push(esc(lh) + (t.tenPH ? ' (' + esc(t.tenPH) + ')' : ''));
+          return bit.length ? '<div class="small muted">' + bit.join(' · ') + '</div>' : '';
+        })()
+      + (function(){
+          const tk = thieuThongTinTS(t, k);
+          return tk.length
+            ? '<div class="small" style="color:var(--warn);">⚠️ Thiếu ' + tk.join(', ') + '</div>' : '';
+        })()
       + (t.canhBaoKhoa? '<div class="small" style="color:var(--danger);">'+esc(t.canhBaoKhoa)+'</div>':'')
       + (phi? '<div class="small" style="color:var(--danger);">Quá hạn nhận · phí lấy muộn '+fmtTien(phi)+'đ</div>':'')
       + '</div><div style="text-align:right;flex-shrink:0;">'
@@ -9242,10 +9638,27 @@ function viewThiSinh(){
   return h;
 }
 
-/* Mở màn nhập dữ liệu với loại Thí sinh chọn sẵn */
-function nhapThiSinhExcel(){
+/* Soát thông tin bắt buộc để đăng ký với Hội đồng.
+   Kỳ Cambridge VN290 đòi đủ ngày sinh, giới tính và người liên hệ;
+   kỳ của FLIC thì nhẹ hơn, chỉ cần có cách liên hệ. */
+function thieuThongTinTS(t, ky){
+  if(!t) return [];
+  const thieu = [];
+  const laCam = ky && ky.loai === 'CAMBRIDGE';
+  if(!t.ngaySinh) thieu.push('ngày sinh');
+  if(laCam && !t.gioiTinh) thieu.push('giới tính');
+  if(laCam && !(t.tenPH || '').trim()) thieu.push('người giám hộ');
+  if(!(t.sdtPH || '').trim() && !(t.sdt || '').trim()) thieu.push('số điện thoại');
+  if(laCam && !t.hinhThucThi) thieu.push('hình thức thi');
+  return thieu;
+}
+
+/* Mở màn nhập dữ liệu với loại Thí sinh và kỳ thi chọn sẵn.
+   Gắn sẵn kỳ thì file Excel khỏi cần cột Tên kỳ thi, chuyên viên không gõ sai được. */
+function nhapThiSinhExcel(kyId){
   if(!hasPerm('nhapDuLieu')){ showToast('Bạn không có quyền nhập dữ liệu'); return; }
   nlLoai = 'thiSinh';
+  nlKyId = kyId || '';
   nlKetQua = null;
   switchSection('heThong', 'nhapLieu');
 }
@@ -9269,6 +9682,25 @@ function formThiSinh(kyId, id){
       +'<div style="flex:1;"><label>Mã số sinh viên</label><input id="mTSMssv" value="'+esc(v.mssv||'')+'"></div>'
       +'<div style="flex:1;"><label>Khoá (năm)</label><input type="number" id="mTSKhoa" value="'+esc(v.khoaSV||'')+'" oninput="kiemTraKhoaTS(\''+kyId+'\')" placeholder="VD: 2024"></div></div>'
     +'<div id="mTSCanhBao"></div>'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><label>Ngày sinh</label>'
+      +'<input type="date" id="mTSNgaySinh" value="'+esc(v.ngaySinh||'')+'"></div>'
+      +'<div style="flex:1;"><label>Giới tính</label><select id="mTSGioiTinh">'
+        +'<option value=""'+(!v.gioiTinh?' selected':'')+'>— chưa ghi —</option>'
+        + ['Nam','Nữ'].map(function(x){
+            return '<option'+(v.gioiTinh===x?' selected':'')+'>'+esc(x)+'</option>'; }).join('')
+      +'</select></div></div>'
+    +'<div class="small muted">Hội đồng VN290 bắt buộc có ngày tháng năm sinh và giới tính khi đăng ký.</div>'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><label>Họ tên người giám hộ</label>'
+      +'<input id="mTSTenPH" value="'+esc(v.tenPH||'')+'" placeholder="Cha, mẹ hoặc người giám hộ"></div>'
+      +'<div style="flex:1;"><label>Điện thoại người giám hộ</label>'
+      +'<input id="mTSSdtPH" value="'+esc(v.sdtPH||'')+'"></div></div>'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><label>Điện thoại thí sinh</label>'
+      +'<input id="mTSSdt" value="'+esc(v.sdt||'')+'"></div>'
+      +'<div style="flex:1;"><label>Email nhận kết quả</label>'
+      +'<input id="mTSEmail" value="'+esc(v.email||'')+'" placeholder="Để trống nếu chưa có"></div></div>'
     +'<label>Cấp độ hoặc môn thi</label><input id="mTSMon" list="dsCapTS" value="'+esc(v.monThi||'')+'" placeholder="VD: A2 Flyers hoặc UDCNTT nâng cao">'
     +'<datalist id="dsCapTS">'
       + CAP_DO_CAMBRIDGE.map(function(x){ return '<option value="'+esc(x)+'">'; }).join('')
@@ -9349,6 +9781,12 @@ function luuThiSinh(kyId, id){
     kyThiId:kyId, hoTen:ten, loaiTS:loaiTS, doiTacId: doiTacId,
     doiTacTen: doiTacId ? tenDoiTac(doiTacId) : '',
     mssv:$('mTSMssv').value.trim(),
+    ngaySinh: $('mTSNgaySinh') ? $('mTSNgaySinh').value : '',
+    gioiTinh: $('mTSGioiTinh') ? $('mTSGioiTinh').value : '',
+    tenPH: $('mTSTenPH') ? $('mTSTenPH').value.trim() : '',
+    sdtPH: $('mTSSdtPH') ? $('mTSSdtPH').value.trim() : '',
+    sdt:   $('mTSSdt')   ? $('mTSSdt').value.trim()   : '',
+    email: $('mTSEmail') ? $('mTSEmail').value.trim() : '',
     khoaSV:khoa, monThi:$('mTSMon').value.trim(),
     hinhThucThi: $('mTSHinhThuc') ? $('mTSHinhThuc').value : '',
     lePhiRieng: $('mTSLePhi') ? (Number($('mTSLePhi').value) || 0) : 0,
@@ -9701,6 +10139,17 @@ function xoaDinhMuc(id, btn){
 const LOAI_HOAN = ['Hoàn phí','Bảo lưu','Chuyển lớp'];
 const TT_HOAN = ['Chờ Học vụ xác nhận','Chờ duyệt','Đã duyệt','Từ chối','Đã chi'];
 const HINH_THUC_THU = ['Tiền mặt','Chuyển khoản','Quẹt thẻ'];
+/* Tài khoản nhận tiền của Trung tâm. Sửa được trong Hệ thống → Tham số,
+   không phải sửa code mỗi lần đổi ngân hàng. */
+const NGAN_HANG_MAC_DINH = ['Vietcombank','BIDV','Agribank','Techcombank','MB Bank','ACB'];
+function dsNganHang(){
+  const t = settings.dsNganHang;
+  if(typeof t === 'string' && t.trim())
+    return t.split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+  return NGAN_HANG_MAC_DINH.slice();
+}
+/* Hình thức nào cần ghi rõ ngân hàng nhận tiền */
+function canGhiNganHang(ht){ return ht === 'Chuyển khoản' || ht === 'Quẹt thẻ'; }
 
 /* --- Tính toán --- */
 function hocPhiPhaiDong(gd){
@@ -9755,6 +10204,53 @@ let hpLopId = '', filterHpText='';
 function doiLopHocPhi(){ hpLopId = $('hpChonLop').value; render(); }
 function setFilterHp(){ filterHpText = $('fHpText').value; render(); }
 
+/* ============ ĐỐI SOÁT LẦN 2 CỦA KẾ TOÁN ============
+   Học vụ theo dõi và ghi chú tình hình (rà soát lần 1), Kế toán đối chiếu
+   với phiếu thu bên Sổ Thu Chi rồi xác nhận ở đây (rà soát lần 2).
+   Hai vai tách bạch theo QĐ 14: Học vụ không ghi nhận tiền, Kế toán chốt số. */
+function doiSoatHocPhi(gdId){
+  if(!hasPerm('xacNhanDoiSoat')){
+    showToast('Chỉ Phó Giám đốc hoặc người được giao mới xác nhận đối soát'); return; }
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!(gd.lichSuThu || []).length){
+    showToast('Chưa có khoản thu nào để đối soát'); return; }
+
+  if(gd.doiSoatHP){
+    if(!confirm('Bỏ xác nhận đối soát của ' + tenHocVien(gd.hocVienId) + '?')) return;
+    db.collection('fcv_ghidanh').doc(gdId).update({
+      doiSoatHP: false, ngayDoiSoatHP: '', nguoiDoiSoatHP: ''
+    }).then(function(){
+      showToast('Đã bỏ xác nhận đối soát');
+      logAct('Bỏ đối soát học phí ' + tenHocVien(gd.hocVienId));
+    }).catch(fsErr);
+    return;
+  }
+
+  const dsPhieu = (gd.lichSuThu || []).map(function(x){
+    return '· ' + fmtDate(x.ngay) + ' · ' + loaiKhoan(x) + ' ' + fmtTien(x.soTien) + 'đ'
+      + (x.soPhieuThu ? ' · phiếu ' + x.soPhieuThu : ' · CHƯA GHI SỐ PHIẾU')
+      + (x.nganHang ? ' · ' + x.nganHang : '');
+  }).join('\n');
+  const thieuPhieu = (gd.lichSuThu || []).some(function(x){ return !x.soPhieuThu; });
+
+  if(!confirm('XÁC NHẬN ĐỐI SOÁT\n\n' + tenHocVien(gd.hocVienId)
+      + ' · lớp ' + maLopCua(gd.lopId) + '\n\n'
+      + 'Các khoản đã ghi nhận:\n' + dsPhieu + '\n\n'
+      + 'Tổng đã thu học phí: ' + fmtTien(daDongHocPhi(gd)) + 'đ\n'
+      + 'Còn nợ: ' + fmtTien(conNoCua(gd)) + 'đ\n\n'
+      + (thieuPhieu ? '⚠️ CÓ KHOẢN CHƯA GHI SỐ PHIẾU THU — đối chiếu kỹ trước khi xác nhận.\n\n' : '')
+      + 'Xác nhận đã khớp với phiếu thu bên Sổ Thu Chi FLIC?')) return;
+
+  db.collection('fcv_ghidanh').doc(gdId).update({
+    doiSoatHP: true, ngayDoiSoatHP: todayISO(), nguoiDoiSoatHP: currentUser.hoTen
+  }).then(function(){
+    showToast('✅ Đã xác nhận đối soát');
+    logAct('Đối soát học phí ' + tenHocVien(gd.hocVienId) + ' lớp ' + maLopCua(gd.lopId)
+      + ' · đã thu ' + fmtTien(daDongHocPhi(gd)) + 'đ');
+  }).catch(fsErr);
+}
+
 function viewHocPhi(){
   const dsLop = lopList.filter(function(l){ return l.trangThai==='Đang học' || l.trangThai==='Sắp khai giảng'; })
     .sort(function(a,b){ return (a.maLop||'').localeCompare(b.maLop||'','vi'); });
@@ -9783,6 +10279,28 @@ function viewHocPhi(){
     + '<div class="val" style="font-size:17px;'+(t.conNo?'color:var(--warn);':'')+'">'+fmtTien(t.conNo)+'</div></div>'
     + '</div>';
 
+  /* Tiến độ đối soát lần 2: Kế toán nhìn một chỗ biết còn ai chưa rà */
+  h += (function(){
+    const coThu = ds.filter(function(g){ return (g.lichSuThu || []).length; });
+    if(!coThu.length) return '';
+    const daRa = coThu.filter(function(g){ return g.doiSoatHP; }).length;
+    const chuaSo = coThu.filter(function(g){
+      return (g.lichSuThu || []).some(function(x){ return !x.soPhieuThu; }); }).length;
+    const coGhiChu = ds.filter(function(g){ return g.ghiChuHocVu; }).length;
+    return '<div class="card" style="'
+      + (daRa < coThu.length ? 'border-color:var(--warn);' : 'border-color:var(--ok);') + '">'
+      + '<div class="small"><b>Đối soát lần 2</b> · đã rà <b>' + daRa + '/' + coThu.length
+      + '</b> em có phát sinh thu'
+      + (chuaSo ? ' · <span style="color:var(--danger);">' + chuaSo
+          + ' em có khoản chưa ghi số phiếu thu</span>' : '')
+      + (coGhiChu ? ' · <span style="color:var(--info);">' + coGhiChu
+          + ' em có ghi chú của Học vụ</span>' : '')
+      + '</div>'
+      + '<div class="small muted">Học vụ rà soát lần 1 và ghi chú tình hình trao đổi với phụ huynh. '
+      + 'Kế toán đối chiếu với phiếu thu bên Sổ Thu Chi FLIC rồi bấm Xác nhận đối soát ở từng em. '
+      + 'Ghi chú của Học vụ hiện ngay dưới tên, không phải mở tab khác.</div></div>';
+  })();
+
   h += '<div class="card"><input id="fHpText" placeholder="Tìm tên học viên…" value="'+esc(filterHpText)+'" oninput="setFilterHp()"></div>';
 
   h += '<div class="card">';
@@ -9804,16 +10322,45 @@ function viewHocPhi(){
             + (dot.quaHan? ' · quá '+dot.soNgayQua+' ngày':'')+'</div>';
         })()
       + ((g.lichSuThu||[]).length
-          ? '<div class="small muted">Lần cuối '+fmtDate(g.lichSuThu[g.lichSuThu.length-1].ngay)
-            + ' · '+esc(loaiKhoan(g.lichSuThu[g.lichSuThu.length-1]))
-            + (g.lichSuThu[g.lichSuThu.length-1].soPhieuThu? ' · phiếu '+esc(g.lichSuThu[g.lichSuThu.length-1].soPhieuThu):'')+'</div>'
+          ? (function(){
+              const cuoi = g.lichSuThu[g.lichSuThu.length-1];
+              return '<div class="small muted">Lần cuối '+fmtDate(cuoi.ngay)
+                + ' · '+esc(loaiKhoan(cuoi))
+                + (cuoi.hinhThuc ? ' · '+esc(cuoi.hinhThuc) : '')
+                + (cuoi.nganHang ? ' '+esc(cuoi.nganHang) : '')
+                + (cuoi.soPhieuThu
+                   ? ' · phiếu '+esc(cuoi.soPhieuThu)
+                   : ' · <span style="color:var(--danger);">chưa ghi số phiếu</span>')+'</div>';
+            })()
+          : '')
+      /* Ghi chú của Học vụ hiện ngay tại đây, khỏi phải mở thêm tab Cảnh báo */
+      + (g.ghiChuHocVu
+          ? '<div class="small" style="color:var(--info);background:#f4f8fe;border-left:3px solid var(--info);'
+            + 'padding:5px 9px;border-radius:0 6px 6px 0;margin-top:5px;">💬 Học vụ: '
+            + esc(g.ghiChuHocVu) + '</div>'
+          : '')
+      + (g.taiDangKy === 'dongY'
+          ? '<div class="small" style="color:var(--ok);">Phụ huynh đồng ý học tiếp'
+            + (g.ngayTaiDangKy ? ' · ' + fmtDate(g.ngayTaiDangKy) : '')
+            + (g.nguoiXacNhanTai ? ' · ' + esc(g.nguoiXacNhanTai) : '') + '</div>'
+          : (g.taiDangKy === 'khong'
+             ? '<div class="small" style="color:var(--danger);">Phụ huynh báo không học tiếp</div>' : ''))
+      /* Dấu vết đối soát lần 2 của Kế toán */
+      + (g.doiSoatHP
+          ? '<div class="small" style="color:var(--ok);">✅ Đã đối soát với phiếu thu · '
+            + fmtDate(g.ngayDoiSoatHP) + ' · ' + esc(g.nguoiDoiSoatHP || '') + '</div>'
           : '')
       + '<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;">'
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm btn-primary" onclick="formGhiThu(\''+g.id+'\')">Ghi nhận thu</button>':'')
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm" onclick="formKeHoachDong(\''+g.id+'\')">Kế hoạch đóng</button>':'')
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm" onclick="formSuaHocPhi(\''+g.id+'\')">Sửa học phí</button>':'')
+      + (hasPerm('xacNhanDoiSoat') && (g.lichSuThu||[]).length
+          ? '<button class="btn btn-sm'+(g.doiSoatHP?'':' btn-primary')+'" onclick="doiSoatHocPhi(\''+g.id+'\')">'
+            + (g.doiSoatHP ? '↩ Bỏ đối soát' : '✅ Xác nhận đối soát') + '</button>'
+          : '')
       + '</div></div><div style="text-align:right;flex-shrink:0;">'
       + (no===0 && phai>0? badge('ok','Đã đủ') : (da>0? badge('warn','Còn '+fmtTien(no)) : badge('danger','Chưa đóng')))
+      + (g.doiSoatHP ? '<div style="margin-top:4px;">'+badge('ok','Đã đối soát')+'</div>' : '')
       + '</div></div>';
   }).join('');
   h += '</div>';
@@ -9900,10 +10447,11 @@ function formTinhTrangHocVien(gdId){
     +'<option value="canNhac"' + (gd.taiDangKy === 'canNhac' ? ' selected' : '') + '>Đang cân nhắc</option>'
     +'<option value="khong"' + (gd.taiDangKy === 'khong' ? ' selected' : '') + '>Không học tiếp</option>'
     +'</select>'
-    +'<label>Tình trạng sách</label><select id="mTTSach">'
+    +'<label>Tình trạng sách</label><select id="mTTSach" onchange="veONgaySach()">'
     + ['Chưa nhận', 'Đã nhận', 'Không mua'].map(function(x){
         return '<option' + (gd.trangThaiSach === x ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('')
     +'</select>'
+    +'<div id="mTTONgaySach"></div>'
     +'<label>Ghi chú của Học vụ</label>'
     +'<textarea id="mTTGhiChu" placeholder="Trao đổi với phụ huynh, lý do chưa đóng phí…">'
     + esc(gd.ghiChuHocVu || '') + '</textarea>'
@@ -9911,17 +10459,43 @@ function formTinhTrangHocVien(gdId){
     + 'Ở đây Học vụ ghi lại tình hình trao đổi với phụ huynh.</div>'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
     +'<button class="btn btn-primary btn-block" onclick="luuTinhTrangHocVien(\'' + gdId + '\')">Lưu</button></div>');
+  veONgaySach(gd.ngayNhanSach || '', gd.nguoiXacNhanSach || '');
+}
+/* Đánh dấu đã nhận sách thì ghi rõ ngày, để đối soát với phiếu xuất kho */
+function veONgaySach(ngayCo, nguoiCo){
+  const el = $('mTTONgaySach');
+  if(!el) return;
+  if(!$('mTTSach') || $('mTTSach').value !== 'Đã nhận'){ el.innerHTML = ''; return; }
+  const ngay = ngayCo !== undefined ? ngayCo : ($('mTTNgaySach') ? $('mTTNgaySach').value : '');
+  el.innerHTML = '<label>Ngày nhận sách</label>'
+    + '<input type="date" id="mTTNgaySach" value="' + esc(ngay || todayISO()) + '">'
+    + '<div class="small muted">'
+    + (nguoiCo ? 'Người xác nhận: ' + esc(nguoiCo) + '. ' : '')
+    + 'Ngày này dùng để đối soát với phiếu xuất kho của Hành chính.</div>';
 }
 function luuTinhTrangHocVien(gdId){
   if(!hasPerm('suaHocVien')){ showToast('Bạn không có quyền'); return; }
   const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
   const tai = $('mTTTai').value;
-  db.collection('fcv_ghidanh').doc(gdId).update({
+  const sach = $('mTTSach').value;
+  /* Ghi ngày nhận sách để đối soát với phiếu xuất kho của Hành chính.
+     Trước đây ngày chỉ được ghi khi xuất kho, Học vụ đánh dấu tay thì mất dấu vết. */
+  const dl = {
     taiDangKy: tai, ngayTaiDangKy: tai ? todayISO() : '',
     nguoiXacNhanTai: tai ? currentUser.hoTen : '',
-    trangThaiSach: $('mTTSach').value,
+    trangThaiSach: sach,
     ghiChuHocVu: $('mTTGhiChu').value.trim()
-  }).then(function(){
+  };
+  if(sach === 'Đã nhận'){
+    /* Giữ nguyên ngày cũ nếu đã có, không ghi đè ngày xuất kho */
+    dl.ngayNhanSach = $('mTTNgaySach') ? ($('mTTNgaySach').value || todayISO())
+                                       : (gd.ngayNhanSach || todayISO());
+    if(!gd.nguoiXacNhanSach) dl.nguoiXacNhanSach = currentUser.hoTen;
+  } else {
+    dl.ngayNhanSach = '';
+    dl.nguoiXacNhanSach = '';
+  }
+  db.collection('fcv_ghidanh').doc(gdId).update(dl).then(function(){
     closeModal();
     showToast('✅ Đã lưu tình trạng');
     logAct('Cập nhật tình trạng học viên ' + tenHocVien(gd.hocVienId)
@@ -10212,8 +10786,9 @@ function formGhiThu(gdId){
     +'<div class="small muted">Chỉ khoản Học phí mới trừ vào công nợ học phí.</div>'
     +'<label>Số tiền thu lần này</label><input type="number" id="mGTSoTien" value="'
       + (function(){ const d = dotSapDenHan(g); return d ? d.thieu : no; })()+'">'
-    +'<label>Hình thức</label><select id="mGTHinhThuc">'
+    +'<label>Hình thức</label><select id="mGTHinhThuc" onchange="veONganHang()">'
       + HINH_THUC_THU.map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select>'
+    +'<div id="mGTONganHang"></div>'
     +'<label>Ngày thu</label><input type="date" id="mGTNgay" value="'+todayISO()+'">'
     +'<label>Số phiếu thu bên Sổ Thu Chi FLIC</label><input id="mGTPhieu" placeholder="VD: 08-25">'
     +'<div class="small muted">Ghi số phiếu để hai app đối chiếu được với nhau.</div>'
@@ -10226,6 +10801,21 @@ function formGhiThu(gdId){
     +'<button class="btn btn-primary btn-block" onclick="luuGhiThu(\''+gdId+'\')">Lưu</button></div>');
 }
 /* Đánh dấu cần hoá đơn thì hiện ô tên người mua và mã số thuế */
+/* Chuyển khoản hoặc quẹt thẻ thì phải ghi rõ tiền vào ngân hàng nào,
+   để đối chiếu với sao kê khi Kế toán rà soát lần 2. */
+function veONganHang(){
+  const el = $('mGTONganHang');
+  if(!el) return;
+  const ht = $('mGTHinhThuc') ? $('mGTHinhThuc').value : '';
+  if(!canGhiNganHang(ht)){ el.innerHTML = ''; return; }
+  el.innerHTML = '<label>Ngân hàng nhận tiền</label>'
+    + '<select id="mGTNganHang">'
+    + '<option value="">— chọn ngân hàng —</option>'
+    + dsNganHang().map(function(x){ return '<option>' + esc(x) + '</option>'; }).join('')
+    + '</select>'
+    + '<div class="small muted">Ghi rõ ngân hàng để đối chiếu với sao kê. '
+    + 'Thêm hoặc bớt ngân hàng trong Hệ thống → Tham số.</div>';
+}
 function veOHoaDon(){
   const el = $('mGTThongTinHD');
   if(!el) return;
@@ -10241,10 +10831,14 @@ function luuGhiThu(gdId){
   const st = Number($('mGTSoTien').value)||0;
   if(st<=0){ showToast('Nhập số tiền'); return; }
   const loai = $('mGTLoai') ? $('mGTLoai').value : 'Học phí';
+  const ht = $('mGTHinhThuc').value;
+  const nganHang = $('mGTNganHang') ? $('mGTNganHang').value : '';
+  if(canGhiNganHang(ht) && !nganHang){
+    showToast('Chọn ngân hàng nhận tiền để còn đối chiếu sao kê'); return; }
   const ls = (g.lichSuThu||[]).slice();
   const canHD = $('mGTHoaDon') && $('mGTHoaDon').checked;
   ls.push({ngay:$('mGTNgay').value, soTien:st, loaiKhoan:loai,
-           hinhThuc:$('mGTHinhThuc').value,
+           hinhThuc:ht, nganHang:nganHang,
            soPhieuThu:$('mGTPhieu').value.trim(), ghiChu:$('mGTGhiChu').value.trim(),
            canHoaDon: !!canHD,
            tenNguoiMua: canHD && $('mGTTenMua') ? $('mGTTenMua').value.trim() : '',
@@ -10506,49 +11100,6 @@ function xacNhanDoiSoatKy(ky){
     showToast('✅ Đã xác nhận biên bản');
     logAct('Xác nhận biên bản đối soát kỳ '+ky);
   }).catch(fsErr);
-}
-
-/* ================= CÔNG NỢ ================= */
-function viewCongNo(){
-  const ds = ghiDanhList.filter(function(g){ return g.trangThai==='Đang học' && conNoCua(g)>0; })
-    .sort(function(a,b){ return conNoCua(b)-conNoCua(a); });
-  const tong = ds.reduce(function(s,g){ return s+conNoCua(g); },0);
-  const chuaDong = ds.filter(function(g){ return daDongHocPhi(g)===0; }).length;
-
-  let h = '<div class="card"><h3>Công nợ học viên</h3>'
-    + '<div class="small muted">Tổng còn nợ <b style="color:'+(tong?'var(--danger)':'inherit')+';">'+fmtTien(tong)+'đ</b> · '
-    + ds.length+' học viên · trong đó '+chuaDong+' người chưa đóng đồng nào</div></div>';
-
-  h += '<div class="card">';
-  if(!ds.length) h += emptyBox('✅','Không có công nợ nào');
-  else {
-    let lopHienTai = null;
-    ds.slice().sort(function(a,b){
-      const ma = maLopCua(a.lopId), mb = maLopCua(b.lopId);
-      return ma.localeCompare(mb,'vi') || (conNoCua(b)-conNoCua(a));
-    }).forEach(function(g){
-      const ml = maLopCua(g.lopId);
-      if(ml!==lopHienTai){
-        lopHienTai = ml;
-        const cung = ds.filter(function(x){ return maLopCua(x.lopId)===ml; });
-        h += '<div class="grp-head">'+esc(ml)+' · '+cung.length+' học viên · '
-          + fmtTien(cung.reduce(function(s,x){ return s+conNoCua(x); },0))+'đ</div>';
-      }
-      const no = conNoCua(g), da = daDongHocPhi(g);
-      h += '<div class="list-row"><div style="min-width:0;flex:1;">'
-        + '<div>'+esc(tenHocVien(g.hocVienId))+'</div>'
-        + '<div class="small muted">Phải đóng '+fmtTien(hocPhiPhaiDong(g))+'đ · đã đóng '+fmtTien(da)+'đ'
-        + ' · vào lớp '+fmtDate(g.ngayVao)+'</div></div>'
-        + '<div style="text-align:right;flex-shrink:0;">'
-        + '<div style="font-weight:700;color:var(--danger);">'+fmtTien(no)+'</div>'
-        + (hasPerm('ghiNhanThu')? '<div style="margin-top:5px;"><button class="btn btn-sm" onclick="formGhiThu(\''+g.id+'\')">Ghi thu</button></div>':'')
-        + '</div></div>';
-    });
-  }
-  h += '</div>';
-  h += '<div class="card"><div class="small muted">QĐ 14 mục 3.3: Kế toán cung cấp cho Học vụ và Tuyển sinh '
-    + 'thông tin học viên chưa hoàn tất học phí để phối hợp xử lý.</div></div>';
-  return h;
 }
 
 /* ================= HOÀN PHÍ, BẢO LƯU, CHUYỂN LỚP ================= */
@@ -13467,10 +14018,11 @@ const MAU_NHAP = {
   }
 };
 
-let nlLoai = 'giaoVien', nlKetQua = null, nlDangDoc = false, nlLoId = '';
+let nlLoai = 'giaoVien', nlKetQua = null, nlDangDoc = false, nlLoId = '', nlKyId = '';
 
 function doiLoaiNhap(){ nlLoai = $('nlLoai').value; nlKetQua = null; render(); }
 function doiLoNhap(){ nlLoId = $('nlLo').value; nlKetQua = null; render(); }
+function doiKyNhap(){ nlKyId = $('nlKy').value; nlKetQua = null; render(); }
 /* Mở màn nhập dữ liệu với lô chọn sẵn */
 function nhapVaoLo(loId){
   if(!hasPerm('nhapDuLieu')){ showToast('Bạn không có quyền nhập dữ liệu'); return; }
@@ -13985,6 +14537,782 @@ function xuatHang(id){
       + (dsGd.length ? ', phát sách ' + dsGd.length + ' em' : ''));
   }).catch(fsErr);
 }
+
+
+/* ==================================================================
+   LỊCH CA LÀM VIỆC
+   Chuyển từ file Excel "Lịch đăng ký ca FLIC V1.0.0" sang phần mềm.
+   Quy ước anh Tinh chốt 09/10/2026:
+   - Ca sáng 08:00–11:30 (3,5h); hành chính 13:00–17:30 (4,5h);
+     tối/quản sinh 15:30–20:00 (4,5h).
+   - Giờ/ngày = hợp các khung giờ, trừ phần chồng lấn. HC + tối = 7h.
+   - Chỉ tiêu 48h/tuần cộng giờ nợ tuần trước (âm là giờ dư).
+   - Nghỉ ốm / OFF / phép = 0h; thiếu giờ trừ lương khi chốt công cuối tháng.
+   - Làm T2–T7, nghỉ Chủ nhật. Tối thứ 7 không trực.
+   - Mỗi ca phải có ít nhất một người của cặp trực phủ kín khung giờ ca.
+   Khác Excel: cột người lấy từ danh sách tài khoản, giờ nợ tuần trước tự tính.
+   ================================================================== */
+
+const CA_LAM_VIEC = [
+  {ma: 1, ten: 'Ca sáng',          nhan: 'Sáng',       batDau: '08:00', ketThuc: '11:30'},
+  {ma: 2, ten: 'Ca hành chính',    nhan: 'Hành chính', batDau: '13:00', ketThuc: '17:30'},
+  {ma: 3, ten: 'Ca tối/quản sinh', nhan: 'Tối',        batDau: '15:30', ketThuc: '20:00'}
+];
+const NGAY_TUAN_LV = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+/* Ca nào trong ngày nào bắt buộc có người trực. Tối thứ 7 không trực. */
+const CA_PHAI_TRUC = [
+  [true, true, true],   /* Thứ 2 */
+  [true, true, true],   /* Thứ 3 */
+  [true, true, true],   /* Thứ 4 */
+  [true, true, true],   /* Thứ 5 */
+  [true, true, true],   /* Thứ 6 */
+  [true, true, false]   /* Thứ 7 — tối không trực */
+];
+/* Cặp trực theo bộ phận: mỗi ca phải có ít nhất một trong hai người */
+const CAP_TRUC_MAC_DINH = [
+  {boPhan: 'Tuyển sinh', viTri: ['FLIC-MKT-01', 'FLIC-TVTS-01']},
+  {boPhan: 'Học vụ',     viTri: ['FLIC-HV-01']}
+];
+const GIO_CHUAN_TUAN = 48;
+/* Giá trị nghỉ: không tính giờ công */
+const GIA_TRI_NGHI = ['OFF', 'PHÉP', 'ỐM'];
+/* Vị trí chỉ làm lịch hành chính, không đăng ký ca tối hay ca gãy */
+const VI_TRI_HANH_CHINH = ['FLIC-HCKT-01'];
+
+/* ---------- Tham số sửa được trong Hệ thống → Tham số ---------- */
+function gioChuanTuan(){ return Number(settings.gioChuanTuan) || GIO_CHUAN_TUAN; }
+/* Hạn đăng ký: số giờ trước 0h thứ 2 của tuần đó. Mặc định 31 giờ = 17h thứ 7 tuần trước. */
+function hanDangKyGio(){
+  const v = settings.hanDangKyCa;
+  return (v === 0 || v === '0') ? 0 : (Number(v) || 31);
+}
+function capTruc(){
+  const t = settings.capTruc;
+  if(Array.isArray(t) && t.length) return t;
+  return CAP_TRUC_MAC_DINH;
+}
+
+/* ---------- Tuần ---------- */
+/* Thứ 2 của tuần chứa ngày đã cho */
+function thuHaiCuaTuanLC(iso){ return thuHaiCuaTuan(iso || todayISO()); }
+function tenTuan(isoThuHai){
+  return fmtDate(isoThuHai) + ' – ' + fmtDate(addDaysISO(isoThuHai, 5));
+}
+/* Hồ sơ tuần trong fcv_lichca, hoặc khung rỗng nếu chưa có */
+function lichTuan(isoThuHai){
+  return lichCaList.find(function(x){ return x.tuan === isoThuHai; })
+    || {tuan: isoThuHai, oCa: {}, dieuChinh: {}, daChot: false};
+}
+/* Khoá một ô: userId|chỉ số ngày 0-5|chỉ số ca 0-2 */
+function khoaO(userId, iNgay, iCa){ return userId + '|' + iNgay + '|' + iCa; }
+
+/* ---------- Người có mặt trong lịch ----------
+   Lấy từ danh sách tài khoản, không cứng như Excel.
+   Thêm chuyên viên là tự có cột; Giám đốc không vào lịch ca. */
+/* Ban Giám đốc không trực ca nên không vào lưới đăng ký, dù có quyền */
+const VI_TRI_KHONG_TRUC_CA = ['FLIC-GD-01', 'FLIC-PGD-01'];
+function nguoiTrongLich(){
+  return usersList.filter(function(u){
+    if(VI_TRI_KHONG_TRUC_CA.indexOf(u.maViTri) >= 0) return false;
+    return !!(u.quyen && u.quyen.dangKyCa);
+  }).sort(function(a, b){
+    return (a.maViTri || '').localeCompare(b.maViTri || '')
+      || (a.hoTen || '').localeCompare(b.hoTen || '', 'vi');
+  });
+}
+function laViTriHanhChinh(maViTri){ return VI_TRI_HANH_CHINH.indexOf(maViTri) >= 0; }
+
+/* ---------- Đọc một ô thành khoảng giờ ----------
+   Trả {batDau, ketThuc} tính bằng phút từ 0h, hoặc null nếu không tính giờ. */
+function khoangGioCuaO(giaTri, iCa){
+  const v = String(giaTri == null ? '' : giaTri).trim()
+    .replace(/–/g, '-').replace(/\s/g, '').toUpperCase();
+  if(!v) return null;
+  if(GIA_TRI_NGHI.indexOf(v) >= 0) return null;
+  if(v === 'X'){
+    const ca = CA_LAM_VIEC[iCa];
+    if(!ca) return null;
+    return {batDau: phutCuaGio(ca.batDau), ketThuc: phutCuaGio(ca.ketThuc)};
+  }
+  const m = /^(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})$/.exec(v);
+  if(!m) return null;
+  const bd = Number(m[1]) * 60 + Number(m[2]);
+  const kt = Number(m[3]) * 60 + Number(m[4]);
+  if(isNaN(bd) || isNaN(kt)) return null;
+  if(bd < 0 || kt > 24 * 60) return null;
+  if(kt <= bd) return null;
+  return {batDau: bd, ketThuc: kt};
+}
+function phutCuaGio(hhmm){
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || '').trim());
+  if(!m) return 0;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+/* Ô có nội dung nhưng không đọc được thành giờ và cũng không phải giá trị nghỉ */
+function oSaiDinhDang(giaTri, iCa){
+  const v = String(giaTri == null ? '' : giaTri).trim()
+    .replace(/–/g, '-').replace(/\s/g, '').toUpperCase();
+  if(!v) return false;
+  if(v === 'X' || GIA_TRI_NGHI.indexOf(v) >= 0) return false;
+  return khoangGioCuaO(v, iCa) === null;
+}
+
+/* ---------- Giờ trong một ngày ----------
+   Hợp các khoảng, trừ phần chồng lấn. Dùng cách quét mốc thời gian:
+   đúng với số khoảng bất kỳ, không phụ thuộc vào việc có đúng ba ca. */
+function gioTrongNgay(cacO){
+  const ks = (cacO || []).map(function(x, i){ return khoangGioCuaO(x, i); })
+    .filter(Boolean)
+    .sort(function(a, b){ return a.batDau - b.batDau; });
+  if(!ks.length) return 0;
+  let tong = 0, dangMo = ks[0].batDau, hetO = ks[0].ketThuc;
+  for(let i = 1; i < ks.length; i++){
+    if(ks[i].batDau > hetO){          /* khoảng rời, chốt khoảng trước */
+      tong += hetO - dangMo;
+      dangMo = ks[i].batDau; hetO = ks[i].ketThuc;
+    } else if(ks[i].ketThuc > hetO){  /* chồng lấn, nối dài */
+      hetO = ks[i].ketThuc;
+    }
+  }
+  tong += hetO - dangMo;
+  return Math.round(tong / 60 * 100) / 100;
+}
+
+/* ---------- Giờ của một người trong một tuần ---------- */
+function cacODaNgay(tuan, userId, iNgay){
+  return CA_LAM_VIEC.map(function(c, iCa){
+    return (tuan.oCa || {})[khoaO(userId, iNgay, iCa)] || '';
+  });
+}
+function gioNgayCuaNguoi(tuan, userId, iNgay){
+  return gioTrongNgay(cacODaNgay(tuan, userId, iNgay));
+}
+function tongGioTuan(tuan, userId){
+  let t = 0;
+  for(let i = 0; i < NGAY_TUAN_LV.length; i++) t += gioNgayCuaNguoi(tuan, userId, i);
+  return Math.round(t * 100) / 100;
+}
+/* Giờ công tính = tổng giờ đăng ký − đi trễ/về sớm + điều chỉnh khác */
+function gioCongCuaNguoi(tuan, userId){
+  const dc = (tuan.dieuChinh || {})[userId] || {};
+  const tre = Number(dc.phutTre) || 0;
+  const khac = Number(dc.gioKhac) || 0;
+  return Math.round((tongGioTuan(tuan, userId) - tre / 60 + khac) * 100) / 100;
+}
+
+/* ---------- Chỉ tiêu tuần = giờ chuẩn + nợ tuần trước ----------
+   Nợ lấy từ tuần trước ĐÃ CHỐT. Chưa chốt thì chưa tính, tránh
+   cộng dồn số còn thay đổi được. Khác Excel: không ai nhập tay. */
+function noTuanTruoc(isoThuHai, userId){
+  const truoc = addDaysISO(isoThuHai, -7);
+  const lt = lichCaList.find(function(x){ return x.tuan === truoc; });
+  if(!lt || !lt.daChot) return 0;
+  const cl = (lt.chenhLech || {})[userId];
+  if(cl === undefined || cl === null) return 0;
+  return Math.round(-Number(cl) * 100) / 100;   /* thiếu 1h → nợ +1h */
+}
+function chiTieuTuan(isoThuHai, userId){
+  return Math.round((gioChuanTuan() + noTuanTruoc(isoThuHai, userId)) * 100) / 100;
+}
+function chenhLechCuaNguoi(tuan, userId){
+  return Math.round((gioCongCuaNguoi(tuan, userId)
+    - chiTieuTuan(tuan.tuan, userId)) * 100) / 100;
+}
+
+/* ---------- Kiểm tra trực cặp ----------
+   Mỗi ca bắt buộc trực phải có ít nhất một người của cặp phủ KÍN khung giờ ca. */
+function nguoiCuaCap(cap){
+  return nguoiTrongLich().filter(function(u){
+    return (cap.viTri || []).indexOf(u.maViTri) >= 0; });
+}
+function phuKinKhungCa(tuan, userId, iNgay, iCa){
+  const ca = CA_LAM_VIEC[iCa];
+  if(!ca) return false;
+  const bd = phutCuaGio(ca.batDau), kt = phutCuaGio(ca.ketThuc);
+  /* Gộp mọi khoảng của người đó trong ngày, xem có trùm hết khung ca không */
+  const ks = cacODaNgay(tuan, userId, iNgay)
+    .map(function(x, i){ return khoangGioCuaO(x, i); })
+    .filter(Boolean).sort(function(a, b){ return a.batDau - b.batDau; });
+  if(!ks.length) return false;
+  let moc = bd;
+  for(let i = 0; i < ks.length && moc < kt; i++){
+    if(ks[i].batDau > moc) break;        /* có lỗ hổng */
+    if(ks[i].ketThuc > moc) moc = ks[i].ketThuc;
+  }
+  return moc >= kt;
+}
+function kiemTraTrucCap(tuan){
+  const thieu = [];
+  capTruc().forEach(function(cap){
+    const ds = nguoiCuaCap(cap);
+    NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
+      CA_LAM_VIEC.forEach(function(ca, iCa){
+        if(!CA_PHAI_TRUC[iNgay] || !CA_PHAI_TRUC[iNgay][iCa]) return;
+        const co = ds.some(function(u){ return phuKinKhungCa(tuan, u.id, iNgay, iCa); });
+        if(!co) thieu.push({boPhan: cap.boPhan, iNgay: iNgay, iCa: iCa,
+          tenNgay: tenNgay, tenCa: ca.nhan,
+          nguoi: ds.map(function(u){ return u.hoTen; }).join(' / ') || '(chưa có ai)'});
+      });
+    });
+  });
+  return thieu;
+}
+
+/* ---------- Vi phạm quy ước đăng ký ---------- */
+function viPhamDangKy(tuan){
+  const ra = [];
+  nguoiTrongLich().forEach(function(u){
+    NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
+      CA_LAM_VIEC.forEach(function(ca, iCa){
+        const v = (tuan.oCa || {})[khoaO(u.id, iNgay, iCa)] || '';
+        if(!v) return;
+        if(oSaiDinhDang(v, iCa))
+          ra.push({hoTen: u.hoTen, tenNgay: tenNgay, tenCa: ca.nhan,
+            loi: 'Giá trị "' + v + '" không đọc được. Dùng X, hh:mm-hh:mm, OFF, PHÉP hoặc ỐM.'});
+        /* Vị trí hành chính: chỉ ca hành chính, không ca tối, không giờ gãy */
+        if(laViTriHanhChinh(u.maViTri)){
+          if(iCa === 2 && GIA_TRI_NGHI.indexOf(String(v).toUpperCase()) < 0)
+            ra.push({hoTen: u.hoTen, tenNgay: tenNgay, tenCa: ca.nhan,
+              loi: 'Vị trí hành chính không đăng ký ca tối.'});
+        }
+      });
+    });
+  });
+  return ra;
+}
+
+/* ---------- Hạn đăng ký ----------
+   Quá hạn thì chuyên viên không tự sửa được nữa, tránh đăng ký lùi ngày
+   sau khi đã đi làm. Người có quyền duyệt vẫn sửa được. */
+function quaHanDangKy(isoThuHai){
+  const h = hanDangKyGio();
+  if(!h) return false;                       /* đặt 0 là bỏ hạn */
+  const moc = new Date(isoThuHai + 'T00:00:00');
+  moc.setHours(moc.getHours() - h);
+  return new Date() > moc;
+}
+function moTaHanDangKy(isoThuHai){
+  const h = hanDangKyGio();
+  if(!h) return 'Không giới hạn thời gian đăng ký.';
+  const moc = new Date(isoThuHai + 'T00:00:00');
+  moc.setHours(moc.getHours() - h);
+  const thu = ['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'][moc.getDay()];
+  return 'Hạn đăng ký: ' + thu + ' '
+    + String(moc.getDate()).padStart(2,'0') + '/' + String(moc.getMonth()+1).padStart(2,'0')
+    + ' lúc ' + String(moc.getHours()).padStart(2,'0') + 'h'
+    + String(moc.getMinutes()).padStart(2,'0');
+}
+/* Người này có sửa được ô của người kia trong tuần này không */
+function suaDuocO(tuan, userId){
+  if(tuan.daChot) return false;
+  if(hasPerm('duyetLichCa')) return true;
+  if(!hasPerm('dangKyCa')) return false;
+  if(userId !== currentUser.id) return false;
+  return !quaHanDangKy(tuan.tuan);
+}
+
+
+
+/* ================= MÀN HÌNH LỊCH CA ================= */
+/* Giờ luôn hiện đủ 2 chữ số thập phân để đối chiếu với bảng Excel cũ */
+function fmtGio2(n){
+  const v = Number(n) || 0;
+  return (v < 0 ? '-' : '') + Math.abs(v).toFixed(2);
+}
+let lcTuan = null;        /* thứ 2 của tuần đang xem */
+let lcCaNhom = false;     /* true = lưới cả nhóm, false = lịch của tôi */
+
+function tuanDangXem(){
+  if(!lcTuan) lcTuan = thuHaiCuaTuanLC(todayISO());
+  return lcTuan;
+}
+function doiTuanLC(soTuan){
+  lcTuan = addDaysISO(tuanDangXem(), soTuan * 7);
+  render();
+}
+function veTuanNay(){ lcTuan = thuHaiCuaTuanLC(todayISO()); render(); }
+function doiCheDoLC(){ lcCaNhom = !lcCaNhom; render(); }
+
+/* Nhãn hiển thị của một ô */
+function nhanO(v){
+  const t = String(v == null ? '' : v).trim();
+  if(!t) return '<span class="lc-trong">–</span>';
+  const T = t.toUpperCase();
+  if(T === 'X') return '<span class="lc-v lc-x">X</span>';
+  if(T === 'OFF') return '<span class="lc-v lc-off">OFF</span>';
+  if(T === 'PHÉP') return '<span class="lc-v lc-off">PHÉP</span>';
+  if(T === 'ỐM') return '<span class="lc-v lc-om">ỐM</span>';
+  return '<span class="lc-v lc-gio">' + esc(t) + '</span>';
+}
+
+function viewLichCaTab(){
+  const sec = currentSection.lichCa || 'tuan';
+  let h = thanhCon([
+    {k: 'tuan', ten: 'Lịch tuần'},
+    {k: 'gioCong', ten: 'Giờ công'},
+    {k: 'daChot', ten: 'Lịch sử chốt'}
+  ], sec, 'doiConLichCa');
+  if(sec === 'gioCong') return h + viewGioCong();
+  if(sec === 'daChot')  return h + viewLichSuChot();
+  return h + viewLichTuan();
+}
+function doiConLichCa(k){ currentSection.lichCa = k; render(); }
+
+/* ---------- Màn chính: lịch tuần ---------- */
+function viewLichTuan(){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const ds = nguoiTrongLich();
+  const duyet = hasPerm('duyetLichCa');
+
+  let h = '<div class="card"><div class="row wrap" style="gap:10px;">'
+    + '<div style="min-width:0;flex:1;">'
+    + '<h3 style="margin:0;">Tuần ' + esc(tenTuan(iso)) + '</h3>'
+    + '<div class="small muted">'
+    + (tuan.daChot
+       ? '<b style="color:var(--ok);">Đã chốt</b> ngày ' + fmtDate(tuan.ngayChot)
+         + ' · ' + esc(tuan.nguoiChot || '')
+       : '<b style="color:var(--warn);">Chưa chốt</b> · ' + esc(moTaHanDangKy(iso)))
+    + '</div></div>'
+    + '<div class="row" style="gap:6px;flex-wrap:wrap;">'
+    + '<button class="btn btn-sm" onclick="doiTuanLC(-1)">← Tuần trước</button>'
+    + '<button class="btn btn-sm" onclick="veTuanNay()">Tuần này</button>'
+    + '<button class="btn btn-sm" onclick="doiTuanLC(1)">Tuần sau →</button>'
+    + (duyet
+       ? '<button class="btn btn-sm" onclick="doiCheDoLC()">'
+         + (lcCaNhom ? '👤 Lịch của tôi' : '👥 Cả nhóm') + '</button>'
+       : '')
+    + (duyet && !tuan.daChot
+       ? '<button class="btn btn-sm btn-primary" onclick="chotTuanLC()">🔒 Chốt tuần</button>'
+       : '')
+    + (duyet && tuan.daChot
+       ? '<button class="btn btn-sm" onclick="moLaiTuanLC()">🔓 Mở lại</button>'
+       : '')
+    + '</div></div></div>';
+
+  if(!ds.length)
+    return h + '<div class="card">' + emptyBox('👤',
+      'Chưa có tài khoản nào được cấp quyền đăng ký ca') + '</div>';
+
+  /* Cảnh báo */
+  const thieu = kiemTraTrucCap(tuan);
+  if(thieu.length){
+    /* Gom theo bộ phận cho gọn, thay vì liệt kê từng ca một */
+    const theoBP = {};
+    thieu.forEach(function(x){
+      if(!theoBP[x.boPhan]) theoBP[x.boPhan] = {nguoi: x.nguoi, ca: []};
+      theoBP[x.boPhan].ca.push(x.tenNgay.replace('Thứ ', 'T') + ' ' + x.tenCa.toLowerCase());
+    });
+    h += '<div class="card" style="border-color:var(--danger);background:#fdf1f1;">'
+      + '<div class="small" style="color:var(--danger);"><b>⚠️ ' + thieu.length
+      + ' ca chưa có người trực</b></div>'
+      + Object.keys(theoBP).map(function(bp){
+          const x = theoBP[bp];
+          return '<div class="small" style="color:#b3242a;margin-top:3px;"><b>' + esc(bp)
+            + '</b> (' + esc(x.nguoi) + ') thiếu ' + x.ca.length + ' ca: '
+            + esc(x.ca.join(' · ')) + '</div>'; }).join('')
+      + '<div class="small muted" style="margin-top:5px;">Mỗi ca phải có ít nhất một người '
+      + 'của cặp trực phủ kín khung giờ ca.</div>'
+      + '</div>';
+  }
+  const vp = viPhamDangKy(tuan);
+  if(vp.length)
+    h += '<div class="card" style="border-color:var(--warn);background:#fff8ea;">'
+      + '<div class="small" style="color:#8a5a06;"><b>⚠️ ' + vp.length
+      + ' ô sai quy ước</b></div>'
+      + vp.slice(0, 8).map(function(x){
+          return '<div class="small" style="color:#8a5a06;">• ' + esc(x.hoTen) + ' · '
+            + esc(x.tenNgay) + ' ca ' + esc(x.tenCa.toLowerCase()) + ' — '
+            + esc(x.loi) + '</div>'; }).join('')
+      + (vp.length > 8 ? '<div class="small muted">… và ' + (vp.length - 8) + ' ô nữa</div>' : '')
+      + '</div>';
+
+  return h + (lcCaNhom && duyet ? luoiCaNhom(tuan, ds) : lichCuaToi(tuan));
+}
+
+/* ---------- Lưới cả nhóm ---------- */
+function luoiCaNhom(tuan, ds){
+  const iso = tuan.tuan;
+  /* Tính một lần rồi tra, không gọi lại trong từng ô — 18 ca × số cặp trực */
+  const thieuTheoCa = {};
+  kiemTraTrucCap(tuan).forEach(function(x){
+    const k = x.iNgay + '|' + x.iCa;
+    (thieuTheoCa[k] = thieuTheoCa[k] || []).push(x.boPhan);
+  });
+  let h = '<div class="card" style="padding:10px;overflow-x:auto;">'
+    + '<table class="lc-bang"><thead><tr>'
+    + '<th style="width:72px;">Ngày</th><th style="width:138px;">Ca</th>'
+    + ds.map(function(u){
+        return '<th>' + esc(u.hoTen) + '<div class="small muted" style="font-weight:400;">'
+          + esc(tenViTri(u.maViTri) || u.maViTri) + '</div></th>'; }).join('')
+    + '</tr></thead><tbody>';
+
+  NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
+    CA_LAM_VIEC.forEach(function(ca, iCa){
+      const bpThieu = thieuTheoCa[iNgay + '|' + iCa] || [];
+      const thieuCa = bpThieu.length > 0;
+      h += '<tr' + (iCa === 2 ? ' class="lc-toi"' : '') + '>'
+        + (iCa === 0
+           ? '<td class="lc-ngay" rowspan="3">' + esc(tenNgay)
+             + '<br><span class="small muted">' + fmtDate(addDaysISO(iso, iNgay)).slice(0, 5)
+             + '</span></td>'
+           : '')
+        + '<td class="lc-ca"' + (thieuCa ? ' style="color:var(--danger);"' : '') + '>'
+        + esc(ca.nhan) + ' · ' + esc(ca.batDau) + '–' + esc(ca.ketThuc)
+        + (thieuCa
+           ? '<div class="small" style="color:var(--danger);">⚠️ thiếu '
+             + esc(bpThieu.join(', ')) + '</div>'
+           : '') + '</td>'
+        + ds.map(function(u){
+            const v = (tuan.oCa || {})[khoaO(u.id, iNgay, iCa)] || '';
+            const sua = suaDuocO(tuan, u.id);
+            const xau = oSaiDinhDang(v, iCa)
+              || (laViTriHanhChinh(u.maViTri) && iCa === 2 && v
+                  && GIA_TRI_NGHI.indexOf(String(v).toUpperCase()) < 0);
+            return '<td class="lc-o' + (sua ? ' lc-sua' : '') + '"'
+              + (xau ? ' style="background:#fff8ea;"' : '')
+              + (sua ? ' onclick="formChonCa(\'' + u.id + '\',' + iNgay + ',' + iCa + ')"' : '')
+              + '>' + nhanO(v) + '</td>'; }).join('')
+        + '</tr>';
+    });
+  });
+
+  h += '</tbody><tfoot>'
+    + dongTong('Tổng giờ đăng ký', ds, function(u){
+        return fmtGio2(tongGioTuan(tuan, u.id)); })
+    + dongTong('Chỉ tiêu tuần', ds, function(u){
+        return fmtGio2(chiTieuTuan(iso, u.id)); })
+    + dongTong('Chênh lệch', ds, function(u){
+        const c = chenhLechCuaNguoi(tuan, u.id);
+        return '<span style="color:' + (c < 0 ? 'var(--danger)' : 'var(--info)') + ';">'
+          + (c > 0 ? '+' : '') + fmtGio2(c) + '</span>'; }, true)
+    + '</tfoot></table>'
+    + '<div class="small muted" style="margin-top:8px;">'
+    + (tuan.daChot ? 'Tuần đã chốt, không sửa được. ' : 'Bấm vào ô để sửa. ')
+    + nhanO('X') + ' làm đúng khung ca · ' + nhanO('06:30-11:30') + ' giờ tùy chỉnh · '
+    + nhanO('OFF') + ' ' + nhanO('ỐM') + ' nghỉ, 0 giờ · '
+    + '<span class="lc-trong">–</span> không làm.</div></div>';
+  return h;
+}
+function dongTong(ten, ds, lay, choHtml){
+  return '<tr class="lc-tong"><td colspan="2" style="text-align:left;">' + esc(ten) + '</td>'
+    + ds.map(function(u){ return '<td>' + (choHtml ? lay(u) : esc(lay(u))) + '</td>'; }).join('')
+    + '</tr>';
+}
+
+/* ---------- Lịch của tôi ---------- */
+function lichCuaToi(tuan){
+  const iso = tuan.tuan;
+  const uid = currentUser.id;
+  const toi = usersList.find(function(u){ return u.id === uid; });
+  if(!toi || !(toi.quyen && toi.quyen.dangKyCa))
+    return '<div class="card">' + emptyBox('🔒',
+      'Tài khoản của bạn chưa được cấp quyền đăng ký ca') + '</div>';
+
+  const tong = tongGioTuan(tuan, uid);
+  const chiTieu = chiTieuTuan(iso, uid);
+  const cong = gioCongCuaNguoi(tuan, uid);
+  const chenh = chenhLechCuaNguoi(tuan, uid);
+  const no = noTuanTruoc(iso, uid);
+
+  let h = '<div class="grid" style="margin-bottom:12px;">'
+    + '<div class="stat"><div class="lbl">Đã đăng ký</div><div class="val">'
+      + fmtGio2(tong) + '</div></div>'
+    + '<div class="stat"><div class="lbl">Chỉ tiêu tuần</div><div class="val">'
+      + fmtGio2(chiTieu) + '</div>'
+      + (no ? '<div class="small muted">' + fmtNum(gioChuanTuan(), 0)
+          + (no > 0 ? ' + nợ ' : ' − dư ') + fmtGio2(Math.abs(no)) + '</div>' : '')
+      + '</div>'
+    + '<div class="stat" style="' + (chenh < 0 ? 'background:#fdf1f1;' : '') + '">'
+      + '<div class="lbl">' + (chenh < 0 ? 'Còn thiếu' : 'Dư') + '</div>'
+      + '<div class="val" style="color:' + (chenh < 0 ? 'var(--danger)' : 'var(--ok)') + ';">'
+      + fmtGio2(Math.abs(chenh)) + '</div></div>'
+    + '</div>';
+
+  if(chenh < 0)
+    h += '<div class="card" style="border-color:var(--warn);background:#fff8ea;">'
+      + '<div class="small" style="color:#8a5a06;">Còn thiếu <b>' + fmtGio2(-chenh)
+      + ' giờ</b> so với chỉ tiêu. Thiếu giờ sẽ trừ lương khi chốt công cuối tháng.</div></div>';
+
+  if(!tuan.daChot && !hasPerm('duyetLichCa') && quaHanDangKy(iso))
+    h += '<div class="card" style="border-color:var(--danger);background:#fdf1f1;">'
+      + '<div class="small" style="color:var(--danger);">Đã quá hạn đăng ký tuần này. '
+      + 'Muốn đổi ca thì báo Phó Giám đốc.</div></div>';
+
+  h += '<div class="card">';
+  NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
+    const gio = gioNgayCuaNguoi(tuan, uid, iNgay);
+    h += '<div class="lc-ngay-dt">' + esc(tenNgay) + ' · '
+      + fmtDate(addDaysISO(iso, iNgay)).slice(0, 5)
+      + (gio ? '<span class="small muted" style="font-weight:400;"> · ' + fmtGio2(gio)
+          + ' giờ</span>' : '') + '</div>';
+    CA_LAM_VIEC.forEach(function(ca, iCa){
+      const v = (tuan.oCa || {})[khoaO(uid, iNgay, iCa)] || '';
+      const sua = suaDuocO(tuan, uid);
+      h += '<div class="lc-dong"' + (sua
+          ? ' onclick="formChonCa(\'' + uid + '\',' + iNgay + ',' + iCa + ')" style="cursor:pointer;"'
+          : '') + '>'
+        + '<div><div>' + esc(ca.nhan) + '</div><div class="small muted">'
+        + esc(ca.batDau) + '–' + esc(ca.ketThuc) + '</div></div>'
+        + '<div>' + (v ? nhanO(v) : '<span class="lc-trong">– chưa đăng ký</span>') + '</div>'
+        + '</div>';
+    });
+  });
+  h += '</div>';
+  return h;
+}
+
+/* ---------- Form chọn ca ---------- */
+function formChonCa(userId, iNgay, iCa){
+  const tuan = lichTuan(tuanDangXem());
+  if(!suaDuocO(tuan, userId)){
+    showToast(tuan.daChot ? 'Tuần đã chốt, không sửa được'
+      : 'Bạn không sửa được ô này'); return; }
+  const u = usersList.find(function(x){ return x.id === userId; });
+  const ca = CA_LAM_VIEC[iCa];
+  const hienTai = (tuan.oCa || {})[khoaO(userId, iNgay, iCa)] || '';
+  const laHC = u && laViTriHanhChinh(u.maViTri);
+
+  const nut = function(gt, nhan, mau){
+    return '<button class="btn btn-block' + (hienTai === gt ? ' btn-primary' : '')
+      + '" style="margin-top:6px;' + (mau || '') + '" onclick="datO(\'' + userId + '\','
+      + iNgay + ',' + iCa + ',\'' + gt + '\')">' + nhan + '</button>';
+  };
+  openModal('<h3>' + esc(NGAY_TUAN_LV[iNgay]) + ' · ' + esc(ca.nhan) + '</h3>'
+    + '<div class="small muted">' + esc(u ? u.hoTen : '') + ' · khung ca '
+    + esc(ca.batDau) + '–' + esc(ca.ketThuc) + '</div>'
+    + (laHC && iCa === 2
+       ? '<div class="card" style="margin:9px 0;border-color:var(--warn);">'
+         + '<div class="small" style="color:#8a5a06;">Vị trí hành chính chỉ làm lịch hành chính, '
+         + 'không đăng ký ca tối. Chỉ chọn được nghỉ hoặc xoá.</div></div>'
+       : '')
+    + (laHC && iCa === 2 ? '' : nut('X', 'Làm đúng khung ca (' + ca.batDau + '–' + ca.ketThuc + ')'))
+    + (laHC && iCa === 2 ? '' :
+       '<label style="margin-top:12px;">Hoặc giờ tùy chỉnh</label>'
+       + '<div class="row" style="gap:8px;">'
+       + '<input id="mLCTu" placeholder="08:00" value="'
+       + esc(/^\d{1,2}:\d{2}-/.test(hienTai) ? hienTai.split('-')[0] : '') + '" style="flex:1;">'
+       + '<input id="mLCDen" placeholder="11:30" value="'
+       + esc(/-\d{1,2}:\d{2}$/.test(hienTai) ? hienTai.split('-')[1] : '') + '" style="flex:1;">'
+       + '</div>'
+       + '<button class="btn btn-block" style="margin-top:6px;" onclick="datOTuyChinh(\''
+       + userId + '\',' + iNgay + ',' + iCa + ')">Lưu giờ tùy chỉnh</button>')
+    + '<div style="border-top:1px solid var(--border);margin-top:12px;padding-top:4px;">'
+    + '<div class="small muted">Nghỉ — không tính giờ công</div>'
+    + nut('OFF', 'OFF') + nut('PHÉP', 'Nghỉ phép') + nut('ỐM', 'Nghỉ ốm') + '</div>'
+    + '<button class="btn btn-block" style="margin-top:12px;" onclick="datO(\''
+      + userId + '\',' + iNgay + ',' + iCa + ',\'\')">Xoá — không làm ca này</button>'
+    + '<button class="btn btn-block" style="margin-top:6px;" onclick="closeModal()">Đóng</button>');
+}
+function datOTuyChinh(userId, iNgay, iCa){
+  const tu = ($('mLCTu').value || '').trim(), den = ($('mLCDen').value || '').trim();
+  if(!tu || !den){ showToast('Nhập cả giờ bắt đầu và giờ kết thúc'); return; }
+  const gt = tu + '-' + den;
+  if(!khoangGioCuaO(gt, iCa)){
+    showToast('Giờ không hợp lệ. Nhập dạng 08:00 và 11:30, giờ kết thúc phải sau giờ bắt đầu');
+    return; }
+  datO(userId, iNgay, iCa, gt);
+}
+function datO(userId, iNgay, iCa, giaTri){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  if(!suaDuocO(tuan, userId)){ showToast('Không sửa được ô này'); return; }
+  const u = usersList.find(function(x){ return x.id === userId; });
+  if(u && laViTriHanhChinh(u.maViTri) && iCa === 2 && giaTri
+     && GIA_TRI_NGHI.indexOf(String(giaTri).toUpperCase()) < 0){
+    showToast('Vị trí hành chính không đăng ký ca tối'); return; }
+
+  const oCa = Object.assign({}, tuan.oCa || {});
+  const k = khoaO(userId, iNgay, iCa);
+  if(giaTri) oCa[k] = giaTri; else delete oCa[k];
+
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  const p = cu
+    ? db.collection('fcv_lichca').doc(cu.id).update({oCa: oCa})
+    : db.collection('fcv_lichca').add({tuan: iso, oCa: oCa, dieuChinh: {},
+        daChot: false, nguoiTao: currentUser.hoTen, ts: Date.now()});
+  p.then(function(){
+    closeModal();
+    showToast('✅ Đã lưu');
+  }).catch(fsErr);
+}
+
+/* ---------- Chốt tuần ---------- */
+function chotTuanLC(){
+  if(!hasPerm('duyetLichCa')){ showToast('Bạn không có quyền chốt lịch ca'); return; }
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  if(!cu){ showToast('Tuần này chưa có ai đăng ký ca'); return; }
+  if(tuan.daChot){ showToast('Tuần này đã chốt rồi'); return; }
+
+  const ds = nguoiTrongLich();
+  const thieu = kiemTraTrucCap(tuan);
+  const vp = viPhamDangKy(tuan);
+  const chenhLech = {};
+  ds.forEach(function(u){ chenhLech[u.id] = chenhLechCuaNguoi(tuan, u.id); });
+  const thieuGio = ds.filter(function(u){ return chenhLech[u.id] < 0; });
+
+  if(!confirm('CHỐT TUẦN ' + tenTuan(iso) + '\n\n'
+    + (thieu.length ? '⚠️ Còn ' + thieu.length + ' ca chưa có người trực.\n' : '')
+    + (vp.length ? '⚠️ Còn ' + vp.length + ' ô sai quy ước.\n' : '')
+    + (thieuGio.length
+       ? '\nThiếu giờ (sẽ chuyển thành nợ tuần sau):\n'
+         + thieuGio.map(function(u){
+             return '· ' + u.hoTen + ': thiếu ' + fmtGio2(-chenhLech[u.id]) + 'h'; }).join('\n')
+       : '\nKhông ai thiếu giờ.')
+    + '\n\nChốt xong không ai sửa được nữa. Chênh lệch chuyển sang chỉ tiêu tuần sau.\n'
+    + 'Đồng ý chốt?')) return;
+
+  db.collection('fcv_lichca').doc(cu.id).update({
+    daChot: true, ngayChot: todayISO(), nguoiChot: currentUser.hoTen,
+    chenhLech: chenhLech
+  }).then(function(){
+    showToast('✅ Đã chốt tuần ' + tenTuan(iso));
+    logAct('Chốt lịch ca tuần ' + tenTuan(iso)
+      + (thieuGio.length ? ' · ' + thieuGio.length + ' người thiếu giờ' : ''));
+  }).catch(fsErr);
+}
+function moLaiTuanLC(){
+  if(!hasPerm('duyetLichCa')){ showToast('Bạn không có quyền'); return; }
+  const iso = tuanDangXem();
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  if(!cu || !cu.daChot) return;
+  if(!confirm('Mở lại tuần ' + tenTuan(iso) + ' để sửa?\n\n'
+    + 'Chỉ tiêu tuần sau đang tính theo chênh lệch tuần này, '
+    + 'sửa xong phải chốt lại thì số mới đúng.')) return;
+  db.collection('fcv_lichca').doc(cu.id).update({
+    daChot: false, nguoiMoLai: currentUser.hoTen, ngayMoLai: todayISO()
+  }).then(function(){
+    showToast('Đã mở lại tuần ' + tenTuan(iso));
+    logAct('Mở lại lịch ca tuần ' + tenTuan(iso));
+  }).catch(fsErr);
+}
+
+/* ---------- Màn giờ công ---------- */
+function viewGioCong(){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const ds = nguoiTrongLich();
+  const duyet = hasPerm('duyetLichCa');
+  if(!ds.length)
+    return '<div class="card">' + emptyBox('👤', 'Chưa có ai trong lịch ca') + '</div>';
+
+  let h = '<div class="card"><div class="row wrap">'
+    + '<div><h3 style="margin:0;">Giờ công tuần ' + esc(tenTuan(iso)) + '</h3>'
+    + '<div class="small muted">Giờ công = giờ đăng ký − đi trễ/về sớm + điều chỉnh khác</div></div>'
+    + '<div class="row" style="gap:6px;">'
+    + '<button class="btn btn-sm" onclick="doiTuanLC(-1)">←</button>'
+    + '<button class="btn btn-sm" onclick="doiTuanLC(1)">→</button></div>'
+    + '</div></div>';
+
+  h += '<div class="card" style="padding:10px;overflow-x:auto;"><table class="lc-bang">'
+    + '<thead><tr><th style="text-align:left;">Chuyên viên</th>'
+    + '<th>Giờ đăng ký</th><th>Đi trễ (phút)</th><th>Điều chỉnh (giờ)</th>'
+    + '<th>Giờ công</th><th>Chỉ tiêu</th><th>Chênh lệch</th>'
+    + (duyet && !tuan.daChot ? '<th></th>' : '') + '</tr></thead><tbody>';
+  ds.forEach(function(u){
+    const dc = (tuan.dieuChinh || {})[u.id] || {};
+    const c = chenhLechCuaNguoi(tuan, u.id);
+    h += '<tr><td style="text-align:left;"><b>' + esc(u.hoTen) + '</b>'
+      + '<div class="small muted">' + esc(tenViTri(u.maViTri) || u.maViTri) + '</div></td>'
+      + '<td>' + fmtGio2(tongGioTuan(tuan, u.id)) + '</td>'
+      + '<td>' + (Number(dc.phutTre) || 0) + '</td>'
+      + '<td>' + fmtGio2(Number(dc.gioKhac) || 0) + '</td>'
+      + '<td><b>' + fmtGio2(gioCongCuaNguoi(tuan, u.id)) + '</b></td>'
+      + '<td>' + fmtGio2(chiTieuTuan(iso, u.id)) + '</td>'
+      + '<td style="color:' + (c < 0 ? 'var(--danger)' : 'var(--ok)') + ';"><b>'
+        + (c > 0 ? '+' : '') + fmtGio2(c) + '</b></td>'
+      + (duyet && !tuan.daChot
+         ? '<td><button class="btn btn-sm" onclick="formDieuChinhGio(\'' + u.id
+           + '\')">Sửa</button></td>' : '')
+      + '</tr>'
+      + (dc.ghiChu
+         ? '<tr><td colspan="' + (duyet && !tuan.daChot ? 8 : 7)
+           + '" style="text-align:left;padding-top:0;border-top:none;">'
+           + '<span class="small muted">💬 ' + esc(dc.ghiChu) + '</span></td></tr>'
+         : '');
+  });
+  h += '</tbody></table></div>';
+  return h;
+}
+function formDieuChinhGio(userId){
+  if(!hasPerm('duyetLichCa')){ showToast('Bạn không có quyền'); return; }
+  const tuan = lichTuan(tuanDangXem());
+  if(tuan.daChot){ showToast('Tuần đã chốt, không sửa được'); return; }
+  const u = usersList.find(function(x){ return x.id === userId; });
+  const dc = (tuan.dieuChinh || {})[userId] || {};
+  openModal('<h3>Điều chỉnh giờ công</h3>'
+    + '<div class="small muted">' + esc(u ? u.hoTen : '') + ' · tuần '
+    + esc(tenTuan(tuan.tuan)) + '</div>'
+    + '<label>Đi trễ / về sớm (phút)</label>'
+    + '<input type="number" id="mDCTre" value="' + (Number(dc.phutTre) || 0) + '">'
+    + '<div class="small muted">Tổng số phút trong tuần, trừ thẳng vào giờ công.</div>'
+    + '<label>Điều chỉnh khác (giờ, có thể âm)</label>'
+    + '<input type="number" step="0.25" id="mDCKhac" value="' + (Number(dc.gioKhac) || 0) + '">'
+    + '<label>Lý do</label>'
+    + '<input id="mDCGhiChu" value="' + esc(dc.ghiChu || '') + '" '
+    + 'placeholder="VD: hỗ trợ sự kiện ngoài giờ">'
+    + '<div class="row" style="margin-top:14px;gap:8px;">'
+    + '<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    + '<button class="btn btn-primary btn-block" onclick="luuDieuChinhGio(\'' + userId
+    + '\')">Lưu</button></div>');
+}
+function luuDieuChinhGio(userId){
+  if(!hasPerm('duyetLichCa')){ showToast('Bạn không có quyền'); return; }
+  const iso = tuanDangXem();
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  if(!cu){ showToast('Tuần này chưa có dữ liệu'); return; }
+  if(cu.daChot){ showToast('Tuần đã chốt, không sửa được'); return; }
+  const tre = Number($('mDCTre').value) || 0;
+  const khac = Number($('mDCKhac').value) || 0;
+  const gc = $('mDCGhiChu').value.trim();
+  if((tre || khac) && !gc){ showToast('Ghi lý do điều chỉnh'); return; }
+  const dieuChinh = Object.assign({}, cu.dieuChinh || {});
+  dieuChinh[userId] = {phutTre: tre, gioKhac: khac, ghiChu: gc,
+    nguoiSua: currentUser.hoTen, ngaySua: todayISO()};
+  db.collection('fcv_lichca').doc(cu.id).update({dieuChinh: dieuChinh})
+    .then(function(){
+      closeModal(); showToast('✅ Đã lưu điều chỉnh');
+      logAct('Điều chỉnh giờ công ' + (usersList.find(function(x){ return x.id === userId; })
+        || {}).hoTen + ': ' + tre + ' phút, ' + khac + ' giờ — ' + gc);
+    }).catch(fsErr);
+}
+
+/* ---------- Lịch sử chốt ---------- */
+function viewLichSuChot(){
+  const ds = lichCaList.filter(function(x){ return x.daChot; })
+    .sort(function(a, b){ return (b.tuan || '').localeCompare(a.tuan || ''); });
+  if(!ds.length)
+    return '<div class="card">' + emptyBox('🗓️', 'Chưa có tuần nào được chốt') + '</div>';
+  let h = '<div class="card"><h3>Các tuần đã chốt</h3>'
+    + '<div class="small muted">Chênh lệch của tuần đã chốt sẽ cộng vào chỉ tiêu tuần kế tiếp.</div></div>'
+    + '<div class="card">';
+  ds.forEach(function(t){
+    const cl = t.chenhLech || {};
+    const thieu = Object.keys(cl).filter(function(k){ return cl[k] < 0; });
+    h += '<div class="list-row"><div style="min-width:0;flex:1;">'
+      + '<div><b>Tuần ' + esc(tenTuan(t.tuan)) + '</b></div>'
+      + '<div class="small muted">Chốt ' + fmtDate(t.ngayChot) + ' · '
+      + esc(t.nguoiChot || '') + '</div>'
+      + (thieu.length
+         ? '<div class="small" style="color:var(--danger);">' + thieu.length
+           + ' người thiếu giờ: ' + esc(thieu.map(function(k){
+               const u = usersList.find(function(x){ return x.id === k; });
+               return (u ? u.hoTen : '?') + ' ' + fmtGio2(cl[k]); }).join(' · ')) + '</div>'
+         : '<div class="small" style="color:var(--ok);">Không ai thiếu giờ</div>')
+      + '</div>'
+      + '<button class="btn btn-sm" onclick="xemTuanDaChot(\'' + esc(t.tuan)
+      + '\')">Xem</button></div>';
+  });
+  return h + '</div>';
+}
+function xemTuanDaChot(iso){
+  lcTuan = iso;
+  currentSection.lichCa = 'tuan';
+  render();
+}
+
 
 /* --- Màn hình --- */
 let khoCon = 'ton';   /* ton | phieu | danhMuc */
@@ -14717,6 +16045,18 @@ function viewNhapLieu(){
     + Object.keys(MAU_NHAP).map(function(k){
         return '<option value="'+k+'" '+(nlLoai===k?'selected':'')+'>'+esc(MAU_NHAP[k].ten)+'</option>'; }).join('')
     + '</select>'
+    + (nlLoai === 'thiSinh'
+       ? '<label>Gắn cả file vào kỳ thi</label>'
+         + '<select id="nlKy" onchange="doiKyNhap()">'
+         + '<option value="">— theo cột Tên kỳ thi trong file —</option>'
+         + kyThiList.slice().sort(function(a,b){
+             return (b.ngayThi||'').localeCompare(a.ngayThi||''); }).map(function(x){
+             return '<option value="'+x.id+'" '+(nlKyId===x.id?'selected':'')+'>'
+               + esc(x.ten + (x.ngayThi? ' · '+fmtDate(x.ngayThi) : '')) + '</option>'; }).join('')
+         + '</select>'
+         + '<div class="small muted">Chọn kỳ ở đây thì mọi thí sinh trong file vào kỳ đó, '
+         + 'không cần cột Tên kỳ thi trong Excel. Để trống thì lấy theo cột Tên kỳ thi của từng dòng.</div>'
+       : '')
     + (nlLoai === 'khachTiemNang'
        ? '<label>Gắn cả file vào lô</label>'
          + '<select id="nlLo" onchange="doiLoNhap()">'
@@ -14741,11 +16081,24 @@ function viewNhapLieu(){
        : '')
     + '<div class="tbl-wrap" style="margin-top:10px;"><table><thead><tr><th>Cột</th><th>Bắt buộc</th><th>Ví dụ</th></tr></thead><tbody>'
     + m.cot.map(function(c){
-        return '<tr><td>'+esc(c.nhan)+'</td><td>'+(c.batBuoc? '<b style="color:var(--danger);">có</b>':'không')
+        const boQua = (c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId);
+        return '<tr'+(boQua? ' style="opacity:.5;"':'')+'><td>'+esc(c.nhan)+'</td><td>'
+          + (boQua ? '<span class="muted">không cần — đã chọn kỳ</span>'
+             : (c.batBuoc? '<b style="color:var(--danger);">có</b>':'không'))
           + '</td><td class="muted">'+esc(c.vd)+'</td></tr>'; }).join('')
     + '</tbody></table></div>'
     + '<div class="small muted" style="margin-top:8px;">Thứ tự cột không quan trọng, hệ thống đọc theo tên tiêu đề. '
     + 'Cột thừa sẽ bị bỏ qua.</div></div>';
+
+  if(nlLoai === 'thiSinh' && nlKyId){
+    const kyDang = kyThiList.find(function(x){ return x.id === nlKyId; });
+    if(kyDang)
+      h += '<div class="card" style="border-color:var(--info);"><div class="small">'
+        + '<b>Đang nhập vào kỳ thi: ' + esc(kyDang.ten) + '</b><br>'
+        + '<span class="muted">Mọi thí sinh trong file sẽ vào kỳ này'
+        + (kyDang.ngayThi ? ', thi ngày ' + fmtDate(kyDang.ngayThi) : '')
+        + '. Cột Tên kỳ thi trong file sẽ bị bỏ qua.</span></div></div>';
+  }
 
   if(nlLoai === 'khachTiemNang' && nlLoId){
     const loDang = loDuLieuList.find(function(x){ return x.id === nlLoId; });
@@ -14946,8 +16299,12 @@ function phanTichFile(wb){
     if(rong) continue;
     const d = {dongSo:r, data:data, loi:''};
 
-    /* Kiểm tra trường bắt buộc */
-    const thieu = m.cot.filter(function(c){ return c.batBuoc && !data[c.key]; });
+    /* Kiểm tra trường bắt buộc.
+       Riêng Tên kỳ thi: đã gắn kỳ ở trên màn thì không bắt buộc nữa. */
+    const thieu = m.cot.filter(function(c){
+      if(c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId) return false;
+      return c.batBuoc && !data[c.key];
+    });
     if(thieu.length) d.loi = 'Thiếu '+thieu.map(function(c){ return c.nhan.toLowerCase(); }).join(', ');
 
     /* Kiểm tra riêng theo loại */
@@ -15017,8 +16374,13 @@ function phanTichFile(wb){
           d.loi = 'Nhóm "' + data.nhom + '" không hợp lệ. Dùng: ' + NHOM_KHO.join(', ');
       }
       else if(nlLoai==='thiSinh'){
-        const cung = kyThiList.filter(function(k){ return stripDia(k.ten)===stripDia(data.tenKyThi); });
-        if(!cung.length) d.loi = 'Không tìm thấy kỳ thi "'+data.tenKyThi+'". Nhập kỳ thi trước.';
+        /* Đã gắn kỳ ở trên màn thì khỏi dò theo tên, tránh sai tên kỳ */
+        const cung = nlKyId
+          ? kyThiList.filter(function(k){ return k.id === nlKyId; })
+          : kyThiList.filter(function(k){ return stripDia(k.ten)===stripDia(data.tenKyThi); });
+        if(!cung.length) d.loi = nlKyId
+          ? 'Kỳ thi đã chọn không còn tồn tại, chọn lại kỳ thi'
+          : 'Không tìm thấy kỳ thi "'+data.tenKyThi+'". Nhập kỳ thi trước, hoặc chọn kỳ ở ô trên.';
         else if(cung.length > 1) d.loi = 'Có '+cung.length+' kỳ thi trùng tên, cần đặt tên khác nhau';
         else if((data.ngay || data.thang || data.nam)
             && !(data.ngay && data.thang && data.nam))
@@ -15396,6 +16758,16 @@ function viewTaiKhoan(){
     return '<div class="list-row"><div style="min-width:0;"><div><b>'+esc(u.hoTen)+'</b></div>'
       + '<div class="small muted">'+esc(u.username)+' · '+esc(u.maViTri)+' · '+soQuyen+' quyền</div>'
       + (xd.length? '<div class="small" style="color:var(--danger);">⚠️ Xung đột phân tách nhiệm vụ</div>':'')
+      + (u.maViTri === 'FLIC-GV-01'
+         ? (function(){
+             const gv = u.gvId
+               ? giaoVienList.find(function(x){ return x.id === u.gvId; }) : null;
+             if(gv) return '<div class="small" style="color:var(--ok);">Giáo viên: '
+               + esc(gv.tenGoi || gv.hoTen) + '</div>';
+             return '<div class="small" style="color:var(--warn);">'
+               + '⚠️ Chưa nối với hồ sơ giáo viên — sẽ thấy phiếu test của mọi người</div>';
+           })()
+         : '')
       + '</div><button class="btn btn-sm" onclick="formTaiKhoan(\''+u.id+'\')">Sửa</button></div>';
   }).join('');
   h += '</div>';
@@ -15436,9 +16808,10 @@ function formTaiKhoan(id){
     +'<label>Họ và tên</label><input id="mUTen" value="'+esc(v.hoTen||'')+'">'
     +'<label>Tên đăng nhập</label><input id="mUName" value="'+esc(v.username||'')+'">'
     +'<label>Mật khẩu</label><input id="mUPass" value="'+esc(v.password||'')+'">'
-    +'<label>Vị trí việc làm</label><select id="mUViTri" onchange="ganQuyenMacDinh()">'
+    +'<label>Vị trí việc làm</label><select id="mUViTri" onchange="doiViTriTaiKhoan()">'
       + VI_TRI.map(function(x){ return '<option value="'+x.ma+'" '+(v.maViTri===x.ma?'selected':'')+'>'+esc(x.ma+' · '+x.ten)+'</option>'; }).join('')
     +'</select>'
+    +'<div id="mUOGiaoVien"></div>'
     +'<label>Người bàn giao khi vắng từ 02 ngày</label><input id="mUBanGiao" value="'+esc(v.nguoiBanGiao||'')+'" placeholder="Họ tên người tiếp nhận">'
     +'<div class="small muted">QĐ 14 Phần A mục 9 yêu cầu bàn giao công việc khi nghỉ từ 02 ngày làm việc trở lên.</div>'
     +'<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;"><b class="small">Quyền thao tác</b>'+quyenHtml+'</div>'
@@ -15447,14 +16820,50 @@ function formTaiKhoan(id){
     +'<button class="btn btn-primary btn-block" onclick="luuTaiKhoan('+(u?"'"+u.id+"'":'null')+')">Lưu</button></div>'
     +(u && u.id!==currentUser.id? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaTaiKhoan(\''+u.id+'\',this)">Xoá tài khoản</button>':'')
   );
+  veOGiaoVien(v.gvId || '');
+}
+/* Tài khoản vị trí Giáo viên phải nối với một hồ sơ trong Danh mục giáo viên.
+   Không nối thì gvCuaToi() trả rỗng, phần mềm không lọc được phiếu test
+   của riêng thầy cô, mà hiện hết mọi phiếu của Trung tâm. */
+function veOGiaoVien(gvDangChon){
+  const el = $('mUOGiaoVien');
+  if(!el) return;
+  if(!$('mUViTri') || $('mUViTri').value !== 'FLIC-GV-01'){ el.innerHTML = ''; return; }
+  const chon = gvDangChon !== undefined
+    ? gvDangChon : ($('mUGvId') ? $('mUGvId').value : '');
+  const ds = giaoVienList.filter(function(g){
+    return g.trangThai !== 'Ngừng dạy' || g.id === chon; });
+  if(!ds.length){
+    el.innerHTML = '<div class="card" style="margin:8px 0;border-color:var(--warn);">'
+      + '<div class="small" style="color:#8a5a06;">Danh mục giáo viên đang trống. '
+      + 'Vào Học vụ → Giáo viên thêm hồ sơ trước, rồi quay lại nối tài khoản này.</div></div>';
+    return;
+  }
+  el.innerHTML = '<label>Giáo viên tương ứng trong danh mục</label>'
+    + '<select id="mUGvId">'
+    + '<option value="">— chưa nối —</option>'
+    + ds.map(function(g){
+        return '<option value="' + g.id + '"' + (chon === g.id ? ' selected' : '') + '>'
+          + esc(g.tenGoi || g.hoTen)
+          + (g.trangThai === 'Ngừng dạy' ? ' (đã ngừng dạy)' : '') + '</option>'; }).join('')
+    + '</select>'
+    + '<div class="small muted">Nối xong, thầy cô đăng nhập chỉ thấy phiếu test '
+    + 'được giao cho mình, không thấy phiếu của người khác.</div>';
+}
+function doiViTriTaiKhoan(){
+  veOGiaoVien('');
+  ganQuyenMacDinh();
 }
 function ganQuyenMacDinh(){
-  const gw=$('mUGvWrap');
-  if(gw) gw.style.display = ($('mUViTri').value==='FLIC-GV-01') ? 'block' : 'none';
   const ma = $('mUViTri').value;
   const mac = QUYEN_MAC_DINH[ma]||[];
   PERM_LIST.forEach(function(p){ const el=$('q_'+p.key); if(el) el.checked = mac.indexOf(p.key)>=0; });
-  showToast('Đã áp quyền mặc định của vị trí');
+  /* Bù quyền xem tab tương ứng, tránh cấp quyền làm việc mà tab không hiện lên */
+  const q={}; mac.forEach(function(k){ q[k]=true; });
+  const bu = quyenXemConThieu(q);
+  bu.forEach(function(k){ const el=$('q_'+k); if(el) el.checked = true; });
+  showToast('Đã áp quyền mặc định của vị trí'
+    + (bu.length ? ' · thêm '+bu.map(nhanQuyen).join(', ') : ''));
 }
 function luuTaiKhoan(id){
   const hoTen=$('mUTen').value.trim(), un=$('mUName').value.trim(), pw=$('mUPass').value;
@@ -15466,10 +16875,26 @@ function luuTaiKhoan(id){
     if(!confirm('⚠️ CẢNH BÁO PHÂN TÁCH NHIỆM VỤ\n\n'+xd.map(function(c){ return c.lyDo; }).join('\n')
       +'\n\nVẫn lưu? Hệ thống sẽ đánh dấu tài khoản này là vi phạm trên Sơ đồ tổ chức.')) return;
   }
-  const data={hoTen:hoTen, username:un, password:pw, maViTri:$('mUViTri').value, nguoiBanGiao:$('mUBanGiao').value.trim(), quyen:quyen};
+  /* Chặn quyền treo: cấp quyền làm việc mà quên quyền vào tab thì tự bù, báo rõ đã bù gì */
+  const buXem = quyenXemConThieu(quyen);
+  if(buXem.length) buXem.forEach(function(k){ quyen[k] = true; });
+  const maViTri = $('mUViTri').value;
+  const gvId = (maViTri === 'FLIC-GV-01' && $('mUGvId')) ? $('mUGvId').value : '';
+  if(maViTri === 'FLIC-GV-01' && !gvId){
+    if(!confirm('Tài khoản vị trí Giáo viên chưa nối với hồ sơ nào trong Danh mục giáo viên.\n\n'
+      + 'Chưa nối thì thầy cô sẽ thấy phiếu test của mọi người, '
+      + 'không lọc riêng phiếu được giao.\n\nVẫn lưu?')) return;
+  }
+  const data={hoTen:hoTen, username:un, password:pw, maViTri:maViTri,
+    gvId: gvId, nguoiBanGiao:$('mUBanGiao').value.trim(), quyen:quyen};
   const p = id? db.collection('fcv_users').doc(id).update(data) : db.collection('fcv_users').add(data);
   p.then(function(){
-    closeModal(); showToast('✅ Đã lưu tài khoản');
+    closeModal();
+    if(buXem.length){
+      showToast('✅ Đã lưu · tự thêm quyền ' + buXem.map(nhanQuyen).join(', ')
+        + ' để vào được tab tương ứng');
+      logAct('Tự thêm quyền xem cho '+hoTen+': '+buXem.map(nhanQuyen).join(', '));
+    } else showToast('✅ Đã lưu tài khoản');
     logAct((id?'Sửa':'Thêm')+' tài khoản '+hoTen);
     if(id===currentUser.id){ currentUser=Object.assign(currentUser,data); applyTabPerms(); render(); }
   }).catch(fsErr);
@@ -15529,6 +16954,25 @@ function viewThamSo(){
     +'<label>Hạn mức Phó Giám đốc duyệt in (đồng)</label>'
     +'<input type="number" id="tsHanMuc" value="'+(settings.hanMucPGD||10000000)+'">'
     +'<div class="small muted">Phiếu in từ mức này trở lên sẽ chuyển Giám đốc phê duyệt.</div>'
+    +'<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:8px;">'
+    +'<b class="small">Lịch ca làm việc</b></div>'
+    +'<label>Giờ chuẩn mỗi tuần</label>'
+    +'<input type="number" id="tsGioChuan" value="'+gioChuanTuan()+'">'
+    +'<div class="small muted">Chỉ tiêu cơ bản của mỗi chuyên viên, chưa cộng giờ nợ tuần trước.</div>'
+    +'<label>Hạn đăng ký ca (số giờ trước 0h thứ 2)</label>'
+    +'<input type="number" id="tsHanDangKy" value="'+hanDangKyGio()+'">'
+    +'<div class="small muted">31 giờ = 17h thứ 7 tuần trước. Đặt 0 để bỏ hạn. '
+    +'Quá hạn thì chuyên viên không tự sửa được nữa, Phó Giám đốc vẫn sửa được.</div>'
+    +'<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:8px;">'
+    +'<b class="small">Khác</b></div>'
+    +'<label>Hiệu lực báo giá in cho phụ huynh (ngày)</label>'
+    +'<input type="number" id="tsHieuLucBG" value="'+hieuLucBaoGia()+'">'
+    +'<div class="small muted">Ghi trên phiếu đánh giá năng lực để phụ huynh biết '
+    +'mức học phí còn giữ trong bao lâu.</div>'
+    +'<label>Ngân hàng nhận tiền (mỗi dòng một ngân hàng)</label>'
+    +'<textarea id="tsNganHang" style="min-height:100px;">'+esc(dsNganHang().join('\n'))+'</textarea>'
+    +'<div class="small muted">Danh sách này hiện ra khi Kế toán ghi nhận khoản thu bằng '
+    +'chuyển khoản hoặc quẹt thẻ, để đối chiếu với sao kê.</div>'
     +'<label>Nhóm chương trình (mỗi dòng một nhóm)</label>'
     +'<textarea id="tsNhomCT" style="min-height:130px;">'+esc((settings.nhomCT||[]).join('\n'))+'</textarea>'
     + (suaDuoc
@@ -15563,7 +17007,17 @@ function luuThamSo(){
     tyLeTruongTra: Number($('tsTyLe').value)||25,
     tyLeNopTruongTuDo: Number($('tsTyLeNop').value)||0,
     thueTNCN: Number($('tsThue').value)||10,
-    nhomCT: $('tsNhomCT').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean)
+    nhomCT: $('tsNhomCT').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean),
+    gioChuanTuan: Number($('tsGioChuan').value) || 48,
+    hanDangKyCa: (function(){
+      const v = Number($('tsHanDangKy').value);
+      return (v === 0) ? 0 : (v || 31);
+    })(),
+    hieuLucBaoGia: Number($('tsHieuLucBG').value) || 15,
+    dsNganHang: $('tsNganHang')
+      ? $('tsNganHang').value.split('\n').map(function(s){ return s.trim(); })
+          .filter(Boolean).join(', ')
+      : (settings.dsNganHang || '')
   };
   db.collection('fcv_settings').doc('chung').set(data, {merge:true})
     .then(function(){
