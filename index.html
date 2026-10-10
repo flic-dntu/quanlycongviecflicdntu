@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.21.3   |   Ngày: 09/10/2026
+ Phiên bản: V1.21.4   |   Ngày: 10/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -543,6 +543,51 @@
   .lc-ngay-dt{font-weight:700;font-size:13px;margin:12px 0 2px;}
   .lc-dong{border-top:1px solid var(--border-2);padding:9px 0;display:flex;
     justify-content:space-between;align-items:center;gap:8px;}
+  /* ---------- Lưới đăng ký ca của chuyên viên ---------- */
+  .dkca{width:100%;border-collapse:separate;border-spacing:0;}
+  .dkca th{font-size:11.5px;font-weight:700;color:var(--text-2);text-transform:uppercase;
+    letter-spacing:.03em;padding:0 0 7px;text-align:center;}
+  .dkca th.c-ngay{text-align:left;width:84px;}
+  .dkca th small{display:block;font-weight:600;text-transform:none;letter-spacing:0;
+    color:var(--muted);font-size:10.5px;margin-top:1px;}
+  .dkca td{padding:3px;vertical-align:top;}
+  .dkca td.c-ngay{padding:3px 8px 3px 0;vertical-align:middle;}
+  .dkca td.c-ngay b{font-size:13px;}
+  .dkca td.c-ngay div{font-size:11.5px;color:var(--muted);}
+  .oca{border:1.5px solid var(--border);border-radius:9px;padding:7px 8px 6px;cursor:pointer;
+    background:#fff;text-align:center;transition:all .16s var(--ease);min-height:56px;
+    display:flex;flex-direction:column;justify-content:center;gap:3px;position:relative;}
+  .oca:hover{border-color:var(--primary);box-shadow:var(--sh-2);transform:translateY(-1px);}
+  .oca .nh{font-size:13px;font-weight:700;}
+  .oca .ph{font-size:10.5px;color:var(--muted);line-height:1.25;}
+  .oca.trong{border-style:dashed;background:#fcfdfe;}
+  .oca.trong .nh{color:#c7ced9;font-weight:600;}
+  .oca.lam{border-color:var(--ok-br);background:var(--ok-bg);}
+  .oca.lam .nh{color:var(--ok-ink);}
+  .oca.gio{border-color:var(--info-br);background:var(--info-bg);}
+  .oca.gio .nh{color:var(--info-ink);font-size:11.5px;}
+  .oca.nghi{border-color:var(--border);background:#f1f3f7;}
+  .oca.nghi .nh{color:var(--muted);}
+  .oca.om{border-color:var(--danger-br);background:var(--danger-bg);}
+  .oca.om .nh{color:var(--danger-ink);}
+  .oca.khoa{cursor:not-allowed;opacity:.55;}
+  .oca.khoa:hover{border-color:var(--border);box-shadow:none;transform:none;}
+  .oca.cb-do{border-color:var(--danger);box-shadow:0 0 0 3px #fdeaea;}
+  .oca.cb-vang{border-color:var(--warn);box-shadow:0 0 0 3px #fff2d4;}
+  .oca .cap{font-size:10px;margin-top:2px;padding-top:3px;
+    border-top:1px dashed var(--border);color:var(--muted);line-height:1.3;}
+  .oca .cap b{color:var(--ok-ink);}
+  .oca .cap i{color:var(--danger-ink);font-style:normal;font-weight:700;}
+  .oca .cap em{color:var(--warn-ink);font-style:normal;font-weight:700;}
+  .oca .cogc{position:absolute;top:3px;right:4px;font-size:10px;}
+  @media(max-width:720px){
+    .dkca,.dkca tbody,.dkca tr,.dkca td{display:block;width:100%;}
+    .dkca thead{display:none;}
+    .dkca tr{border:1px solid var(--border);border-radius:10px;padding:8px;
+      margin-bottom:9px;background:var(--surface-2);}
+    .dkca td{display:inline-block;width:calc(33.33% - 4px);}
+    .dkca td.c-ngay{display:block;width:100%;padding:0 0 6px;}
+  }
   .dd-row{align-items:flex-start;}
   .dd-row .dd-btns,.dd-row .btn-gc{margin-top:1px;}
   .btn-gc{padding:6px 9px;border-radius:8px;border:1px solid var(--border);background:#fff;
@@ -692,10 +737,22 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.21.3';
-const NGAY_PHIEN_BAN = '09/10/2026';
+const PHIEN_BAN = 'V1.21.4';
+const NGAY_PHIEN_BAN = '10/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.21.4', ngay:'10/10/2026', muc:[
+    {loai:'Cải tiến', nd:'Màn đăng ký ca của chuyên viên dựng lại thành lưới sáu ngày nhân ba ca gọn trong một màn, thay cho mười tám dòng xếp dọc phải cuộn hết màn mới xem hết tuần. Dưới mỗi ô có dòng nhỏ cho biết người cùng cặp đã đăng ký gì ở ca đó, nên không còn chuyện hai người cùng bỏ trống một ca mà không ai hay. Ô chưa ai trực viền đỏ, ô chỉ có người hỗ trợ viền vàng, ngay tại chỗ chứ không phải cuộn lên đầu màn mới thấy. Trên điện thoại lưới gập thành sáu khối theo ngày, ba ca nằm ngang.'},
+    {loai:'Mới', nd:'Bốn nút điền nhanh: giống tuần trước, cả tuần hành chính, cả tuần ca tối, xoá hết. Điền nhanh chỉ điền vào ô còn trống, không đè lên ô chuyên viên đã cân nhắc chọn. Vị trí Hành chính không có nút cả tuần ca tối và bị chặn nếu gọi thẳng.'},
+    {loai:'Mới', nd:'Ô ghi chú cho chuyên viên nêu lý do đăng ký, ví dụ bù giờ tuần trước hay xin nghỉ phép. Có hai mức: ghi chú cho cả tuần gửi Phó Giám đốc, và ghi chú riêng từng ca hiện dấu nhắn ở góc ô, rê chuột vào là đọc được. Ghi chú hiện khi duyệt, khi chốt tuần và trong file Excel xuất ra.'},
+    {loai:'Mới', nd:'Khái niệm người hỗ trợ cho cặp trực. Người cơ động được tính cho nhiều bộ phận, ca nào họ trực thì không báo thiếu nữa, nhưng báo vàng kèm chữ chỉ có người hỗ trợ trực. Lý do giữ cảnh báo vàng: nếu tính ngang hàng thành viên chính thì cảnh báo biến mất nhưng rủi ro vẫn còn, Ban Giám đốc mất tầm nhìn vào những ca mỏng người. Mặc định vị trí Thiết kế là người hỗ trợ cho cả Tuyển sinh và Học vụ. Lưới cả nhóm đánh dấu cột của người hỗ trợ.'},
+    {loai:'Sửa lỗi', nd:'Hàm tra cặp trực của một người trước đây chỉ trả về cặp đầu tiên tìm thấy. Người tham gia hai bộ phận vì vậy chỉ thấy cảnh báo của một bên, bên kia biến mất khỏi màn của họ. Nay trả về mọi cặp. Lỗi này chưa phát tác vì trước đây chưa ai thuộc hai cặp, nhưng sẽ phát tác ngay khi bật người hỗ trợ.'},
+    {loai:'Mới', nd:'Màn cấu hình cặp trực trong Hệ thống rồi Tham số: thêm bớt bộ phận, tick chọn thành viên chính và người hỗ trợ theo vị trí việc làm. Trước đây cặp trực chỉ sửa được bằng cách sửa mã nguồn.'},
+    {loai:'Mới', nd:'Xuất Excel lịch ca. Bản tuần giữ đúng hình lưới, tô nền theo loại ô, có ba dòng tổng và phần ghi chú của chuyên viên, đặt sẵn khổ ngang vừa một trang để in dán bảng. Bản tháng tổng hợp các tuần trong tháng cho từng người kèm tổng giờ công, tổng chỉ tiêu, chênh lệch và số tuần đã chốt; giờ của tuần chưa chốt in nghiêng màu vàng để Kế toán biết số còn thay đổi được. Mọi con số ghi dạng số nên cộng trừ thẳng trong Excel được.'},
+    {loai:'Mới', nd:'Màn Tổng quan nhắc tuần đã qua mà chưa chốt lịch ca. Bù trừ giờ chỉ chạy từ tuần đã chốt, nên quên chốt một tuần là đứt chuỗi bù trừ, tuần sau lại tính đủ bốn mươi tám giờ mà không ai biết.'},
+    {loai:'Cải tiến', nd:'Màn cá nhân không lặp lại khối cảnh báo tổng nữa. Trước đây người vừa có quyền duyệt vừa xem lịch của mình thấy cùng một cảnh báo hai lần.'},
+    {loai:'Sửa lỗi', nd:'Hạ tầng kiểm thử trước nay không bắt được lời báo cho người dùng. Nay bắt được, nên xác nhận được rằng khi phần mềm chặn một thao tác thì nó có nói rõ lý do. Thêm bộ kiểm thử riêng cho xuất Excel: dựng file thật rồi mở ra đọc ngược, đối chiếu từng ô và kiểm giờ phải là số chứ không phải chuỗi — ghi nhầm thành chuỗi thì Kế toán cộng trong Excel sẽ ra không.'}
+  ]},
   {v:'V1.21.3', ngay:'09/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Thanh tiến độ hiện đầy khung trong khi số thật chỉ hai mươi lăm phần trăm. Nguyên nhân: khi chuyển sang cơ chế hiệu ứng, thanh chỉ còn ghi con số vào thuộc tính dữ liệu mà không ghi chiều rộng, nên lúc mã hiệu ứng chưa chạy thì thẻ nở hết khung. Lỗi hiện rõ nhất ở hộp thoại chi tiết công việc, vì hàm hiệu ứng chỉ quét vùng nội dung tab chứ không quét hộp thoại. Nay thanh luôn mang sẵn chiều rộng thật, hiệu ứng do mã tự hạ xuống rồi nâng lên chứ không nhờ bảng kiểu. Báo sai số còn tệ hơn không hiện gì, nên có thêm bộ kiểm thử riêng chặn lỗi này quay lại.'},
     {loai:'Mới', nd:'Công việc có ô phần trăm tiến độ. Người chủ trì kéo thanh để báo đã làm tới đâu, thả ra là lưu, mỗi lần đổi đều ghi vào nhật ký lưu vết kèm tên người và con số. Chỉ người chủ trì sửa được và chỉ khi việc đang làm; người khác xem được nhưng không sửa, gọi thẳng hàm cũng bị chặn và báo rõ lý do. Con số luôn nằm trong khoảng không tới một trăm, nhập chữ hay số âm đều về không. Tiến độ đi theo trạng thái nên không bao giờ nói ngược: nhận việc là không, nộp sản phẩm bàn giao tự lên một trăm, bị trả lại thì hạ xuống tám mươi. Thẻ Kanban của việc đang làm hiện thanh tiến độ và con số.'},
@@ -2291,6 +2348,23 @@ function thuThapCanhBao(){
   }
 
   /* ---- Tầng 2: cần theo dõi ---- */
+  /* Tuần đã qua mà chưa chốt: bù trừ giờ chỉ chạy từ tuần ĐÃ CHỐT, nên quên chốt
+     một tuần là đứt chuỗi bù trừ, tuần sau lại tính đủ 48 giờ mà không ai hay. */
+  if(hasPerm('duyetLichCa')){
+    const tuanNay = thuHaiCuaTuanLC(todayISO());
+    const chuaChot = [];
+    for(let i = 1; i <= 8; i++){
+      const t = addDaysISO(tuanNay, -7 * i);
+      const lt = lichCaList.find(function(x){ return x.tuan === t; });
+      if(lt && !lt.daChot && Object.keys(lt.oCa || {}).length) chuaChot.push(t);
+    }
+    them({tang:2, mau:'warn', soLuong:chuaChot.length,
+      tieuDe: chuaChot.length + ' tuần đã qua mà chưa chốt lịch ca',
+      chiTiet: chuaChot.slice(0, 3).map(function(t){ return tenTuan(t); }).join(' · ')
+        + ' — chưa chốt thì giờ thừa thiếu không chuyển sang tuần sau',
+      tab:'lichCa', sec:'tuan'});
+  }
+
   if(hasPerm('xemHocVu')){
     const dangHoc = lopList.filter(function(l){ return l.trangThai === 'Đang học'; });
     const nguyCap = dangHoc.filter(function(l){ return canhBaoLop(l).loai === 'danger'
@@ -15820,10 +15894,14 @@ const CA_PHAI_TRUC = [
   [true, true, true],   /* Thứ 6 */
   [true, true, false]   /* Thứ 7 — tối không trực */
 ];
-/* Cặp trực theo bộ phận: mỗi ca phải có ít nhất một trong hai người */
+/* Cặp trực theo bộ phận: mỗi ca phải có ít nhất một người phủ kín khung giờ.
+   viTri  = thành viên chính, rành nghiệp vụ của bộ phận.
+   hoTro  = người cơ động, trực được nhưng không thạo nghiệp vụ. Ca chỉ có
+            người hỗ trợ thì vẫn tính là có trực, nhưng báo vàng để Ban Giám đốc
+            biết ca đó mỏng — không để cảnh báo biến mất cùng với rủi ro. */
 const CAP_TRUC_MAC_DINH = [
-  {boPhan: 'Tuyển sinh', viTri: ['FLIC-MKT-01', 'FLIC-TVTS-01']},
-  {boPhan: 'Học vụ',     viTri: ['FLIC-HV-01']}
+  {boPhan: 'Tuyển sinh', viTri: ['FLIC-MKT-01', 'FLIC-TVTS-01'], hoTro: ['FLIC-CRE-01']},
+  {boPhan: 'Học vụ',     viTri: ['FLIC-HV-01'],                  hoTro: ['FLIC-CRE-01']}
 ];
 const GIO_CHUAN_TUAN = 48;
 /* Giá trị nghỉ: không tính giờ công */
@@ -15977,6 +16055,16 @@ function nguoiCuaCap(cap){
   return nguoiTrongLich().filter(function(u){
     return (cap.viTri || []).indexOf(u.maViTri) >= 0; });
 }
+/* Người cơ động được tính cho cặp này, nhưng đếm riêng để còn phân biệt mức */
+function nguoiHoTroCuaCap(cap){
+  return nguoiTrongLich().filter(function(u){
+    return (cap.hoTro || []).indexOf(u.maViTri) >= 0
+      && (cap.viTri || []).indexOf(u.maViTri) < 0; });
+}
+function laNguoiHoTro(cap, maViTri){
+  return (cap.hoTro || []).indexOf(maViTri) >= 0
+    && (cap.viTri || []).indexOf(maViTri) < 0;
+}
 function phuKinKhungCa(tuan, userId, iNgay, iCa){
   const ca = CA_LAM_VIEC[iCa];
   if(!ca) return false;
@@ -15994,6 +16082,15 @@ function phuKinKhungCa(tuan, userId, iNgay, iCa){
   return moc >= kt;
 }
 /* Cặp trực mà người này thuộc về, hoặc null nếu không nằm trong cặp nào */
+/* Mọi cặp mà người này tham gia, cả vai chính lẫn vai hỗ trợ.
+   Một người có thể đỡ ca cho nhiều bộ phận, nếu chỉ trả về cặp đầu tiên
+   thì bộ phận còn lại biến mất khỏi màn của họ. */
+function capTrucCuaNguoiDs(maViTri){
+  return capTruc().filter(function(c){
+    return (c.viTri || []).indexOf(maViTri) >= 0
+        || (c.hoTro || []).indexOf(maViTri) >= 0; });
+}
+/* Cặp chính của người này — nơi họ là thành viên chính. Dùng khi chỉ cần một. */
 function capTrucCuaNguoi(maViTri){
   return capTruc().find(function(c){
     return (c.viTri || []).indexOf(maViTri) >= 0; }) || null;
@@ -16023,26 +16120,48 @@ function caSeKhongCoTruc(tuan, userId, iNgay, iCa, giaTriMoi){
 
 /* Ca thiếu trực của riêng bộ phận một người — chuyên viên chỉ cần thấy phần mình */
 function thieuTrucCuaBoPhan(tuan, maViTri){
-  const cap = capTrucCuaNguoi(maViTri);
-  if(!cap) return [];
-  return kiemTraTrucCap(tuan).filter(function(x){ return x.boPhan === cap.boPhan; });
+  const bp = capTrucCuaNguoiDs(maViTri).map(function(c){ return c.boPhan; });
+  if(!bp.length) return [];
+  return kiemTraTrucCap(tuan).filter(function(x){ return bp.indexOf(x.boPhan) >= 0; });
+}
+/* Ca mỏng người của những bộ phận mà người này tham gia */
+function caMongCuaBoPhan(tuan, maViTri){
+  const bp = capTrucCuaNguoiDs(maViTri).map(function(c){ return c.boPhan; });
+  if(!bp.length) return [];
+  return caMongNguoi(tuan).filter(function(x){ return bp.indexOf(x.boPhan) >= 0; });
 }
 
-function kiemTraTrucCap(tuan){
-  const thieu = [];
+/* Soát cặp trực, trả về mọi ca chưa ổn kèm mức:
+   'trong'  — không ai phủ kín, kể cả người hỗ trợ  → báo đỏ
+   'mongNguoi' — chỉ có người hỗ trợ phủ            → báo vàng
+   Ca có thành viên chính phủ kín thì không trả về. */
+function soatTrucCap(tuan){
+  const ra = [];
   capTruc().forEach(function(cap){
-    const ds = nguoiCuaCap(cap);
+    const chinh = nguoiCuaCap(cap);
+    const hoTro = nguoiHoTroCuaCap(cap);
     NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
       CA_LAM_VIEC.forEach(function(ca, iCa){
         if(!CA_PHAI_TRUC[iNgay] || !CA_PHAI_TRUC[iNgay][iCa]) return;
-        const co = ds.some(function(u){ return phuKinKhungCa(tuan, u.id, iNgay, iCa); });
-        if(!co) thieu.push({boPhan: cap.boPhan, iNgay: iNgay, iCa: iCa,
+        const coChinh = chinh.some(function(u){ return phuKinKhungCa(tuan, u.id, iNgay, iCa); });
+        if(coChinh) return;
+        const aiHoTro = hoTro.filter(function(u){ return phuKinKhungCa(tuan, u.id, iNgay, iCa); });
+        ra.push({boPhan: cap.boPhan, iNgay: iNgay, iCa: iCa,
           tenNgay: tenNgay, tenCa: ca.nhan,
-          nguoi: ds.map(function(u){ return u.hoTen; }).join(' / ') || '(chưa có ai)'});
+          muc: aiHoTro.length ? 'mongNguoi' : 'trong',
+          nguoiHoTro: aiHoTro.map(function(u){ return u.hoTen; }).join(' / '),
+          nguoi: chinh.map(function(u){ return u.hoTen; }).join(' / ') || '(chưa có ai)'});
       });
     });
   });
-  return thieu;
+  return ra;
+}
+/* Chỉ những ca thật sự không có ai — giữ tên cũ để các màn cũ không phải sửa */
+function kiemTraTrucCap(tuan){
+  return soatTrucCap(tuan).filter(function(x){ return x.muc === 'trong'; });
+}
+function caMongNguoi(tuan){
+  return soatTrucCap(tuan).filter(function(x){ return x.muc === 'mongNguoi'; });
 }
 
 /* ---------- Vi phạm quy ước đăng ký ---------- */
@@ -16175,6 +16294,9 @@ function viewLichTuan(){
     + (duyet && tuan.daChot
        ? '<button class="btn btn-sm" onclick="moLaiTuanLC()">🔓 Mở lại</button>'
        : '')
+    + '<button class="btn btn-sm" onclick="xuatLichCaTuan()">⬇ Excel tuần</button>'
+    + (duyet ? '<button class="btn btn-sm" onclick="xuatLichCaThang()">⬇ Excel tháng</button>'
+       : '')
     + '</div></div></div>';
 
   if(!ds.length)
@@ -16183,9 +16305,8 @@ function viewLichTuan(){
 
   /* Cảnh báo */
   /* Người duyệt thấy toàn bộ; chuyên viên chỉ thấy phần bộ phận mình cho đỡ nhiễu */
-  const thieu = duyet
-    ? kiemTraTrucCap(tuan)
-    : thieuTrucCuaBoPhan(tuan, currentUser.maViTri);
+  const xemCaNhom = lcCaNhom && duyet;
+  const thieu = xemCaNhom ? kiemTraTrucCap(tuan) : [];
   if(thieu.length){
     /* Gom theo bộ phận cho gọn, thay vì liệt kê từng ca một */
     const theoBP = {};
@@ -16205,7 +16326,28 @@ function viewLichTuan(){
       + 'của cặp trực phủ kín khung giờ ca.</div>'
       + '</div>';
   }
-  const vp = viPhamDangKy(tuan);
+  /* Ca chỉ có người cơ động phủ: vẫn có người trực nên không báo đỏ,
+     nhưng phải thấy được, vì người cơ động không thạo nghiệp vụ bộ phận đó. */
+  const mong = xemCaNhom ? caMongNguoi(tuan) : [];
+  if(mong.length){
+    const theoBP2 = {};
+    mong.forEach(function(x){
+      if(!theoBP2[x.boPhan]) theoBP2[x.boPhan] = [];
+      theoBP2[x.boPhan].push(x.tenNgay.replace('Thứ ', 'T') + ' ' + x.tenCa.toLowerCase()
+        + (x.nguoiHoTro ? ' (' + x.nguoiHoTro + ')' : ''));
+    });
+    h += '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);">'
+      + '<div class="small" style="color:var(--warn-ink);"><b>🟡 ' + mong.length
+      + ' ca chỉ có người hỗ trợ trực</b></div>'
+      + Object.keys(theoBP2).map(function(bp){
+          return '<div class="small" style="color:var(--warn-ink);margin-top:3px;"><b>'
+            + esc(bp) + '</b>: ' + esc(theoBP2[bp].join(' · ')) + '</div>'; }).join('')
+      + '<div class="small muted" style="margin-top:5px;">Ca vẫn có người, nhưng người '
+      + 'cơ động không thạo nghiệp vụ bộ phận này. Cân nhắc dặn trước hoặc bố trí thêm.</div>'
+      + '</div>';
+  }
+
+  const vp = xemCaNhom ? viPhamDangKy(tuan) : [];
   if(vp.length)
     h += '<div class="card" style="border-color:var(--warn);background:#fff8ea;">'
       + '<div class="small" style="color:#8a5a06;"><b>⚠️ ' + vp.length
@@ -16224,22 +16366,30 @@ function viewLichTuan(){
 function luoiCaNhom(tuan, ds){
   const iso = tuan.tuan;
   /* Tính một lần rồi tra, không gọi lại trong từng ô — 18 ca × số cặp trực */
-  const thieuTheoCa = {};
-  kiemTraTrucCap(tuan).forEach(function(x){
+  const thieuTheoCa = {}, mongTheoCa = {};
+  soatTrucCap(tuan).forEach(function(x){
     const k = x.iNgay + '|' + x.iCa;
-    (thieuTheoCa[k] = thieuTheoCa[k] || []).push(x.boPhan);
+    if(x.muc === 'trong') (thieuTheoCa[k] = thieuTheoCa[k] || []).push(x.boPhan);
+    else (mongTheoCa[k] = mongTheoCa[k] || []).push(x.boPhan);
   });
   let h = '<div class="card" style="padding:10px;overflow-x:auto;">'
     + '<table class="lc-bang"><thead><tr>'
     + '<th style="width:72px;">Ngày</th><th style="width:138px;">Ca</th>'
     + ds.map(function(u){
-        return '<th>' + esc(u.hoTen) + '<div class="small muted" style="font-weight:400;">'
+        /* Người cơ động đỡ ca cho bộ phận khác — đánh dấu để ai nhìn lưới cũng biết */
+        const dang = capTruc().filter(function(c){ return laNguoiHoTro(c, u.maViTri); })
+          .map(function(c){ return c.boPhan; });
+        return '<th>' + esc(u.hoTen)
+          + (dang.length ? '<div class="small" style="font-weight:600;color:var(--warn-ink);">'
+              + '🟡 hỗ trợ ' + esc(dang.join(', ')) + '</div>' : '')
+          + '<div class="small muted" style="font-weight:400;">'
           + esc(tenViTri(u.maViTri) || u.maViTri) + '</div></th>'; }).join('')
     + '</tr></thead><tbody>';
 
   NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
     CA_LAM_VIEC.forEach(function(ca, iCa){
       const bpThieu = thieuTheoCa[iNgay + '|' + iCa] || [];
+      const bpMong = mongTheoCa[iNgay + '|' + iCa] || [];
       const thieuCa = bpThieu.length > 0;
       h += '<tr' + (iCa === 2 ? ' class="lc-toi"' : '') + '>'
         + (iCa === 0
@@ -16247,11 +16397,16 @@ function luoiCaNhom(tuan, ds){
              + '<br><span class="small muted">' + fmtDate(addDaysISO(iso, iNgay)).slice(0, 5)
              + '</span></td>'
            : '')
-        + '<td class="lc-ca"' + (thieuCa ? ' style="color:var(--danger);"' : '') + '>'
+        + '<td class="lc-ca"' + (thieuCa ? ' style="color:var(--danger-ink);"'
+            : (bpMong.length ? ' style="color:var(--warn-ink);"' : '')) + '>'
         + esc(ca.nhan) + ' · ' + esc(ca.batDau) + '–' + esc(ca.ketThuc)
         + (thieuCa
-           ? '<div class="small" style="color:var(--danger);">⚠️ thiếu '
+           ? '<div class="small" style="color:var(--danger-ink);">⚠️ thiếu '
              + esc(bpThieu.join(', ')) + '</div>'
+           : '')
+        + (bpMong.length
+           ? '<div class="small" style="color:var(--warn-ink);">🟡 chỉ hỗ trợ · '
+             + esc(bpMong.join(', ')) + '</div>'
            : '') + '</td>'
         + ds.map(function(u){
             const v = (tuan.oCa || {})[khoaO(u.id, iNgay, iCa)] || '';
@@ -16297,7 +16452,37 @@ function dongTong(ten, ds, lay, choHtml){
     + '</tr>';
 }
 
-/* ---------- Lịch của tôi ---------- */
+/* Nhãn ngắn của một ô để vẽ trong lưới, kèm lớp màu */
+function kieuOCa(v){
+  const t = String(v == null ? '' : v).trim().toUpperCase();
+  if(!t) return {lop:'trong', nhan:'+ chọn', phu:''};
+  if(t === 'X') return {lop:'lam', nhan:'X', phu:''};
+  if(t === 'ỐM') return {lop:'om', nhan:'ỐM', phu:''};
+  if(GIA_TRI_NGHI.indexOf(t) >= 0) return {lop:'nghi', nhan:t, phu:''};
+  return {lop:'gio', nhan:String(v), phu:''};
+}
+/* Người cùng cặp đã đăng ký gì ở ca này — để chuyên viên thấy mà phối hợp,
+   thay vì đăng ký mù rồi cuối tuần mới biết cả hai cùng trống. */
+function tomTatCapTaiO(tuan, userId, iNgay, iCa){
+  const u = usersList.find(function(x){ return x.id === userId; });
+  if(!u) return '';
+  if(!CA_PHAI_TRUC[iNgay] || !CA_PHAI_TRUC[iNgay][iCa]) return '';
+  const caps = capTrucCuaNguoiDs(u.maViTri);
+  if(!caps.length) return '';
+  const phan = [];
+  caps.forEach(function(cap){
+    const nguoi = nguoiCuaCap(cap).concat(nguoiHoTroCuaCap(cap))
+      .filter(function(x){ return x.id !== userId; });
+    if(!nguoi.length){ phan.push('<i>' + esc(cap.boPhan) + ': chưa có ai khác</i>'); return; }
+    const phu = nguoi.filter(function(x){ return phuKinKhungCa(tuan, x.id, iNgay, iCa); });
+    const ten = function(x){ return esc((x.hoTen || '').split(' ').pop()); };
+    if(phu.length) phan.push(phu.map(ten).join(', ') + ' <b>X</b>');
+    else phan.push('<i>' + nguoi.map(ten).join(', ') + ' trống</i>');
+  });
+  return phan.join(' · ');
+}
+
+/* ---------- Lịch của tôi: lưới 6 ngày × 3 ca ---------- */
 function lichCuaToi(tuan){
   const iso = tuan.tuan;
   const uid = currentUser.id;
@@ -16308,83 +16493,249 @@ function lichCuaToi(tuan){
 
   const tong = tongGioTuan(tuan, uid);
   const chiTieu = chiTieuTuan(iso, uid);
-  const cong = gioCongCuaNguoi(tuan, uid);
   const chenh = chenhLechCuaNguoi(tuan, uid);
   const no = noTuanTruoc(iso, uid);
+  const sua = suaDuocO(tuan, uid);
 
   let h = '<div class="grid" style="margin-bottom:12px;">'
-    + '<div class="stat"><div class="lbl">Đã đăng ký</div><div class="val">'
-      + fmtGio2(tong) + '</div></div>'
-    + '<div class="stat"><div class="lbl">Chỉ tiêu tuần</div><div class="val">'
-      + fmtGio2(chiTieu) + '</div>'
-      + (no ? '<div class="small muted">' + fmtNum(gioChuanTuan(), 0)
-          + (no > 0 ? ' + nợ ' : ' − dư ') + fmtGio2(Math.abs(no)) + '</div>' : '')
-      + '</div>'
-    + '<div class="stat' + (chenh < 0 ? ' hot' : '') + '" style="--sc:'
-      + (chenh < 0 ? 'var(--danger)' : 'var(--ok)') + ';">'
-      + '<div class="lbl">' + (chenh < 0 ? 'Còn thiếu' : 'Dư') + '</div>'
-      + '<div class="val" style="color:' + (chenh < 0 ? 'var(--danger-ink)' : 'var(--ok-ink)') + ';">'
-      + fmtGio2(Math.abs(chenh)) + '</div>'
-      + (chiTieu ? '<div style="margin-top:7px;">'
-          + bdMeter(tong, chiTieu, {nho:true, nhan:false,
-              mau:chenh >= 0 ? 'var(--ok)' : 'var(--danger)'}) + '</div>' : '')
-      + '</div>'
+    + oThongKe('Đã đăng ký', fmtGio2(tong), false, {ico:'🗓️', mau:'var(--c1)'})
+    + oThongKe('Chỉ tiêu tuần', fmtGio2(chiTieu), false,
+        {ico:'🎯', mau:'var(--c4)', nen:'var(--warn-bg)',
+         phu: no ? fmtNum(gioChuanTuan(), 0) + (no > 0 ? ' + nợ ' : ' − dư ')
+                 + fmtGio2(Math.abs(no)) + ' tuần trước' : ''})
+    + oThongKe(chenh < 0 ? 'Còn thiếu' : (chenh > 0 ? 'Đăng ký dư' : 'Vừa đủ'),
+        fmtGio2(Math.abs(chenh)), false,
+        {ico: chenh < 0 ? '⚠️' : '✅', nong: chenh < 0,
+         mau: chenh < 0 ? 'var(--danger)' : 'var(--ok)',
+         nen: chenh < 0 ? 'var(--danger-bg)' : 'var(--ok-bg)'})
     + '</div>';
+
+  /* Nói thẳng vì sao chỉ tiêu tuần này khác 48, để không ai thắc mắc */
+  if(no)
+    h += '<div class="card" style="border-color:' + (no > 0 ? 'var(--warn-br)' : 'var(--ok-br)')
+      + ';background:' + (no > 0 ? 'var(--warn-bg)' : 'var(--ok-bg)') + ';">'
+      + '<div class="small" style="color:' + (no > 0 ? 'var(--warn-ink)' : 'var(--ok-ink)') + ';">'
+      + '<b>Tuần trước bạn ' + (no > 0 ? 'thiếu ' : 'làm dư ') + fmtGio2(Math.abs(no))
+      + ' giờ</b> nên tuần này chỉ tiêu ' + (no > 0 ? 'tăng' : 'hạ') + ' từ '
+      + fmtGio2(gioChuanTuan()) + ' thành ' + fmtGio2(chiTieu)
+      + '. Phần mềm tự tính, bạn không phải nhớ.</div></div>';
 
   /* Ca của bộ phận mình chưa có người trực — nằm ngay đầu màn, khỏi cuộn tìm */
   {
     const tbp = thieuTrucCuaBoPhan(tuan, currentUser.maViTri);
-    if(tbp.length){
-      const cap = capTrucCuaNguoi(currentUser.maViTri);
-      h += '<div class="card" style="border-color:var(--danger);background:#fdf1f1;">'
-        + '<div class="small" style="color:var(--danger);"><b>⚠️ Bộ phận '
-        + esc(cap ? cap.boPhan : '') + ' còn ' + tbp.length
-        + ' ca chưa có người trực</b></div>'
-        + '<div class="small" style="color:#b3242a;">'
+    const mbp = caMongCuaBoPhan(tuan, currentUser.maViTri);
+    if(tbp.length)
+      h += '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);">'
+        + '<div class="small" style="color:var(--danger-ink);"><b>🔴 ' + tbp.length
+        + ' ca chưa ai trực</b> — ô tương ứng trong lưới đang viền đỏ</div>'
+        + '<div class="small" style="color:var(--danger-ink);margin-top:3px;">'
         + esc(tbp.map(function(x){
-            return x.tenNgay.replace('Thứ ', 'T') + ' ' + x.tenCa.toLowerCase();
-          }).join(' · ')) + '</div>'
-        + '<div class="small muted" style="margin-top:4px;">Bàn với '
-        + esc((cap ? nguoiCuaCap(cap) : []).filter(function(x){
-              return x.id !== currentUser.id; })
-            .map(function(x){ return x.hoTen; }).join(' / ') || 'người cùng cặp')
-        + ' để có một người làm trọn khung giờ ca.</div></div>';
-    }
+            return x.boPhan + ' ' + x.tenNgay.replace('Thứ ', 'T') + ' '
+              + x.tenCa.toLowerCase(); }).join(' · ')) + '</div></div>';
+    if(mbp.length)
+      h += '<div class="card" style="border-color:var(--warn-br);background:var(--warn-bg);">'
+        + '<div class="small" style="color:var(--warn-ink);"><b>🟡 ' + mbp.length
+        + ' ca chỉ có người hỗ trợ trực</b></div>'
+        + '<div class="small" style="color:var(--warn-ink);margin-top:3px;">'
+        + esc(mbp.map(function(x){
+            return x.boPhan + ' ' + x.tenNgay.replace('Thứ ', 'T') + ' '
+              + x.tenCa.toLowerCase() + (x.nguoiHoTro ? ' (' + x.nguoiHoTro + ')' : '');
+          }).join(' · ')) + '</div></div>';
   }
 
-  if(chenh < 0)
-    h += '<div class="card" style="border-color:var(--warn);background:#fff8ea;">'
-      + '<div class="small" style="color:#8a5a06;">Còn thiếu <b>' + fmtGio2(-chenh)
-      + ' giờ</b> so với chỉ tiêu. Thiếu giờ sẽ trừ lương khi chốt công cuối tháng.</div></div>';
-
   if(!tuan.daChot && !hasPerm('duyetLichCa') && quaHanDangKy(iso))
-    h += '<div class="card" style="border-color:var(--danger);background:#fdf1f1;">'
-      + '<div class="small" style="color:var(--danger);">Đã quá hạn đăng ký tuần này. '
+    h += '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);">'
+      + '<div class="small" style="color:var(--danger-ink);">Đã quá hạn đăng ký tuần này. '
       + 'Muốn đổi ca thì báo Phó Giám đốc.</div></div>';
 
-  h += '<div class="card">';
+  /* Nút điền nhanh — phần lớn tuần giống nhau, bắt bấm 18 lần là hành người ta */
+  if(sua)
+    h += '<div class="card" style="padding:10px 13px;"><div class="row wrap" style="gap:8px;">'
+      + '<span class="small muted" style="font-weight:600;">Điền nhanh:</span>'
+      + '<button class="btn btn-sm" onclick="dienNhanhCa(\'tuanTruoc\')">📋 Giống tuần trước</button>'
+      + '<button class="btn btn-sm" onclick="dienNhanhCa(\'hanhChinh\')">🏢 Cả tuần hành chính</button>'
+      + (laViTriHanhChinh(toi.maViTri) ? ''
+         : '<button class="btn btn-sm" onclick="dienNhanhCa(\'caToi\')">🌙 Cả tuần ca tối</button>')
+      + '<button class="btn btn-sm" style="margin-left:auto;" '
+        + 'onclick="dienNhanhCa(\'xoaHet\')">🗑️ Xoá hết</button>'
+      + '</div></div>';
+
+  /* Lưới chính */
+  const thieuTheoCa = {}, mongTheoCa = {};
+  const bpToi = capTrucCuaNguoiDs(currentUser.maViTri).map(function(c){ return c.boPhan; });
+  soatTrucCap(tuan).forEach(function(x){
+    if(bpToi.indexOf(x.boPhan) < 0) return;
+    const k = x.iNgay + '|' + x.iCa;
+    if(x.muc === 'trong') thieuTheoCa[k] = true; else mongTheoCa[k] = true;
+  });
+
+  h += '<div class="card"><div class="card-h"><div class="t">Lịch tuần '
+    + esc(tenTuan(iso)) + ' của bạn</div><div class="s">'
+    + (sua ? 'Bấm vào ô để chọn' : 'Chỉ xem') + '</div></div>'
+    + '<div class="tbl-wrap"><table class="dkca"><thead><tr><th class="c-ngay">Ngày</th>'
+    + CA_LAM_VIEC.map(function(ca){
+        return '<th>' + esc(ca.nhan) + '<small>' + esc(ca.batDau) + '–' + esc(ca.ketThuc)
+          + '</small></th>'; }).join('')
+    + '</tr></thead><tbody>';
+
   NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
     const gio = gioNgayCuaNguoi(tuan, uid, iNgay);
-    h += '<div class="lc-ngay-dt">' + esc(tenNgay) + ' · '
+    h += '<tr><td class="c-ngay"><b>' + esc(tenNgay) + '</b><div>'
       + fmtDate(addDaysISO(iso, iNgay)).slice(0, 5)
-      + (gio ? '<span class="small muted" style="font-weight:400;"> · ' + fmtGio2(gio)
-          + ' giờ</span>' : '') + '</div>';
+      + (gio ? ' · ' + fmtGio2(gio) + 'h' : '') + '</div></td>';
     CA_LAM_VIEC.forEach(function(ca, iCa){
+      const phaiTruc = !!(CA_PHAI_TRUC[iNgay] && CA_PHAI_TRUC[iNgay][iCa]);
+      const laHC = laViTriHanhChinh(toi.maViTri);
+      const khoaO2 = !phaiTruc || (laHC && iCa === 2);
       const v = (tuan.oCa || {})[khoaO(uid, iNgay, iCa)] || '';
-      const sua = suaDuocO(tuan, uid);
-      h += '<div class="lc-dong"' + (sua
-          ? ' onclick="formChonCa(\'' + uid + '\',' + iNgay + ',' + iCa + ')" style="cursor:pointer;"'
-          : '') + '>'
-        + '<div><div>' + esc(ca.nhan) + '</div><div class="small muted">'
-        + esc(ca.batDau) + '–' + esc(ca.ketThuc) + '</div></div>'
-        + '<div>' + (v ? nhanO(v) : '<span class="lc-trong">– chưa đăng ký</span>') + '</div>'
-        + '</div>';
+      const k = kieuOCa(v);
+      const gc = ((tuan.ghiChuO || {})[khoaO(uid, iNgay, iCa)] || '').trim();
+      const kk = iNgay + '|' + iCa;
+      const cb = thieuTheoCa[kk] ? ' cb-do' : (mongTheoCa[kk] ? ' cb-vang' : '');
+
+      if(khoaO2 && !v){
+        h += '<td><div class="oca khoa"><div class="nh" style="font-size:10.5px;">'
+          + (laHC && iCa === 2 ? 'vị trí hành chính<br>không trực ca tối'
+             : 'tối T7<br>không trực') + '</div></div></td>';
+        return;
+      }
+      h += '<td><div class="oca ' + k.lop + cb + (sua ? '' : ' khoa') + '"'
+        + (sua ? ' onclick="formChonCa(\'' + uid + '\',' + iNgay + ',' + iCa + ')"' : '')
+        + (gc ? ' title="' + esc(gc) + '"' : '') + '>'
+        + (gc ? '<span class="cogc">💬</span>' : '')
+        + '<div class="nh">' + esc(k.nhan) + '</div>'
+        + (function(){ const t = tomTatCapTaiO(tuan, uid, iNgay, iCa);
+                       return t ? '<div class="cap">' + t + '</div>' : ''; })()
+        + '</div></td>';
     });
+    h += '</tr>';
   });
-  h += '</div>';
+  h += '</tbody></table></div>'
+    + '<div class="small muted" style="margin-top:10px;padding-top:9px;'
+      + 'border-top:1px solid var(--border-2);">'
+    + nhanO('X') + ' làm đúng khung ca · ' + nhanO('06:30-11:30') + ' giờ tuỳ chỉnh · '
+    + nhanO('OFF') + ' ' + nhanO('ỐM') + ' nghỉ, 0 giờ · '
+    + 'ô <b style="color:var(--danger-ink);">viền đỏ</b> là ca chưa ai trực, '
+    + '<b style="color:var(--warn-ink);">viền vàng</b> là ca chỉ có người hỗ trợ · '
+    + '💬 là ô có ghi chú.</div></div>';
+
+  /* Ghi chú cả tuần */
+  const gcTuan = ((tuan.ghiChuTuan || {})[uid] || '');
+  h += '<div class="card"><div class="card-h"><div class="t">Ghi chú gửi Phó Giám đốc</div>'
+    + '<div class="s">không bắt buộc</div></div>'
+    + '<textarea id="lcGhiChuTuan"' + (sua ? '' : ' disabled')
+      + ' placeholder="Vì sao bạn đăng ký như tuần này? Ví dụ: tuần trước làm dư 2 giờ nên '
+      + 'tuần này xin giảm; thứ 6 xin nghỉ phép đi khám; đã đổi ca tối với đồng nghiệp…"'
+      + ' style="min-height:60px;">' + esc(gcTuan) + '</textarea>'
+    + (sua
+       ? '<div class="row" style="margin-top:9px;">'
+         + '<span class="small muted">Ghi chú hiện cho Phó Giám đốc khi duyệt và khi chốt tuần.</span>'
+         + '<button class="btn btn-primary btn-sm" onclick="luuGhiChuTuanCa()">Lưu ghi chú</button>'
+         + '</div>'
+       : '')
+    + '</div>';
   return h;
 }
 
+/* ---------- Điền nhanh ---------- */
+function dienNhanhCa(kieu){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const uid = currentUser.id;
+  if(!suaDuocO(tuan, uid)){ showToast('Không sửa được lịch tuần này'); return; }
+  const toi = usersList.find(function(u){ return u.id === uid; });
+  const laHC = toi && laViTriHanhChinh(toi.maViTri);
+
+  const oCa = Object.assign({}, tuan.oCa || {});
+  let dem = 0, nhan = '';
+
+  if(kieu === 'xoaHet'){
+    if(!confirm('Xoá toàn bộ ca đã đăng ký của bạn trong tuần ' + tenTuan(iso) + '?')) return;
+    NGAY_TUAN_LV.forEach(function(_, iNgay){
+      CA_LAM_VIEC.forEach(function(_2, iCa){
+        const k = khoaO(uid, iNgay, iCa);
+        if(oCa[k] !== undefined){ delete oCa[k]; dem++; }
+      });
+    });
+    nhan = 'Đã xoá ' + dem + ' ca';
+  } else if(kieu === 'tuanTruoc'){
+    const lt = lichCaList.find(function(x){ return x.tuan === addDaysISO(iso, -7); });
+    if(!lt || !lt.oCa){ showToast('Tuần trước chưa có lịch để sao chép'); return; }
+    NGAY_TUAN_LV.forEach(function(_, iNgay){
+      CA_LAM_VIEC.forEach(function(_2, iCa){
+        const k = khoaO(uid, iNgay, iCa);
+        const v = lt.oCa[k];
+        if(v){ oCa[k] = v; dem++; } else delete oCa[k];
+      });
+    });
+    if(!dem){ showToast('Tuần trước bạn không đăng ký ca nào'); return; }
+    nhan = 'Đã chép ' + dem + ' ca từ tuần trước';
+  } else {
+    /* Chỉ điền ô đang trống, không đè lên ô đã chọn — người dùng đã cân nhắc rồi */
+    const iCaDien = (kieu === 'caToi') ? 2 : 1;
+    if(laHC && iCaDien === 2){ showToast('Vị trí hành chính không đăng ký ca tối'); return; }
+    NGAY_TUAN_LV.forEach(function(_, iNgay){
+      [0, iCaDien].forEach(function(iCa){
+        if(!CA_PHAI_TRUC[iNgay] || !CA_PHAI_TRUC[iNgay][iCa]) return;
+        const k = khoaO(uid, iNgay, iCa);
+        if(oCa[k]) return;
+        oCa[k] = 'X'; dem++;
+      });
+    });
+    if(!dem){ showToast('Các ca đó bạn đã đăng ký rồi'); return; }
+    nhan = 'Đã điền ' + dem + ' ca';
+  }
+
+  luuOCaTuan(iso, oCa, nhan);
+}
+
+/* Ghi cả bảng ô ca của tuần — dùng chung cho điền nhanh */
+function luuOCaTuan(iso, oCa, loiBao){
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  const p = cu
+    ? db.collection('fcv_lichca').doc(cu.id).update({oCa: oCa})
+    : db.collection('fcv_lichca').add({tuan: iso, oCa: oCa, dieuChinh: {},
+        daChot: false, nguoiTao: currentUser.hoTen, ts: Date.now()});
+  p.then(function(){
+    showToast('✅ ' + loiBao);
+    logAct(loiBao + ' — lịch ca tuần ' + tenTuan(iso));
+  }).catch(fsErr);
+}
+
+/* ---------- Ghi chú ---------- */
+function luuGhiChuTuanCa(){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const uid = currentUser.id;
+  if(!suaDuocO(tuan, uid)){ showToast('Không sửa được lịch tuần này'); return; }
+  const o = $('lcGhiChuTuan');
+  if(!o) return;
+  const gc = Object.assign({}, tuan.ghiChuTuan || {});
+  const v = (o.value || '').trim();
+  if(v) gc[uid] = v; else delete gc[uid];
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  const p = cu
+    ? db.collection('fcv_lichca').doc(cu.id).update({ghiChuTuan: gc})
+    : db.collection('fcv_lichca').add({tuan: iso, oCa: {}, dieuChinh: {}, ghiChuTuan: gc,
+        daChot: false, nguoiTao: currentUser.hoTen, ts: Date.now()});
+  p.then(function(){ showToast('✅ Đã lưu ghi chú'); }).catch(fsErr);
+}
+function luuGhiChuO(userId, iNgay, iCa){
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  if(!suaDuocO(tuan, userId)){ showToast('Không sửa được ô này'); return; }
+  const o = $('mLCGhiChu');
+  if(!o) return;
+  const gc = Object.assign({}, tuan.ghiChuO || {});
+  const k = khoaO(userId, iNgay, iCa);
+  const v = (o.value || '').trim();
+  if(v) gc[k] = v; else delete gc[k];
+  const cu = lichCaList.find(function(x){ return x.tuan === iso; });
+  if(!cu){ showToast('Chọn ca trước rồi hãy ghi chú'); return; }
+  db.collection('fcv_lichca').doc(cu.id).update({ghiChuO: gc}).then(function(){
+    closeModal(); showToast('✅ Đã lưu ghi chú');
+  }).catch(fsErr);
+}
 /* ---------- Form chọn ca ---------- */
 function formChonCa(userId, iNgay, iCa){
   const tuan = lichTuan(tuanDangXem());
@@ -16425,7 +16776,14 @@ function formChonCa(userId, iNgay, iCa){
     + nut('OFF', 'OFF') + nut('PHÉP', 'Nghỉ phép') + nut('ỐM', 'Nghỉ ốm') + '</div>'
     + '<button class="btn btn-block" style="margin-top:12px;" onclick="datO(\''
       + userId + '\',' + iNgay + ',' + iCa + ',\'\')">Xoá — không làm ca này</button>'
-    + '<button class="btn btn-block" style="margin-top:6px;" onclick="closeModal()">Đóng</button>');
+    /* Ghi chú riêng ca này: vì sao đi trễ, đổi ca với ai, nghỉ vì việc gì */
+    + '<div style="border-top:1px solid var(--border);margin-top:12px;padding-top:4px;">'
+    + '<label style="margin-top:4px;">Ghi chú riêng ca này</label>'
+    + '<input id="mLCGhiChu" placeholder="VD: đổi ca tối với chị Xuân" value="'
+      + esc(((tuan.ghiChuO || {})[khoaO(userId, iNgay, iCa)] || '')) + '">'
+    + '<button class="btn btn-block" style="margin-top:6px;" onclick="luuGhiChuO(\''
+      + userId + '\',' + iNgay + ',' + iCa + ')">Lưu ghi chú</button></div>'
+    + '<button class="btn btn-block" style="margin-top:12px;" onclick="closeModal()">Đóng</button>');
 }
 function datOTuyChinh(userId, iNgay, iCa){
   const tu = ($('mLCTu').value || '').trim(), den = ($('mLCDen').value || '').trim();
@@ -16472,6 +16830,218 @@ function datO(userId, iNgay, iCa, giaTri){
     closeModal();
     showToast('✅ Đã lưu');
   }).catch(fsErr);
+}
+
+
+/* ---------- Xuất Excel lịch ca ---------- */
+/* Tải một workbook đã dựng xong — dùng chung cho cả hai bản xuất */
+function taiWorkbookCa(wb, ten, loiBao){
+  wb.xlsx.writeBuffer().then(function(buf){
+    const blob = new Blob([buf],
+      {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = ten;
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+    showToast('✅ ' + loiBao);
+    logAct(loiBao);
+  }).catch(fsErr);
+}
+const VIEN_O = {top:{style:'thin'}, left:{style:'thin'},
+                bottom:{style:'thin'}, right:{style:'thin'}};
+
+/* Bản tuần: đúng hình lưới đang xem, in ra dán bảng được */
+function xuatLichCaTuan(){
+  if(typeof ExcelJS === 'undefined'){ showToast('Thư viện Excel chưa tải xong'); return; }
+  const iso = tuanDangXem();
+  const tuan = lichTuan(iso);
+  const ds = nguoiTrongLich();
+  if(!ds.length){ showToast('Chưa có ai trong danh sách đăng ký ca'); return; }
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'FLIC DNTU';
+  const ws = wb.addWorksheet('Lich ca tuan');
+  let r = 1;
+  ws.getCell(r, 1).value = 'TRUNG TÂM NGOẠI NGỮ – TIN HỌC FLIC';
+  ws.getCell(r++, 1).font = {bold: true, size: 13};
+  ws.getCell(r++, 1).value = 'LỊCH CA LÀM VIỆC — TUẦN ' + tenTuan(iso);
+  ws.getCell(r++, 1).value = (tuan.daChot ? 'Đã chốt ngày ' + fmtDate(tuan.ngayChot)
+    + ' bởi ' + (tuan.nguoiChot || '') : 'Chưa chốt')
+    + ' · xuất ' + fmtDate(todayISO()) + ' bởi ' + currentUser.hoTen;
+  r++;
+
+  const dauBang = r;
+  ws.getCell(r, 1).value = 'Ngày';
+  ws.getCell(r, 2).value = 'Ca';
+  ds.forEach(function(u, i){
+    const c = ws.getCell(r, 3 + i);
+    c.value = u.hoTen + '\n' + tenViTri(u.maViTri);
+    c.alignment = {horizontal:'center', vertical:'middle', wrapText:true};
+  });
+  ws.getRow(r).font = {bold: true};
+  ws.getRow(r).height = 32;
+  r++;
+
+  NGAY_TUAN_LV.forEach(function(tenNgay, iNgay){
+    CA_LAM_VIEC.forEach(function(ca, iCa){
+      if(iCa === 0) ws.getCell(r, 1).value = tenNgay + '\n'
+        + fmtDate(addDaysISO(iso, iNgay)).slice(0, 5);
+      ws.getCell(r, 2).value = ca.nhan + ' · ' + ca.batDau + '–' + ca.ketThuc;
+      ds.forEach(function(u, i){
+        const v = (tuan.oCa || {})[khoaO(u.id, iNgay, iCa)] || '';
+        const c = ws.getCell(r, 3 + i);
+        c.value = v || '–';
+        c.alignment = {horizontal:'center', vertical:'middle'};
+        /* Tô nền theo loại ô để bản in nhìn giống màn hình */
+        if(v === 'X') c.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFEAFAF3'}};
+        else if(GIA_TRI_NGHI.indexOf(String(v).toUpperCase()) >= 0)
+          c.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFF1F3F7'}};
+        else if(v) c.fill = {type:'pattern', pattern:'solid', fgColor:{argb:'FFEEF4FD'}};
+      });
+      r++;
+    });
+    /* Gộp ô ngày cho ba dòng ca của ngày đó */
+    ws.mergeCells(r - 3, 1, r - 1, 1);
+    ws.getCell(r - 3, 1).alignment = {horizontal:'center', vertical:'middle', wrapText:true};
+  });
+
+  /* Ba dòng tổng */
+  [['Tổng giờ đăng ký', function(u){ return tongGioTuan(tuan, u.id); }],
+   ['Chỉ tiêu tuần',    function(u){ return chiTieuTuan(iso, u.id); }],
+   ['Chênh lệch',       function(u){ return chenhLechCuaNguoi(tuan, u.id); }]
+  ].forEach(function(dong){
+    ws.getCell(r, 1).value = dong[0];
+    ws.mergeCells(r, 1, r, 2);
+    ds.forEach(function(u, i){
+      const c = ws.getCell(r, 3 + i);
+      c.value = Math.round(dong[1](u) * 100) / 100;   /* số thật, Excel tính được */
+      c.numFmt = '0.00';
+      c.alignment = {horizontal:'center'};
+    });
+    ws.getRow(r).font = {bold: true};
+    r++;
+  });
+
+  /* Ghi chú của từng người, nếu có */
+  const gcT = tuan.ghiChuTuan || {};
+  const coGC = ds.filter(function(u){ return (gcT[u.id] || '').trim(); });
+  if(coGC.length){
+    r++;
+    ws.getCell(r, 1).value = 'Ghi chú của chuyên viên';
+    ws.getCell(r++, 1).font = {bold: true};
+    coGC.forEach(function(u){
+      ws.getCell(r, 1).value = u.hoTen;
+      ws.getCell(r, 2).value = gcT[u.id];
+      ws.mergeCells(r, 2, r, Math.max(3, 2 + ds.length));
+      ws.getCell(r, 2).alignment = {wrapText: true, vertical: 'top'};
+      r++;
+    });
+  }
+
+  /* Kẻ viền toàn bảng */
+  for(let i = dauBang; i < dauBang + 1 + 18 + 3; i++)
+    for(let j = 1; j <= 2 + ds.length; j++) ws.getCell(i, j).border = VIEN_O;
+
+  ws.getColumn(1).width = 12;
+  ws.getColumn(2).width = 24;
+  ds.forEach(function(_, i){ ws.getColumn(3 + i).width = 17; });
+  ws.pageSetup = {orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0};
+
+  taiWorkbookCa(wb, 'FLIC-Lich-ca-tuan-' + iso + '.xlsx',
+    'Đã xuất lịch ca tuần ' + tenTuan(iso));
+}
+
+/* Bản tháng: mỗi tuần một dòng cho từng người, cuối cùng là tổng tháng */
+function xuatLichCaThang(){
+  if(typeof ExcelJS === 'undefined'){ showToast('Thư viện Excel chưa tải xong'); return; }
+  const thang = (tuanDangXem() || todayISO()).slice(0, 7);
+  const ds = nguoiTrongLich();
+  if(!ds.length){ showToast('Chưa có ai trong danh sách đăng ký ca'); return; }
+
+  /* Mọi tuần có ngày thứ 2 rơi vào tháng này */
+  const tuanTrongThang = lichCaList
+    .filter(function(x){ return (x.tuan || '').slice(0, 7) === thang; })
+    .map(function(x){ return x.tuan; })
+    .sort();
+  if(!tuanTrongThang.length){
+    showToast('Tháng ' + Number(thang.slice(5)) + '/' + thang.slice(0, 4)
+      + ' chưa có tuần nào có lịch'); return; }
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'FLIC DNTU';
+  const ws = wb.addWorksheet('Gio cong thang');
+  let r = 1;
+  ws.getCell(r, 1).value = 'TRUNG TÂM NGOẠI NGỮ – TIN HỌC FLIC';
+  ws.getCell(r++, 1).font = {bold: true, size: 13};
+  ws.getCell(r++, 1).value = 'TỔNG HỢP GIỜ CÔNG THÁNG '
+    + Number(thang.slice(5)) + '/' + thang.slice(0, 4);
+  ws.getCell(r++, 1).value = 'Gồm ' + tuanTrongThang.length + ' tuần · xuất '
+    + fmtDate(todayISO()) + ' bởi ' + currentUser.hoTen;
+  r++;
+
+  const dauBang = r;
+  ws.getCell(r, 1).value = 'Chuyên viên';
+  ws.getCell(r, 2).value = 'Vị trí';
+  tuanTrongThang.forEach(function(t, i){
+    ws.getCell(r, 3 + i).value = 'Tuần ' + fmtDate(t).slice(0, 5);
+    ws.getCell(r, 3 + i).alignment = {horizontal: 'center'};
+  });
+  const cTong = 3 + tuanTrongThang.length;
+  ws.getCell(r, cTong).value = 'Tổng giờ công';
+  ws.getCell(r, cTong + 1).value = 'Tổng chỉ tiêu';
+  ws.getCell(r, cTong + 2).value = 'Chênh lệch';
+  ws.getCell(r, cTong + 3).value = 'Đã chốt';
+  ws.getRow(r).font = {bold: true};
+  ws.getRow(r).alignment = {wrapText: true, vertical: 'middle'};
+  ws.getRow(r).height = 28;
+  r++;
+
+  ds.forEach(function(u){
+    ws.getCell(r, 1).value = u.hoTen;
+    ws.getCell(r, 2).value = tenViTri(u.maViTri);
+    let tCong = 0, tChiTieu = 0, soChot = 0;
+    tuanTrongThang.forEach(function(t, i){
+      const tu = lichTuan(t);
+      const cong = gioCongCuaNguoi(tu, u.id);
+      const ct = chiTieuTuan(t, u.id);
+      tCong += cong; tChiTieu += ct;
+      if(tu.daChot) soChot++;
+      const c = ws.getCell(r, 3 + i);
+      c.value = Math.round(cong * 100) / 100;
+      c.numFmt = '0.00';
+      c.alignment = {horizontal: 'center'};
+      if(!tu.daChot) c.font = {color: {argb: 'FF8A5F00'}, italic: true};
+    });
+    const chenh = Math.round((tCong - tChiTieu) * 100) / 100;
+    [[cTong, Math.round(tCong * 100) / 100], [cTong + 1, Math.round(tChiTieu * 100) / 100],
+     [cTong + 2, chenh]].forEach(function(x){
+      const c = ws.getCell(r, x[0]);
+      c.value = x[1]; c.numFmt = '0.00';
+      c.alignment = {horizontal: 'center'}; c.font = {bold: true};
+    });
+    if(chenh < 0) ws.getCell(r, cTong + 2).font =
+      {bold: true, color: {argb: 'FFC0343A'}};
+    ws.getCell(r, cTong + 3).value = soChot + '/' + tuanTrongThang.length;
+    ws.getCell(r, cTong + 3).alignment = {horizontal: 'center'};
+    r++;
+  });
+
+  for(let i = dauBang; i < r; i++)
+    for(let j = 1; j <= cTong + 3; j++) ws.getCell(i, j).border = VIEN_O;
+
+  r++;
+  ws.getCell(r++, 1).value = 'Giờ in nghiêng màu vàng là tuần chưa chốt, số còn thay đổi được.';
+  ws.getCell(r++, 1).value = 'Chênh lệch âm là thiếu giờ so với chỉ tiêu, trừ lương khi chốt công.';
+
+  ws.getColumn(1).width = 22;
+  ws.getColumn(2).width = 30;
+  tuanTrongThang.forEach(function(_, i){ ws.getColumn(3 + i).width = 13; });
+  [cTong, cTong + 1, cTong + 2, cTong + 3].forEach(function(c){ ws.getColumn(c).width = 14; });
+  ws.pageSetup = {orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0};
+
+  taiWorkbookCa(wb, 'FLIC-Gio-cong-thang-' + thang + '.xlsx',
+    'Đã xuất giờ công tháng ' + Number(thang.slice(5)) + '/' + thang.slice(0, 4));
 }
 
 /* ---------- Chốt tuần ---------- */
@@ -18300,6 +18870,23 @@ function viewThamSo(){
     +'<input type="number" id="tsHanDangKy" value="'+hanDangKyGio()+'">'
     +'<div class="small muted">31 giờ = 17h thứ 7 tuần trước. Đặt 0 để bỏ hạn. '
     +'Quá hạn thì chuyên viên không tự sửa được nữa, Phó Giám đốc vẫn sửa được.</div>'
+    +'<label>Cặp trực theo bộ phận</label>'
+    + capTruc().map(function(c, i){
+        return '<div class="card" style="margin:0 0 8px;padding:10px 12px;'
+          + 'background:var(--surface-2);">'
+          + '<div class="row" style="margin-bottom:7px;">'
+            + '<b class="small">' + esc(c.boPhan) + '</b>'
+            + '<button class="btn btn-sm" onclick="xoaCapTruc(' + i + ')">Bỏ bộ phận</button></div>'
+          + '<div class="small muted" style="margin-bottom:3px;">Thành viên chính — '
+            + 'rành nghiệp vụ, ca có họ trực là đủ</div>'
+          + oChonViTri('tsCapChinh' + i, c.viTri || [])
+          + '<div class="small muted" style="margin:7px 0 3px;">Người hỗ trợ — '
+            + 'trực được nhưng không thạo nghiệp vụ, ca chỉ có họ sẽ báo vàng</div>'
+          + oChonViTri('tsCapHoTro' + i, c.hoTro || [])
+          + '</div>'; }).join('')
+    +'<button class="btn btn-sm" onclick="themCapTruc()">+ Thêm bộ phận trực</button>'
+    +'<div class="small muted" style="margin-top:5px;">Mỗi ca phải có ít nhất một người '
+    +'phủ kín khung giờ. Ca không có ai báo đỏ, ca chỉ có người hỗ trợ báo vàng.</div>'
     +'<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:8px;">'
     +'<b class="small">Khác</b></div>'
     +'<label>Hiệu lực báo giá in cho phụ huynh (ngày)</label>'
@@ -18325,6 +18912,57 @@ function viewThamSo(){
   }
   return h;
 }
+/* Ô tick nhiều vị trí — gọn hơn ô nhập mã, và không gõ sai mã được */
+function oChonViTri(id, daChon){
+  return '<div id="' + id + '" style="display:flex;flex-wrap:wrap;gap:5px;">'
+    + VI_TRI.filter(function(v){
+        return VI_TRI_KHONG_TRUC_CA.indexOf(v.ma) < 0 && v.ma !== 'FLIC-GV-01'; })
+      .map(function(v){
+        const co = daChon.indexOf(v.ma) >= 0;
+        return '<label style="margin:0;display:inline-flex;align-items:center;gap:4px;'
+          + 'font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:99px;cursor:pointer;'
+          + 'border:1px solid ' + (co ? 'var(--primary)' : 'var(--border)') + ';'
+          + 'background:' + (co ? 'var(--primary-050)' : '#fff') + ';'
+          + 'color:' + (co ? 'var(--primary-dark)' : 'var(--text-2)') + ';">'
+          + '<input type="checkbox" data-vt="' + esc(v.ma) + '"' + (co ? ' checked' : '')
+          + ' style="width:auto;margin:0;" onchange="render()">'
+          + esc(v.ten) + '</label>'; }).join('')
+    + '</div>';
+}
+function docChonViTri(id){
+  const o = $(id);
+  if(!o) return [];
+  return Array.prototype.slice.call(o.querySelectorAll('input[data-vt]'))
+    .filter(function(x){ return x.checked; })
+    .map(function(x){ return x.getAttribute('data-vt'); });
+}
+function themCapTruc(){
+  if(!hasPerm('suaThamSo')){ showToast('Chỉ Phó Giám đốc được sửa tham số hệ thống'); return; }
+  const ten = prompt('Tên bộ phận phải có người trực mỗi ca:');
+  if(!ten || !ten.trim()) return;
+  const ds = capTruc().slice();
+  if(ds.some(function(c){ return c.boPhan === ten.trim(); })){
+    showToast('Bộ phận này đã có trong danh sách'); return; }
+  ds.push({boPhan: ten.trim(), viTri: [], hoTro: []});
+  luuCapTruc(ds, 'Đã thêm bộ phận ' + ten.trim());
+}
+function xoaCapTruc(i){
+  if(!hasPerm('suaThamSo')){ showToast('Chỉ Phó Giám đốc được sửa tham số hệ thống'); return; }
+  const ds = capTruc().slice();
+  if(!ds[i]) return;
+  if(!confirm('Bỏ bộ phận ' + ds[i].boPhan + ' khỏi danh sách cặp trực?\n\n'
+    + 'Từ nay phần mềm không còn soát ca trống của bộ phận này.')) return;
+  const ten = ds[i].boPhan;
+  ds.splice(i, 1);
+  luuCapTruc(ds, 'Đã bỏ bộ phận ' + ten);
+}
+function luuCapTruc(ds, loiBao){
+  db.collection('fcv_caidat').doc('chung').set(
+    Object.assign({}, settings, {capTruc: ds}), {merge: true}).then(function(){
+      showToast('✅ ' + loiBao); logAct(loiBao + ' khỏi cặp trực');
+    }).catch(fsErr);
+}
+
 function luuThamSo(){
   if(!hasPerm('suaThamSo')){ showToast('Chỉ Phó Giám đốc được sửa tham số hệ thống'); return; }
   const data = {
@@ -18344,6 +18982,10 @@ function luuThamSo(){
     tyLeTruongTra: Number($('tsTyLe').value)||25,
     tyLeNopTruongTuDo: Number($('tsTyLeNop').value)||0,
     thueTNCN: Number($('tsThue').value)||10,
+    capTruc: capTruc().map(function(c, i){
+      return {boPhan: c.boPhan,
+              viTri: docChonViTri('tsCapChinh' + i),
+              hoTro: docChonViTri('tsCapHoTro' + i)}; }),
     nhomCT: $('tsNhomCT').value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean),
     gioChuanTuan: Number($('tsGioChuan').value) || 48,
     hanDangKyCa: (function(){
