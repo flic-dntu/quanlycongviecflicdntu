@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.21.4   |   Ngày: 10/10/2026
+ Phiên bản: V1.21.5   |   Ngày: 13/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -218,6 +218,64 @@
    - Chỉ tiêu tuần chỉ cộng nợ từ tuần ĐÃ CHỐT, tránh cộng số
      còn thay đổi được.
    - Ba quyền mới: xemLichCa, dangKyCa, duyetLichCa.
+ V1.21.5 – 13/10/2026 – Làm theo góp ý của Hành chính Kế toán;
+   sửa 4 lỗi, trong đó 3 lỗi thuộc loại BÁO THÀNH CÔNG SAI SỰ THẬT.
+   LỖI ĐÃ SỬA
+   - Nhập Excel mặt hàng kho không ghi được dòng nào nhưng vẫn báo
+     "Đã nạp N dòng". Hai lỗi chồng nhau: (1) khối ghi mặt hàng kho
+     bị lồng nhầm vào trong nhánh thí sinh nên không bao giờ chạy;
+     (2) khối đó dùng biến i để đánh mã hàng trong khi vòng map
+     không khai tham số này, nên nếu chỉ sửa lỗi 1 thì đổi sang
+     ReferenceError. Nhánh rơi cuối cùng nay BÁO LỖI thay vì lặng
+     lẽ trả về thành công.
+   - Khoản thu ghi nhầm không sửa cũng không xoá được. Số sai chạy
+     thẳng vào công nợ, trạng thái Đã đóng, báo cáo doanh thu và
+     danh sách chờ hoá đơn, mà Còn nợ vẫn hiện 0 nên không ai phát
+     hiện. Nay huỷ được CÓ DẤU VẾT (xem TRƯỜNG MỚI).
+   - luuCapTruc ghi vào collection fcv_caidat trong khi cả app đọc
+     fcv_settings, nên nút bỏ bộ phận khỏi cặp trực báo đã lưu
+     nhưng tải lại trang là hiện về.
+   - Danh sách ngân hàng mặc định không có PV Combank và Vietinbank
+     — hai ngân hàng Trung tâm đang dùng — và là ô chọn cứng nên
+     gặp ngân hàng ngoài danh sách là không lưu nổi phiếu thu.
+   TÍNH NĂNG MỚI
+   - Sửa / Huỷ khoản thu: huỷ phải ghi lý do, dòng huỷ vẫn nằm
+     trong sổ (gạch ngang, ghi rõ ai huỷ ngày nào vì sao) nhưng
+     mọi phép tính tiền bỏ qua. KHÔNG xoá vật lý, để còn đối chiếu
+     với phiếu thu bên Sổ Thu Chi FLIC. Có nút Bỏ huỷ nếu huỷ nhầm.
+     Theo QĐ 14, khoản ĐÃ đối soát thì khoá: muốn sửa phải nhờ
+     Kế toán hoặc PGĐ bấm Bỏ đối soát trước.
+   - Chặn ghi trùng: trùng cả ngày, số tiền, loại khoản và số phiếu
+     thì hỏi lại trước khi cộng thêm vào sổ.
+   - Ô ngân hàng đổi thành ô gõ tay có gợi ý (như ô Đơn vị tính bên
+     Kho vật tư); mặc định PV Combank, Vietinbank, BIDV.
+   - Chọn "Khác" ở 7 ô (nguồn khách x2, kênh phản ánh, kênh quảng
+     cáo, nhóm kho, loại khoản thu, loại đối tác) nay bắt ghi rõ.
+     Trước đây báo cáo mọc ra cột "Khác" không ai giải thích nổi.
+   TRƯỜNG MỚI
+   - lichSuThu[].daHuy/nguoiHuy/ngayHuy/lyDoHuy/boHuyBoi/ngayBoHuy
+     · lichSuThu[].daSua/nguoiSua/ngaySua/lyDoSua
+     · lichSuThu[].loaiKhoanKhac
+   - lodulieu.nguonKhac · lead.nguonKhac · phananh.kenhKhac
+     · chiphiqc.kenhKhac · khohang.nhomKhac · doitac.loaiKhac
+   LƯU Ý CHO NGƯỜI SỬA MÃ SAU NÀY
+   - MỌI phép cộng tiền từ sổ thu PHẢI đi qua khoanThu(gd), đừng
+     đọc thẳng gd.lichSuThu — đọc thẳng là tính cả khoản đã huỷ.
+     19 chỗ tính tiền đã được gom về hàm này.
+   - Trạng thái học phí chỉ tính ở trangThaiHPTheo(gd, ls), một
+     chỗ duy nhất, để sổ và nhãn không bao giờ lệch nhau.
+   HẠ TẦNG KIỂM THỬ
+   - Thêm phép phân tích tĩnh số 10: mọi collection phải có người
+     lắng nghe. Chính phép này bắt được lỗi fcv_caidat mà 9 phép
+     kiểm trước đó đều báo xanh.
+   - Vá harness: setTimeout trước đây chạy callback NGAY, nên mọi
+     nút "bấm lần nữa để xác nhận" (xoá, huỷ, gỡ) chưa bao giờ
+     kiểm thử được bước xác nhận. Nay hẹn giờ từ 1 giây trở lên
+     được giữ lại, phép thử gọi chayHenGio() khi cần.
+   - Ba bộ kiểm thử mới: test-suathu.js (96 phép), test-ghiro.js
+     (65), test-nhapexcel.js (39 — chạy thử CẢ 8 loại nhập Excel,
+     nên lỗi kiểu mặt hàng kho không lọt lần nữa).
+   - Tổng: 12 bộ, 1.266 phép thử, 10 phép phân tích tĩnh.
 ------------------------------------------------------------------
  GHI CHÚ VẬN HÀNH
  - FLIC-EVT-01 (Sự kiện – Phát triển đối tác): để trống, PGĐ giao
@@ -737,10 +795,20 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.21.4';
-const NGAY_PHIEN_BAN = '10/10/2026';
+const PHIEN_BAN = 'V1.21.5';
+const NGAY_PHIEN_BAN = '13/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.21.5', ngay:'13/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Nhập mặt hàng kho từ Excel không ghi được dòng nào nhưng vẫn báo đã nạp thành công. Hành chính Kế toán tải mẫu, nhập liệu, đẩy file lên, hệ thống báo xong mà danh mục hàng hoá trống trơn. Thực ra có hai lỗi chồng lên nhau: khối ghi mặt hàng kho bị lồng nhầm vào bên trong nhánh xử lý thí sinh nên không bao giờ chạy, và ngay dưới đó khối này dùng một biến đếm mà vòng lặp không khai báo, nên nếu chỉ sửa lỗi thứ nhất thì chỉ đổi sang lỗi khác. Nay chỗ nào không có nhánh xử lý sẽ báo lỗi đỏ chứ không bao giờ báo thành công giả nữa. Báo thành công sai sự thật nguy hiểm hơn lỗi làm phần mềm đứng, vì người dùng tưởng xong việc còn dữ liệu thì không có, và không ai biết để phản ánh.'},
+    {loai:'Mới', nd:'Sửa và huỷ khoản thu đã ghi nhận. Trước đây ghi nhầm là vĩnh viễn: một học viên phải đóng ba triệu nhưng bấm nhầm ba lần thành chín triệu, mà ô Còn nợ vẫn hiện không nên không ai phát hiện ra, số sai chạy thẳng vào công nợ, trạng thái đã đóng, báo cáo doanh thu và danh sách chờ xuất hoá đơn. Nay huỷ được nhưng phải ghi lý do, và huỷ không phải là xoá: dòng vẫn nằm trong sổ, gạch ngang, ghi rõ ai huỷ ngày nào vì sao, chỉ không tính vào tiền nữa. Giữ lại như vậy để còn đối chiếu với phiếu thu bên Sổ Thu Chi FLIC, xoá hẳn thì hai phần mềm lệch nhau mà không ai giải thích được. Huỷ nhầm thì có nút bỏ huỷ.'},
+    {loai:'Mới', nd:'Khoản thu đã được Kế toán hoặc Phó Giám đốc xác nhận đối soát thì khoá lại, không còn nút sửa và huỷ. Muốn sửa phải nhờ bên kia bấm bỏ đối soát trước. Giữ đúng nguyên tắc tách bạch người ghi và người chốt số theo Quyết định 14: người ghi không tự sửa sổ đã chốt.'},
+    {loai:'Mới', nd:'Chặn ghi trùng ngay từ lúc nhập. Khoản sắp ghi trùng cả ngày, số tiền, loại khoản và số phiếu với một khoản đã có thì hệ thống hỏi lại, nêu rõ khoản đã có là khoản nào. Vẫn cho ghi nếu người dùng xác nhận, vì thu hai lần cùng số tiền trong một ngày là chuyện có thể xảy ra thật.'},
+    {loai:'Cải tiến', nd:'Ô ngân hàng nhận tiền đổi từ danh sách chọn cứng thành ô gõ tay có gợi ý, cùng kiểu ô đơn vị tính bên kho vật tư. Danh sách mặc định sửa lại cho đúng thực tế Trung tâm là PV Combank, Vietinbank và BIDV. Ngân hàng ngoài danh sách cứ gõ thẳng, hệ thống vẫn lưu. Trước đây gặp ngân hàng lạ là không lưu nổi phiếu thu, mà Hành chính Kế toán lại không có quyền sửa danh sách trong Tham số nên tự xoay không được.'},
+    {loai:'Mới', nd:'Bảy ô có mục Khác nay bắt ghi rõ khác là gì: nguồn khách ở hai màn, kênh phản ánh, kênh quảng cáo, nhóm hàng kho, loại khoản thu và loại đối tác. Trước đây báo cáo mọc ra một cột Khác mà không ai giải thích nổi, ba mươi khách nguồn Khác thì không rút được kinh nghiệm tuyển sinh nào, tiền quảng cáo đổ vào kênh Khác thì không tính được hiệu quả. Nay báo cáo hiện đầy đủ, ví dụ Khác chấm Hội chợ việc làm.'},
+    {loai:'Sửa lỗi', nd:'Màn cấu hình cặp trực ghi vào một nhóm dữ liệu không ai đọc, nên nút bỏ bộ phận khỏi cặp trực báo đã lưu thành công nhưng tải lại trang là bộ phận đó hiện về. Cùng loại lỗi báo thành công sai sự thật với lỗi nhập kho ở trên.'},
+    {loai:'Cải tiến', nd:'Bổ sung phép phân tích tĩnh thứ mười: mọi nhóm dữ liệu được ghi vào đều phải có người đọc. Chính phép kiểm này bắt được lỗi cặp trực mà chín phép kiểm trước đó đều báo xanh. Đồng thời vá một lỗ hổng trong hạ tầng kiểm thử: hẹn giờ trước nay chạy ngay lập tức, nên trạng thái bấm lần nữa để xác nhận bị xoá tức thì và không phép thử nào kiểm được bước xác nhận của các nút xoá, nút huỷ, nút gỡ. Thêm ba bộ kiểm thử mới, nâng tổng lên mười hai bộ với một nghìn hai trăm sáu mươi sáu phép thử; riêng bộ nhập Excel chạy thử cả tám loại dữ liệu nên lỗi kiểu mặt hàng kho không lọt lần nữa.'}
+  ]},
   {v:'V1.21.4', ngay:'10/10/2026', muc:[
     {loai:'Cải tiến', nd:'Màn đăng ký ca của chuyên viên dựng lại thành lưới sáu ngày nhân ba ca gọn trong một màn, thay cho mười tám dòng xếp dọc phải cuộn hết màn mới xem hết tuần. Dưới mỗi ô có dòng nhỏ cho biết người cùng cặp đã đăng ký gì ở ca đó, nên không còn chuyện hai người cùng bỏ trống một ca mà không ai hay. Ô chưa ai trực viền đỏ, ô chỉ có người hỗ trợ viền vàng, ngay tại chỗ chứ không phải cuộn lên đầu màn mới thấy. Trên điện thoại lưới gập thành sáu khối theo ngày, ba ca nằm ngang.'},
     {loai:'Mới', nd:'Bốn nút điền nhanh: giống tuần trước, cả tuần hành chính, cả tuần ca tối, xoá hết. Điền nhanh chỉ điền vào ô còn trống, không đè lên ô chuyên viên đã cân nhắc chọn. Vị trí Hành chính không có nút cả tuần ca tối và bị chặn nếu gọi thẳng.'},
@@ -2475,7 +2543,7 @@ function thuThapCanhBao(){
       /* Chỉ nhắc ngày thật sự có hoạt động */
       const co = buoiHocList.some(function(b){ return b.ngay === n; })
         || ghiDanhList.some(function(g){ return !g.nhapHangLoat
-             && (g.lichSuThu||[]).some(function(x){ return x.ngay === n; }); });
+             && khoanThu(g).some(function(x){ return x.ngay === n; }); });
       if(co) chuaChot.push(n);
     }
     them({tang:1, mau:'warn', soLuong: chuaChot.length,
@@ -2626,7 +2694,7 @@ function thuTheoThang(mocISO, soThang){
   const chiSo = {};
   ds.forEach(function(x, i){ chiSo[x.ky] = i; });
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu || []).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       const k = (x.ngay || '').slice(0, 7);
       if(chiSo[k] !== undefined) ds[chiSo[k]].gt += Number(x.soTien) || 0;
     });
@@ -2696,7 +2764,7 @@ function xemThuThang(i){
   if(!th) return;
   const kh = [];
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu || []).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       if((x.ngay || '').slice(0, 7) !== th.ky) return;
       const hv = hocVienList.find(function(h){ return h.id === g.hocVienId; }) || {};
       const lop = lopList.find(function(l){ return l.id === g.lopId; }) || {};
@@ -2772,7 +2840,7 @@ function xemKhauPheu(i){
         const goi = (l.cuocGoi || []).length;
         return '<div class="list-row"><div style="min-width:0;flex:1;">'
           + '<div><b>' + esc(l.hoTen || '(chưa có tên)') + '</b></div>'
-          + '<div class="small muted">' + esc(l.nguon || 'không rõ nguồn')
+          + '<div class="small muted">' + esc(hienKemKhac(l.nguon, l.nguonKhac) || 'không rõ nguồn')
           + (l.dienThoai ? ' · ' + esc(l.dienThoai) : '')
           + ' · ' + (goi ? 'đã gọi ' + goi + ' lần' : 'chưa gọi lần nào') + '</div></div>'
           + '<div style="flex-shrink:0;">'
@@ -2830,7 +2898,7 @@ function viewTongQuan(){
   const thang = t.slice(0, 7);
   let thuThang = 0;
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu || []).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       if((x.ngay || '').slice(0, 7) === thang) thuThang += Number(x.soTien) || 0;
     });
   });
@@ -3829,17 +3897,26 @@ function viewHoSoHocVien(){
   });
   cacLan.sort(function(a,b){ return (b.t.ngay||'').localeCompare(a.t.ngay||''); });
   const tongMoiKhoan = ls.reduce(function(s2, x){ return s2 + daDongCua(x.gd); }, 0);
-  h += '<div class="card"><h3>Lịch sử đóng tiền · '+cacLan.length+' lần</h3>'
+  /* Khoản đã huỷ vẫn hiện để còn đối chiếu, nhưng không tính vào số lần và tổng tiền */
+  const soLanThat = cacLan.filter(function(x){ return !laKhoanHuy(x.t); }).length;
+  h += '<div class="card"><h3>Lịch sử đóng tiền · '+soLanThat+' lần</h3>'
     + '<div class="small muted" style="margin-bottom:6px;">Tổng đã nộp '+fmtTien(tongMoiKhoan)+'đ'
     + ' · trong đó học phí '+fmtTien(ls.reduce(function(s2,x){ return s2 + daDongHocPhi(x.gd); },0))+'đ</div>';
   if(!cacLan.length) h += '<div class="small muted">Chưa ghi nhận khoản thu nào.</div>';
   else h += cacLan.map(function(x){
-    return '<div class="list-row"><div style="min-width:0;"><div class="small">'+fmtDate(x.t.ngay)
+    const huy = laKhoanHuy(x.t);
+    const gach = huy ? 'text-decoration:line-through;' : '';
+    return '<div class="list-row"'+(huy? ' style="opacity:.62;"':'')+'><div style="min-width:0;">'
+      + '<div class="small" style="'+gach+'">'+fmtDate(x.t.ngay)
       + ' · lớp '+esc(x.lop)+'</div>'
       + '<div class="small muted">'+esc(loaiKhoan(x.t))+' · '+esc(x.t.hinhThuc||'')
       + (x.t.soPhieuThu? ' · phiếu '+esc(x.t.soPhieuThu):'')
-      + (x.t.nguoiThu? ' · '+esc(x.t.nguoiThu):'')+'</div></div>'
-      + '<div style="font-weight:700;">'+fmtTien(x.t.soTien)+'</div></div>';
+      + (x.t.nguoiThu? ' · '+esc(x.t.nguoiThu):'')+'</div>'
+      + (huy? '<div class="small" style="color:var(--danger);">Đã huỷ '+fmtDate(x.t.ngayHuy)
+          + (x.t.nguoiHuy? ' · '+esc(x.t.nguoiHuy):'')
+          + (x.t.lyDoHuy? ' · lý do: '+esc(x.t.lyDoHuy):'')+'</div>' : '')
+      + '</div>'
+      + '<div style="font-weight:700;'+gach+'">'+fmtTien(x.t.soTien)+'</div></div>';
   }).join('');
   h += '</div>';
 
@@ -6782,7 +6859,7 @@ function viewLocTrung(){
             + '<div class="small muted">'+esc(l.trangThai||'')
             + (n? ' · đã gọi '+n+' lần':'')
             + (l.loTen? ' · lô '+esc(l.loTen):'')
-            + (l.nguon? ' · '+esc(l.nguon):'')+'</div>'
+            + (l.nguon? ' · '+esc(hienKemKhac(l.nguon, l.nguonKhac)):'')+'</div>'
             + (l.ghiChu? '<div class="small muted">'+esc(l.ghiChu).slice(0,90)+'</div>':'')
             + '</div></div>';
         }).join('')
@@ -6935,7 +7012,7 @@ function viewLoDuLieu(){
       return '<tr style="cursor:pointer;" onclick="moChiTietLo(\'' + (x.id || '__le__') + '\')">'
         + '<td><b>' + esc(x.ten) + '</b>'
         + '<div class="small muted">' + (x.ngay ? fmtDate(x.ngay) : 'chưa ghi ngày') + '</div></td>'
-        + '<td>' + esc(x.nguon || '—') + '</td>'
+        + '<td>' + esc(hienKemKhac(x.nguon, x.nguonKhac) || '—') + '</td>'
         + '<td style="text-align:right;font-weight:700;">' + x.tong + '</td>'
         + '<td style="text-align:right;">' + x.daLienHe + '</td>'
         + '<td style="text-align:right;">' + x.chot + '</td>'
@@ -7166,8 +7243,9 @@ function formLoMoi(){
   openModal('<h3>Tạo đợt tuyển sinh</h3>'
     +'<div class="small muted">Tạo đợt trước, rồi bấm Nhập khách để đưa danh sách vào.</div>'
     +'<label>Tên đợt</label><input id="mLoTen" placeholder="VD: Đêm hội trăng rằm 2026">'
-    +'<label>Nguồn</label><select id="mLoNguon">'
+    +'<label>Nguồn</label><select id="mLoNguon" onchange="veOGhiRo(\'mLoNguon\',\'mLoNguonKhac\',\'Nguồn cụ thể\')">'
       + NGUON_KHACH.map(function(n){ return '<option>'+esc(n)+'</option>'; }).join('')+'</select>'
+    +'<div id="mLoNguonKhacHop"></div>'
     +'<label>Ngày thu thập</label><input type="date" id="mLoNgay" value="'+todayISO()+'">'
     +'<label>Ghi chú</label><input id="mLoGhiChu" placeholder="VD: phát tờ rơi tại 3 trường tiểu học">'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
@@ -7180,8 +7258,12 @@ function luuLoMoi(){
     showToast('Đã có đợt tên này. Đặt tên khác cho phân biệt.');
     return;
   }
+  if(thieuGhiRo('mLoNguon', 'mLoNguonKhac')){
+    showToast('Chọn nguồn Khác thì ghi rõ là nguồn nào, để báo cáo tuyển sinh còn dùng được');
+    return; }
   db.collection('fcv_lodulieu').add({
-    ten: ten, nguon: $('mLoNguon').value, ngayThuThap: $('mLoNgay').value,
+    ten: ten, nguon: $('mLoNguon').value,
+    nguonKhac: docGhiRo('mLoNguon', 'mLoNguonKhac'), ngayThuThap: $('mLoNgay').value,
     ghiChu: $('mLoGhiChu').value.trim(), nguoiTao: currentUser.hoTen, ts: Date.now()
   }).then(function(){ closeModal(); showToast('✅ Đã tạo lô '+ten); logAct('Tạo lô dữ liệu '+ten); }).catch(fsErr);
 }
@@ -7194,8 +7276,9 @@ function formSuaLo(loId){
     openModal('<h3>Sửa nhãn lô</h3>'
       +'<div class="small muted">'+soKhach+' khách đang gắn lô này</div>'
       +'<label>Tên lô</label><input id="mLoTen2" value="'+esc(mau.loTen||'')+'">'
-      +'<label>Nguồn</label><select id="mLoNguon2">'
+      +'<label>Nguồn</label><select id="mLoNguon2" onchange="veOGhiRo(\'mLoNguon2\',\'mLoNguonKhac2\',\'Nguồn cụ thể\')">'
         + NGUON_KHACH.map(function(n){ return '<option '+(mau.nguon===n?'selected':'')+'>'+esc(n)+'</option>'; }).join('')+'</select>'
+      +'<div id="mLoNguonKhac2Hop"></div>'
       +'<label>Ngày thu thập</label><input type="date" id="mLoNgay2" value="'+esc(mau.ngayThuThap||'')+'">'
       +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
       +'<button class="btn btn-primary btn-block" onclick="luuSuaLo(\'' + loId + '\')">Lưu cho cả lô</button></div>');
@@ -7204,8 +7287,9 @@ function formSuaLo(loId){
   openModal('<h3>Sửa lô '+esc(lo.ten)+'</h3>'
     +'<div class="small muted">'+soKhach+' khách đang gắn lô này</div>'
     +'<label>Tên lô</label><input id="mLoTen2" value="'+esc(lo.ten||'')+'">'
-    +'<label>Nguồn</label><select id="mLoNguon2">'
+    +'<label>Nguồn</label><select id="mLoNguon2" onchange="veOGhiRo(\'mLoNguon2\',\'mLoNguonKhac2\',\'Nguồn cụ thể\')">'
       + NGUON_KHACH.map(function(n){ return '<option '+(lo.nguon===n?'selected':'')+'>'+esc(n)+'</option>'; }).join('')+'</select>'
+    +'<div id="mLoNguonKhac2Hop"></div>'
     +'<label>Ngày thu thập</label><input type="date" id="mLoNgay2" value="'+esc(lo.ngayThuThap||'')+'">'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
     +'<button class="btn btn-primary btn-block" onclick="luuSuaLo(\'' + loId + '\')">Lưu cho cả lô</button></div>');
@@ -7217,13 +7301,19 @@ function luuSuaLo(loId){
     showToast('Đã có đợt tên này. Đặt tên khác cho phân biệt.');
     return;
   }
+  if(thieuGhiRo('mLoNguon2', 'mLoNguonKhac2')){
+    showToast('Chọn nguồn Khác thì ghi rõ là nguồn nào, để báo cáo tuyển sinh còn dùng được');
+    return; }
   const nguon = $('mLoNguon2').value, ngay = $('mLoNgay2').value;
+  const nguonKhac = docGhiRo('mLoNguon2', 'mLoNguonKhac2');
   const ds = leadList.filter(function(l){ return l.loId === loId; });
   const p = [];
   if(loDuLieuList.some(function(x){ return x.id === loId; }))
-    p.push(db.collection('fcv_lodulieu').doc(loId).update({ten:ten, nguon:nguon, ngayThuThap:ngay}));
+    p.push(db.collection('fcv_lodulieu').doc(loId).update(
+      {ten:ten, nguon:nguon, nguonKhac:nguonKhac, ngayThuThap:ngay}));
   ds.forEach(function(l){
-    p.push(db.collection('fcv_lead').doc(l.id).update({loTen:ten, nguon:nguon, ngayThuThap:ngay}));
+    p.push(db.collection('fcv_lead').doc(l.id).update(
+      {loTen:ten, nguon:nguon, nguonKhac:nguonKhac, ngayThuThap:ngay}));
   });
   Promise.all(p).then(function(){
     closeModal(); showToast('✅ Đã cập nhật '+ds.length+' khách trong lô');
@@ -8906,7 +8996,7 @@ function viewDieuHanhTS(){
         + '<div style="min-width:0;flex:1;">'
         + '<div><b>'+esc(l.hoTen)+'</b>'+(l.sdtPH ? ' <span class="small muted">· '+esc(l.sdtPH)+'</span>' : '')+'</div>'
         + '<div class="small muted">Chốt '+fmtDate(l.ngayNhapHoc)
-        + (l.nguon ? ' · '+esc(l.nguon) : '')+(l.loTen ? ' · lô '+esc(l.loTen) : '')+'</div>'
+        + (l.nguon ? ' · '+esc(hienKemKhac(l.nguon, l.nguonKhac)) : '')+(l.loTen ? ' · lô '+esc(l.loTen) : '')+'</div>'
         + '<div class="small muted">'+(lops.length ? 'Lớp '+esc(lops.join(', ')) : '<span style="color:var(--warn);">chưa xếp lớp</span>')+'</div>'
         + (gds.length
            ? '<div class="small">Đã đóng '+fmtTien(daDong)+'đ'
@@ -9562,10 +9652,12 @@ function formDoiTac(id){
   openModal('<h3>' + (d ? 'Sửa đối tác' : 'Thêm đối tác') + '</h3>'
     +'<label>Tên đơn vị</label><input id="mDTTen" value="' + esc(v.ten || '') + '" '
     +'placeholder="VD: Trung tâm Anh ngữ Sao Mai">'
-    +'<label>Loại đơn vị</label><select id="mDTLoai">'
+    +'<label>Loại đơn vị</label>'
+    +'<select id="mDTLoai" onchange="veOGhiRo(\'mDTLoai\',\'mDTLoaiKhac\',\'Loại cụ thể\')">'
     + LOAI_DOI_TAC.map(function(x){
         return '<option' + (v.loai === x ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('')
     +'</select>'
+    +'<div id="mDTLoaiKhacHop"></div>'
     +'<div class="row" style="gap:8px;">'
     +'<div style="flex:1;"><label>Người liên hệ</label><input id="mDTNguoi" value="' + esc(v.nguoiLienHe || '') + '"></div>'
     +'<div style="flex:1;"><label>Điện thoại</label><input id="mDTDienThoai" value="' + esc(v.dienThoai || '') + '"></div></div>'
@@ -9592,7 +9684,10 @@ function luuDoiTac(id){
   if(doiTacList.some(function(x){ return x.id !== id && stripDia(x.ten) === stripDia(ten); })){
     showToast('Đã có đối tác tên này'); return;
   }
+  if(thieuGhiRo('mDTLoai', 'mDTLoaiKhac')){
+    showToast('Chọn loại Đơn vị khác thì ghi rõ là loại nào'); return; }
   const data = {ten: ten, loai: $('mDTLoai').value,
+    loaiKhac: docGhiRo('mDTLoai', 'mDTLoaiKhac'),
     nguoiLienHe: $('mDTNguoi').value.trim(), dienThoai: $('mDTDienThoai').value.trim(),
     email: $('mDTEmail') ? $('mDTEmail').value.trim() : '',
     diaChi: $('mDTDiaChi').value.trim(), chietKhau: Number($('mDTChietKhau').value) || 0,
@@ -11395,7 +11490,7 @@ const TT_HOAN = ['Chờ Học vụ xác nhận','Chờ duyệt','Đã duyệt','
 const HINH_THUC_THU = ['Tiền mặt','Chuyển khoản','Quẹt thẻ'];
 /* Tài khoản nhận tiền của Trung tâm. Sửa được trong Hệ thống → Tham số,
    không phải sửa code mỗi lần đổi ngân hàng. */
-const NGAN_HANG_MAC_DINH = ['Vietcombank','BIDV','Agribank','Techcombank','MB Bank','ACB'];
+const NGAN_HANG_MAC_DINH = ['PV Combank','Vietinbank','BIDV'];
 function dsNganHang(){
   const t = settings.dsNganHang;
   if(typeof t === 'string' && t.trim())
@@ -11418,7 +11513,7 @@ function hocPhiPhaiDong(gd){
   return 0;
 }
 function daDongCua(gd){
-  return (gd.lichSuThu||[]).reduce(function(s,x){ return s + (Number(x.soTien)||0); },0);
+  return khoanThu(gd).reduce(function(s,x){ return s + (Number(x.soTien)||0); },0);
 }
 function conNoCua(gd){
   /* Chỉ trừ khoản đã thu thuộc loại Học phí; lệ phí thi và tiền sách tính riêng */
@@ -11467,7 +11562,7 @@ function doiSoatHocPhi(gdId){
     showToast('Chỉ Phó Giám đốc hoặc người được giao mới xác nhận đối soát'); return; }
   const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
   if(!gd) return;
-  if(!(gd.lichSuThu || []).length){
+  if(!khoanThu(gd).length){
     showToast('Chưa có khoản thu nào để đối soát'); return; }
 
   if(gd.doiSoatHP){
@@ -11481,12 +11576,12 @@ function doiSoatHocPhi(gdId){
     return;
   }
 
-  const dsPhieu = (gd.lichSuThu || []).map(function(x){
+  const dsPhieu = khoanThu(gd).map(function(x){
     return '· ' + fmtDate(x.ngay) + ' · ' + loaiKhoan(x) + ' ' + fmtTien(x.soTien) + 'đ'
       + (x.soPhieuThu ? ' · phiếu ' + x.soPhieuThu : ' · CHƯA GHI SỐ PHIẾU')
       + (x.nganHang ? ' · ' + x.nganHang : '');
   }).join('\n');
-  const thieuPhieu = (gd.lichSuThu || []).some(function(x){ return !x.soPhieuThu; });
+  const thieuPhieu = khoanThu(gd).some(function(x){ return !x.soPhieuThu; });
 
   if(!confirm('XÁC NHẬN ĐỐI SOÁT\n\n' + tenHocVien(gd.hocVienId)
       + ' · lớp ' + maLopCua(gd.lopId) + '\n\n'
@@ -11535,11 +11630,11 @@ function viewHocPhi(){
 
   /* Tiến độ đối soát lần 2: Kế toán nhìn một chỗ biết còn ai chưa rà */
   h += (function(){
-    const coThu = ds.filter(function(g){ return (g.lichSuThu || []).length; });
+    const coThu = ds.filter(function(g){ return khoanThu(g).length; });
     if(!coThu.length) return '';
     const daRa = coThu.filter(function(g){ return g.doiSoatHP; }).length;
     const chuaSo = coThu.filter(function(g){
-      return (g.lichSuThu || []).some(function(x){ return !x.soPhieuThu; }); }).length;
+      return khoanThu(g).some(function(x){ return !x.soPhieuThu; }); }).length;
     const coGhiChu = ds.filter(function(g){ return g.ghiChuHocVu; }).length;
     return '<div class="card" style="'
       + (daRa < coThu.length ? 'border-color:var(--warn);' : 'border-color:var(--ok);') + '">'
@@ -11575,9 +11670,10 @@ function viewHocPhi(){
             + (dot.hanDong? ' · hạn '+fmtDate(dot.hanDong):'')
             + (dot.quaHan? ' · quá '+dot.soNgayQua+' ngày':'')+'</div>';
         })()
-      + ((g.lichSuThu||[]).length
+      + (khoanThu(g).length
           ? (function(){
-              const cuoi = g.lichSuThu[g.lichSuThu.length-1];
+              const conLai = khoanThu(g);
+              const cuoi = conLai[conLai.length-1];
               return '<div class="small muted">Lần cuối '+fmtDate(cuoi.ngay)
                 + ' · '+esc(loaiKhoan(cuoi))
                 + (cuoi.hinhThuc ? ' · '+esc(cuoi.hinhThuc) : '')
@@ -11606,9 +11702,12 @@ function viewHocPhi(){
           : '')
       + '<div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;">'
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm btn-primary" onclick="formGhiThu(\''+g.id+'\')">Ghi nhận thu</button>':'')
+      + ((hasPerm('ghiNhanThu') || hasPerm('xacNhanDoiSoat')) && (g.lichSuThu||[]).length
+          ? '<button class="btn btn-sm" onclick="formKhoanDaThu(\''+g.id+'\')">Các khoản đã thu ('
+            + khoanThu(g).length + ')</button>' : '')
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm" onclick="formKeHoachDong(\''+g.id+'\')">Kế hoạch đóng</button>':'')
       + (hasPerm('ghiNhanThu')? '<button class="btn btn-sm" onclick="formSuaHocPhi(\''+g.id+'\')">Sửa học phí</button>':'')
-      + (hasPerm('xacNhanDoiSoat') && (g.lichSuThu||[]).length
+      + (hasPerm('xacNhanDoiSoat') && khoanThu(g).length
           ? '<button class="btn btn-sm'+(g.doiSoatHP?'':' btn-primary')+'" onclick="doiSoatHocPhi(\''+g.id+'\')">'
             + (g.doiSoatHP ? '↩ Bỏ đối soát' : '✅ Xác nhận đối soát') + '</button>'
           : '')
@@ -11629,13 +11728,28 @@ const LOAI_KHOAN = ['Học phí', 'Lệ phí thi', 'Tiền sách', 'Đồng ph�
 
 /* Khoản thu thuộc loại nào; bản ghi cũ không ghi loại thì coi là học phí */
 function loaiKhoan(x){ return x.loaiKhoan || 'Học phí'; }
+
+/* Khoản ghi nhầm được HUỶ chứ không xoá: dòng vẫn nằm trong sổ để còn đối chiếu
+   với phiếu thu bên Sổ Thu Chi FLIC, nhưng mọi phép tính tiền đều bỏ qua nó.
+   Mọi chỗ cộng tiền phải đi qua khoanThu(), đừng đọc thẳng gd.lichSuThu. */
+function laKhoanHuy(x){ return !!(x && x.daHuy); }
+function khoanThu(gd){
+  return (((gd && gd.lichSuThu) || [])).filter(function(x){ return !laKhoanHuy(x); });
+}
 function daDongHocPhi(gd){
-  return (gd.lichSuThu || []).reduce(function(s, x){
+  return khoanThu(gd).reduce(function(s, x){
     return s + (loaiKhoan(x) === 'Học phí' ? (Number(x.soTien) || 0) : 0); }, 0);
 }
 function daDongKhoanKhac(gd){
-  return (gd.lichSuThu || []).reduce(function(s, x){
+  return khoanThu(gd).reduce(function(s, x){
     return s + (loaiKhoan(x) !== 'Học phí' ? (Number(x.soTien) || 0) : 0); }, 0);
+}
+/* Một chỗ duy nhất quyết trạng thái học phí, để sổ và nhãn không bao giờ lệch nhau */
+function trangThaiHPTheo(gd, ls){
+  const tong = (ls || []).reduce(function(s, x){
+    return s + (!laKhoanHuy(x) && loaiKhoan(x) === 'Học phí' ? (Number(x.soTien) || 0) : 0); }, 0);
+  const phai = hocPhiPhaiDong(gd);
+  return tong >= phai ? 'Đã đóng' : (tong > 0 ? 'Đóng một phần' : 'Chưa đóng');
 }
 
 /* Kế hoạch đóng: mảng {ten, soTien, hanDong, ghiChu} */
@@ -12035,9 +12149,11 @@ function formGhiThu(gdId){
           + (dot.hanDong? ' · hạn '+fmtDate(dot.hanDong):'')
           + (dot.quaHan? ' · quá '+dot.soNgayQua+' ngày':'')+'</div>';
       })()
-    +'<label>Loại khoản thu</label><select id="mGTLoai">'
+    +'<label>Loại khoản thu</label>'
+    +'<select id="mGTLoai" onchange="veOGhiRo(\'mGTLoai\',\'mGTLoaiKhac\',\'Khoản thu gì\')">'
       + LOAI_KHOAN.map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select>'
     +'<div class="small muted">Chỉ khoản Học phí mới trừ vào công nợ học phí.</div>'
+    +'<div id="mGTLoaiKhacHop"></div>'
     +'<label>Số tiền thu lần này</label><input type="number" id="mGTSoTien" value="'
       + (function(){ const d = dotSapDenHan(g); return d ? d.thieu : no; })()+'">'
     +'<label>Hình thức</label><select id="mGTHinhThuc" onchange="veONganHang()">'
@@ -12057,18 +12173,65 @@ function formGhiThu(gdId){
 /* Đánh dấu cần hoá đơn thì hiện ô tên người mua và mã số thuế */
 /* Chuyển khoản hoặc quẹt thẻ thì phải ghi rõ tiền vào ngân hàng nào,
    để đối chiếu với sao kê khi Kế toán rà soát lần 2. */
+/* ===== Ô "GHI RÕ" ĐI KÈM LỰA CHỌN "KHÁC" =====
+   Phần mềm có 6 danh sách cho chọn "Khác" nhưng không chỗ nào hỏi khác là gì.
+   Hậu quả: báo cáo mọc ra một cột "Khác" mà không ai giải thích nổi — 30 khách
+   nguồn "Khác" thì không rút được kinh nghiệm tuyển sinh nào. Dữ liệu vào rồi
+   coi như mất. Nay chọn "Khác" là phải ghi rõ.
+   Giữ nguyên ô chọn (để thống kê còn gom nhóm được), chỉ hiện thêm ô chữ. */
+function laLuaChonKhac(v){
+  const s = String(v || '').toLowerCase();
+  return s === 'khác' || s.indexOf('khác') >= 0;
+}
+function veOGhiRo(idChon, idKhac, nhan){
+  const hop = $(idKhac + 'Hop');
+  if(!hop) return;
+  const o = $(idChon);
+  if(!o || !laLuaChonKhac(o.value)){ hop.innerHTML = ''; return; }
+  const cu = $(idKhac) ? $(idKhac).value : '';
+  hop.innerHTML = '<label>' + esc(nhan || 'Ghi rõ là gì') + '</label>'
+    + '<input id="' + idKhac + '" value="' + esc(cu) + '" '
+    + 'placeholder="Ghi cụ thể để báo cáo còn dùng được">';
+}
+/* Đọc ô ghi rõ; trả chuỗi rỗng nếu lựa chọn hiện tại không phải "Khác" */
+function docGhiRo(idChon, idKhac){
+  const o = $(idChon);
+  if(!o || !laLuaChonKhac(o.value)) return '';
+  return $(idKhac) ? $(idKhac).value.trim() : '';
+}
+/* Chọn "Khác" mà bỏ trống phần ghi rõ thì chặn, kèm câu nói rõ vì sao */
+function thieuGhiRo(idChon, idKhac){
+  const o = $(idChon);
+  if(!o || !laLuaChonKhac(o.value)) return false;
+  return !docGhiRo(idChon, idKhac);
+}
+/* Hiển thị: "Khác" kèm phần ghi rõ, ví dụ "Khác · Hội chợ việc làm" */
+function hienKemKhac(chinh, ghiRo){
+  return String(chinh || '') + (ghiRo ? ' · ' + ghiRo : '');
+}
+
+/* Ô ngân hàng: gợi ý sẵn các ngân hàng của Trung tâm nhưng VẪN GÕ TAY ĐƯỢC.
+   Danh sách cứng từng làm Hành chính Kế toán kẹt khi phụ huynh chuyển vào
+   ngân hàng ngoài danh sách — không lưu nổi phiếu thu. Cùng kiểu ô Đơn vị tính
+   bên Kho vật tư. Dùng chung cho cả form ghi nhận và form sửa khoản thu. */
+function htmlONganHang(id, giaTri){
+  const ds = dsNganHang();
+  return '<label>Ngân hàng nhận tiền</label>'
+    + '<input id="' + id + '" list="ds' + id + '" value="' + esc(giaTri || '') + '" '
+    + 'placeholder="Gõ tên ngân hàng, hoặc chọn trong gợi ý">'
+    + '<datalist id="ds' + id + '">'
+    + ds.map(function(x){ return '<option value="' + esc(x) + '">'; }).join('')
+    + '</datalist>'
+    + '<div class="small muted">Gợi ý: ' + esc(ds.join(' · '))
+    + '. Ngân hàng khác cứ gõ thẳng, hệ thống vẫn lưu. '
+    + 'Sửa danh sách gợi ý trong Hệ thống → Tham số.</div>';
+}
 function veONganHang(){
   const el = $('mGTONganHang');
   if(!el) return;
   const ht = $('mGTHinhThuc') ? $('mGTHinhThuc').value : '';
   if(!canGhiNganHang(ht)){ el.innerHTML = ''; return; }
-  el.innerHTML = '<label>Ngân hàng nhận tiền</label>'
-    + '<select id="mGTNganHang">'
-    + '<option value="">— chọn ngân hàng —</option>'
-    + dsNganHang().map(function(x){ return '<option>' + esc(x) + '</option>'; }).join('')
-    + '</select>'
-    + '<div class="small muted">Ghi rõ ngân hàng để đối chiếu với sao kê. '
-    + 'Thêm hoặc bớt ngân hàng trong Hệ thống → Tham số.</div>';
+  el.innerHTML = htmlONganHang('mGTNganHang', '');
 }
 function veOHoaDon(){
   const el = $('mGTThongTinHD');
@@ -12086,25 +12249,35 @@ function luuGhiThu(gdId){
   if(st<=0){ showToast('Nhập số tiền'); return; }
   const loai = $('mGTLoai') ? $('mGTLoai').value : 'Học phí';
   const ht = $('mGTHinhThuc').value;
-  const nganHang = $('mGTNganHang') ? $('mGTNganHang').value : '';
+  const nganHang = $('mGTNganHang') ? $('mGTNganHang').value.trim() : '';
   if(canGhiNganHang(ht) && !nganHang){
-    showToast('Chọn ngân hàng nhận tiền để còn đối chiếu sao kê'); return; }
+    showToast('Ghi rõ ngân hàng nhận tiền để còn đối chiếu sao kê'); return; }
+  if(thieuGhiRo('mGTLoai', 'mGTLoaiKhac')){
+    showToast('Chọn loại Khác thì ghi rõ là khoản thu gì'); return; }
+  const ngay = $('mGTNgay').value;
+  const soPhieu = $('mGTPhieu').value.trim();
+  /* Bấm nhầm hai lần là chuyện thường. Trùng cả ngày, số tiền, loại khoản và số phiếu
+     thì gần như chắc chắn là ghi lặp — hỏi lại trước khi cộng thêm vào sổ. */
+  const trung = khoanThu(g).find(function(x){
+    return x.ngay === ngay && (Number(x.soTien)||0) === st && loaiKhoan(x) === loai
+        && (x.soPhieuThu || '') === soPhieu;
+  });
+  if(trung && !confirm('Đã có khoản ' + loai + ' ' + fmtTien(st) + 'đ ngày ' + fmtDate(ngay)
+      + (soPhieu ? ' phiếu ' + soPhieu : ' (chưa ghi số phiếu)')
+      + ' của ' + tenHocVien(g.hocVienId) + '.\n\nVẫn ghi thêm một khoản nữa?')) return;
   const ls = (g.lichSuThu||[]).slice();
   const canHD = $('mGTHoaDon') && $('mGTHoaDon').checked;
-  ls.push({ngay:$('mGTNgay').value, soTien:st, loaiKhoan:loai,
+  ls.push({ngay:ngay, soTien:st, loaiKhoan:loai,
+           loaiKhoanKhac: docGhiRo('mGTLoai', 'mGTLoaiKhac'),
            hinhThuc:ht, nganHang:nganHang,
-           soPhieuThu:$('mGTPhieu').value.trim(), ghiChu:$('mGTGhiChu').value.trim(),
+           soPhieuThu:soPhieu, ghiChu:$('mGTGhiChu').value.trim(),
            canHoaDon: !!canHD,
            tenNguoiMua: canHD && $('mGTTenMua') ? $('mGTTenMua').value.trim() : '',
            mst: canHD && $('mGTMst') ? $('mGTMst').value.trim() : '',
            nguoiThu:currentUser.hoTen, ts:Date.now()});
-  /* Trạng thái học phí chỉ tính khoản Học phí, không gộp lệ phí thi hay tiền sách */
-  const tongHP = ls.reduce(function(s,x){
-    return s + ((x.loaiKhoan||'Học phí')==='Học phí' ? (Number(x.soTien)||0) : 0); },0);
-  const phai = hocPhiPhaiDong(g);
   db.collection('fcv_ghidanh').doc(gdId).update({
     lichSuThu:ls,
-    trangThaiHP: tongHP>=phai? 'Đã đóng' : (tongHP>0? 'Đóng một phần' : 'Chưa đóng')
+    trangThaiHP: trangThaiHPTheo(g, ls)
   }).then(function(){
     closeModal();
     showToast('✅ Đã ghi nhận '+fmtTien(st)+'đ · '+loai
@@ -12112,6 +12285,236 @@ function luuGhiThu(gdId){
     logAct('Thu '+loai+' '+tenHocVien(g.hocVienId)+': '+fmtTien(st)+'đ');
   }).catch(fsErr);
 }
+/* ===== SỬA / HUỶ KHOẢN THU ĐÃ GHI =====
+   Ghi nhầm là chuyện có thật và trước đây không ai sửa được: số sai chạy thẳng
+   vào công nợ, trạng thái Đã đóng, báo cáo doanh thu và danh sách chờ hoá đơn.
+   Nguyên tắc: KHÔNG xoá vật lý. Khoản huỷ vẫn nằm trong sổ, gạch ngang, ghi rõ
+   ai huỷ và vì sao — để còn đối chiếu với phiếu thu bên Sổ Thu Chi FLIC.
+   Theo QĐ 14, người ghi không được tự sửa sổ đã chốt: khoản đã đối soát thì khoá,
+   muốn sửa phải nhờ Kế toán hoặc Phó Giám đốc bấm Bỏ đối soát trước. */
+function suaDuocKhoanThu(gd){
+  return hasPerm('ghiNhanThu') && !!gd && !gd.doiSoatHP;
+}
+function viSaoKhongSuaDuoc(gd){
+  if(!hasPerm('ghiNhanThu')) return 'Bạn không có quyền ghi nhận thu';
+  if(gd && gd.doiSoatHP)
+    return 'Khoản thu của học viên này đã được xác nhận đối soát nên đang khoá. '
+         + 'Nhờ Kế toán hoặc Phó Giám đốc bấm "Bỏ đối soát" rồi sửa.';
+  return 'Không sửa được';
+}
+function moTaKhoanThu(x){
+  return loaiKhoan(x) + ' ' + fmtTien(x.soTien) + 'đ · ' + (x.hinhThuc || '')
+    + (x.nganHang ? ' · ' + x.nganHang : '')
+    + ' · ' + fmtDate(x.ngay)
+    + (x.soPhieuThu ? ' · phiếu ' + x.soPhieuThu : ' · chưa ghi số phiếu');
+}
+/* Danh sách các khoản đã thu của một ghi danh, kèm nút sửa và huỷ từng dòng */
+function formKhoanDaThu(gdId){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd){ showToast('Không tìm thấy ghi danh'); return; }
+  const ls = gd.lichSuThu || [];
+  const sua = suaDuocKhoanThu(gd);
+  let h = '<h3>Các khoản đã thu</h3>'
+    + '<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
+    + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>';
+  if(gd.doiSoatHP)
+    h += '<div class="card" style="margin:10px 0;border-color:var(--ok);background:#f2fbf7;">'
+      + '<div class="small">🔒 <b>Đã xác nhận đối soát</b> nên sổ đang khoá, không sửa được nữa. '
+      + 'Cần sửa thì nhờ Kế toán hoặc Phó Giám đốc bấm <b>Bỏ đối soát</b> trước.</div></div>';
+  if(!ls.length){
+    h += '<div class="card" style="margin:10px 0;"><div class="small muted">'
+      + 'Chưa ghi nhận khoản thu nào.</div></div>';
+  } else {
+    h += '<div class="card" style="margin:10px 0;padding:0 12px;">'
+      + ls.map(function(x, i){
+          const huy = laKhoanHuy(x);
+          const gach = huy ? 'text-decoration:line-through;' : '';
+          return '<div style="padding:10px 0;border-bottom:1px solid var(--border);'
+            + (huy ? 'opacity:.62;' : '') + '">'
+            + '<div class="row" style="gap:8px;align-items:flex-start;">'
+            + '<div style="flex:1;min-width:0;">'
+            + '<div class="small" style="font-weight:700;' + gach + '">'
+            + esc(loaiKhoan(x)) + ' · ' + esc(x.hinhThuc || '')
+            + (x.nganHang ? ' · ' + esc(x.nganHang) : '') + '</div>'
+            + '<div class="small muted">' + fmtDate(x.ngay)
+            + (x.soPhieuThu ? ' · phiếu ' + esc(x.soPhieuThu) : ' · chưa ghi số phiếu')
+            + (x.nguoiThu ? ' · ' + esc(x.nguoiThu) : '') + '</div>'
+            + (x.ghiChu ? '<div class="small muted">' + esc(x.ghiChu) + '</div>' : '')
+            + (huy
+                ? '<div class="small" style="color:var(--danger);margin-top:3px;">Đã huỷ '
+                  + fmtDate(x.ngayHuy) + (x.nguoiHuy ? ' · ' + esc(x.nguoiHuy) : '')
+                  + (x.lyDoHuy ? ' · lý do: ' + esc(x.lyDoHuy) : '') + '</div>'
+                : '')
+            + (sua
+                ? '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">'
+                  + (huy
+                      ? '<button class="btn btn-sm" onclick="boHuyKhoanThu(\'' + gdId + '\',' + i + ',this)">'
+                        + '↩ Bỏ huỷ</button>'
+                      : '<button class="btn btn-sm" onclick="formSuaKhoanThu(\'' + gdId + '\',' + i + ')">Sửa</button>'
+                        + '<button class="btn btn-sm btn-danger" onclick="formHuyKhoanThu(\'' + gdId + '\',' + i + ')">'
+                        + 'Huỷ khoản</button>')
+                  + '</div>'
+                : '')
+            + '</div>'
+            + '<div style="font-weight:700;white-space:nowrap;' + gach + '">'
+            + fmtTien(x.soTien) + 'đ</div>'
+            + '</div></div>';
+        }).join('')
+      + '</div>';
+    const soHuy = ls.filter(laKhoanHuy).length;
+    h += '<div class="row" style="justify-content:space-between;font-weight:700;'
+      + 'border-top:2px solid var(--border);padding-top:9px;margin-top:4px;">'
+      + '<span>Tổng đã thu</span><span>' + fmtTien(daDongCua(gd)) + 'đ</span></div>'
+      + (soHuy
+          ? '<div class="small muted" style="margin-top:5px;">' + soHuy
+            + ' khoản đã huỷ vẫn giữ trong sổ để đối chiếu, không tính vào tổng.</div>'
+          : '');
+  }
+  if(!sua && !gd.doiSoatHP)
+    h += '<div class="small muted" style="margin-top:8px;">' + esc(viSaoKhongSuaDuoc(gd)) + '</div>';
+  h += '<div class="row" style="margin-top:14px;gap:8px;">'
+    + '<button class="btn btn-block" onclick="closeModal()">Đóng</button></div>';
+  openModal(h);
+}
+function formSuaKhoanThu(gdId, chiSo){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!suaDuocKhoanThu(gd)){ showToast(viSaoKhongSuaDuoc(gd)); return; }
+  const x = (gd.lichSuThu || [])[chiSo];
+  if(!x){ showToast('Không tìm thấy khoản thu'); return; }
+  openModal('<h3>Sửa khoản thu</h3>'
+    +'<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
+      + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>'
+    +'<div class="card" style="margin:10px 0;background:#f7f9fc;"><div class="small">'
+      + 'Đang sửa: <b>' + esc(moTaKhoanThu(x)) + '</b></div></div>'
+    +'<label>Loại khoản thu</label><select id="mSKLoai">'
+      + LOAI_KHOAN.map(function(l){
+          return '<option' + (loaiKhoan(x) === l ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('')
+      +'</select>'
+    +'<label>Số tiền</label><input type="number" id="mSKSoTien" value="' + (Number(x.soTien) || 0) + '">'
+    +'<label>Hình thức</label><select id="mSKHinhThuc" onchange="veONganHangSua()">'
+      + HINH_THUC_THU.map(function(t){
+          return '<option' + ((x.hinhThuc || '') === t ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('')
+      +'</select>'
+    +'<div id="mSKONganHang">'
+      + (canGhiNganHang(x.hinhThuc || '') ? htmlONganHang('mSKNganHang', x.nganHang || '') : '')
+      +'</div>'
+    +'<label>Ngày thu</label><input type="date" id="mSKNgay" value="' + esc(x.ngay || todayISO()) + '">'
+    +'<label>Số phiếu thu bên Sổ Thu Chi FLIC</label>'
+      +'<input id="mSKPhieu" value="' + esc(x.soPhieuThu || '') + '" placeholder="VD: 08-25">'
+    +'<label>Ghi chú</label><input id="mSKGhiChu" value="' + esc(x.ghiChu || '') + '">'
+    +'<label>Lý do sửa</label><input id="mSKLyDo" placeholder="VD: gõ nhầm số tiền">'
+    +'<div class="small muted">Hệ thống ghi lại người sửa, thời điểm và lý do để sau này tra lại.</div>'
+    +'<div class="row" style="margin-top:14px;gap:8px;">'
+      +'<button class="btn btn-block" onclick="formKhoanDaThu(\'' + gdId + '\')">Quay lại</button>'
+      +'<button class="btn btn-primary btn-block" onclick="luuSuaKhoanThu(\'' + gdId + '\',' + chiSo + ')">'
+      +'Lưu</button></div>');
+}
+function veONganHangSua(){
+  const el = $('mSKONganHang');
+  if(!el) return;
+  const ht = $('mSKHinhThuc') ? $('mSKHinhThuc').value : '';
+  if(!canGhiNganHang(ht)){ el.innerHTML = ''; return; }
+  el.innerHTML = htmlONganHang('mSKNganHang', '');
+}
+function luuSuaKhoanThu(gdId, chiSo){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!suaDuocKhoanThu(gd)){ showToast(viSaoKhongSuaDuoc(gd)); return; }
+  const ls = (gd.lichSuThu || []).slice();
+  const cu = ls[chiSo];
+  if(!cu){ showToast('Không tìm thấy khoản thu'); return; }
+  const st = Number($('mSKSoTien').value) || 0;
+  if(st <= 0){ showToast('Nhập số tiền'); return; }
+  const ht = $('mSKHinhThuc').value;
+  const nh = $('mSKNganHang') ? $('mSKNganHang').value.trim() : '';
+  if(canGhiNganHang(ht) && !nh){
+    showToast('Ghi rõ ngân hàng nhận tiền để còn đối chiếu sao kê'); return; }
+  const lyDo = $('mSKLyDo').value.trim();
+  if(!lyDo){ showToast('Ghi lý do sửa để sau này còn tra lại'); return; }
+  const moTaCu = moTaKhoanThu(cu);
+  ls[chiSo] = Object.assign({}, cu, {
+    loaiKhoan: $('mSKLoai').value,
+    soTien: st,
+    hinhThuc: ht,
+    nganHang: canGhiNganHang(ht) ? nh : '',
+    ngay: $('mSKNgay').value || cu.ngay,
+    soPhieuThu: $('mSKPhieu').value.trim(),
+    ghiChu: $('mSKGhiChu').value.trim(),
+    daSua: true, nguoiSua: currentUser.hoTen, ngaySua: todayISO(), lyDoSua: lyDo
+  });
+  db.collection('fcv_ghidanh').doc(gdId).update({
+    lichSuThu: ls, trangThaiHP: trangThaiHPTheo(gd, ls)
+  }).then(function(){
+    showToast('✅ Đã sửa khoản thu');
+    logAct('Sửa khoản thu ' + tenHocVien(gd.hocVienId) + ': ' + moTaCu
+      + ' → ' + moTaKhoanThu(ls[chiSo]) + ' · lý do: ' + lyDo);
+    formKhoanDaThu(gdId);
+  }).catch(fsErr);
+}
+function formHuyKhoanThu(gdId, chiSo){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!suaDuocKhoanThu(gd)){ showToast(viSaoKhongSuaDuoc(gd)); return; }
+  const x = (gd.lichSuThu || [])[chiSo];
+  if(!x){ showToast('Không tìm thấy khoản thu'); return; }
+  openModal('<h3>Huỷ khoản thu</h3>'
+    +'<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
+      + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>'
+    +'<div class="card" style="margin:10px 0;border-color:var(--danger);background:#fff6f6;">'
+      +'<div class="small"><b>' + esc(moTaKhoanThu(x)) + '</b></div>'
+      +'<div class="small muted" style="margin-top:5px;">Khoản này sẽ <b>không còn tính vào tiền</b> '
+      +'nhưng vẫn nằm trong sổ, gạch ngang, ghi rõ ai huỷ và vì sao — để còn đối chiếu với '
+      +'phiếu thu bên Sổ Thu Chi FLIC.</div></div>'
+    +'<label>Lý do huỷ</label><input id="mHKTLyDo" placeholder="VD: bấm nhầm hai lần">'
+    +'<div class="row" style="margin-top:14px;gap:8px;">'
+      +'<button class="btn btn-block" onclick="formKhoanDaThu(\'' + gdId + '\')">Quay lại</button>'
+      +'<button class="btn btn-danger btn-block" onclick="luuHuyKhoanThu(\'' + gdId + '\',' + chiSo + ')">'
+      +'Huỷ khoản này</button></div>');
+}
+function luuHuyKhoanThu(gdId, chiSo){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!suaDuocKhoanThu(gd)){ showToast(viSaoKhongSuaDuoc(gd)); return; }
+  const ls = (gd.lichSuThu || []).slice();
+  const cu = ls[chiSo];
+  if(!cu){ showToast('Không tìm thấy khoản thu'); return; }
+  const lyDo = $('mHKTLyDo').value.trim();
+  if(!lyDo){ showToast('Ghi lý do huỷ để sau này còn tra lại'); return; }
+  ls[chiSo] = Object.assign({}, cu, {
+    daHuy: true, nguoiHuy: currentUser.hoTen, ngayHuy: todayISO(), lyDoHuy: lyDo,
+    canHoaDon: false
+  });
+  db.collection('fcv_ghidanh').doc(gdId).update({
+    lichSuThu: ls, trangThaiHP: trangThaiHPTheo(gd, ls)
+  }).then(function(){
+    showToast('✅ Đã huỷ khoản thu · tổng còn ' + fmtTien(
+      ls.reduce(function(s, y){ return s + (laKhoanHuy(y) ? 0 : (Number(y.soTien) || 0)); }, 0)) + 'đ');
+    logAct('Huỷ khoản thu ' + tenHocVien(gd.hocVienId) + ': ' + moTaKhoanThu(cu)
+      + ' · lý do: ' + lyDo);
+    formKhoanDaThu(gdId);
+  }).catch(fsErr);
+}
+function boHuyKhoanThu(gdId, chiSo, btn){
+  const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
+  if(!gd) return;
+  if(!suaDuocKhoanThu(gd)){ showToast(viSaoKhongSuaDuoc(gd)); return; }
+  const ls = (gd.lichSuThu || []).slice();
+  const cu = ls[chiSo];
+  if(!cu){ showToast('Không tìm thấy khoản thu'); return; }
+  if(!requestConfirm('bhkt' + gdId + chiSo, btn, '⚠️ Bấm lần nữa để bỏ huỷ')) return;
+  ls[chiSo] = Object.assign({}, cu, {
+    daHuy: false, boHuyBoi: currentUser.hoTen, ngayBoHuy: todayISO()
+  });
+  db.collection('fcv_ghidanh').doc(gdId).update({
+    lichSuThu: ls, trangThaiHP: trangThaiHPTheo(gd, ls)
+  }).then(function(){
+    showToast('✅ Đã khôi phục khoản thu');
+    logAct('Bỏ huỷ khoản thu ' + tenHocVien(gd.hocVienId) + ': ' + moTaKhoanThu(cu));
+    formKhoanDaThu(gdId);
+  }).catch(fsErr);
+}
+
 function formSuaHocPhi(gdId){
   const g = ghiDanhList.find(function(x){ return x.id===gdId; });
   const l = lopList.find(function(x){ return x.id===g.lopId; });
@@ -12507,7 +12910,7 @@ function gomYeuCauHoaDon(){
   const ra = [];
   ghiDanhList.forEach(function(gd){
     (gd.lichSuThu || []).forEach(function(x, i){
-      if(!x.canHoaDon) return;
+      if(!x.canHoaDon || laKhoanHuy(x)) return;   /* khoản đã huỷ không chờ hoá đơn nữa */
       ra.push({
         gdId: gd.id, chiSo: i,
         hocVien: tenHocVien(gd.hocVienId), hocVienId: gd.hocVienId,
@@ -12797,7 +13200,7 @@ function tuyenSinhTrongKy(tu, den){
 function thuTrongKy(tu, den){
   let tong = 0, tienMat = 0, chuyenKhoan = 0, hocPhi = 0, khoanKhac = 0;
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu || []).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       const n = x.ngay || '';
       if(n < tu || n > den) return;
       const s = Number(x.soTien) || 0;
@@ -13599,7 +14002,7 @@ function tinhBaoCaoNgay(ngay){
   let tienMat = 0, chuyenKhoan = 0, khac = 0;
   const cacLanThu = [];
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu||[]).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       if(x.ngay !== ngay) return;
       const st = Number(x.soTien)||0;
       cacLanThu.push({hocVien:tenHocVien(g.hocVienId), lop:maLopCua(g.lopId), soTien:st,
@@ -13906,7 +14309,7 @@ function tinhBaoCaoThang(thang){
 
   let tienMat=0, ck=0, khac=0;
   ghiDanhList.forEach(function(g){
-    (g.lichSuThu||[]).forEach(function(x){
+    khoanThu(g).forEach(function(x){
       if(!trong(x.ngay)) return;
       const st=Number(x.soTien)||0;
       if(x.hinhThuc==='Tiền mặt') tienMat+=st;
@@ -14468,7 +14871,7 @@ function viewPhanAnh(){
       + '<div><b>'+esc(x.nguoiPhanAnh)+'</b>'
       + (x.quanHe? ' <span class="small muted">· '+esc(x.quanHe)+'</span>':'')
       + (x.mucDo==='Nghiêm trọng'? ' '+badge('danger','Nghiêm trọng'):'')+'</div>'
-      + '<div class="small muted">'+fmtDate(x.ngayNhan)+' · '+esc(x.kenh||'')
+      + '<div class="small muted">'+fmtDate(x.ngayNhan)+' · '+esc(hienKemKhac(x.kenh, x.kenhKhac))
       + (x.tenHocVien? ' · về '+esc(x.tenHocVien):'')+(x.maLop? ' lớp '+esc(x.maLop):'')+'</div>'
       + '<div class="small" style="margin-top:3px;">'+esc(x.noiDung)+'</div>'
       + '<div class="small muted">Bộ phận xử lý: '+esc(x.boPhanXuLy||'chưa phân')
@@ -14496,7 +14899,9 @@ function formPhanAnh(){
     +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Quan hệ</label><select id="mPAQuanHe">'
       +['Phụ huynh','Học viên','Giáo viên','Khác'].map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select></div>'
     +'<div style="flex:1;"><label>Điện thoại</label><input id="mPASdt"></div></div>'
-    +'<label>Kênh tiếp nhận</label><select id="mPAKenh">'+KENH_PA.map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select>'
+    +'<label>Kênh tiếp nhận</label><select id="mPAKenh" onchange="veOGhiRo(\'mPAKenh\',\'mPAKenhKhac\',\'Kênh cụ thể\')">'
+      +KENH_PA.map(function(x){ return '<option>'+x+'</option>'; }).join('')+'</select>'
+    +'<div id="mPAKenhKhacHop"></div>'
     +'<label>Liên quan học viên nào</label><select id="mPAGhiDanh"><option value="">— không liên quan học viên cụ thể —</option>'
       + dsGd.map(function(g){ return '<option value="'+g.id+'">'+esc(tenHocVien(g.hocVienId))+' · lớp '+esc(maLopCua(g.lopId))+'</option>'; }).join('')
     +'</select>'
@@ -14514,10 +14919,13 @@ function luuPhanAnh(){
   const ten = $('mPATen').value.trim(), nd = $('mPANoiDung').value.trim();
   if(!ten){ showToast('Nhập tên người phản ánh'); return; }
   if(!nd){ showToast('Nhập nội dung phản ánh'); return; }
+  if(thieuGhiRo('mPAKenh', 'mPAKenhKhac')){
+    showToast('Chọn kênh Khác thì ghi rõ là kênh nào'); return; }
   const gd = ghiDanhList.find(function(x){ return x.id===$('mPAGhiDanh').value; });
   db.collection('fcv_phananh').add({
     nguoiPhanAnh:ten, quanHe:$('mPAQuanHe').value, sdt:$('mPASdt').value.trim(),
-    kenh:$('mPAKenh').value, noiDung:nd, mucDo:$('mPAMucDo').value,
+    kenh:$('mPAKenh').value, kenhKhac: docGhiRo('mPAKenh', 'mPAKenhKhac'),
+    noiDung:nd, mucDo:$('mPAMucDo').value,
     boPhanXuLy:$('mPABoPhan').value,
     hocVienId: gd? gd.hocVienId : '', lopId: gd? gd.lopId : '',
     tenHocVien: gd? tenHocVien(gd.hocVienId) : '', maLop: gd? maLopCua(gd.lopId) : '',
@@ -15076,7 +15484,7 @@ function viewChienDich(){
   if(!ds.length) h += emptyBox('💳','Chưa ghi khoản chi nào');
   else h += ds.slice(0,20).map(function(x){
     const c = chienDichList.find(function(y){ return y.id===x.chienDichId; });
-    return '<div class="list-row"><div style="min-width:0;flex:1;"><div>'+esc(x.kenh)+(x.noiDung? ' · '+esc(x.noiDung):'')+'</div>'
+    return '<div class="list-row"><div style="min-width:0;flex:1;"><div>'+esc(hienKemKhac(x.kenh, x.kenhKhac))+(x.noiDung? ' · '+esc(x.noiDung):'')+'</div>'
       + '<div class="small muted">'+fmtDate(x.ngay)+(c? ' · '+esc(c.ten):'')
       + (x.soPhieuChi? ' · phiếu chi '+esc(x.soPhieuChi):'')
       + (x.nguoiNhap? ' · '+esc(x.nguoiNhap):'')+'</div></div>'
@@ -15137,7 +15545,9 @@ function formChiPhiQC(){
   const optCd = '<option value="">— không thuộc chiến dịch nào —</option>'
     + chienDichList.map(function(c){ return '<option value="'+c.id+'">'+esc(c.ten)+'</option>'; }).join('');
   openModal('<h3>Ghi chi phí quảng cáo</h3>'
-    +'<label>Kênh</label><select id="mCPKenh">'+KENH_QC.map(function(k){ return '<option>'+k+'</option>'; }).join('')+'</select>'
+    +'<label>Kênh</label><select id="mCPKenh" onchange="veOGhiRo(\'mCPKenh\',\'mCPKenhKhac\',\'Kênh cụ thể\')">'
+      +KENH_QC.map(function(k){ return '<option>'+k+'</option>'; }).join('')+'</select>'
+    +'<div id="mCPKenhKhacHop"></div>'
     +'<label>Chiến dịch</label><select id="mCPChienDich">'+optCd+'</select>'
     +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày chi</label><input type="date" id="mCPNgay" value="'+todayISO()+'"></div>'
     +'<div style="flex:1;"><label>Số tiền</label><input type="number" id="mCPSoTien" value="0"></div></div>'
@@ -15149,8 +15559,12 @@ function formChiPhiQC(){
 function luuChiPhiQC(){
   const st = Number($('mCPSoTien').value)||0;
   if(st<=0){ showToast('Nhập số tiền'); return; }
+  if(thieuGhiRo('mCPKenh', 'mCPKenhKhac')){
+    showToast('Chọn kênh Khác thì ghi rõ là kênh nào, để còn tính hiệu quả từng kênh');
+    return; }
   db.collection('fcv_chiphiqc').add({
-    kenh:$('mCPKenh').value, chienDichId:$('mCPChienDich').value,
+    kenh:$('mCPKenh').value, kenhKhac: docGhiRo('mCPKenh', 'mCPKenhKhac'),
+    chienDichId:$('mCPChienDich').value,
     ngay:$('mCPNgay').value, soTien:st, noiDung:$('mCPNoiDung').value.trim(),
     soPhieuChi:$('mCPPhieu').value.trim(), nguoiNhap:currentUser.hoTen, ts:Date.now()
   }).then(function(){ closeModal(); showToast('✅ Đã ghi '+fmtTien(st)+'đ'); logAct('Ghi chi phí quảng cáo'); }).catch(fsErr);
@@ -15514,10 +15928,11 @@ function formHangKho(id){
     +'<label>Tên mặt hàng</label><input id="mHKTen" value="' + esc(v.ten || '') + '" '
     +'placeholder="VD: Giấy A4 Double A 70gsm">'
     +'<div class="row" style="gap:8px;">'
-    +'<div style="flex:1;"><label>Nhóm</label><select id="mHKNhom">'
+    +'<div style="flex:1;"><label>Nhóm</label>'
+    +'<select id="mHKNhom" onchange="veOGhiRo(\'mHKNhom\',\'mHKNhomKhac\',\'Nhóm cụ thể\')">'
     + NHOM_KHO.map(function(x){
         return '<option' + (v.nhom === x ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('')
-    +'</select></div>'
+    +'</select><div id="mHKNhomKhacHop"></div></div>'
     +'<div style="flex:1;"><label>Đơn vị tính</label><input id="mHKDvt" list="dsDvtKho" value="' + esc(v.dvt || '') + '">'
     +'<datalist id="dsDvtKho">' + DVT_KHO.map(function(x){
         return '<option value="' + esc(x) + '">'; }).join('') + '</datalist></div></div>'
@@ -15550,7 +15965,10 @@ function luuHangKho(id){
   if(khoHangList.some(function(x){ return x.id !== id && stripDia(x.ten) === stripDia(ten); })){
     showToast('Đã có mặt hàng tên này'); return;
   }
-  const data = {ten: ten, nhom: $('mHKNhom').value, dvt: $('mHKDvt').value.trim(),
+  if(thieuGhiRo('mHKNhom', 'mHKNhomKhac')){
+    showToast('Chọn nhóm Khác thì ghi rõ là nhóm nào'); return; }
+  const data = {ten: ten, nhom: $('mHKNhom').value,
+    nhomKhac: docGhiRo('mHKNhom', 'mHKNhomKhac'), dvt: $('mHKDvt').value.trim(),
     ma: $('mHKMa').value.trim() || (id ? undefined : maHangMoi()),
     tonDau: Number($('mHKTonDau').value) || 0,
     tonToiThieu: Number($('mHKToiThieu').value) || 0,
@@ -18359,7 +18777,7 @@ function nạpDuLieu(){
     const mm=/HV(\d+)/.exec(x.maHV||''); if(mm){ const n=parseInt(mm[1],10); if(n>soHV) soHV=n; }
   });
 
-  const viec = hopLe.map(function(d){
+  const viec = hopLe.map(function(d, i){
     const v = d.data;
     if(nlLoai==='giaoVien'){
       return db.collection('fcv_giaovien').add({
@@ -18427,6 +18845,29 @@ function nạpDuLieu(){
         buoc: BUOC_MAC_DINH.map(function(b,i){ return {so:i+1, gd:b.gd, ten:b.ten, xong:false, nguoi:'', ghiChu:''}; }),
         ts: Date.now()});
     }
+    /* Mặt hàng kho phải là một nhánh RIÊNG. Trước đây khối này bị lồng nhầm vào
+       trong nhánh thí sinh nên không bao giờ chạy: nhập Excel xong hệ thống vẫn
+       báo "✅ Đã nạp N dòng" nhưng danh mục hàng hoá trống trơn. */
+    if(nlLoai === 'hangKho'){
+      let maTu = v.ma && v.ma.trim() ? v.ma.trim() : '';
+      if(!maTu){
+        let max = 0;
+        khoHangList.forEach(function(x){
+          const n2 = parseInt(String(x.ma || '').replace(/\D/g, ''), 10);
+          if(!isNaN(n2) && n2 > max) max = n2;
+        });
+        maTu = 'VT' + String(max + 1 + i).padStart(4, '0');
+      }
+      return db.collection('fcv_khohang').add({
+        nhapHangLoat: true, ten: v.ten, ma: maTu,
+        nhom: (v.nhom || '').trim() || 'Vật tư tiêu hao',
+        dvt: (v.dvt || '').trim() || 'Cái',
+        tonDau: Number(v.tonDau) || 0,
+        tonToiThieu: Number(v.tonToiThieu) || 0,
+        donGia: Number(v.donGia) || 0,
+        viTri: (v.viTri || '').trim(), ghiChu: (v.ghiChu || '').trim()
+      });
+    }
     if(nlLoai==='thiSinh'){
       const nop = stripDia(v.daNopLePhi||'');
       const doiTuong = stripDia(v.loaiTS||'').indexOf('dntu')>=0 ? 'DNTU' : 'TuDo';
@@ -18437,26 +18878,6 @@ function nạpDuLieu(){
       if(tenDT){
         const tim = doiTacList.find(function(x){ return stripDia(x.ten) === stripDia(tenDT); });
         if(tim){ dtId = tim.id; dtTen = tim.ten; }
-      }
-      if(nlLoai === 'hangKho'){
-        let maTu = v.ma && v.ma.trim() ? v.ma.trim() : '';
-        if(!maTu){
-          let max = 0;
-          khoHangList.forEach(function(x){
-            const n2 = parseInt(String(x.ma || '').replace(/\D/g, ''), 10);
-            if(!isNaN(n2) && n2 > max) max = n2;
-          });
-          maTu = 'VT' + String(max + 1 + i).padStart(4, '0');
-        }
-        return db.collection('fcv_khohang').add({
-          nhapHangLoat: true, ten: v.ten, ma: maTu,
-          nhom: (v.nhom || '').trim() || 'Vật tư tiêu hao',
-          dvt: (v.dvt || '').trim() || 'Cái',
-          tonDau: Number(v.tonDau) || 0,
-          tonToiThieu: Number(v.tonToiThieu) || 0,
-          donGia: Number(v.donGia) || 0,
-          viTri: (v.viTri || '').trim(), ghiChu: (v.ghiChu || '').trim()
-        });
       }
       return db.collection('fcv_thisinh').add({
         nhapHangLoat: true, doiTacId: dtId, doiTacTen: dtTen,
@@ -18489,7 +18910,12 @@ function nạpDuLieu(){
       o.nhapHangLoat = true;
       return db.collection('fcv_ghidanh').add(o);
     }
-    return Promise.resolve();
+    /* Không nhánh nào khớp nghĩa là loại dữ liệu này chưa có chỗ ghi. Trước đây
+       chỗ này lặng lẽ trả về thành công, nên người dùng thấy "✅ Đã nạp N dòng"
+       trong khi không có dòng nào xuống cơ sở dữ liệu. Thà báo lỗi rõ. */
+    return Promise.reject(new Error(
+      'Loại dữ liệu "' + nlLoai + '" chưa có chỗ ghi trong hệ thống. '
+      + 'Báo lại để kiểm tra, dữ liệu CHƯA được nạp.'));
   });
 
   Promise.all(viec).then(function(){
@@ -18957,7 +19383,7 @@ function xoaCapTruc(i){
   luuCapTruc(ds, 'Đã bỏ bộ phận ' + ten);
 }
 function luuCapTruc(ds, loiBao){
-  db.collection('fcv_caidat').doc('chung').set(
+  db.collection('fcv_settings').doc('chung').set(
     Object.assign({}, settings, {capTruc: ds}), {merge: true}).then(function(){
       showToast('✅ ' + loiBao); logAct(loiBao + ' khỏi cặp trực');
     }).catch(fsErr);
