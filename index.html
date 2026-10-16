@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.21.7   |   Ngày: 15/10/2026
+ Phiên bản: V1.21.8   |   Ngày: 16/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -335,6 +335,60 @@
    - Ba bộ kiểm thử mới: test-khaothi2.js (94), test-khosach.js (61),
      cộng với các bộ cũ. Tổng: 15 bộ, 1.403 phép thử, 11 phép phân tích
      tĩnh, và một lượt quét 486 màn trên 9 vị trí việc làm.
+ V1.21.8 – 16/10/2026 – Đọc được file Excel thật của Khảo thí: thêm màn
+   gán cột, quét mọi sheet, và hai mẫu gán sẵn cho form Nhà trường với form
+   Cambridge.
+   NGUYÊN NHÂN GỐC
+   - Chỗ đọc file chỉ lấy wb.worksheets[0], tức SHEET ĐẦU TIÊN. File danh
+     sách thi của Nhà trường để bảng ở sheet thứ hai, file Cambridge ở sheet
+     thứ ba; sheet đầu của hai file là dữ liệu thô và bảng tra. Nên phần mềm
+     chưa bao giờ nhìn thấy danh sách, mà vẫn báo "đã đọc 0 dòng" như file
+     rỗng. Ảnh Khảo thí gửi báo Tổng dòng 4 / Hợp lệ 0 khớp đúng con số của
+     sheet đầu file Nhà trường.
+   - Hai form còn tách họ tên làm hai cột, Cambridge để HỌ ở cột SAU; ngày
+     sinh tách ba cột Ngày/Tháng/Năm; hình thức thi là dấu X ở một trong hai
+     cột; tiêu đề kèm chú thích tiếng Anh xuống dòng. Dò theo tên cột kiểu cũ
+     không thể nào đọc được, mà nới lỏng cách dò lại nguy hiểm hơn: file Nhà
+     trường có cột "Họ tên Người đăng ký" KHÁC hẳn tên thí sinh, khớp lỏng
+     một cái là ghi sai tên cả 97 em mà không báo gì.
+   TÍNH NĂNG MỚI
+   - Quét mọi sheet, mỗi sheet 20 dòng đầu, và nói rõ đang đọc sheet nào,
+     tiêu đề dòng mấy, theo mẫu nào.
+   - Màn gán cột thủ công: chọn sheet, chọn dòng tiêu đề, mỗi trường chọn
+     cách lấy — 1 cột, ghép 2 cột (đảo được thứ tự), ghép Ngày/Tháng/Năm,
+     cột đánh dấu X, giá trị cố định, hoặc không lấy. Đặt tên rồi lưu thành
+     mẫu dùng chung cho cả trung tâm, kỳ sau chọn file là tự nhận ra.
+   - Hai mẫu gán sẵn trong code: Mẫu DNTU (SV trong trường) và Mẫu Cambridge
+     FLIC. Mẫu trung tâm tự lưu được ưu tiên hơn mẫu sẵn, nên Nhà trường đổi
+     form thì gán tay rồi lưu lại, không cần chờ bản mới.
+   - Mẫu DNTU gán cứng đối tượng là Sinh viên DNTU. Bỏ trống thì phần mềm
+     mặc định là thí sinh tự do, mà tự do với DNTU khác mức lệ phí nộp lại
+     Nhà trường — sai tiền chứ không chỉ sai chữ.
+   CHẶN THAY VÌ ĐOÁN
+   - Cột đánh dấu X: coi mọi ô có nội dung là đã đánh. Trong file Cambridge
+     có một dòng bị gõ số CCCD lạc vào cột "Trên giấy" nên đánh dấu cả hai
+     cột; dòng đó bị chặn kèm lý do thay vì đoán bừa là thi trên máy.
+   - Gán thiếu cột bắt buộc thì báo đỏ và không nạp dòng nào, không nạp
+     nửa vời.
+   - Ngày sinh gõ sai trước đây bị lặng lẽ bỏ trắng, nay chặn thẳng dòng đó:
+     thí sinh thiếu ngày sinh là sai dữ liệu in chứng chỉ.
+   - Dừng quét sau 50 dòng trống liên tiếp. Sheet Cambridge khai 1.048.428
+     dòng vì vùng định dạng thừa; không có chỗ này là treo trình duyệt.
+   SỬA LỖI
+   - Giới tính trong file thật viết đủ kiểu hoa thường: "Nữ", "NỮ", "NAM".
+     Ô chọn giới tính chỉ có đúng "Nam" và "Nữ", nên nhập nguyên văn "NỮ"
+     vào thì lần sau mở thí sinh ra sửa, ô giới tính hiện "chưa ghi" rồi lưu
+     đè mất. Nay nắn về đúng một trong hai giá trị ngay lúc nhập.
+   - Ô chọn cột trên màn gán tay so chuỗi thô nên mẫu ghi ngắn "Họ thí sinh"
+     không khớp tiêu đề thật "Họ thí sinh ( Ghi in hoa ) Candidate's
+     Surname…": mọi ô hiện trống, bấm Áp dụng là mất sạch bản gán. Đã thử
+     đột biến xác nhận bộ kiểm thử bắt được.
+   KIỂM THỬ
+   - Giữ hai file Excel THẬT trong mau-thu/ và chạy thẳng vào bộ kiểm thử:
+     file Nhà trường phải ra đúng 97 sinh viên với tên ghép đúng thứ tự, file
+     Cambridge đúng 151 dòng / 149 hợp lệ / 1 chặn ở dòng 157 / 1 trùng.
+     Tổng: 16 bộ, 1.522 phép thử, 11 phép phân tích tĩnh, ESLint, và một
+     lượt quét 486 màn trên 9 vị trí việc làm.
  V1.21.7 – 15/10/2026 – Sửa phiếu nhập kho theo góp ý Hành chính Kế
    toán, cộng 3 lỗi tìm ra khi rà chồng chéo giữa các tính năng mới.
    TÍNH NĂNG MỚI
@@ -899,10 +953,19 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.21.7';
-const NGAY_PHIEN_BAN = '15/10/2026';
+const PHIEN_BAN = 'V1.21.8';
+const NGAY_PHIEN_BAN = '16/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.21.8', ngay:'16/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Tải file danh sách thi lên thì phần mềm báo đã đọc không dòng nào, như thể file rỗng. Nguyên nhân: chỗ đọc file chỉ lấy sheet ĐẦU TIÊN của file Excel. File của Nhà trường để danh sách ở sheet thứ hai, file Cambridge ở sheet thứ ba, nên phần mềm chưa bao giờ nhìn thấy bảng danh sách. Nay quét mọi sheet, mỗi sheet dò 20 dòng đầu, và nói rõ đang đọc sheet nào, tiêu đề dòng mấy, gán được bao nhiêu trường.'},
+    {loai:'Mới', nd:'Màn gán cột thủ công. Chọn sheet, chọn dòng tiêu đề, rồi với mỗi trường chọn cách lấy: một cột, ghép hai cột và đảo được thứ tự, ghép ba cột Ngày Tháng Năm thành ngày sinh, cột đánh dấu X, giá trị cố định, hoặc không lấy. Đặt tên rồi lưu thành mẫu dùng chung cho cả trung tâm; kỳ sau chọn file đúng dạng đó là phần mềm tự nhận ra và gán sẵn, chỉ việc bấm Lưu. Nhà trường đổi form thì gán tay một lần rồi lưu lại, không phải chờ bản mới.'},
+    {loai:'Mới', nd:'Hai mẫu gán sẵn cho hai form đang dùng thật: Mẫu DNTU cho sinh viên trong trường và Mẫu Cambridge FLIC. Hai form này tách họ tên làm hai cột, riêng Cambridge để họ ở cột sau; ngày sinh tách ba cột; hình thức thi là dấu X ở một trong hai cột Trên giấy hoặc Trên máy. Mẫu DNTU còn gán cứng đối tượng là Sinh viên DNTU, vì bỏ trống thì phần mềm mặc định là thí sinh tự do, mà hai loại này khác mức lệ phí nộp lại Nhà trường.'},
+    {loai:'Mới', nd:'Dòng nào đánh dấu cả hai cột hình thức thi thì bị chặn kèm lý do, không đoán bừa. Trong file Cambridge có đúng một dòng bị gõ số căn cước lạc vào cột Trên giấy nên thành ra chọn cả hai; phần mềm nêu đích danh dòng đó và hai cột liên quan để Khảo thí sửa trong file rồi tải lại.'},
+    {loai:'Sửa lỗi', nd:'Giới tính trong file thật viết đủ kiểu hoa thường, có dòng ghi NỮ in hoa, có dòng ghi NAM in hoa. Ô chọn giới tính trong phần mềm chỉ có đúng Nam và Nữ, nên nhập nguyên văn vào thì lần sau mở thí sinh ra sửa, ô giới tính hiện chưa ghi rồi lưu đè mất lúc nào không biết. Nay nắn về đúng một trong hai giá trị ngay lúc nhập.'},
+    {loai:'Cải tiến', nd:'Ngày sinh gõ sai định dạng trước đây bị lặng lẽ bỏ trắng, nay chặn thẳng dòng đó kèm nội dung ô đọc được, vì thí sinh thiếu ngày sinh là sai dữ liệu in chứng chỉ. Thêm nữa, phần đọc dừng lại sau 50 dòng trống liên tiếp: sheet Cambridge khai hơn một triệu dòng vì vùng định dạng thừa, không có chỗ dừng này là treo trình duyệt.'},
+    {loai:'Cải tiến', nd:'Giữ luôn hai file Excel thật của Khảo thí trong bộ kiểm thử, chạy thẳng vào phần mềm chứ không giả lập: file Nhà trường phải ra đúng 97 sinh viên với họ tên ghép đúng thứ tự, file Cambridge đúng 151 dòng trong đó 149 hợp lệ, 1 dòng bị chặn và 1 dòng trùng. Sau này sửa gì làm hỏng là biết ngay. Tổng cộng 16 bộ, 1.522 phép thử.'}
+  ]},
   {v:'V1.21.7', ngay:'15/10/2026', muc:[
     {loai:'Mới', nd:'Sửa được phiếu nhập kho. Trước đây nút Sửa chỉ có ở phiếu xuất đang chờ Hành chính duyệt, còn phiếu nhập gõ nhầm số lượng là chịu, không gỡ được. Nay sửa được nhưng phải ghi rõ lý do, và hệ thống lưu lại số cũ sang số mới của từng mặt hàng, kể cả khi thêm hoặc bỏ hẳn một dòng, kể cả khi đổi lý do nhập. Phiếu đã sửa hiện dấu riêng trên danh sách kèm tên người sửa và ngày sửa, để người xem không tưởng con số đang hiện là số nhập ban đầu.'},
     {loai:'Mới', nd:'Chặn sửa phiếu nhập làm tồn kho âm. Phiếu nhập vào thẳng sổ, không qua cấp duyệt nào, nên sửa là đổi tồn ngay lập tức mà không ai nhìn qua; hạ một phiếu nhập cũ xuống cho khớp tồn chính là cách che đi phần hàng đã thất thoát. Ràng buộc không được làm tồn âm chặn đúng việc đó mà không làm phiền ai: hàng chưa xuất cuốn nào thì sửa thoải mái, đã xuất rồi thì chỉ sửa trong giới hạn hợp lý. Ô ghi lý do sửa cũng áp cho cả phiếu xuất, trước đây phiếu xuất sửa được mà không cần giải thích gì.'},
@@ -1384,7 +1447,8 @@ let usersList = [], lopList = [], hocVienList = [], ghiDanhList = [],
     hoanPhiList = [], hoaDonList = [], bcNgayList = [], giaoVienList = [],
     hocBuList = [], phanAnhList = [], yeuCauTTList = [], chienDichList = [],
     chiPhiQCList = [], dinhMucTTList = [], phieuTestList = [], loDuLieuList = [],
-    baoGiaList = [], xuLyCBList = [], bcBoPhanList = [], activityList = [];
+    baoGiaList = [], xuLyCBList = [], bcBoPhanList = [], mauGanList = [],
+    activityList = [];
 let settings = {nguongNguyCap:6, nguongDuoiChuan:12, hanMucPGD:10000000,
   kiemNhiem: {'FLIC-CM-00':'FLIC-PGD-01', 'FLIC-KTTC-01':'FLIC-PGD-01'},
   khoaBatBuocChungChi: 2024, phiLayMuon: 100000, tyLeTruongTra: 25,
@@ -1745,6 +1809,7 @@ function listenAll(){
   bind('fcv_baogia',    function(v){ baoGiaList=v; });
   bind('fcv_xulycb',    function(v){ xuLyCBList=v; });
   bind('fcv_bcbophan',  function(v){ bcBoPhanList=v; });
+  bind('fcv_maugancot', function(v){ mauGanList=v; });
   db.collection('fcv_activitylog').orderBy('ts','desc').limit(150).onSnapshot(function(snap){
     activityList = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
     if(currentTab==='heThong') render();
@@ -6857,6 +6922,17 @@ function setFilterLead(){
 /* ================= LÔ DỮ LIỆU VÀ LỌC TRÙNG KHÁCH TIỀM NĂNG ================= */
 
 /* --- Chuẩn hoá để so trùng --- */
+/* Giới tính trong file thật viết đủ kiểu: "Nữ", "NỮ", "nam". Ô chọn giới tính
+   trong phần mềm chỉ có đúng "Nam" và "Nữ", nên nhập nguyên văn "NỮ" vào thì
+   lần sau mở thí sinh ra sửa, ô giới tính hiện "— chưa ghi —" rồi lưu đè mất.
+   Nắn về đúng một trong hai giá trị ngay lúc nhập. */
+function chuanGioiTinh(v){
+  const t = stripDia(String(v || '').trim());
+  if(!t) return '';
+  if(t === 'nam' || t === 'm' || t === 'male' || t === 'boy') return 'Nam';
+  if(t === 'nu' || t === 'f' || t === 'female' || t === 'girl') return 'Nữ';
+  return String(v).trim();
+}
 function chuanSdt(v){
   let d = String(v || '').replace(/\D/g, '');
   if(!d) return '';
@@ -16063,10 +16139,30 @@ const MAU_NHAP = {
 };
 
 let nlLoai = 'giaoVien', nlKetQua = null, nlDangDoc = false, nlLoId = '', nlKyId = '';
+/* Workbook đang mở, bản gán đang sửa dở, và cờ mở màn hình gán cột. Giữ workbook
+   lại để đổi sheet hay gán lại cột không bắt người nhập chọn file lần nữa. */
+let nlWb = null, nlGanTam = null, nlMoGan = false, nlGanTay = false, nlTenFile = '';
 
-function doiLoaiNhap(){ nlLoai = $('nlLoai').value; nlKetQua = null; render(); }
-function doiLoNhap(){ nlLoId = $('nlLo').value; nlKetQua = null; render(); }
-function doiKyNhap(){ nlKyId = $('nlKy').value; nlKetQua = null; veLaiCoHieuUng(); }
+function doiLoaiNhap(){
+  nlLoai = $('nlLoai').value;
+  /* Đổi loại dữ liệu thì bản đồ gán cũ không còn đúng — bỏ hết, chọn file lại */
+  nlKetQua = null; nlWb = null; nlGanTam = null; nlMoGan = false; nlGanTay = false;
+  nlTenFile = '';
+  render();
+}
+function doiLoNhap(){ nlLoId = $('nlLo').value; phanTichLai(); render(); }
+function doiKyNhap(){ nlKyId = $('nlKy').value; phanTichLai(); veLaiCoHieuUng(); }
+
+/* Đọc lại file đang mở sau khi đổi kỳ hoặc đổi lô, giữ nguyên cách gán cột.
+   Chọn thiếu kỳ thi lúc đầu là chuyện thường; không có chỗ này thì người nhập
+   phải chọn lại file từ máy, mà file 151 dòng thì lần nào cũng mất công. */
+function phanTichLai(){
+  if(!nlWb){ nlKetQua = null; return; }
+  nlKetQua = phanTichFile(nlWb, (nlGanTay && nlKetQua)
+    ? {sheetIdx:nlKetQua.sheetIdx, hangTieuDe:nlKetQua.hangTieuDe,
+       banDoGan:nlKetQua.banDoGan, mau:null}
+    : null);
+}
 /* Mở màn nhập dữ liệu với lô chọn sẵn */
 function nhapVaoLo(loId){
   if(!hasPerm('nhapDuLieu')){ showToast('Bạn không có quyền nhập dữ liệu'); return; }
@@ -18929,6 +19025,365 @@ function xuatExcelNR(){
   }).catch(fsErr);
 }
 
+/* ===== MÀN HÌNH GÁN CỘT =====
+   Mọi ô trên màn hình gán đều ghi vào nlGanTam theo TÊN cột, để bấm "Lưu mẫu"
+   là lưu được thẳng, không phải dựng lại từ số thứ tự cột. */
+
+const CACH_LAY = [
+  {ma:'1cot',   ten:'1 cột'},
+  {ma:'ghep2',  ten:'Ghép 2 cột'},
+  {ma:'dmy',    ten:'Ghép Ngày/Tháng/Năm'},
+  {ma:'cotX',   ten:'Cột đánh dấu X'},
+  {ma:'codinh', ten:'Giá trị cố định'},
+  {ma:'',       ten:'Không lấy'}
+];
+
+function tenCotTheoSo(dsCot, col){
+  const c = (dsCot || []).find(function(x){ return x.col === col; });
+  return c ? c.goc : '';
+}
+
+/* Dựng bản gán đang sửa từ kết quả đang hiển thị, ghi theo tên cột. */
+function ganTamTuKetQua(){
+  const kq = nlKetQua || {}, dsCot = kq.dsCot || [], gan = {};
+  Object.keys(kq.banDoGan || {}).forEach(function(k){
+    const g = kq.banDoGan[k];
+    if(g.cach === 'codinh'){ gan[k] = {cach:'codinh', giaTri:g.giaTri || ''}; return; }
+    if(g.cach === 'ghep2'){
+      gan[k] = {cach:'ghep2', hoTruoc:g.hoTruoc !== false,
+                ten: g.ten || tenCotTheoSo(dsCot, g.cot),
+                ten2:g.ten2 || tenCotTheoSo(dsCot, g.cot2)};
+      return;
+    }
+    if(g.cach === 'dmy'){
+      gan[k] = {cach:'dmy',
+                tenNgay: g.tenNgay || tenCotTheoSo(dsCot, g.cotNgay),
+                tenThang:g.tenThang || tenCotTheoSo(dsCot, g.cotThang),
+                tenNam:  g.tenNam || tenCotTheoSo(dsCot, g.cotNam)};
+      return;
+    }
+    if(g.cach === 'cotX'){
+      gan[k] = {cach:'cotX', capX:(g.capX || []).map(function(p){
+        return {ten: p.ten || tenCotTheoSo(dsCot, p.cot), giaTri:p.giaTri || ''}; })};
+      return;
+    }
+    gan[k] = {cach:'1cot', ten: g.ten || tenCotTheoSo(dsCot, g.cot), coiLa:g.coiLa || ''};
+  });
+  return {sheetIdx: kq.sheetIdx, hangTieuDe: kq.hangTieuDe, gan: gan,
+          tenMau: kq.mau ? kq.mau.ten : ''};
+}
+
+function moGanCot(){
+  if(!nlGanTam) nlGanTam = ganTamTuKetQua();
+  nlMoGan = true; render();
+}
+function dongGanCot(){ nlMoGan = false; render(); }
+
+/* Danh sách tên cột của sheet + dòng tiêu đề đang chọn trên màn gán */
+function cotCuaGanTam(){
+  if(!nlWb || !nlGanTam) return [];
+  const ws = (nlWb.worksheets || [])[nlGanTam.sheetIdx];
+  if(!ws) return [];
+  return bangTenCot(ws, nlGanTam.hangTieuDe);
+}
+
+/* Đọc toàn bộ ô trên màn gán vào nlGanTam rồi vẽ lại. Gọi chung cho mọi ô để
+   khỏi phải viết riêng mỗi ô một hàm. */
+function capNhatGanTam(veLai){
+  if(!nlGanTam) return;
+  const m = MAU_NHAP[nlLoai];
+  const lay = function(id){ const o = $(id); return o ? o.value : ''; };
+  const soSheet = $('gcSheet');
+  if(soSheet){
+    const sMoi = Number(soSheet.value);
+    if(sMoi !== nlGanTam.sheetIdx){ nlGanTam.sheetIdx = sMoi; nlGanTam.hangTieuDe = 1; render(); return; }
+  }
+  const soHang = $('gcHang');
+  if(soHang) nlGanTam.hangTieuDe = Number(soHang.value) || 1;
+  const gan = {};
+  m.cot.forEach(function(c){
+    const cach = lay('gc_' + c.key + '_cach');
+    if(!cach) return;
+    if(cach === 'codinh'){ gan[c.key] = {cach:'codinh', giaTri:lay('gc_' + c.key + '_codinh')}; return; }
+    if(cach === 'ghep2'){
+      gan[c.key] = {cach:'ghep2', ten:lay('gc_' + c.key + '_c1'), ten2:lay('gc_' + c.key + '_c2'),
+                    hoTruoc: lay('gc_' + c.key + '_dao') !== 'sau'};
+      return;
+    }
+    if(cach === 'dmy'){
+      gan[c.key] = {cach:'dmy', tenNgay:lay('gc_' + c.key + '_d'),
+                    tenThang:lay('gc_' + c.key + '_t'), tenNam:lay('gc_' + c.key + '_n')};
+      return;
+    }
+    if(cach === 'cotX'){
+      const cap = [];
+      for(let i = 0; i < 2; i++){
+        const t = lay('gc_' + c.key + '_x' + i);
+        if(t) cap.push({ten:t, giaTri:lay('gc_' + c.key + '_xv' + i)});
+      }
+      gan[c.key] = {cach:'cotX', capX:cap};
+      return;
+    }
+    gan[c.key] = {cach:'1cot', ten:lay('gc_' + c.key + '_c1'), coiLa:lay('gc_' + c.key + '_coila')};
+  });
+  nlGanTam.gan = gan;
+  const oTen = $('gcTenMau');
+  if(oTen) nlGanTam.tenMau = oTen.value;
+  if(veLai) render();
+}
+
+/* Áp bản gán đang sửa vào file đang mở. Cột nào không tìm ra thì báo rõ tên
+   trường chứ không lặng lẽ để trống. */
+function apDungGanTay(){
+  capNhatGanTam(false);
+  if(!nlWb || !nlGanTam){ showToast('Chưa có file nào đang mở'); return; }
+  const ds = cotCuaGanTam();
+  if(!ds.length){ showToast('Dòng tiêu đề này không có chữ nào, chọn dòng khác'); return; }
+  const m = MAU_NHAP[nlLoai];
+  const hong = [];
+  Object.keys(nlGanTam.gan).forEach(function(k){
+    const thu = {}; thu[k] = nlGanTam.gan[k];
+    if(!ganTheoTen(thu, ds)){
+      const c = m.cot.find(function(x){ return x.key === k; });
+      hong.push(c ? c.nhan : k);
+    }
+  });
+  if(hong.length){
+    showToast('❌ Không tìm thấy cột cho: ' + hong.join(', '));
+    return;
+  }
+  const banDoGan = ganTheoTen(nlGanTam.gan, ds);
+  nlKetQua = phanTichFile(nlWb, {sheetIdx:nlGanTam.sheetIdx, hangTieuDe:nlGanTam.hangTieuDe,
+                                 banDoGan:banDoGan, mau:null});
+  nlGanTay = true; nlMoGan = false; render();
+  showToast(nlKetQua.khongThayTieuDe ? '⚠️ Còn thiếu cột bắt buộc' : 'Đã đọc ' + nlKetQua.dong.length + ' dòng');
+}
+
+function luuMauGan(){
+  if(!hasPerm('nhapDuLieu')){ showToast('Bạn không có quyền nhập dữ liệu'); return; }
+  capNhatGanTam(false);
+  if(!nlGanTam){ showToast('Chưa có bản gán nào để lưu'); return; }
+  const ten = String(nlGanTam.tenMau || '').trim();
+  if(!ten){ showToast('Đặt tên cho mẫu trước khi lưu'); return; }
+  if(!Object.keys(nlGanTam.gan).length){ showToast('Chưa gán cột nào'); return; }
+  const cu = (mauGanList || []).find(function(x){
+    return x.loai === nlLoai && stripDia(x.ten) === stripDia(ten); });
+  const data = {ten:ten, loai:nlLoai, gan:nlGanTam.gan,
+                nguoiLuu:(currentUser && currentUser.hoTen) || '', ngayLuu:todayISO()};
+  const p = cu ? db.collection('fcv_maugancot').doc(cu.id).update(data)
+               : db.collection('fcv_maugancot').add(data);
+  p.then(function(){
+    logAct((cu ? 'Sửa' : 'Thêm') + ' mẫu gán cột: ' + ten);
+    showToast(cu ? '✅ Đã cập nhật mẫu "' + ten + '"' : '✅ Đã lưu mẫu "' + ten + '"');
+  }).catch(function(e){ showToast('❌ Không lưu được mẫu: ' + (e.code || e.message)); });
+}
+
+function xoaMauGan(id, nut){
+  const mau = (mauGanList || []).find(function(x){ return x.id === id; });
+  if(!mau) return;
+  if(!requestConfirm('xoaMauGan' + id, nut, '⚠️ Bấm lần nữa để xoá')) return;
+  db.collection('fcv_maugancot').doc(id).delete().then(function(){
+    logAct('Xoá mẫu gán cột: ' + mau.ten);
+    showToast('Đã xoá mẫu "' + mau.ten + '"');
+  }).catch(function(e){ showToast('❌ Không xoá được: ' + (e.code || e.message)); });
+}
+
+/* Ô chọn cột, dùng lại ở mọi dòng của bảng gán.
+   Chọn sẵn theo ĐÚNG cách phần mềm dò cột, không so chuỗi thô: mẫu ghi ngắn
+   gọn "Họ thí sinh" còn tiêu đề thật là "Họ thí sinh ( Ghi in hoa ) Candidate's
+   Surname…", so thô thì ô nào cũng trống rồi bấm Áp dụng là mất sạch bản gán. */
+function oChonCot(id, giaTri, ds){
+  const col = giaTri ? timCotTheoTen(ds, giaTri) : 0;
+  return '<select id="' + id + '" style="margin:0;width:auto;max-width:180px;" '
+    + 'onchange="capNhatGanTam(true)"><option value="">— chọn cột —</option>'
+    + ds.map(function(x){
+        return '<option value="' + esc(x.goc) + '"' + (x.col === col ? ' selected' : '') + '>'
+          + esc(x.goc.replace(/\s+/g, ' ').slice(0, 42)) + '</option>'; }).join('')
+    + '</select>';
+}
+
+function khoiGanCot(){
+  const m = MAU_NHAP[nlLoai];
+  const ds = cotCuaGanTam();
+  const dsSheet = (nlWb && nlWb.worksheets) || [];
+  const gan = nlGanTam.gan || {};
+
+  let h = '<div class="card"><h3>Gán cột thủ công</h3>'
+    + '<div class="row wrap" style="gap:12px;">'
+    + '<div style="flex:2;min-width:240px;"><label>Sheet nào chứa danh sách</label>'
+    + '<select id="gcSheet" onchange="capNhatGanTam(true)">'
+    + dsSheet.map(function(ws, i){
+        return '<option value="' + i + '"' + (i === nlGanTam.sheetIdx ? ' selected' : '') + '>'
+          + esc(ws.name) + ' — ' + soDongThat(ws) + ' dòng · '
+          + (ws.actualColumnCount || ws.columnCount || 0) + ' cột'
+          + '</option>'; }).join('')
+    + '</select></div>'
+    + '<div style="flex:1;min-width:140px;"><label>Dòng tiêu đề</label>'
+    + '<select id="gcHang" onchange="capNhatGanTam(true)">'
+    + (function(){
+        let o = '';
+        for(let r = 1; r <= 20; r++)
+          o += '<option value="' + r + '"' + (r === nlGanTam.hangTieuDe ? ' selected' : '') + '>Dòng ' + r + '</option>';
+        return o; })()
+    + '</select></div></div>'
+    + '<label>Các cột đọc được ở dòng ' + nlGanTam.hangTieuDe + '</label>'
+    + (ds.length
+       ? '<div class="row wrap" style="gap:5px;">'
+         + ds.map(function(x){ return '<span class="chip">' + esc(x.goc.replace(/\s+/g, ' ').slice(0, 40)) + '</span>'; }).join('')
+         + '</div>'
+       : '<div class="small" style="color:var(--danger-ink);">Dòng này không có chữ nào. Chọn dòng tiêu đề khác.</div>')
+    + '</div>';
+
+  h += '<div class="card"><h3>Mỗi trường lấy từ đâu</h3>'
+    + '<div class="tbl-wrap"><table><thead><tr>'
+    + '<th style="width:22%;">Trường</th><th style="width:20%;">Cách lấy</th><th>Cột trong file</th>'
+    + '</tr></thead><tbody>';
+
+  m.cot.forEach(function(c){
+    const mien = (c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId);
+    const g = gan[c.key] || {};
+    const cach = g.cach || '';
+    h += '<tr' + (mien ? ' style="opacity:.5;"' : '') + '><td><b>' + esc(c.nhan) + '</b>'
+      + (c.batBuoc && !mien ? ' <span style="color:var(--danger);">*</span>' : '') + '</td>';
+    if(mien){
+      h += '<td class="muted" colspan="2">không cần — đã chọn kỳ thi ở trên</td></tr>';
+      return;
+    }
+    h += '<td><select id="gc_' + c.key + '_cach" style="margin:0;" onchange="capNhatGanTam(true)">'
+      + CACH_LAY.map(function(x){
+          return '<option value="' + x.ma + '"' + (x.ma === cach ? ' selected' : '') + '>'
+            + x.ten + '</option>'; }).join('')
+      + '</select></td><td>';
+    if(cach === 'ghep2'){
+      h += '<div class="row wrap" style="gap:6px;align-items:center;">'
+        + oChonCot('gc_' + c.key + '_c1', g.ten, ds) + '<span class="muted">+</span>'
+        + oChonCot('gc_' + c.key + '_c2', g.ten2, ds)
+        + '<select id="gc_' + c.key + '_dao" style="margin:0;width:auto;" onchange="capNhatGanTam(true)">'
+        + '<option value="truoc"' + (g.hoTruoc !== false ? ' selected' : '') + '>cột 1 đứng trước</option>'
+        + '<option value="sau"' + (g.hoTruoc === false ? ' selected' : '') + '>cột 2 đứng trước</option>'
+        + '</select></div>';
+    }
+    else if(cach === 'dmy'){
+      h += '<div class="row wrap" style="gap:6px;align-items:center;">'
+        + oChonCot('gc_' + c.key + '_d', g.tenNgay, ds)
+        + oChonCot('gc_' + c.key + '_t', g.tenThang, ds)
+        + oChonCot('gc_' + c.key + '_n', g.tenNam, ds) + '</div>';
+    }
+    else if(cach === 'cotX'){
+      const cap = g.capX || [];
+      for(let i = 0; i < 2; i++){
+        h += '<div class="row wrap" style="gap:6px;align-items:center;' + (i ? 'margin-top:5px;' : '') + '">'
+          + oChonCot('gc_' + c.key + '_x' + i, (cap[i] || {}).ten, ds)
+          + '<span class="muted">có nội dung →</span>'
+          + '<input id="gc_' + c.key + '_xv' + i + '" style="margin:0;width:140px;" '
+          + 'onchange="capNhatGanTam(false)" value="' + esc((cap[i] || {}).giaTri || '') + '">'
+          + '</div>';
+      }
+    }
+    else if(cach === 'codinh'){
+      h += '<input id="gc_' + c.key + '_codinh" style="margin:0;max-width:260px;" '
+        + 'onchange="capNhatGanTam(false)" value="' + esc(g.giaTri || '') + '" '
+        + 'placeholder="giá trị ghi cho mọi dòng">';
+    }
+    else if(cach === '1cot'){
+      h += '<div class="row wrap" style="gap:6px;align-items:center;">'
+        + oChonCot('gc_' + c.key + '_c1', g.ten, ds)
+        + '<span class="muted small">chỉ nhận khi ô ghi đúng</span>'
+        + '<input id="gc_' + c.key + '_coila" style="margin:0;width:100px;" '
+        + 'onchange="capNhatGanTam(false)" value="' + esc(g.coiLa || '') + '" placeholder="mọi giá trị">'
+        + '</div>';
+    }
+    else h += '<span class="muted">—</span>';
+    h += '</td></tr>';
+  });
+
+  h += '</tbody></table></div>'
+    + '<div class="row wrap" style="gap:8px;align-items:flex-end;margin-top:12px;">'
+    + '<div style="flex:1;min-width:200px;"><label>Đặt tên mẫu gán để kỳ sau dùng lại</label>'
+    + '<input id="gcTenMau" style="margin:0;" onchange="capNhatGanTam(false)" value="'
+    + esc(nlGanTam.tenMau || '') + '" placeholder="vd Mẫu DS thi của Nhà trường"></div>'
+    + '<button class="btn" onclick="luuMauGan()">💾 Lưu mẫu</button>'
+    + '<button class="btn btn-pri" onclick="apDungGanTay()">✓ Áp dụng và xem trước</button>'
+    + '<button class="btn" onclick="dongGanCot()">Đóng</button>'
+    + '</div>';
+
+  const mauCuaLoai = (mauGanList || []).filter(function(x){ return x.loai === nlLoai; });
+  h += '<div class="small muted" style="margin-top:9px;line-height:1.8;">Mẫu sẵn trong phần mềm: '
+    + MAU_GAN_SAN.filter(function(x){ return x.loai === nlLoai; })
+        .map(function(x){ return '<b>' + esc(x.ten) + '</b>'; }).join(', ')
+    + (mauCuaLoai.length
+       ? '<br>Mẫu trung tâm đã lưu: '
+         + mauCuaLoai.map(function(x){
+             return '<b>' + esc(x.ten) + '</b> <span onclick="xoaMauGan(\'' + x.id + '\', this)" '
+               + 'style="cursor:pointer;color:var(--danger-ink);">xoá</span>'; }).join(' · ')
+       : '<br>Trung tâm chưa lưu mẫu nào.')
+    + '<br>Lần sau chọn file đúng dạng này, phần mềm tự nhận ra và gán sẵn — chỉ cần bấm Lưu.'
+    + '</div></div>';
+  return h;
+}
+
+/* Khối tóm tắt cách phần mềm đang đọc file, để đối chiếu trước khi lưu */
+function khoiDaGan(){
+  const m = MAU_NHAP[nlLoai], kq = nlKetQua, gan = kq.banDoGan || {}, dsCot = kq.dsCot || [];
+  /* Tiêu đề thật dài cả dòng vì kèm chú thích tiếng Anh — cắt cho bảng đọc được */
+  const tenCua = function(col){
+    const t = tenCotTheoSo(dsCot, col);
+    if(!t) return 'cột ' + col;
+    const g = t.replace(/\s+/g, ' ').trim();
+    return g.length > 38 ? g.slice(0, 38) + '…' : g;
+  };
+  const chip = function(t){
+    return ' <span class="chip" style="color:var(--info-ink);border-color:var(--info-br);'
+      + 'background:var(--info-bg);">' + t + '</span>'; };
+  const moTa = function(g){
+    if(g.cach === 'codinh') return '<b>' + esc(g.giaTri) + '</b>' + chip('giá trị cố định');
+    if(g.cach === 'ghep2')
+      return '<b>' + esc(tenCua(g.cot)) + '</b> + <b>' + esc(tenCua(g.cot2)) + '</b>'
+        + chip('ghép 2 cột' + (g.hoTruoc === false ? ' · đảo thứ tự' : ''));
+    if(g.cach === 'dmy')
+      return '<b>' + esc(tenCua(g.cotNgay)) + '</b> + <b>' + esc(tenCua(g.cotThang))
+        + '</b> + <b>' + esc(tenCua(g.cotNam)) + '</b>' + chip('ghép 3 cột');
+    if(g.cach === 'cotX')
+      return (g.capX || []).map(function(p){
+          return 'cột <b>' + esc(p.ten || tenCua(p.cot)) + '</b> → “' + esc(p.giaTri) + '”'; }).join(' · ')
+        + chip('cột đánh dấu');
+    return esc(tenCua(g.cot))
+      + (g.coiLa ? ' <span class="muted">— chỉ nhận khi ô ghi “' + esc(g.coiLa) + '”</span>' : '');
+  };
+
+  const daGan = m.cot.filter(function(c){ return gan[c.key]; });
+  const chuaGan = m.cot.filter(function(c){
+    return !gan[c.key] && !(c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId); });
+  const cotDungRoi = {};
+  Object.keys(gan).forEach(function(k){
+    const g = gan[k];
+    [g.cot, g.cot2, g.cotNgay, g.cotThang, g.cotNam].forEach(function(c){ if(c) cotDungRoi[c] = 1; });
+    (g.capX || []).forEach(function(p){ if(p.cot) cotDungRoi[p.cot] = 1; });
+  });
+  const cotThua = dsCot.filter(function(x){ return !cotDungRoi[x.col]; });
+
+  let h = '<div class="card"><h3>Cột đã gán</h3><div class="tbl-wrap"><table>'
+    + '<thead><tr><th style="width:32%;">Trường trong phần mềm</th>'
+    + '<th>Lấy từ cột nào trong file</th></tr></thead><tbody>';
+  daGan.forEach(function(c){
+    h += '<tr><td><b>' + esc(c.nhan) + '</b></td><td>' + moTa(gan[c.key]) + '</td></tr>';
+  });
+  if(nlLoai === 'thiSinh' && nlKyId){
+    const ky = kyThiList.find(function(x){ return x.id === nlKyId; });
+    if(ky) h += '<tr><td><b>Tên kỳ thi</b></td><td class="muted">không cần — đã chọn kỳ <b>'
+      + esc(ky.ten) + '</b> ở trên</td></tr>';
+  }
+  if(chuaGan.length)
+    h += '<tr style="opacity:.55;"><td>' + chuaGan.map(function(c){ return esc(c.nhan); }).join(' · ')
+      + '</td><td class="muted">không gán — để trống</td></tr>';
+  if(cotThua.length)
+    h += '<tr style="opacity:.55;"><td class="muted">Cột file không dùng</td><td class="muted">'
+      + cotThua.map(function(x){ return esc(x.goc.replace(/\s+/g, ' ').slice(0, 30)); }).join(' · ')
+      + '</td></tr>';
+  h += '</tbody></table></div></div>';
+  return h;
+}
+
 function viewNhapLieu(){
   if(!hasPerm('nhapDuLieu'))
     return '<div class="card">'+emptyBox('🔒','Bạn không có quyền nhập dữ liệu')+'</div>';
@@ -19007,10 +19462,39 @@ function viewNhapLieu(){
         + esc(loDang.nguon || 'chưa ghi') + ', ngày ' + fmtDate(loDang.ngayThuThap) + '.</span></div></div>';
   }
 
-  h += '<div class="card"><h3>Bước 2 · Chọn file và xem trước</h3>'
+  h += '<div class="card"><h3>Bước 2 · Chọn file và gán cột</h3>'
     + '<input type="file" id="nlFile" accept=".xlsx,.xls" onchange="docFileNhap()">'
     + (nlDangDoc? '<div class="small muted" style="margin-top:8px;">Đang đọc file…</div>':'')
+    /* Ô chọn file bị trình duyệt xoá trắng mỗi lần vẽ lại màn, nên nhắc lại tên
+       file đang mở để khỏi tưởng là chưa chọn gì. */
+    + (nlTenFile && !nlDangDoc
+       ? '<div class="small muted" style="margin-top:8px;">Đang mở: <b>' + esc(nlTenFile)
+         + '</b> — chọn file khác ở ô trên nếu cần.</div>'
+       : '')
     + '</div>';
+
+  /* Báo rõ phần mềm đang đọc sheet nào, dòng tiêu đề nào, theo mẫu nào. Trước
+     đây phần mềm chỉ đọc sheet đầu tiên và không nói gì, nên file để danh sách
+     ở sheet thứ hai hay thứ ba đều báo "đã đọc 0 dòng" như thể file rỗng. */
+  if(nlKetQua && nlWb && !nlMoGan){
+    const nhan = nlKetQua.mau
+      ? {vien:'var(--ok-br)', nen:'var(--ok-bg)', muc:'var(--ok-ink)',
+         tieu:'✅ Nhận ra mẫu: ' + esc(nlKetQua.mau.ten)}
+      : {vien:'var(--info-br)', nen:'var(--info-bg)', muc:'var(--info-ink)',
+         tieu:'📄 Đọc theo tên cột của mẫu ' + esc(m.ten)};
+    h += '<div class="card" style="border-color:' + nhan.vien + ';background:' + nhan.nen + ';">'
+      + '<div style="font-size:13.5px;font-weight:700;color:' + nhan.muc + ';">' + nhan.tieu + '</div>'
+      + '<div class="small" style="margin-top:5px;color:var(--text-2);line-height:1.7;">'
+      + 'Sheet <b>' + esc(nlKetQua.sheetTen || '—') + '</b> · tiêu đề ở <b>dòng '
+      + nlKetQua.hangTieuDe + '</b> · gán được <b>'
+      + Object.keys(nlKetQua.banDoGan || {}).length + ' trường</b>.'
+      + (nlKetQua.khongThayTieuDe ? '' : ' Xem bảng đối chiếu bên dưới, đúng thì bấm Lưu.')
+      + '</div>'
+      + '<div class="row wrap" style="gap:8px;margin-top:10px;">'
+      + '<button class="btn" onclick="moGanCot()">✏️ Sửa cách gán cột</button>'
+      + '</div></div>';
+  }
+  if(nlMoGan && nlGanTam) return h + khoiGanCot();
 
   if(nlKetQua){
     const hopLe = nlKetQua.dong.filter(function(d){ return !d.loi && !d.boQua; });
@@ -19022,9 +19506,15 @@ function viewNhapLieu(){
     if(nlKetQua.khongThayTieuDe){
       h += '<div class="card" style="border-color:var(--danger);background:#fff6f6;">'
         + '<h3 style="margin-top:0;color:var(--danger);">Không đọc được file này</h3>'
-        + '<div class="small" style="line-height:1.7;">Hệ thống dò 20 dòng đầu mà '
-        + '<b>không nhận ra cột nào</b> khớp với mẫu <b>' + esc(m.ten) + '</b>. '
-        + 'Thường là do file dùng tên cột khác, hoặc chọn nhầm loại dữ liệu ở Bước 1.</div>'
+        + '<div class="small" style="line-height:1.7;">'
+        + ((nlKetQua.thieuBatBuoc || []).length
+            ? 'Hệ thống dò 20 dòng đầu mà <b>không tìm thấy cột bắt buộc</b>: '
+              + '<b style="color:var(--danger);">'
+              + esc(nlKetQua.thieuBatBuoc.join(', ')) + '</b>. '
+              + 'Thiếu cột này thì không biết lấy dữ liệu ở đâu, nên không nạp được dòng nào.'
+            : 'Hệ thống dò 20 dòng đầu mà <b>không nhận ra cột nào</b> khớp với mẫu <b>'
+              + esc(m.ten) + '</b>.')
+        + ' Thường là do file dùng tên cột khác, hoặc chọn nhầm loại dữ liệu ở Bước 1.</div>'
         + '<div class="row" style="gap:14px;margin-top:12px;align-items:flex-start;">'
         + '<div style="flex:1;min-width:200px;">'
         + '<div class="small" style="font-weight:700;margin-bottom:5px;">Tên cột tìm thấy trong file</div>'
@@ -19037,15 +19527,25 @@ function viewNhapLieu(){
         + '<div class="small" style="font-weight:700;margin-bottom:5px;">Tên cột hệ thống cần</div>'
         + '<div class="small muted" style="line-height:1.8;">'
         + m.cot.map(function(c){
-            return esc(c.nhan) + (c.batBuoc ? ' <b style="color:var(--danger);">(bắt buộc)</b>' : '');
+            const mien = (c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId);
+            return esc(c.nhan)
+              + (mien ? ' <span class="muted">(không cần — đã chọn kỳ)</span>'
+                      : (c.batBuoc ? ' <b style="color:var(--danger);">(bắt buộc)</b>' : ''));
           }).join('<br>')
         + '</div></div></div>'
         + '<div class="small muted" style="margin-top:12px;border-top:1px solid var(--border);padding-top:9px;">'
-        + 'Cách chắc ăn nhất: bấm <b>Tải file mẫu</b> ở Bước 1, dán dữ liệu của mình vào đó '
-        + 'rồi đẩy lên — khỏi phải sửa tên cột.</div>'
+        + 'Không phải sửa file: bấm <b>Gán cột thủ công</b> rồi chỉ cho phần mềm biết '
+        + 'cột nào là gì, lưu lại thành mẫu để kỳ sau dùng luôn. '
+        + 'Hoặc bấm <b>Tải file mẫu</b> ở Bước 1 rồi dán dữ liệu vào đó.</div>'
+        + (nlWb
+           ? '<button class="btn btn-pri btn-block" style="margin-top:10px;" '
+             + 'onclick="moGanCot()">✏️ Gán cột thủ công</button>'
+           : '')
         + '</div>';
       return h;
     }
+
+    h += khoiDaGan();
 
     h += '<div class="card"><h3>Bước 3 · Kết quả kiểm tra</h3>'
       + '<div class="grid" style="margin-bottom:10px;">'
@@ -19196,9 +19696,13 @@ function docFileNhap(){
   reader.onload = function(e){
     const wb = new ExcelJS.Workbook();
     wb.xlsx.load(e.target.result).then(function(){
+      /* Giữ lại workbook để đổi sheet hay gán lại cột không phải chọn file lần nữa */
+      nlWb = wb; nlGanTam = null; nlMoGan = false; nlGanTay = false; nlTenFile = f.name;
       nlKetQua = phanTichFile(wb);
       nlDangDoc = false; render();
-      showToast('Đã đọc '+nlKetQua.dong.length+' dòng');
+      showToast(nlKetQua.khongThayTieuDe
+        ? '⚠️ Chưa đọc được — xem phần gán cột'
+        : 'Đã đọc '+nlKetQua.dong.length+' dòng');
     }).catch(function(err){
       nlDangDoc = false; render();
       showToast('❌ Không đọc được file: '+(err.message||err));
@@ -19216,11 +19720,23 @@ function docFileNhap(){
 function chuanTenCot(s){
   return stripDia(String(s || '')).replace(/[^a-z0-9]/g, '');
 }
+/* Bỏ dấu giúp "Khoá" với "Khóa" khớp nhau, nhưng nó cũng làm "Nam" (giới tính)
+   lẫn với "Năm" (năm sinh) — hai thứ khác hẳn nhau. Với những cột mà việc lẫn
+   gây SAI DỮ LIỆU chứ không chỉ bỏ sót, so khớp phải GIỮ DẤU. */
+function chuanTenCotCoDau(s){
+  return String(s || '').toLowerCase().replace(/[^a-zà-ỹ0-9]/gi, '');
+}
+/* Cột chỉ được khớp khi tên trùng cả dấu */
+const COT_KHOP_DAU = {nam: true};
 /* Những cách viết khác mà file của nhà trường, đối tác hay Trung tâm vẫn dùng.
    Khai theo mã cột nên tám mẫu nhập dùng chung một bảng, khỏi sửa tám chỗ. */
 const BI_DANH_COT = {
-  hoTen:       ['Họ tên','Họ và tên','Tên','Họ tên học viên','Họ tên thí sinh',
-                'Họ tên học sinh','Họ và tên thí sinh','Họ và tên học viên'],
+  /* KHÔNG để 'Tên' làm bí danh của họ tên. File của nhà trường thường tách
+     "Họ và tên lót" với "Tên"; nhận nhầm cột "Tên" thành họ tên đầy đủ sẽ nhập
+     vào mỗi chữ cuối — "An" thay vì "Nguyễn Văn An" — mà không báo lỗi gì. */
+  hoTen:       ['Họ tên','Họ và tên','Họ tên học viên','Họ tên thí sinh',
+                'Họ tên học sinh','Họ và tên thí sinh','Họ và tên học viên',
+                'Họ và tên học sinh','Họ tên đầy đủ'],
   mssv:        ['Mã SV','MSSV','Mã sinh viên','Mã số SV','Mã số sinh viên'],
   khoaSV:      ['Khoá','Khóa','Niên khoá','Khoá học'],
   sdt:         ['SĐT','Số ĐT','Điện thoại','Số điện thoại','Phone'],
@@ -19255,61 +19771,318 @@ function tenChapNhan(c){
     .map(chuanTenCot).filter(Boolean);
 }
 
-function phanTichFile(wb){
-  const m = MAU_NHAP[nlLoai];
-  const ws = wb.worksheets[0];
-  const dong = [], thieuCot = [];
-  if(!ws) return {dong:[], thieuCot:[], cotTrongFile:[], khongThayTieuDe:true};
+/* ===== ĐỌC FILE EXCEL THEO BẢN ĐỒ GÁN CỘT =====
+   Form thật của Nhà trường và của Cambridge không giống mẫu của phần mềm: danh
+   sách nằm ở sheet thứ hai hoặc thứ ba, tiêu đề ở dòng 6 hoặc dòng 10, họ tên
+   tách làm hai cột (Cambridge để họ ở SAU), ngày sinh tách làm ba cột, hình thức
+   thi là dấu X ở một trong hai cột, tiêu đề còn kèm chú thích tiếng Anh xuống
+   dòng. Nên chỗ đọc file không đoán theo tên cột nữa mà đi theo một BẢN ĐỒ GÁN:
+   mỗi trường ghi rõ lấy ở cột nào và lấy kiểu gì.
 
-  /* Dò dòng tiêu đề trong 20 dòng đầu — file mẫu của đối tác thường có
-     mấy dòng thông tin đơn vị phía trên trước khi tới bảng */
-  let hangTieuDe = 1, banDo = {}, khopNhieuNhat = 0, cotTrongFile = [];
-  const gioiHan = Math.min(20, ws.rowCount);
-  for(let r = 1; r <= gioiHan; r++){
-    const thu = {}, tenCot = [], oCot = [];
-    ws.getRow(r).eachCell({includeEmpty:false}, function(cell, col){
-      const goc = oToText(cell.value);
-      const ten = chuanTenCot(goc);
-      if(!ten) return;
-      tenCot.push(goc);
-      oCot.push({ten:ten, col:col});
-    });
-    /* Vòng 1: khớp nhãn chính. Vòng 2: mới tới bí danh, và chỉ cho cột còn trống.
-       Làm hai vòng để "Lớp" (bí danh của Mã lớp) không chiếm mất cột của một
-       nhãn chính tên "Lớp" ở mẫu khác. */
-    oCot.forEach(function(o){
-      const c = m.cot.find(function(x){ return chuanTenCot(x.nhan) === o.ten; });
-      if(c && !thu[c.key]) thu[c.key] = o.col;
-    });
-    oCot.forEach(function(o){
-      const c = m.cot.find(function(x){
-        return !thu[x.key] && tenChapNhan(x).indexOf(o.ten) >= 0; });
-      if(c && !thu[c.key]) thu[c.key] = o.col;
-    });
-    const soKhop = Object.keys(thu).length;
-    if(soKhop > khopNhieuNhat){
-      khopNhieuNhat = soKhop; banDo = thu; hangTieuDe = r; cotTrongFile = tenCot;
+   Các cách lấy:
+     {cach:'1cot',   ten:'Mã SV'}                              lấy nguyên ô
+     {cach:'1cot',   ten:'Trạng thái đóng lệ phí', coiLa:'Ok'}  ô ghi đúng chữ này → 'x'
+     {cach:'ghep2',  ten:'Họ đệm', ten2:'Tên', hoTruoc:true}    ghép hai cột
+     {cach:'dmy',    tenNgay:'Ngày', tenThang:'Tháng', tenNam:'Năm'}
+     {cach:'cotX',   capX:[{ten:'Trên giấy', giaTri:'Trên giấy'}, ...]}
+     {cach:'codinh', giaTri:'Sinh viên DNTU'}                   không lấy từ file
+
+   Bản đồ ghi theo TÊN cột chứ không ghi số thứ tự cột, để nhà trường chèn thêm
+   một cột vào giữa thì mẫu đã lưu vẫn dùng được. */
+
+/* Ô đánh dấu: coi MỌI ô có nội dung là đã đánh, không riêng chữ x. Trong file
+   thật có một dòng bị gõ số CCCD lạc vào cột "Trên giấy" — phải chặn dòng đó
+   chứ không được lặng lẽ đọc thành thi trên máy. */
+function laODanhDau(v){
+  return String(v === null || v === undefined ? '' : v).trim() !== '';
+}
+
+/* Excel hay lưu vùng định dạng thừa kéo xuống cả triệu dòng, nên rowCount của
+   sheet danh sách Cambridge báo 1.048.428 dòng. Lấy số dòng CÓ DỮ LIỆU để màn
+   chọn sheet nói đúng, khỏi làm người nhập hoang mang. */
+function soDongThat(ws){
+  return (ws && (ws.actualRowCount || ws.rowCount)) || 0;
+}
+
+function bangTenCot(ws, hang){
+  const ds = [];
+  ws.getRow(hang).eachCell({includeEmpty:false}, function(cell, col){
+    const goc = oToText(cell.value);
+    if(!goc) return;
+    ds.push({goc:goc, coDau:chuanTenCotCoDau(goc), khongDau:chuanTenCot(goc), col:col});
+  });
+  return ds;
+}
+
+/* Tìm cột theo tên. Thứ tự: trùng khít có dấu → trùng khít bỏ dấu → tiêu đề bắt
+   đầu bằng chữ này. Phải cho khớp phần đầu vì tiêu đề thật hay kèm chú thích,
+   ví dụ "Họ thí sinh ( Ghi in hoa )". So có dấu trước để "Năm" (năm sinh) không
+   dính vào "Nam" (giới tính). Hai cột cùng khớp thì trả 0 — thà báo không nhận
+   ra mẫu còn hơn lấy nhầm cột rồi ghi sai cả danh sách. */
+function timCotTheoTen(ds, ten){
+  const a = chuanTenCotCoDau(ten), b = chuanTenCot(ten);
+  const lay = function(loc){
+    const h = ds.filter(loc);
+    return h.length === 1 ? h[0].col : 0;
+  };
+  let c = 0;
+  if(a) c = lay(function(x){ return x.coDau === a; });
+  if(!c && b) c = lay(function(x){ return x.khongDau === b; });
+  if(!c && a) c = lay(function(x){ return x.coDau.indexOf(a) === 0; });
+  if(!c && b) c = lay(function(x){ return x.khongDau.indexOf(b) === 0; });
+  return c;
+}
+
+/* Đổi bản đồ ghi theo tên thành bản đồ ghi theo số cột. Thiếu bất kỳ cột nào thì
+   trả null: mẫu này không khớp file, không gán nửa vời rồi để trống âm thầm. */
+function ganTheoTen(ganTen, ds){
+  const ra = {}, keys = Object.keys(ganTen || {});
+  for(let i = 0; i < keys.length; i++){
+    const k = keys[i], g = ganTen[k] || {};
+    if(g.cach === 'codinh'){ ra[k] = {cach:'codinh', giaTri:g.giaTri || ''}; continue; }
+    if(g.cach === 'ghep2'){
+      const c1 = timCotTheoTen(ds, g.ten), c2 = timCotTheoTen(ds, g.ten2);
+      if(!c1 || !c2) return null;
+      ra[k] = {cach:'ghep2', cot:c1, cot2:c2, hoTruoc:g.hoTruoc !== false,
+               ten:g.ten, ten2:g.ten2};
+      continue;
     }
-    /* Chưa khớp được cột nào thì vẫn nhớ dòng nhiều chữ nhất, để còn
-       in ra cho người dùng đối chiếu khi báo lỗi */
-    if(khopNhieuNhat === 0 && tenCot.length > cotTrongFile.length) cotTrongFile = tenCot;
+    if(g.cach === 'dmy'){
+      const cn = timCotTheoTen(ds, g.tenNgay), ct = timCotTheoTen(ds, g.tenThang),
+            cy = timCotTheoTen(ds, g.tenNam);
+      if(!cn || !ct || !cy) return null;
+      ra[k] = {cach:'dmy', cotNgay:cn, cotThang:ct, cotNam:cy,
+               tenNgay:g.tenNgay, tenThang:g.tenThang, tenNam:g.tenNam};
+      continue;
+    }
+    if(g.cach === 'cotX'){
+      const cap = [];
+      for(let j = 0; j < (g.capX || []).length; j++){
+        const p = g.capX[j], c = timCotTheoTen(ds, p.ten);
+        if(!c) return null;
+        cap.push({cot:c, ten:p.ten, giaTri:p.giaTri});
+      }
+      if(!cap.length) return null;
+      ra[k] = {cach:'cotX', capX:cap};
+      continue;
+    }
+    const c = timCotTheoTen(ds, g.ten);
+    if(!c) return null;
+    ra[k] = {cach:'1cot', cot:c, ten:g.ten, coiLa:g.coiLa || ''};
   }
-  m.cot.forEach(function(c){ if(!banDo[c.key]) thieuCot.push(c.nhan); });
+  return ra;
+}
 
-  /* Không nhận ra cột nào: dừng ngay và nói rõ, đừng trả về 0 dòng rồi im lặng */
-  if(khopNhieuNhat === 0)
-    return {dong:[], thieuCot:thieuCot, cotTrongFile:cotTrongFile, khongThayTieuDe:true};
+/* Đọc một dòng theo bản đồ gán. Trả luôn lỗi của riêng cách gán. */
+function docDongTheoGan(row, banDoGan, m){
+  const data = {};
+  let loi = '';
+  const o = function(c){ return c ? oToText(row.getCell(c).value) : ''; };
+  m.cot.forEach(function(c){
+    const g = banDoGan[c.key];
+    if(!g){ data[c.key] = ''; return; }
+    if(g.cach === 'codinh'){ data[c.key] = g.giaTri || ''; return; }
+    if(g.cach === 'ghep2'){
+      const a = o(g.cot).trim(), b = o(g.cot2).trim();
+      data[c.key] = (g.hoTruoc === false ? (b + ' ' + a) : (a + ' ' + b))
+        .replace(/\s+/g, ' ').trim();
+      return;
+    }
+    if(g.cach === 'dmy'){
+      const d1 = o(g.cotNgay).trim(), d2 = o(g.cotThang).trim(), d3 = o(g.cotNam).trim();
+      data[c.key] = (d1 && d2 && d3) ? (d1 + '/' + d2 + '/' + d3) : '';
+      return;
+    }
+    if(g.cach === 'cotX'){
+      const danh = (g.capX || []).filter(function(p){ return laODanhDau(o(p.cot)); });
+      if(danh.length > 1 && !loi)
+        loi = 'Cột ' + danh.map(function(p){ return '"' + p.ten + '"'; }).join(' và ')
+            + ' cùng có nội dung, không biết lấy giá trị nào cho '
+            + c.nhan.toLowerCase() + '. Sửa trong file rồi tải lên lại.';
+      data[c.key] = danh.length === 1 ? danh[0].giaTri : '';
+      return;
+    }
+    const v = o(g.cot);
+    data[c.key] = g.coiLa
+      ? (stripDia(String(v).trim()) === stripDia(g.coiLa) ? 'x' : '')
+      : v;
+  });
+  return {data:data, loi:loi};
+}
+
+/* Hai form đang dùng thật. Giữ sẵn ở đây để Khảo thí chọn file là chạy, không
+   phải gán tay. Nhà trường đổi form thì gán tay rồi lưu thành mẫu mới, không
+   cần sửa code. */
+const MAU_GAN_SAN = [
+  {ma:'DNTU_SV', ten:'Mẫu DNTU (SV trong trường)', loai:'thiSinh', sanCo:true,
+   gan:{
+     hoTen:    {cach:'ghep2', ten:'Họ đệm', ten2:'Tên', hoTruoc:true},
+     mssv:     {cach:'1cot', ten:'Mã SV'},
+     gioiTinh: {cach:'1cot', ten:'Giới tính'},
+     ngaySinh: {cach:'1cot', ten:'Ngày sinh'},
+     sdt:      {cach:'1cot', ten:'Điện thoại'},
+     email:    {cach:'1cot', ten:'Mail trường'},
+     /* File của Nhà trường chỉ có sinh viên trong trường. Không ghi rõ chỗ này
+        thì phần mềm mặc định là thí sinh tự do, mà tự do với DNTU khác mức lệ
+        phí nộp lại Nhà trường — sai tiền ngay. */
+     loaiTS:   {cach:'codinh', giaTri:'Sinh viên DNTU'}
+   }},
+  {ma:'CAMB_FLIC', ten:'Mẫu Cambridge FLIC', loai:'thiSinh', sanCo:true,
+   gan:{
+     hoTen:    {cach:'ghep2', ten:'Họ thí sinh', ten2:'Tên thí sinh', hoTruoc:true},
+     ngaySinh: {cach:'dmy', tenNgay:'Ngày', tenThang:'Tháng', tenNam:'Năm'},
+     gioiTinh: {cach:'1cot', ten:'Giới tính'},
+     monThi:   {cach:'1cot', ten:'Cấp độ dự thi'},
+     hinhThucThi: {cach:'cotX', capX:[{ten:'Trên giấy', giaTri:'Trên giấy'},
+                                      {ten:'Trên máy',  giaTri:'Trên máy'}]},
+     tenPH:    {cach:'1cot', ten:'Họ và tên phụ huynh'},
+     sdtPH:    {cach:'1cot', ten:'Số điện thoại'},
+     email:    {cach:'1cot', ten:'Email'},
+     daNopLePhi: {cach:'1cot', ten:'Trạng thái đóng lệ phí', coiLa:'Ok'}
+   }}
+];
+
+/* Mẫu gán dùng chung cả trung tâm: mẫu sẵn trong code trước, rồi tới mẫu Khảo
+   thí tự lưu. Mẫu tự lưu đứng sau nên sửa được hành vi của mẫu sẵn khi nhà
+   trường đổi form, mà không phải ra bản mới. */
+function dsMauGan(){
+  return MAU_GAN_SAN.concat(mauGanList || []);
+}
+
+/* Dò theo tên cột của mẫu phần mềm, như cũ. Vòng 1 khớp nhãn chính cho toàn bộ
+   cột, vòng 2 mới tới bí danh và chỉ cho cột còn trống, để một bí danh không
+   cướp mất cột của nhãn chính. */
+function doTieuDeChuan(ds, m){
+  const thu = {};
+  const hopCot = function(c, o){
+    if(COT_KHOP_DAU[c.key]) return chuanTenCotCoDau(c.nhan) === o.coDau;
+    return tenChapNhan(c).indexOf(o.khongDau) >= 0;
+  };
+  ds.forEach(function(o){
+    const c = m.cot.find(function(x){
+      return COT_KHOP_DAU[x.key]
+        ? chuanTenCotCoDau(x.nhan) === o.coDau
+        : chuanTenCot(x.nhan) === o.khongDau; });
+    if(c && !thu[c.key]) thu[c.key] = o.col;
+  });
+  ds.forEach(function(o){
+    const c = m.cot.find(function(x){ return !thu[x.key] && hopCot(x, o); });
+    if(c && !thu[c.key]) thu[c.key] = o.col;
+  });
+  return thu;
+}
+
+/* Quét MỌI sheet, mỗi sheet 20 dòng đầu. Phải quét mọi sheet vì file Nhà trường
+   để danh sách ở sheet thứ hai còn file Cambridge ở sheet thứ ba: trước đây
+   phần mềm chỉ đọc sheet đầu tiên nên không bao giờ nhìn thấy danh sách, mà vẫn
+   báo "đã đọc 0 dòng" như thể file rỗng. Mẫu gán đã lưu thắng tuyệt đối so với
+   dò theo tên cột. */
+function doFileNhap(wb, m, batBuocThuc){
+  const dsMau = dsMauGan();
+  let tot = null, nhieuChuNhat = [];
+  const sheets = wb.worksheets || [];
+  for(let s = 0; s < sheets.length; s++){
+    const ws = sheets[s];
+    const gioiHan = Math.min(20, ws.rowCount || 0);
+    for(let r = 1; r <= gioiHan; r++){
+      const ds = bangTenCot(ws, r);
+      if(!ds.length) continue;
+      if(ds.length > nhieuChuNhat.length)
+        nhieuChuNhat = ds.map(function(x){ return x.goc; });
+      const tenCot = ds.map(function(x){ return x.goc; });
+      for(let i = 0; i < dsMau.length; i++){
+        const mau = dsMau[i];
+        if(mau.loai && mau.loai !== nlLoai) continue;
+        const gan = ganTheoTen(mau.gan, ds);
+        if(!gan) continue;
+        const diem = 100000 + Object.keys(gan).length;
+        if(!tot || diem > tot.diem)
+          tot = {diem:diem, ws:ws, sheetIdx:s, hangTieuDe:r, banDoGan:gan, mau:mau,
+                 cotTrongFile:tenCot, dsCot:ds, soKhop:Object.keys(gan).length,
+                 duBatBuoc:batBuocThuc.every(function(c){ return gan[c.key]; })};
+      }
+      const thu = doTieuDeChuan(ds, m);
+      const soKhop = Object.keys(thu).length;
+      if(!soKhop) continue;
+      const duBatBuoc = batBuocThuc.every(function(c){ return thu[c.key]; });
+      const diem = (duBatBuoc ? 1000 : 0) + soKhop;
+      if(!tot || diem > tot.diem){
+        const gan = {};
+        Object.keys(thu).forEach(function(k){ gan[k] = {cach:'1cot', cot:thu[k]}; });
+        tot = {diem:diem, ws:ws, sheetIdx:s, hangTieuDe:r, banDoGan:gan, mau:null,
+               cotTrongFile:tenCot, dsCot:ds, soKhop:soKhop, duBatBuoc:duBatBuoc};
+      }
+    }
+  }
+  if(!tot) return {ws:null, sheetIdx:-1, hangTieuDe:0, banDoGan:{}, mau:null,
+                   cotTrongFile:nhieuChuNhat, dsCot:[], soKhop:0, duBatBuoc:false};
+  return tot;
+}
+
+/* ep: chỉ định tay từ màn hình gán cột — {sheetIdx, hangTieuDe, banDoGan}.
+   Không truyền thì tự dò. */
+function phanTichFile(wb, ep){
+  const m = MAU_NHAP[nlLoai];
+  const dong = [], thieuCot = [];
+  /* Cột bắt buộc THỰC TẾ — Tên kỳ thi được miễn khi đã chọn kỳ ở trên màn */
+  const batBuocThuc = m.cot.filter(function(c){
+    if(c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId) return false;
+    return c.batBuoc;
+  });
+
+  let chon;
+  if(ep && ep.banDoGan){
+    const ws2 = (wb.worksheets || [])[ep.sheetIdx];
+    const ds = ws2 ? bangTenCot(ws2, ep.hangTieuDe) : [];
+    chon = {ws:ws2, sheetIdx:ep.sheetIdx, hangTieuDe:ep.hangTieuDe,
+            banDoGan:ep.banDoGan, mau:ep.mau || null,
+            cotTrongFile:ds.map(function(x){ return x.goc; }), dsCot:ds,
+            soKhop:Object.keys(ep.banDoGan).length,
+            duBatBuoc:batBuocThuc.every(function(c){ return ep.banDoGan[c.key]; })};
+  } else {
+    chon = doFileNhap(wb, m, batBuocThuc);
+  }
+  const ws = chon.ws;
+  const banDoGan = chon.banDoGan || {};
+  m.cot.forEach(function(c){ if(!banDoGan[c.key]) thieuCot.push(c.nhan); });
+  const thieuBatBuoc = batBuocThuc.filter(function(c){ return !banDoGan[c.key]; });
+
+  const chung = {thieuCot:thieuCot, cotTrongFile:chon.cotTrongFile || [],
+                 dsCot:chon.dsCot || [],
+                 mau:chon.mau, sheetTen:ws ? ws.name : '', sheetIdx:chon.sheetIdx,
+                 hangTieuDe:chon.hangTieuDe, banDoGan:banDoGan,
+                 dsSheet:(wb.worksheets || []).map(function(x){
+                   return {ten:x.name, soDong:soDongThat(x),
+                           soCot:x.actualColumnCount || x.columnCount || 0}; })};
+
+  /* Khớp được một cột lẻ KHÔNG đủ để coi là dòng tiêu đề. Không khớp nổi cột
+     bắt buộc thì coi như chưa tìm thấy tiêu đề và báo đỏ cho rõ, thay vì đọc ra
+     vài dòng trống rồi để người nhập tự đoán. */
+  if(!ws || !chon.soKhop || thieuBatBuoc.length)
+    return Object.assign({dong:[], khongThayTieuDe:true,
+      thieuBatBuoc: thieuBatBuoc.map(function(c){ return c.nhan; })}, chung);
 
   const daThayMa = {}, daThayTen = {};
-  for(let r=hangTieuDe + 1; r<=ws.rowCount; r++){
+  let trongLienTiep = 0;
+  for(let r = chon.hangTieuDe + 1; r <= ws.rowCount; r++){
     const row = ws.getRow(r);
-    const data = {};
-    m.cot.forEach(function(c){
-      data[c.key] = banDo[c.key]? oToText(row.getCell(banDo[c.key]).value) : '';
+    const docDong = docDongTheoGan(row, banDoGan, m);
+    const data = docDong.data;
+    /* Giá trị cố định không tính là "có dữ liệu", nếu không thì vùng định dạng
+       thừa phía dưới bảng cũng thành dòng hợp lệ. */
+    const rong = m.cot.every(function(c){
+      const g = banDoGan[c.key];
+      return (g && g.cach === 'codinh') || !data[c.key];
     });
-    const rong = Object.keys(data).every(function(k){ return !data[k]; });
-    if(rong) continue;
-    const d = {dongSo:r, data:data, loi:''};
+    if(rong){
+      trongLienTiep++;
+      /* File thật hay kéo định dạng xuống cả triệu dòng. Gặp 50 dòng trống liên
+         tiếp thì coi như hết bảng, khỏi quét vô ích rồi treo trình duyệt. */
+      if(trongLienTiep >= 50) break;
+      continue;
+    }
+    trongLienTiep = 0;
+    const d = {dongSo:r, data:data, loi:docDong.loi};
 
     /* Kiểm tra trường bắt buộc.
        Riêng Tên kỳ thi: đã gắn kỳ ở trên màn thì không bắt buộc nữa. */
@@ -19317,7 +20090,7 @@ function phanTichFile(wb){
       if(c.key === 'tenKyThi' && nlLoai === 'thiSinh' && nlKyId) return false;
       return c.batBuoc && !data[c.key];
     });
-    if(thieu.length) d.loi = 'Thiếu '+thieu.map(function(c){ return c.nhan.toLowerCase(); }).join(', ');
+    if(!d.loi && thieu.length) d.loi = 'Thiếu '+thieu.map(function(c){ return c.nhan.toLowerCase(); }).join(', ');
 
     /* Kiểm tra riêng theo loại */
     if(!d.loi){
@@ -19403,6 +20176,10 @@ function phanTichFile(wb){
           d.loi = 'Điền đủ cả ba cột Ngày, Tháng, Năm hoặc để trống cả ba';
         else if((data.ngay && data.thang && data.nam) && !gopNgaySinh(data))
           d.loi = 'Ngày sinh không hợp lệ: ' + data.ngay + '/' + data.thang + '/' + data.nam;
+        /* Cột Ngày sinh gõ sai trước đây bị lặng lẽ bỏ trắng. Thí sinh thiếu
+           ngày sinh là sai dữ liệu in chứng chỉ, nên chặn thẳng dòng đó. */
+        else if(data.ngaySinh && !chuanHoaNgay(data.ngaySinh))
+          d.loi = 'Ngày sinh không đọc được: "' + data.ngaySinh + '". Dùng dd/mm/yyyy.';
         else if(data.doiTac && !doiTacList.some(function(x){
             return stripDia(x.ten) === stripDia(data.doiTac.trim()); }))
           d.loi = 'Chưa có đối tác "'+data.doiTac+'" trong danh mục. Thêm ở Khảo thí → Đối tác trước.';
@@ -19464,7 +20241,7 @@ function phanTichFile(wb){
     }
     dong.push(d);
   }
-  return {dong:dong, thieuCot:thieuCot, cotTrongFile:cotTrongFile, khongThayTieuDe:false};
+  return Object.assign({dong:dong, khongThayTieuDe:false}, chung);
 }
 
 function nạpDuLieu(){
@@ -19523,7 +20300,7 @@ function nạpDuLieu(){
       return db.collection('fcv_hocvien').add({
         nhapHangLoat: true,
         maHV:ma, hoTen:v.hoTen, tenTA:v.tenTA||'',
-        ngaySinh:chuanHoaNgay(v.ngaySinh), gioiTinh:v.gioiTinh||'',
+        ngaySinh:chuanHoaNgay(v.ngaySinh), gioiTinh:chuanGioiTinh(v.gioiTinh),
         tenPH:v.tenPH||'', sdtPH:v.sdtPH||'', truong:v.truong||'', nguon:v.nguon||'',
         dongYHinhAnh: (dy==='x'||dy==='co'||dy==='1'||dy==='true'),
         ngayTao: todayISO(), ghiChu:'Nhập từ Excel'});
@@ -19605,7 +20382,7 @@ function nạpDuLieu(){
           return '';
         })(),
         ngaySinh: gopNgaySinh(v),
-        gioiTinh: (v.gioiTinh || '').trim(),
+        gioiTinh: chuanGioiTinh(v.gioiTinh),
         sdt: chuanSdt(v.sdt) || (v.sdt || ''),
         tenPH: (v.tenPH || '').trim(),
         sdtPH: chuanSdt(v.sdtPH) || (v.sdtPH || ''),
