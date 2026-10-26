@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.27.0   |   Ngày: 26/10/2026
+ Phiên bản: V1.28.0   |   Ngày: 26/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -714,44 +714,53 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js" defer></script>
 <style>
   /* ============================================================
-     GIAO DIỆN V2 — vỏ (V1.27.0)
+     GIAO DIỆN V2 — vỏ (V1.27.1)
      Tên biến và tên class GIỮ NGUYÊN như V1.26.0, chỉ đổi giá trị,
      nên 2.957 chỗ dùng class và hơn 600 chỗ dùng var() trong mã
      dựng màn không phải sửa một dòng nào.
-     Luật nguồn: claude/FLIC-Thiet-ke-Giao-dien-V1.0.md
+
+     MÀU NHẤN LÀ XANH FLIC — Ban lãnh đạo quyết 26/10/2026.
+     Bản V1.27.0 thử đỏ logo phủ cả thanh tiêu đề: quá nhiều diện
+     tích cho một màu mạnh, nhìn lâu nhức mắt. Giữ lại phần làm
+     phẳng của V2 (bỏ bóng đổ, bỏ nhấc 2px, bỏ nền chuyển sắc) vì
+     đó mới là phần làm giao diện trông gọn, không phải màu.
+
+     TOÀN BỘ màu của app nằm trong khối :root này. Nếu sau này đổi
+     màu thì chỉ sửa ở đây — mã dựng màn không còn mã màu cứng nào
+     ngoài 6 màu biểu đồ và 4 chỗ bắt buộc phải là thuộc tính SVG.
      ============================================================ */
   :root{
-    /* --- Màu nhấn: ĐỎ LOGO FLIC. Cả app chỉ một màu nhấn. --- */
-    --son:#9E2B25; --son-dam:#7E211C; --son-nen:#FBF2F1; --son-vien:#EBD2D0;
+    /* --- Màu nhấn: XANH FLIC. Cả app chỉ một màu nhấn. --- */
+    --son:#0093D4; --son-dam:#0071A6; --son-nen:#EAF7FD; --son-vien:#CDEBF8;
     /* Tên cũ trỏ sang màu mới — mã cũ dùng var(--primary) vẫn chạy */
     --primary:var(--son); --primary-dark:var(--son-dam);
-    --primary-050:var(--son-nen); --primary-100:#F0DAD8;
+    --primary-050:var(--son-nen); --primary-100:var(--son-vien);
     --logo-do:#D8232A;
 
-    /* --- Giấy, mực, viền (tông ấm) --- */
-    --giay:#FFFFFF; --nen:#F6F5F2;
-    --muc:#23201C; --muc-2:#6B655C; --muc-3:#9A9389;
-    --vien:#E4E0D8; --vien-2:#EFECE6;
+    /* --- Giấy, mực, viền --- */
+    --giay:#FFFFFF; --nen:#F5F7FA;
+    --muc:#121923; --muc-2:#475467; --muc-3:#8793A6;
+    --vien:#E4E8F0; --vien-2:#EEF1F6;
     /* Tên cũ */
-    --bg:var(--nen); --card:var(--giay); --surface-2:#FBFAF7;
+    --bg:var(--nen); --card:var(--giay); --surface-2:#F9FAFC;
     --text:var(--muc); --text-2:var(--muc-2); --muted:var(--muc-3);
     --border:var(--vien); --border-2:var(--vien-2);
-    --vien-dam:#D6D1C7;   /* viền khi rê chuột */
-    --nen-2:#F0EEE9;      /* nền chìm: thanh seg, cột kanban, thanh đo */
-    --muc-4:#C4BEB3;      /* chữ rất mờ: ô trống */
+    --vien-dam:#CBD3E0;   /* viền khi rê chuột */
+    --nen-2:#EEF1F6;      /* nền chìm: thanh seg, cột kanban, thanh đo */
+    --muc-4:#C7CED9;      /* chữ rất mờ: ô trống */
 
     /* --- Thang mức nặng nhẹ — CHỈ dùng cho dữ liệu, không trang trí --- */
-    --m1:#9E2B25;  /* gấp · quá hạn · còn nợ */
+    --m1:#C0343A;  /* gấp · quá hạn · còn nợ */
     --m2:#C2703A;  /* cần chú ý */
     --m3:#D9AE5F;  /* theo dõi */
-    --m4:#B9B2A5;  /* không gấp */
-    --m5:#5B7A5E;  /* đã xong */
+    --m4:#A9B2C0;  /* không gấp */
+    --m5:#2E8B63;  /* đã xong */
 
     /* --- Trạng thái: tên cũ, giá trị lấy từ thang mức --- */
-    --danger:var(--m1); --danger-bg:#FBF2F1; --danger-br:#EBD2D0; --danger-ink:#8A251F;
-    --warn:var(--m2);   --warn-bg:#FBF4EE;   --warn-br:#EDDBCA;   --warn-ink:#8A4A1E;
-    --ok:var(--m5);     --ok-bg:#F1F5F0;     --ok-br:#D3DED1;     --ok-ink:#44603F;
-    --info:#4A6B8A;     --info-bg:#F2F5F8;   --info-br:#D5DFE8;   --info-ink:#38556F;
+    --danger:var(--m1); --danger-bg:#FDF2F2; --danger-br:#F3D3D4; --danger-ink:#A52A30;
+    --warn:var(--m2);   --warn-bg:#FDF5EE;   --warn-br:#EFDCCB;   --warn-ink:#8A4A1E;
+    --ok:var(--m5);     --ok-bg:#EEF8F3;     --ok-br:#C6E5D6;     --ok-ink:#1F6E4C;
+    --info:#2A6FD6;     --info-bg:#EEF4FD;   --info-br:#C9DDF8;   --info-ink:#1F5BB5;
 
     /* --- Sáu màu biểu đồ — thứ tự cố định c1→c6, không xoay vòng.
            Bộ này đã chạy bộ kiểm màu cả cặp liền kề lẫn mọi cặp. --- */
@@ -762,7 +771,7 @@
            Chỉ lớp nổi hẳn lên (hộp bật, thông báo) mới có bóng. --- */
     --sh-1:none;
     --sh-2:none;
-    --sh-3:0 8px 28px rgba(35,32,28,.14);
+    --sh-3:0 8px 28px rgba(16,30,54,.14);
     --sh-up:none;
     --ease:cubic-bezier(.4,0,.2,1);
     font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -827,6 +836,15 @@
     font-size:12.5px;font-weight:600;margin:0 5px 5px 0;}
   .chip-kh.da{background:var(--ok-bg);border-color:var(--ok-br);color:var(--ok-ink);}
 
+  /* Ô tích chọn thứ học của lớp */
+  .chip-thu{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--vien);
+    border-radius:7px;padding:7px 11px;font-size:12.5px;font-weight:600;color:var(--muc-2);
+    background:var(--giay);cursor:pointer;user-select:none;
+    transition:background .16s var(--ease), border-color .16s var(--ease), color .16s var(--ease);}
+  .chip-thu:hover{border-color:var(--vien-dam);}
+  .chip-thu.on{border-color:var(--son);background:var(--son-nen);color:var(--son-dam);}
+  .chip-thu input{width:auto;margin:0;flex-shrink:0;accent-color:var(--son);}
+
   /* Khối "đang chờ xếp lớp" trong hồ sơ học viên */
   .khoi-cho{background:var(--warn-bg);border:1px solid var(--warn-br);border-radius:9px;
     padding:10px 12px;margin-top:9px;}
@@ -861,7 +879,7 @@
     font-size:13.5px;background:var(--giay);color:var(--muc);font-family:inherit;outline:none;
     transition:border-color .18s var(--ease), box-shadow .18s var(--ease);}
   input:focus,select:focus,textarea:focus{border-color:var(--son);
-    box-shadow:0 0 0 3px rgba(158,43,37,.13);}
+    box-shadow:0 0 0 3px rgba(0,147,212,.15);}
   textarea{min-height:70px;resize:vertical;}
   button{cursor:pointer;font-family:inherit;}
   .btn{padding:9px 14px;border-radius:7px;border:1px solid var(--vien);background:var(--giay);
@@ -871,10 +889,10 @@
   .btn:active{background:var(--nen-2);}
   .btn-primary{background:var(--son);color:#fff;border-color:var(--son);}
   .btn-primary:hover{background:var(--son-dam);border-color:var(--son-dam);}
-  /* Nút xoá KHÔNG tô đặc: nút chính và nút xoá cùng đỏ thì dễ bấm nhầm.
-     Việc xoá phải cần chủ ý, không được là thứ sáng nhất trên màn. */
-  .btn-danger{background:var(--giay);color:var(--danger-ink);border-color:var(--danger-br);}
-  .btn-danger:hover{background:var(--danger-bg);border-color:var(--danger);}
+  /* Nút chính xanh, nút xoá đỏ — hai màu khác nhau nên không bấm nhầm.
+     (Bản V1.27.0 từng phải làm nút xoá rỗng ruột vì lúc đó cả hai cùng đỏ.) */
+  .btn-danger{background:var(--danger);color:#fff;border-color:var(--danger);}
+  .btn-danger:hover{background:var(--danger-ink);border-color:var(--danger-ink);}
   .btn-sm{padding:5px 10px;font-size:12px;}
   .btn-block{width:100%;}
 
@@ -946,6 +964,47 @@
   .khoi .kdong .kn{margin-left:auto;font-weight:650;font-size:15px;font-variant-numeric:tabular-nums;}
   .khoi .kdong .kmui{color:var(--muc-3);transition:color .18s var(--ease);}
   .khoi .kdong:hover .kmui{color:var(--son);}
+
+  /* ---------- Lưới lịch buổi học ---------- */
+  .lb-lich{width:100%;border-collapse:collapse;table-layout:fixed;}
+  .lb-lich th{font-size:11px;color:var(--muc-3);font-weight:600;text-align:center;
+    padding:0 0 6px;border-bottom:0;background:transparent;}
+  .lb-lich td{border:1px solid var(--vien-2);padding:7px 4px;text-align:center;
+    vertical-align:top;height:50px;}
+  .lb-lich td.off{background:var(--surface-2);}
+  .lb-ng{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums;}
+  .lb-bs{font-size:10.5px;color:var(--muc-3);margin-top:2px;line-height:1.3;}
+  .lb-lich td.xong{background:var(--ok-bg);}
+  .lb-lich td.xong .lb-ng,.lb-lich td.xong .lb-bs{color:var(--ok-ink);}
+  .lb-lich td.toi{box-shadow:inset 0 0 0 2px var(--son);}
+  .lb-lich td.toi .lb-ng{color:var(--son-dam);}
+  .lb-lich td.toi .lb-bs{color:var(--son-dam);font-weight:600;}
+  .lb-lich td.nghi{background:var(--warn-bg);}
+  .lb-lich td.nghi .lb-ng{color:var(--warn-ink);text-decoration:line-through;}
+  .lb-lich td.nghi .lb-bs{color:var(--warn-ink);}
+  .lb-lich td.bu{background:var(--info-bg);}
+  .lb-lich td.bu .lb-ng,.lb-lich td.bu .lb-bs{color:var(--info-ink);}
+  .lb-lich td.thi{background:var(--danger-bg);}
+  .lb-lich td.thi .lb-ng{color:var(--danger-ink);}
+  .lb-lich td.thi .lb-bs{color:var(--danger-ink);font-weight:600;}
+  .lb-chu{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muc-3);margin-top:9px;}
+  .lb-chu s{display:inline-block;width:11px;height:11px;border-radius:3px;
+    vertical-align:-1px;margin-right:5px;text-decoration:none;}
+  .lb-chu .s-xong{background:var(--ok-bg);border:1px solid var(--ok-br);}
+  .lb-chu .s-toi{background:var(--giay);border:2px solid var(--son);}
+  .lb-chu .s-nghi{background:var(--warn-bg);border:1px solid var(--warn-br);}
+  .lb-chu .s-bu{background:var(--info-bg);border:1px solid var(--info-br);}
+  .lb-chu .s-thi{background:var(--danger-bg);border:1px solid var(--danger-br);}
+  .lb-day{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
+  .lb-day em{font-style:normal;font-size:11.5px;font-variant-numeric:tabular-nums;
+    border:1px solid var(--vien);border-radius:5px;padding:3px 7px;
+    color:var(--muc-2);background:var(--giay);}
+  .lb-day em.q{background:var(--ok-bg);border-color:var(--ok-br);color:var(--ok-ink);}
+  .lb-day em.n{border-color:var(--son);color:var(--son-dam);font-weight:650;}
+  .lb-day em.ng{background:var(--warn-bg);border-color:var(--warn-br);
+    color:var(--warn-ink);text-decoration:line-through;}
+  .lb-day em.b{background:var(--info-bg);border-color:var(--info-br);color:var(--info-ink);}
+  @media(max-width:760px){ .lb-lich td{height:auto;padding:5px 2px;} .lb-ng{font-size:11.5px;} }
 
   /* ---------- Biểu đồ ---------- */
   .bd-wrap{position:relative;}
@@ -1040,7 +1099,7 @@
     opacity:0;transition:.25s var(--ease);max-width:90%;text-align:center;box-shadow:var(--sh-3);}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  .modal-bg{position:fixed;inset:0;background:rgba(35,32,28,.42);z-index:150;display:flex;
+  .modal-bg{position:fixed;inset:0;background:rgba(15,20,28,.45);z-index:150;display:flex;
     align-items:flex-end;justify-content:center;
     -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);}
   .modal{background:var(--giay);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;
@@ -1073,8 +1132,8 @@
   .lc-ngay{background:var(--surface-2);font-weight:650;text-align:left !important;white-space:nowrap;}
   .lc-ca{background:var(--surface-2);text-align:left !important;white-space:nowrap;
     font-size:11.5px;color:var(--muc-3);}
-  .lc-toi td{background:#FBF7F0;}
-  .lc-toi .lc-ca{background:#F7F1E7;}
+  .lc-toi td{background:var(--warn-bg);}
+  .lc-toi .lc-ca{background:var(--warn-br);}
   .lc-sua{cursor:pointer;transition:background .14s var(--ease);}
   .lc-sua:hover{background:var(--son-nen) !important;}
   .lc-tong td{background:var(--surface-2);font-weight:650;}
@@ -1289,13 +1348,30 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.27.0';
+const PHIEN_BAN = 'V1.28.0';
 const NGAY_PHIEN_BAN = '26/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.28.0', ngay:'26/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Ô Lịch học của lớp trước đây là ô GÕ CHỮ TỰ DO, và phần mềm đoán thứ học bằng cách nhặt các chữ số trong câu. Gõ "Thứ 2 - 4 - 6" thì may mà đúng, nhưng gõ "Thứ 2 đến thứ 6" là nó hiểu thành Thứ 2 và Thứ 6, mất ba buổi giữa; gõ "Hai - Tư - Sáu" thì ra rỗng và lớp biến mất khỏi thời khoá biểu. Vì không chắc được thứ nên phần mềm không thể tính ra ngày cụ thể của từng buổi. Nay thay bằng bảy ô tích, máy không phải đoán nữa. Đây là lần thứ ba cùng một bài học: cái gì máy phải tính thì không được để người gõ chữ tự do.'},
+    {loai:'Mới', nd:'Lịch buổi học được TÍNH ra từ ngày khai giảng, các thứ đã tích và số buổi kế hoạch. Không sinh thêm bản ghi nào xuống cơ sở dữ liệu — sinh sẵn thì chúng trộn vào sổ điểm danh và mọi con số đã học bao nhiêu trên bao nhiêu buổi sẽ sai. Buổi đã dạy vẫn đọc từ sổ điểm danh như cũ. Mọi màn cần ngày của từng buổi đều gọi chung một cửa, không ai tự cộng ngày lấy.'},
+    {loai:'Mới', nd:'Mục Học vụ → Lịch buổi học, hai cách xem. Lịch tháng vẽ từng lớp theo tuần, phân biệt buổi đã dạy, buổi tiếp theo, buổi nghỉ, ngày học bù và ngày thi. Dải ngày liệt kê gọn nhiều lớp cùng lúc cho Tuyển sinh xem lướt khi đang nghe máy. Ngày thi lấy thẳng từ kỳ thi lớp đã gán ở V1.26.0, không phải nhập lại.'},
+    {loai:'Mới', nd:'Lớp đang học dở thì màn nhắc thẳng: lớp đã học mấy buổi, học viên vào bây giờ là bỏ lỡ mấy buổi, và nêu tên lớp cùng nhóm sắp khai giảng để tư vấn thay. Đây chính là câu chuyên viên Tuyển sinh đang phải tự nhẩm mỗi lần nghe máy.'},
+    {loai:'Mới', nd:'Báo nghỉ một buổi. Buổi nghỉ GIỮ NGUYÊN chỗ trong lịch và các buổi sau không dồn lên — Ban lãnh đạo quyết ngày 26/10/2026 — đồng thời mang theo ngày học bù. Bắt buộc ghi lý do, chặn ngày bù đặt trước ngày nghỉ, chặn báo nghỉ buổi đã có điểm danh, và tính lại ngày kết thúc ngay lúc ghi. Mọi chốt chặn nằm ở hàm ghi chứ không chỉ ở chỗ ẩn nút.'},
+    {loai:'Mới', nd:'Ngày kết thúc lớp nay do máy tính ra, không gõ tay nữa. Gõ tay thì mỗi lần nghỉ bù là ngày kết thúc sai mà không ai nhớ sửa lại.'},
+    {loai:'Mới', nd:'Nút In lịch gửi học viên, in ra đúng dạng bảng theo thứ mà Tuyển sinh đang phải gõ tay trong Excel rồi gửi Zalo, kèm dòng lịch thi dự kiến. Ngày nào trong tuần không có buổi thì để dấu gạch chéo, giống đúng mẫu đang dùng.'},
+    {loai:'Mới', nd:'Màn Học bù hiện thêm khối buổi CẢ LỚP nghỉ mà chưa hẹn ngày bù. Buổi cả lớp nghỉ không được chép sang sổ học bù của từng học viên — đó là sổ bù cho người vắng lẻ, trộn vào nhau thì con số học viên vắng chưa sắp bù sẽ sai. Màn đọc thẳng từ bản ghi lớp.'},
+    {loai:'Mới', nd:'Lớp chưa tích thứ, chưa có ngày khai giảng hoặc chưa khai số buổi thì màn nêu đích danh tên lớp và nói rõ phần mềm KHÔNG đoán từ ô chữ cũ. Đoán sai thì Tuyển sinh đọc nhầm ngày cho học viên, thà báo còn hơn im lặng chạy sai. Lớp cũ mở form ra vẫn được tích tạm theo cách hiểu cũ, kèm cảnh báo soát lại trước khi lưu.'},
+    {loai:'Cải tiến', nd:'Thêm phép phân tích tĩnh thứ 22 và bộ kiểm thử thứ 25 với 95 phép thử. Đã chạy 15 phép thử đột biến — cố tình làm hỏng từng luật rồi kiểm xem có bắt được không — cả 15 đều bị bắt.'},
+  ]},
+  {v:'V1.27.1', ngay:'26/10/2026', muc:[
+    {loai:'Giao diện', nd:'Trả màu nhấn về XANH FLIC #0093D4. Bản V1.27.0 thử đỏ logo phủ cả thanh tiêu đề và thanh mục; Ban lãnh đạo phản hồi nhìn lâu nhức mắt. Đỏ là màu mạnh, phủ một mảng lớn thì đúng là quá nhiều. Giữ nguyên phần làm phẳng của V2 — bỏ bóng đổ, bỏ nhấc 2px khi rê chuột, bỏ nền chuyển sắc, rút ngắn hiệu ứng — vì đó mới là phần làm giao diện trông gọn, không phải màu.'},
+    {loai:'Giao diện', nd:'Đỏ nay chỉ còn mang đúng một nghĩa: CÓ VẤN ĐỀ. Còn nợ, quá hạn, nút xoá. Nút xoá trở lại tô đặc đỏ vì nút chính nay là xanh, không còn nhầm được nữa.'},
+    {loai:'Cải tiến', nd:'Gom toàn bộ màu về một chỗ. Trước đây rải rác 117 mã màu viết cứng trong mã dựng màn, nên đổi bảng màu phải lục khắp file và chắc chắn sót. Nay tất cả đều trỏ về khối biến đầu file; cả thân file chỉ còn 13 mã màu cứng, gồm 6 màu biểu đồ và 4 chỗ bắt buộc phải là thuộc tính SVG. Lần đổi màu sau chỉ sửa một chỗ.'},
+  ]},
   {v:'V1.27.0', ngay:'26/10/2026', muc:[
     {loai:'Giao diện', nd:'Giao diện V2 — đợt vỏ. Thay trọn khối CSS theo bản thiết kế Ban lãnh đạo duyệt ngày 21/10/2026. Toàn bộ tên biến và tên class giữ nguyên như V1.26.0, chỉ đổi giá trị, nên 2.957 chỗ dùng class và hơn 600 chỗ dùng var() trong mã dựng màn không phải sửa một dòng nào. Đợt này KHÔNG đụng một dòng JavaScript — nghiệp vụ không thể sai theo.'},
-    {loai:'Giao diện', nd:'Màu nhấn đổi sang đỏ logo FLIC #9E2B25, cả app chỉ một màu nhấn. Nền giấy ấm #F6F5F2, mực #23201C, viền #E4E0D8. Trạng thái lấy từ thang mức m1 đến m5 thay vì năm bộ màu rời rạc. Sáu màu biểu đồ đổi sang bộ đã qua bộ kiểm màu cả cặp liền kề lẫn mọi cặp — bộ cũ trượt ở cặp hồng với xanh lá khi mù màu đỏ–lục.'},
+    {loai:'Giao diện', nd:'Màu nhấn đổi sang đỏ logo FLIC var(--m1), cả app chỉ một màu nhấn. Nền giấy ấm var(--nen), mực var(--muc), viền var(--vien). Trạng thái lấy từ thang mức m1 đến m5 thay vì năm bộ màu rời rạc. Sáu màu biểu đồ đổi sang bộ đã qua bộ kiểm màu cả cặp liền kề lẫn mọi cặp — bộ cũ trượt ở cặp hồng với xanh lá khi mù màu đỏ–lục.'},
     {loai:'Giao diện', nd:'Nút xoá KHÔNG còn tô đặc mà chuyển sang nền trắng viền đỏ. Bản thiết kế đặt màu nhấn và màu "còn nợ / quá hạn" là cùng một màu đỏ; nếu giữ nguyên thì nút Lưu và nút Xoá nhìn y hệt nhau. Việc xoá phải cần chủ ý, không được là thứ sáng nhất trên màn. Đây là chỗ duy nhất đợt này làm khác bản thiết kế, và làm khác có lý do.'},
     {loai:'Giao diện', nd:'Bỏ hiệu ứng nhấc lên 2px khi rê chuột ở tám chỗ (thẻ chỉ số, nút, thẻ kanban, ô ca, nút điểm danh, hai thanh mục). Rê chuột là chuyện xảy ra hàng trăm lần một giờ; bảng số liệu nhấp nhổm theo con trỏ thì đọc số chậm hơn. Nay chỉ đổi nền và viền — vẫn biết con trỏ ở dòng nào mà bảng đứng yên.'},
     {loai:'Giao diện', nd:'Bỏ đổ bóng nhiều lớp dưới mọi thẻ, thay bằng viền mảnh 1px. Bóng ở khắp nơi thì không còn phân biệt được cái nào nổi lên thật. Chỉ hộp bật, thông báo và thẻ đăng nhập còn bóng vì chúng nổi hẳn trên lớp khác. Bỏ luôn nền chuyển sắc ở thanh tiêu đề, nút chính và màn đăng nhập.'},
@@ -2032,6 +2108,8 @@ const QUYEN_GHI = {
   luuChoXep:'suaHocVien', xoaChoXep:'suaHocVien',
   luuGiaoVien:'quanLyGiaoVien', xoaGiaoVien:'quanLyGiaoVien',
   luuHocBu:'quanLyHocBu', doiTrangThaiHocBu:'quanLyHocBu',
+  /* Báo nghỉ một buổi là sửa lịch lớp, nên đi cùng quyền sửa lớp */
+  luuNghiBuoi:'suaLop', boNghiBuoi:'suaLop',
   luuPhanAnh:'tiepNhanPhanAnh',
   luuXuLyPhanAnh:'xuLyPhanAnh', chuyenBGD:'xuLyPhanAnh',
 
@@ -2336,7 +2414,7 @@ function hienLoiMoTrucTiep(){
   $('bootNoiDung').textContent = '';
   $('bootLoi').innerHTML =
     '<div style="border:1px solid var(--warn);background:var(--warn-bg);border-radius:10px;padding:12px 14px;">'
-    + '<div style="color:#8A4A1E;font-weight:700;margin-bottom:8px;">Đang mở file trực tiếp từ máy tính</div>'
+    + '<div style="color:var(--warn-ink);font-weight:700;margin-bottom:8px;">Đang mở file trực tiếp từ máy tính</div>'
     + '<div class="small" style="line-height:1.7;">'
     + 'Trình duyệt chặn kết nối tới máy chủ dữ liệu khi trang được mở bằng đường dẫn ổ đĩa. '
     + 'Phần mềm cần được đặt trên GitHub Pages rồi mở bằng địa chỉ bắt đầu bằng <b>https://</b>, '
@@ -2398,7 +2476,7 @@ function hienLoiKetNoi(e, buoc){
   }
 
   $('bootLoi').innerHTML =
-    '<div style="border:1px solid var(--danger);background:#FBF2F1;border-radius:10px;padding:12px 14px;">'
+    '<div style="border:1px solid var(--danger);background:var(--danger-bg);border-radius:10px;padding:12px 14px;">'
     + '<div style="color:var(--danger);font-weight:700;margin-bottom:8px;">' + esc(tieuDe) + '</div>'
     + huongDan
     + '<div class="small muted" style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">'
@@ -2442,7 +2520,7 @@ function moHoSoCuaToi(){
   const macDinh = (currentUser.password==='123456');
   openModal(
     '<h3>Hồ sơ của tôi</h3>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);">'
     +'<div class="small"><b>Họ tên:</b> '+esc(currentUser.hoTen)+'</div>'
     +'<div class="small"><b>Vị trí:</b> '+esc(currentUser.maViTri+' · '+tenViTri(currentUser.maViTri))+'</div>'
     +'<div class="small"><b>Báo cáo trực tiếp:</b> '+esc(nguoiTheoViTri(baoCaoCho(currentUser.maViTri))
@@ -2452,7 +2530,7 @@ function moHoSoCuaToi(){
       + esc(PERM_LIST.filter(function(p){ return currentUser.quyen&&currentUser.quyen[p.key]; })
             .map(function(p){ return p.label; }).join(', ') || 'chưa có quyền nào')+'</div>'
     +'</div>'
-    +(macDinh? '<div class="card" style="border-color:var(--danger);background:#FBF2F1;margin-bottom:10px;">'
+    +(macDinh? '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);margin-bottom:10px;">'
        +'<div class="small" style="color:var(--danger);"><b>⚠️ Bạn đang dùng mật khẩu mặc định 123456.</b><br>'
        +'Hệ thống chứa dữ liệu học viên và tài chính — hãy đổi mật khẩu ngay.</div></div>' : '')
     +'<div class="small muted" style="font-weight:700;margin-bottom:4px;">Đổi mật khẩu</div>'
@@ -2808,6 +2886,7 @@ const SECTIONS = {
      bốn năm mục đầu, sáu mục sau phải nhớ mới biết là có. */
   hocVu:    [{k:'lop',ten:'Danh mục lớp',nhom:'Lớp & lịch'},
              {k:'tkb',ten:'Thời khoá biểu',nhom:'Lớp & lịch'},
+             {k:'lichBuoi',ten:'Lịch buổi học',nhom:'Lớp & lịch'},
              {k:'diemDanh',ten:'Điểm danh',nhom:'Lớp & lịch'},
              {k:'hocBu',ten:'Học bù',nhom:'Lớp & lịch'},
              {k:'hocVien',ten:'Học viên',nhom:'Học viên'},
@@ -2951,7 +3030,7 @@ function emptyBox(ico, txt){ return '<div class="empty"><div class="ico">'+ico+'
    trượt ở cặp hồng với xanh lá khi mù màu đỏ–lục (ΔE 6,1 < 8).
    Cấp theo thứ tự cố định, KHÔNG xoay vòng. */
 const MAU_BD = ['#00579f','#963b00','#00955f','#d0a500','#ff7fb1','#3ebcff'];
-const MAU_KHAC = '#B9B2A5';
+const MAU_KHAC = '#A9B2C0';
 
 /* Gộp các nhóm thứ 7 trở đi thành "Khác" */
 function gomNhom(muc, toiDa){
@@ -4057,6 +4136,7 @@ function viewHocVu(){
   if(sec==='taiPhi') return viewTaiPhi();
   if(sec==='giaoVien') return viewGiaoVien();
   if(sec==='buoiDay')  return viewBuoiDayGV();
+  if(sec==='lichBuoi') return viewLichBuoiHoc();
   if(sec==='hocBu') return viewHocBu();
   if(sec==='tkb') return viewThoiKhoaBieu();
   if(sec==='phanAnh') return viewPhanAnh();
@@ -4113,7 +4193,9 @@ function viewDanhMucLop(){
   return h;
 }
 
+let lopDangSuaId = '';
 function formLop(id){
+  lopDangSuaId = id || '';
   const l = id? lopList.find(function(x){ return x.id===id; }) : null;
   const v = l || {trangThai:'Đang học', soBuoiKH:16, sucChua:15};
   const opts = (settings.nhomCT||[]).map(function(n){ return '<option '+(v.nhomCT===n?'selected':'')+'>'+esc(n)+'</option>'; }).join('');
@@ -4121,9 +4203,11 @@ function formLop(id){
     '<h3>'+(l?'Sửa lớp':'Mở lớp mới')+'</h3>'
     +'<label>Nhóm chương trình</label><select id="mLopNhom"><option value="">— chọn —</option>'+opts+'</select>'
     +'<label>Mã lớp</label><input id="mLopMa" value="'+esc(v.maLop||'')+'" placeholder="VD: SM1.2">'
-    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày khai giảng</label><input type="date" id="mLopKG" value="'+esc(v.ngayKG||'')+'"></div>'
-    +'<div style="flex:1;"><label>Ngày kết thúc</label><input type="date" id="mLopKT" value="'+esc(v.ngayKT||'')+'"></div></div>'
-    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Số buổi kế hoạch</label><input type="number" id="mLopSoBuoi" value="'+esc(v.soBuoiKH||16)+'"></div>'
+    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày khai giảng</label><input type="date" id="mLopKG" value="'+esc(v.ngayKG||'')+'" onchange="capNhatNgayKT()"></div>'
+    +'<div style="flex:1;"><label>Ngày kết thúc <span class="muted" style="font-weight:400;">— máy tính</span></label>'
+      +'<input type="date" id="mLopKT" value="'+esc(v.ngayKT||'')+'" readonly '
+      +'style="background:var(--surface-2);color:var(--muc-2);"></div></div>'
+    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Số buổi kế hoạch</label><input type="number" id="mLopSoBuoi" value="'+esc(v.soBuoiKH||16)+'" onchange="capNhatNgayKT()"></div>'
     +'<div style="flex:1;"><label>Học phí khoá</label><input type="number" id="mLopHocPhi" value="'+esc(v.hocPhi||'')+'" placeholder="theo biểu giá"></div></div>'
     +'<label>Sách của lớp</label><select id="mLopSach">'
       +'<option value=""'+(!v.sachId?' selected':'')+'>— lớp này không dùng sách —</option>'
@@ -4145,7 +4229,8 @@ function formLop(id){
     +'</div>'
     +'<div class="small muted">Điền sẵn theo tham số chung, sửa riêng cho lớp này được. Aptis thường 15–20, Cambridge thiếu nhi 12–20.</div>'
     +'<label>Cấp độ theo biểu giá</label><input id="mLopCapDo" value="'+esc(v.capDo||'')+'" placeholder="VD: Super Minds 2">'
-    +'<label>Lịch học</label><input id="mLopLich" value="'+esc(v.lichHoc||'')+'" placeholder="VD: Thứ 2 - 4">'
+    +'<label>Học vào các thứ</label>'
+    +oTichThuLop(v)
     +'<label>Giờ học</label><input id="mLopGio" value="'+esc(v.gioHoc||'')+'" placeholder="VD: 18:00 - 19:30">'
     +'<label>Giáo viên phụ trách</label>'
     +(giaoVienList.length
@@ -4174,6 +4259,48 @@ function doiGvLop(){
   const g = giaoVienList.find(function(x){ return x.id===el.value; });
   if(g && $('mLopGV')) $('mLopGV').value = g.tenGoi || g.hoTen;
 }
+/* ---------- Ô tích chọn thứ học ----------
+   Trước đây lịch học là một ô gõ chữ và phần mềm đoán thứ bằng cách nhặt
+   các chữ số trong câu: "Thứ 2 đến thứ 6" bị hiểu thành Thứ 2 và Thứ 6,
+   mất ba buổi giữa. Nay người dùng tích, máy không phải đoán. */
+function oTichThuLop(v){
+  const dang = thuCuaLop(v);   /* lớp cũ: suy tạm từ ô chữ để người soát lại */
+  const suyTam = !lopDaTichThu(v) && dang.length > 0;
+  let h = '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+  [2,3,4,5,6,7,8].forEach(function(t){
+    h += '<label class="chip-thu' + (dang.indexOf(t)>=0 ? ' on' : '') + '">'
+       + '<input type="checkbox" id="mLopThu' + t + '" ' + (dang.indexOf(t)>=0 ? 'checked' : '')
+       + ' onchange="doiOTichThu(this)">' + TEN_THU[t] + '</label>';
+  });
+  h += '</div>';
+  if(suyTam) h += '<div class="small" style="color:var(--warn-ink);margin-top:6px;">'
+    + 'Lớp này trước đây chỉ có ô chữ «' + esc(v.lichHoc||'') + '». Phần mềm đã tích tạm theo '
+    + 'cách hiểu của nó — <b>soát lại cho đúng rồi mới lưu</b>.</div>';
+  else if(!dang.length) h += '<div class="small muted" style="margin-top:6px;">'
+    + 'Chưa tích thứ nào thì lớp không lên được lịch buổi học, và Tuyển sinh không có ngày để tư vấn.</div>';
+  return h;
+}
+function thuDaTich(){
+  const ra = [];
+  [2,3,4,5,6,7,8].forEach(function(t){ const o = $('mLopThu'+t); if(o && o.checked) ra.push(t); });
+  return ra;
+}
+function doiOTichThu(o){
+  if(o && o.parentNode && o.parentNode.classList) o.parentNode.classList.toggle('on', o.checked);
+  capNhatNgayKT();
+}
+/* Ngày kết thúc do MÁY tính, giữ lại buổi nghỉ đã khai để tính cho đúng */
+function ngayKTChoForm(){
+  const v2 = lopDangSuaId ? (lopList.find(function(x){ return x.id===lopDangSuaId; }) || {}) : {};
+  const tam = {id:v2.id||'', cacThu:thuDaTich(), ngayKG:($('mLopKG')?$('mLopKG').value:''),
+    soBuoiKH:Number($('mLopSoBuoi')?$('mLopSoBuoi').value:0)||0, buoiNghi:v2.buoiNghi||[]};
+  return ngayKetThucTinh(tam) || (v2.ngayKT || '');
+}
+function capNhatNgayKT(){
+  const o = $('mLopKT'); if(!o) return;
+  o.value = ngayKTChoForm();
+}
+
 function luuLop(id){
   if(!canQuyen('luuLop')) return;
   const maLop=$('mLopMa').value.trim(), ngayKG=$('mLopKG').value;
@@ -4182,7 +4309,7 @@ function luuLop(id){
   const data={
     nhomCT:$('mLopNhom').value, maLop:maLop,
     idTheoDoi: maLop+'-'+(ngayKG? ngayKG.replace(/-/g,''):''),
-    ngayKG:ngayKG, ngayKT:$('mLopKT').value,
+    ngayKG:ngayKG, ngayKT:ngayKTChoForm(),
     soBuoiKH:Number($('mLopSoBuoi').value)||0,
     hocPhi:Number($('mLopHocPhi').value)||0,
     sachId: $('mLopSach') ? $('mLopSach').value : '',
@@ -4190,7 +4317,9 @@ function luuLop(id){
     siSoToiThieu:Number($('mLopSSMin').value)||0,
     siSoChuan:Number($('mLopSSChuan').value)||0,
     siSoToiDa:Number($('mLopSSMax').value)||0,
-    lichHoc:$('mLopLich').value.trim(), gioHoc:$('mLopGio').value.trim(),
+    /* Thứ học là DỮ LIỆU CÓ CẤU TRÚC, không phải câu người gõ. Chuỗi lichHoc
+       chỉ còn để hiện ra màn, luôn sinh lại từ cacThu nên không lệch nhau được. */
+    cacThu:thuDaTich(), lichHoc:chuoiThu(thuDaTich()), gioHoc:$('mLopGio').value.trim(),
     gvId: ($('mLopGvId')? $('mLopGvId').value : ''),
     gvPhuTrach:$('mLopGV').value.trim(), phongHoc:$('mLopPhong').value.trim(),
     trangThai:$('mLopTT').value, ghiChu:$('mLopGC').value.trim(),
@@ -5309,7 +5438,7 @@ function danhDauNhieu(khoaList){
   const dau = cacCb[0];
   openModal('<h3>Đánh dấu đã xử lý</h3>'
     +'<div class="small muted">' + esc(dau.hoTen) + ' · lớp ' + esc(dau.maLop) + '</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
     + '<b>Xử lý ' + cacCb.length + ' vấn đề:</b>'
     + cacCb.map(function(x){ return '<div style="margin-top:3px;">· ' + esc(x.noiDung) + '</div>'; }).join('')
     + '</div></div>'
@@ -6872,7 +7001,7 @@ function inBangDiemDanh(lopId){
     + '.phu{text-align:center;font-size:10pt;font-style:italic;margin:0 0 5mm;}'
     + 'table{width:100%;border-collapse:collapse;}'
     + 'th,td{border:1px solid #000;padding:3px 4px;text-align:center;}'
-    + 'th{background:#F7EBD9;font-weight:700;}'
+    + 'th{background:var(--warn-br);font-weight:700;}'
     + 'td.ten{text-align:left;}'
     + '.cg{margin-top:6mm;display:flex;justify-content:space-between;align-items:flex-start;}'
     + '.cg table{width:auto;} .cg td{text-align:left;padding:3px 10px;}'
@@ -6936,7 +7065,7 @@ function viewDiemDanh(){
     + '<button class="btn btn-sm '+(ddGvDungGio?'btn-primary':'')+'" onclick="setGvGio(true)">Đúng giờ</button>'
     + '<button class="btn btn-sm '+(!ddGvDungGio?'btn-danger':'')+'" onclick="setGvGio(false)">Trễ</button>'
     + '</div></div>'
-    + '<div style="padding:9px 14px;background:#FBFAF7;border-top:1px solid var(--border);border-bottom:1px solid var(--border);" class="row small">'
+    + '<div style="padding:9px 14px;background:var(--surface-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);" class="row small">'
     + '<span class="muted">'+hv.length+' học viên</span>'
     + '<span style="color:var(--ok);font-weight:700;">Có mặt '+cm+'</span>'
     + '<span style="color:var(--warn);font-weight:700;">Phép '+p+'</span>'
@@ -6989,15 +7118,15 @@ function viewDiemDanh(){
     });
     if(!can.length) return '';
     return '<div style="padding:10px 14px;border-top:1px solid var(--border);background:var(--warn-bg);">'
-      + '<div class="small" style="font-weight:700;color:#8A4A1E;margin-bottom:6px;">'
+      + '<div class="small" style="font-weight:700;color:var(--warn-ink);margin-bottom:6px;">'
       + '🔔 Cần báo phụ huynh sau buổi này ('+can.length+' em)</div>'
       + can.map(function(c){
-          return '<div class="small" style="padding:4px 0;color:#8A4A1E;">• <b>'
+          return '<div class="small" style="padding:4px 0;color:var(--warn-ink);">• <b>'
             + esc(c.ten)+'</b> — '+esc(c.ly)+'</div>'; }).join('')
       + '</div>';
   })();
 
-  h += '<div style="padding:12px 14px;border-top:1px solid var(--border);background:#FBFAF7;">'
+  h += '<div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--surface-2);">'
     + '<input id="ddGhiChu" placeholder="Ghi chú buổi học (nếu có)" value="'+esc(ddGhiChu)+'" oninput="setDdGhiChu(this.value)">'
     + '<button class="btn btn-primary btn-block" style="margin-top:9px;" onclick="luuDiemDanh()">💾 Lưu điểm danh buổi '+ddBuoiSo+'</button>'
     + (ddDocId? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaBuoiDiemDanh(\''+ddDocId+'\',this)">🗑 Xoá buổi này</button>' : '')
@@ -7212,11 +7341,11 @@ function viewCongViec(){
    Năm cột đúng năm trạng thái của quy trình. Trạng thái Từ chối và Huỷ
    nằm sau nút lọc để không chiếm chỗ của việc đang chạy. */
 const COT_KANBAN = [
-  {tt:'Mới tạo',       mau:'#B9B2A5'},   /* m4 — không gấp   */
-  {tt:'Đang làm',      mau:'#4A6B8A'},   /* xanh thông tin   */
-  {tt:'Chờ xác nhận',  mau:'#D9AE5F'},   /* m3 — theo dõi    */
-  {tt:'Chờ phê duyệt', mau:'#C2703A'},   /* m2 — cần chú ý   */
-  {tt:'Hoàn thành',    mau:'#5B7A5E'}    /* m5 — đã xong     */
+  {tt:'Mới tạo',       mau:'var(--m4)'},   /* m4 — không gấp   */
+  {tt:'Đang làm',      mau:'var(--info)'},   /* xanh thông tin   */
+  {tt:'Chờ xác nhận',  mau:'var(--m3)'},   /* m3 — theo dõi    */
+  {tt:'Chờ phê duyệt', mau:'var(--m2)'},   /* m2 — cần chú ý   */
+  {tt:'Hoàn thành',    mau:'var(--m5)'}    /* m5 — đã xong     */
 ];
 let cvCheDo = 'kanban', cvHienDong = false, cvCotGap = {};
 function doiCheDoCV(k){ cvCheDo = k; render(); }
@@ -7443,7 +7572,7 @@ function formGiaoViec(dienSan){
     '<h3>Giao việc</h3>'
     +'<div class="small muted">Mọi đầu việc đều được lưu vết: ai giao, ai nhận, lúc nào, sản phẩm gì, đúng hạn hay không.</div>'
     + (vGanVoi
-       ? '<div class="card" style="margin:8px 0;background:#FBFAF7;"><div class="small">'
+       ? '<div class="card" style="margin:8px 0;background:var(--surface-2);"><div class="small">'
          + '<b>Gắn với:</b> ' + esc(vGanVoi.ten)
          + (vGanVoi.moTa ? '<br><span class="muted">' + esc(vGanVoi.moTa) + '</span>' : '')
          + '</div></div>'
@@ -7541,7 +7670,7 @@ function moViec(id){
   let h = '<h3>'+esc(v.tieuDe)+'</h3>';
   h += '<div class="small muted">'+(qt? esc(qt.ma+' · '+qt.ten) : 'Việc tự do')+'</div>';
   h += '<div style="margin:10px 0;">'+flowHtml(v)+'</div>';
-  h += '<div class="card" style="margin:0 0 12px;background:#FBFAF7;">'
+  h += '<div class="card" style="margin:0 0 12px;background:var(--surface-2);">'
     + '<div class="small"><b>Sản phẩm bàn giao:</b> '+esc(v.sanPham||'—')+'</div>'
     + (v.ganVoi
        ? '<div class="small" style="margin-top:4px;"><b>Gắn với:</b> '+esc(v.ganVoi.ten)
@@ -8267,7 +8396,7 @@ function moPhieuIn(id){
   let h = '<h3>'+esc(p.hangMuc)+(p.taiLieuMat?' 🔒':'')+'</h3>'
     + '<div class="small muted">'+esc(p.maPhieu||'')+' · '+esc(p.trangThai)+'</div>';
 
-  h += '<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+  h += '<div class="card" style="margin:10px 0;background:var(--surface-2);">'
     + '<div class="small"><b>Quy cách:</b> '+(xem? esc(p.quyCach||'—') : '<span style="color:var(--danger);">Nội dung bảo mật</span>')+'</div>'
     + '<div class="small"><b>Số lượng:</b> '+fmtTien(p.soLuong)+' '+esc(p.donViTinh||'')+'</div>'
     + '<div class="small"><b>Cần có trước:</b> '+fmtDate(p.ngayCanCo)+'</div>'
@@ -8293,7 +8422,7 @@ function moPhieuIn(id){
     h += '<button class="btn btn-block" style="margin:8px 0;" onclick="formBaoGia(\''+p.id+'\')">+ Thêm báo giá</button>';
 
   if(p.thanhTien){
-    h += '<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+    h += '<div class="card" style="margin:10px 0;background:var(--surface-2);">'
       + '<div class="small"><b>Giá trị phiếu:</b> '+fmtTien(p.thanhTien)+'đ</div>'
       + '<div class="small"><b>Cấp phê duyệt:</b> '+esc(tenViTri(cap))+' — '+esc(nguoiTheoViTri(cap)||'chưa bổ nhiệm')+'</div>'
       + (p.tienCoc? '<div class="small"><b>Đã đặt cọc:</b> '+fmtTien(p.tienCoc)+'đ</div>':'')
@@ -8499,7 +8628,7 @@ function formThanhToanIn(id){
   const no = conNoPhieu(p);
   openModal('<h3>Ghi nhận thanh toán</h3>'
     +'<div class="small muted">'+esc(p.hangMuc)+' · '+esc(p.nhaInChon||'')+'</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);">'
     +'<div class="small">Giá trị phiếu: <b>'+fmtTien(p.thanhTien)+'đ</b></div>'
     +'<div class="small">Đã đặt cọc: '+fmtTien(p.tienCoc||0)+'đ</div>'
     +'<div class="small" style="color:var(--danger);">Còn phải trả: <b>'+fmtTien(no)+'đ</b></div></div>'
@@ -9037,7 +9166,7 @@ function viewLoDuLieu(){
 
   if(trung.length && hasPerm('quanLyLead')){
     h += '<div class="card" style="border-color:var(--warn);">'
-      + '<div class="small" style="color:#8A4A1E;line-height:1.7;">'
+      + '<div class="small" style="color:var(--warn-ink);line-height:1.7;">'
       + '<b>⚠️ ' + trung.length + ' tên đợt bị trùng.</b> '
       + esc(trung.map(function(g){ return g[0].ten + ' (' + g.length + ' đợt)'; }).join(' · '))
       + '<br>Đợt chưa có khách: bấm nút <b>Xoá</b> màu đỏ ở cột Thao tác. '
@@ -9575,8 +9704,8 @@ function formCuocGoi(leadId){
     +'<label>Kết quả cuộc gọi</label>'
     +'<div id="mCGTags" style="display:flex;flex-wrap:wrap;gap:5px;"></div>'
     +'<div id="mCGCanhBao"></div>'
-    +'<div id="mCGKhungGio" style="display:none;background:#F2F5F8;border-radius:8px;padding:10px 12px;margin-top:10px;">'
-      +'<div class="small" style="color:#38556F;">Phụ huynh đợi lớp học vào thứ mấy, giờ nào?</div>'
+    +'<div id="mCGKhungGio" style="display:none;background:var(--info-bg);border-radius:8px;padding:10px 12px;margin-top:10px;">'
+      +'<div class="small" style="color:var(--info-ink);">Phụ huynh đợi lớp học vào thứ mấy, giờ nào?</div>'
       +'<div class="row" style="gap:8px;margin-top:6px;">'
       +'<input id="mCGThu" placeholder="VD: Thứ 3 – Thứ 5" style="flex:1;">'
       +'<input id="mCGGio" placeholder="VD: 18:00 – 19:30" style="flex:1;"></div>'
@@ -9748,7 +9877,7 @@ function viewXepLop(){
   const trungSo = laGv ? [] : phieuTestTrungSo();
   if(trungSo.length){
     h += '<div class="card" style="border-color:var(--warn);">'
-      + '<div class="small" style="color:#8A4A1E;line-height:1.7;">'
+      + '<div class="small" style="color:var(--warn-ink);line-height:1.7;">'
       + '<b>⚠️ ' + trungSo.length + ' số phiếu đang bị trùng:</b> '
       + esc(trungSo.map(function(x){ return x.soPhieu + ' (' + x.ds.length + ' phiếu)'; }).join(' · '))
       + '<br>Phiếu tạo trước ngày 26/09/2026 bị lỗi cấp số. Xoá phiếu tạo thử, '
@@ -10364,7 +10493,7 @@ function inPhieuTest(id, baoGiaId){
     + 'body{font-family:"Times New Roman",serif;font-size:13pt;margin:18mm 15mm;color:#000;}'
     + 'table{width:100%;border-collapse:collapse;margin:6px 0;}'
     + 'td,th{border:1px solid #000;padding:5px 7px;vertical-align:top;}'
-    + 'td.l{width:34%;background:#F0EEE9;}'
+    + 'td.l{width:34%;background:var(--nen-2);}'
     + 'h2{text-align:center;font-size:15pt;margin:4px 0;text-transform:uppercase;}'
     + '.hd{display:flex;justify-content:space-between;font-size:11pt;}'
     + '.sec{font-weight:bold;margin:12px 0 4px;}'
@@ -10373,7 +10502,7 @@ function inPhieuTest(id, baoGiaId){
     + '.ky div{width:32%;}'
     + '.note{font-size:10pt;font-style:italic;margin-top:16px;}'
     + '.tien{text-align:right;white-space:nowrap;}'
-    + 'tr.tong td{font-weight:bold;background:#F0EEE9;}'
+    + 'tr.tong td{font-weight:bold;background:var(--nen-2);}'
     + '.ghi-nho{font-size:10pt;font-style:italic;margin-top:5px;}'
     + '@media print{@page{size:A4;margin:14mm;}}'
     + '</style></head><body>'
@@ -10694,7 +10823,7 @@ function formLuuBaoGia(){
     .sort(function(a,b){ return (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
 
   openModal('<h3>Lưu báo giá cho khách</h3>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);">'
     +'<div class="small"><b>'+esc(bgNhom)+' · '+esc(bgCapDo)+'</b></div>'
     +'<div class="small muted">Học phí '+fmtTien(kq.goc)+'đ'
     +(kq.giam ? ' · '+esc(kq.tenUuDai)+' giảm '+fmtTien(kq.giam)+'đ' : '')+'</div>'
@@ -11028,7 +11157,7 @@ function viewDieuHanhTS(){
     + '<div class="stat" style="cursor:pointer;" onclick="moPheuTu(\'dangTheoDuoi\')">'
       + '<div class="lbl">Đang xử lý</div><div class="val">'+dangXuLy+'</div>'
       + '<div class="small muted">đã gọi, chưa kết luận</div></div>'
-    + '<div class="stat" style="'+(nong?'background:#FBF4EE;':'')+'cursor:pointer;" onclick="moPheuTu(\'nong\')">'
+    + '<div class="stat" style="'+(nong?'background:var(--warn-bg);':'')+'cursor:pointer;" onclick="moPheuTu(\'nong\')">'
       + '<div class="lbl" style="'+(nong?'color:var(--warn);':'')+'">Data nóng</div>'
       + '<div class="val" style="'+(nong?'color:var(--warn);':'')+'">'+nong+'</div>'
       + '<div class="small muted">hẹn học thử hoặc test xong</div></div>'
@@ -11124,7 +11253,7 @@ function viewKichBanMoi(){
 
   /* Hàng chờ soạn câu trả lời */
   if(cho.length){
-    h += '<div class="card" style="border-color:var(--warn);"><h3 style="color:#8A4A1E;">Chờ soạn câu trả lời · '+cho.length+'</h3>'
+    h += '<div class="card" style="border-color:var(--warn);"><h3 style="color:var(--warn-ink);">Chờ soạn câu trả lời · '+cho.length+'</h3>'
       + '<div class="small muted" style="margin-bottom:6px;">Câu phụ huynh đã hỏi mà kịch bản chưa có. '
       + 'Phó Giám đốc soạn và duyệt trước khi tư vấn viên dùng.</div>';
     h += cho.sort(function(a,b){ return (b.soLanHoi||0) - (a.soLanHoi||0); }).map(function(f){
@@ -11179,7 +11308,7 @@ function viewKichBanMoi(){
     h += '</div>';
   }
 
-  h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:#8A4A1E;line-height:1.7;">'
+  h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:var(--warn-ink);line-height:1.7;">'
     + '<b>Chỉ nói theo kịch bản đã duyệt.</b> QĐ 14 cấm tư vấn viên tự cam kết điểm số, kết quả kỳ thi '
     + 'hoặc mức giá ngoài khung. Gặp câu chưa có trong kịch bản thì ghi lại, đừng tự trả lời.</div></div>';
   return h;
@@ -11349,7 +11478,7 @@ function viewHieuQuaNguon(){
       h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;">'
         + '<div style="width:145px;flex-shrink:0;">'+esc(k)+'</div>'
         + '<div style="flex:1;background:var(--bg);border-radius:3px;height:15px;">'
-        + '<div style="width:'+w+'%;height:15px;border-radius:3px;background:'+(nb?'var(--primary)':'#9A9389')+';"></div></div>'
+        + '<div style="width:'+w+'%;height:15px;border-radius:3px;background:'+(nb?'var(--primary)':'var(--muc-3)')+';"></div></div>'
         + '<div style="width:30px;text-align:right;flex-shrink:0;">'+lyDo[k]+'</div></div>';
     });
   }
@@ -11852,7 +11981,7 @@ function veCotChong(cacKy, nhom){
   if(!cacKy.length) return '';
   const W = 640, H = 220, L = 46, R = 12, T = 14, B = 42;
   const vung = W - L - R, cao = H - T - B;
-  const mauNhom = {DNTU: '#4A6B8A', doiTac: '#5B7A5E', tuDo: '#C2703A'};
+  const mauNhom = {DNTU: '#2F6FB4', doiTac: '#2E9E6B', tuDo: '#C2703A'};
   const tenNhom = {DNTU: 'Sinh viên DNTU', doiTac: 'Qua đối tác', tuDo: 'Tự do'};
   const soTheoKy = cacKy.map(function(k){
     const ds = thiSinhCuaKy(k.id).filter(function(t){ return t.ketQua !== 'Hoãn thi'; });
@@ -11870,9 +11999,9 @@ function veCotChong(cacKy, nhom){
   for(let i = 0; i <= 4; i++){
     const y = T + cao - (cao * i / 4);
     sv += '<line x1="' + L + '" y1="' + y + '" x2="' + (W - R) + '" y2="' + y
-      + '" stroke="#E4E0D8" stroke-width="1"/>';
+      + '" stroke="#E4E8F0" stroke-width="1"/>';
     sv += '<text x="' + (L - 6) + '" y="' + (y + 4) + '" text-anchor="end" '
-      + 'font-size="10" fill="#6B655C">' + Math.round(max * i / 4) + '</text>';
+      + 'font-size="10" fill="#475467">' + Math.round(max * i / 4) + '</text>';
   }
   cacKy.forEach(function(k, i){
     const d = soTheoKy[i];
@@ -11889,10 +12018,10 @@ function veCotChong(cacKy, nhom){
     const tong = d.DNTU + d.doiTac + d.tuDo;
     if(tong)
       sv += '<text x="' + (x + rong / 2) + '" y="' + (y - 4) + '" text-anchor="middle" '
-        + 'font-size="10" font-weight="600" fill="#23201C">' + tong + '</text>';
+        + 'font-size="10" font-weight="600" fill="#121923">' + tong + '</text>';
     const nhan = (k.ngayThi || '').slice(8, 10) + '/' + (k.ngayThi || '').slice(5, 7);
     sv += '<text x="' + (L + buoc * i + buoc / 2) + '" y="' + (T + cao + 14)
-      + '" text-anchor="middle" font-size="10" fill="#6B655C">' + nhan + '</text>';
+      + '" text-anchor="middle" font-size="10" fill="#475467">' + nhan + '</text>';
   });
   sv += '</svg>';
   /* Chú giải */
@@ -12125,12 +12254,12 @@ function viewDoiTacKhaoThi(){
     h += '<div class="card"><h3>So sánh đối tác</h3>'
       + '<div class="small muted" style="margin-bottom:8px;">Số thí sinh đưa sang trong kỳ thống kê</div>'
       + veCotNgang(dt, function(x){ return x.tong; },
-          function(x){ return x.tong + ' thí sinh'; }, '#5B7A5E')
+          function(x){ return x.tong + ' thí sinh'; }, 'var(--m5)')
       + '<div class="small muted" style="margin:12px 0 4px;">Tỷ lệ đạt, chỉ tính thí sinh đã có kết quả</div>'
       + veCotNgang(dt.filter(function(x){ return x.tyLeDat !== null; }),
           function(x){ return x.tyLeDat; },
           function(x){ return fmtNum(x.tyLeDat, 0) + '% · ' + x.dat + '/' + (x.dat + x.khongDat); },
-          '#4A6B8A')
+          'var(--info)')
       + '</div>';
   }
 
@@ -12156,7 +12285,7 @@ function viewDoiTacKhaoThi(){
       + '<td style="text-align:right;">' + (tongTS ? fmtNum(c.tong / tongTS * 100, 0) + '%' : '—') + '</td>'
       + '<td style="text-align:right;">' + (daKQ ? fmtNum(c.dat / daKQ * 100, 0) + '%' : '—') + '</td></tr>';
   });
-  h += '<tr style="background:#FBFAF7;font-weight:700;"><td>Tổng</td>'
+  h += '<tr style="background:var(--surface-2);font-weight:700;"><td>Tổng</td>'
     + '<td style="text-align:right;">' + tongTS + '</td><td style="text-align:right;">100%</td>'
     + '<td style="text-align:right;"></td></tr>';
   h += '</tbody></table></div></div>';
@@ -12369,7 +12498,7 @@ function khoiThongKeTien(ky){
       + '<td style="text-align:right;' + (x.conThu ? 'color:var(--danger);' : '') + '">'
       + (x.conThu ? fmtTien(x.conThu) : '—') + '</td></tr>';
   }).join('');
-  h += '<tr style="background:#FBFAF7;font-weight:700;"><td colspan="2">Tổng cộng</td>'
+  h += '<tr style="background:var(--surface-2);font-weight:700;"><td colspan="2">Tổng cộng</td>'
     + '<td style="text-align:right;">' + tk.tongTs + '</td><td></td>'
     + '<td style="text-align:right;">' + fmtTien(tk.tongTien) + '</td>'
     + '<td style="text-align:right;color:var(--ok);">' + fmtTien(tk.daThu) + '</td>'
@@ -13251,7 +13380,7 @@ function formSuaThanhVienHD(kyId, idx){
   const laCamHD = k.loai === 'CAMBRIDGE';
   openModal('<h3>' + (laCamHD ? 'Sửa thành viên đội hỗ trợ' : 'Sửa thành viên hội đồng') + '</h3>'
     +'<div class="small muted">' + esc(k.ten) + ' · ' + fmtDate(k.ngayThi) + '</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
       +'Đang sửa: <b>' + esc(x.hoTen) + '</b> · ' + esc(x.ban || '') + ' · ' + esc(x.nhiemVu || '')
       +' · ' + fmtNum(x.soLuong, 0) + ' ' + esc(x.dvt || 'buổi') + ' × ' + fmtTien(x.donGia) + 'đ'
       +'</div></div>'
@@ -13379,7 +13508,7 @@ function viewThiSinh(){
     + '<div class="stat"><div class="lbl">Sinh viên DNTU</div><div class="val">'+ds.filter(function(t){ return t.loaiTS==='DNTU'; }).length+'</div></div>'
     + '<div class="stat"><div class="lbl">Qua đối tác</div><div class="val">'+ds.filter(function(t){ return !!t.doiTacId; }).length+'</div></div>'
     + '<div class="stat"><div class="lbl">Tự do</div><div class="val">'+ds.filter(function(t){ return t.loaiTS!=='DNTU' && !t.doiTacId; }).length+'</div></div>'
-    + '<div class="stat" style="'+(chuaNop?'background:#FBF4EE;':'')+'"><div class="lbl">Chưa nộp lệ phí</div><div class="val" style="'+(chuaNop?'color:var(--warn);':'')+'">'+chuaNop+'</div></div>'
+    + '<div class="stat" style="'+(chuaNop?'background:var(--warn-bg);':'')+'"><div class="lbl">Chưa nộp lệ phí</div><div class="val" style="'+(chuaNop?'color:var(--warn);':'')+'">'+chuaNop+'</div></div>'
     + oTyLe('Tỷ lệ đạt', coKQ? dat/coKQ*100 : null, 80, {ico:'🎓', le:1})
     + '</div>';
 
@@ -13689,7 +13818,7 @@ function kiemTraKhoaTS(kyId){
   if($('mTSLoai').value!=='DNTU'){ el.innerHTML=''; return; }
   const cb = canhBaoKhoaThiSinh(k, $('mTSKhoa').value);
   el.innerHTML = cb
-    ? '<div style="border:1px solid var(--danger);background:#FBF2F1;border-radius:8px;padding:9px 11px;margin-top:8px;">'
+    ? '<div style="border:1px solid var(--danger);background:var(--danger-bg);border-radius:8px;padding:9px 11px;margin-top:8px;">'
       +'<div class="small" style="color:var(--danger);line-height:1.6;"><b>⚠️ Kiểm tra lại loại kỳ thi</b><br>'+esc(cb)+'</div></div>'
     : '';
 }
@@ -13918,7 +14047,7 @@ function viewPhoi(){
   const tem = phoiList.filter(function(p){ return p.loai==='tem'; })
     .reduce(function(s,p){ return s + (Number(p.tonKho)||0); },0);
   if(phoiList.length && tem < phoi){
-    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:#8A4A1E;">'
+    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:var(--warn-ink);">'
       + '<b>⚠️ Tem bảy màu còn '+tem+', ít hơn số phôi là '+phoi+'.</b> '
       + 'Chứng chỉ phải dán tem mới hợp lệ. Đề nghị cấp thêm tem trước khi in.</div></div>';
   }
@@ -14608,7 +14737,7 @@ function viewHocPhi(){
     + '<div class="stat"><div class="lbl">Sĩ số</div><div class="val">'+t.siSo+'</div></div>'
     + '<div class="stat"><div class="lbl">Học phí dự kiến</div><div class="val" style="font-size:17px;">'+fmtTien(t.duKien)+'</div></div>'
     + '<div class="stat"><div class="lbl">Đã thu</div><div class="val" style="font-size:17px;color:var(--ok);">'+fmtTien(t.daThu)+'</div></div>'
-    + '<div class="stat" style="'+(t.conNo?'background:#FBF4EE;':'')+'"><div class="lbl" style="'+(t.conNo?'color:var(--warn);':'')+'">Còn nợ</div>'
+    + '<div class="stat" style="'+(t.conNo?'background:var(--warn-bg);':'')+'"><div class="lbl" style="'+(t.conNo?'color:var(--warn);':'')+'">Còn nợ</div>'
     + '<div class="val" style="font-size:17px;'+(t.conNo?'color:var(--warn);':'')+'">'+fmtTien(t.conNo)+'</div></div>'
     + '</div>';
 
@@ -15337,7 +15466,7 @@ function formGhiThu(gdId){
   const no = conNoCua(g);
   openModal('<h3>Ghi nhận thu học phí</h3>'
     +'<div class="small muted">'+esc(tenHocVien(g.hocVienId))+' · lớp '+esc(maLopCua(g.lopId))+'</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);">'
     +'<div class="small">Học phí phải đóng: <b>'+fmtTien(hocPhiPhaiDong(g))+'đ</b></div>'
     +'<div class="small">Đã đóng học phí: '+fmtTien(daDongHocPhi(g))+'đ</div>'
     + (daDongKhoanKhac(g)? '<div class="small muted">Khoản khác đã thu: '+fmtTien(daDongKhoanKhac(g))+'đ</div>':'')
@@ -15519,7 +15648,7 @@ function formKhoanDaThu(gdId){
     + '<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
     + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>';
   if(gd.doiSoatHP)
-    h += '<div class="card" style="margin:10px 0;border-color:var(--ok);background:#F1F5F0;">'
+    h += '<div class="card" style="margin:10px 0;border-color:var(--ok);background:var(--ok-bg);">'
       + '<div class="small">🔒 <b>Đã xác nhận đối soát</b> nên sổ đang khoá, không sửa được nữa. '
       + 'Cần sửa thì nhờ Kế toán hoặc Phó Giám đốc bấm <b>Bỏ đối soát</b> trước.</div></div>';
   if(!ls.length){
@@ -15586,7 +15715,7 @@ function formSuaKhoanThu(gdId, chiSo){
   openModal('<h3>Sửa khoản thu</h3>'
     +'<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
       + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
       + 'Đang sửa: <b>' + esc(moTaKhoanThu(x)) + '</b></div></div>'
     +'<label>Loại khoản thu</label><select id="mSKLoai">'
       + LOAI_KHOAN.map(function(l){
@@ -15662,7 +15791,7 @@ function formHuyKhoanThu(gdId, chiSo){
   openModal('<h3>Huỷ khoản thu</h3>'
     +'<div class="small muted">' + esc(tenHocVien(gd.hocVienId))
       + ' · lớp ' + esc(maLopCua(gd.lopId)) + '</div>'
-    +'<div class="card" style="margin:10px 0;border-color:var(--danger);background:#FBF2F1;">'
+    +'<div class="card" style="margin:10px 0;border-color:var(--danger);background:var(--danger-bg);">'
       +'<div class="small"><b>' + esc(moTaKhoanThu(x)) + '</b></div>'
       +'<div class="small muted" style="margin-top:5px;">Khoản này sẽ <b>không còn tính vào tiền</b> '
       +'nhưng vẫn nằm trong sổ, gạch ngang, ghi rõ ai huỷ và vì sao — để còn đối chiếu với '
@@ -16202,7 +16331,7 @@ function viewDoiSoat(){
       + '<td style="text-align:right;" class="muted">'+(r.thuKhac? fmtTien(r.thuKhac) : '—')+'</td>'
       + '<td>'+(ch? badge('danger','Lệch') : badge('ok','Khớp'))+'</td></tr>';
   });
-  h += '<tr style="background:#FBFAF7;font-weight:700;"><td>Tổng</td><td></td>'
+  h += '<tr style="background:var(--surface-2);font-weight:700;"><td>Tổng</td><td></td>'
     + '<td style="text-align:right;">'+fmtTien(tongDuKien)+'</td>'
     + '<td style="text-align:right;">'+fmtTien(tongThu)+'</td>'
     + '<td style="text-align:right;color:'+((tongDuKien-tongThu)?'var(--danger)':'inherit')+';">'
@@ -16884,7 +17013,7 @@ function viewBaoCaoDieuHanh(){
   const cbDL = canhBaoChatLuongDL(k.tu, k.den);
   if(cbDL.length){
     h += '<div class="card" style="border-color:var(--warn);">'
-      + '<div class="small" style="color:#8A4A1E;line-height:1.7;">'
+      + '<div class="small" style="color:var(--warn-ink);line-height:1.7;">'
       + '<b>⚠️ Lưu ý về độ tin cậy của số liệu</b><br>'
       + cbDL.map(function(x){ return '· ' + esc(x); }).join('<br>') + '</div></div>';
   }
@@ -17964,7 +18093,7 @@ function viewBaoCaoThang(){
     + '<div class="stat"><div class="lbl">Lớp kết thúc</div><div class="val">'+b.lopKetThuc+'</div></div>'
     + '<div class="stat"><div class="lbl">Buổi đã dạy</div><div class="val">'+b.soBuoi+'</div></div>'
     + oTyLe('Chuyên cần', b.chuyenCan, 85, {ico:'📋', le:1})
-    + '<div class="stat" style="'+(b.gvTre?'background:#FBF4EE;':'')+'"><div class="lbl">Buổi GV vào trễ</div><div class="val">'+b.gvTre+'</div></div>'
+    + '<div class="stat" style="'+(b.gvTre?'background:var(--warn-bg);':'')+'"><div class="lbl">Buổi GV vào trễ</div><div class="val">'+b.gvTre+'</div></div>'
     + '</div></div>';
 
   h += '<div class="card"><h3>Tuyển sinh</h3>'
@@ -18114,7 +18243,7 @@ function viewGiaoVien(){
     + (hasPerm('quanLyGiaoVien')?'<button class="btn btn-primary" onclick="formGiaoVien()">+ Thêm giáo viên</button>':'')+'</div></div>';
 
   if(tenTrongLop.length){
-    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:#8A4A1E;">'
+    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:var(--warn-ink);">'
       + '<b>⚠️ '+tenTrongLop.length+' tên giáo viên đang gõ tay trong lớp, chưa có trong danh mục:</b><br>'
       + esc(tenTrongLop.join(', '))
       + '<br>Với hệ thống thì "Ms Quỳnh" và "Ms. Quỳnh" là hai người khác nhau. Đưa vào danh mục để số liệu chuẩn.</div>'
@@ -18250,6 +18379,25 @@ function viewHocBu(){
     h += '</div>';
   }
 
+  /* Buổi CẢ LỚP nghỉ: đọc thẳng từ bản ghi lớp, KHÔNG chép sang fcv_hocbu.
+     fcv_hocbu là bù cho từng học viên vắng — hai việc khác nhau, trộn vào
+     nhau thì con số "học viên vắng chưa sắp bù" sẽ sai. */
+  const lopNghi = buoiLopNghiChuaBu();
+  if(lopNghi.length){
+    h += '<div class="card" style="border-color:var(--warn-br);">'
+      + '<h3 style="color:var(--warn-ink);">Buổi cả lớp nghỉ chưa hẹn ngày bù · ' + lopNghi.length + '</h3>'
+      + '<div class="small muted" style="margin-bottom:6px;">Đây là buổi nghỉ của cả lớp, '
+      + 'không phải học viên vắng lẻ. Hẹn ngày bù ngay trong hồ sơ lớp, đừng xếp bù từng em.</div>';
+    h += lopNghi.map(function(x){
+      return '<div class="list-row"><div style="min-width:0;"><div><b>' + esc(x.lop.maLop||'') + '</b> · buổi ngày '
+        + fmtDate(x.ngay) + '</div><div class="small muted">Lý do: ' + esc(x.lyDo || '—') + '</div></div>'
+        + (hasPerm('suaLop')
+           ? '<button class="btn btn-sm btn-primary" onclick="formNghiBuoi(\'' + x.lop.id + '\',\'' + x.ngay + '\')">Hẹn ngày bù</button>'
+           : '') + '</div>';
+    }).join('');
+    h += '</div>';
+  }
+
   const ds = hocBuList.slice().sort(function(a,b){ return (b.ngay||'').localeCompare(a.ngay||''); });
   h += '<div class="card"><h3>Buổi đã sắp xếp</h3>';
   if(!ds.length) h += emptyBox('📅','Chưa sắp xếp buổi nào');
@@ -18357,6 +18505,388 @@ function timTrungPhong(){
   }
   return ra;
 }
+/* ================= LỊCH BUỔI HỌC CỦA MỘT LỚP =================
+   MỘT CỬA tính lịch. Mọi màn cần ngày của từng buổi đều phải gọi
+   lichBuoiCuaLop(), không ai được tự cộng ngày lấy.
+
+   KHÔNG sinh bản ghi nào xuống cơ sở dữ liệu. Lịch tính lại mỗi lần mở
+   màn từ ngày khai giảng + các thứ đã tích + số buổi kế hoạch. Nếu sinh
+   sẵn bản ghi buổi học thì chúng trộn vào sổ điểm danh và mọi con số
+   "đã học n trên N buổi" sẽ sai.
+
+   Buổi NGHỈ GIỮ NGUYÊN chỗ trong lịch (Ban lãnh đạo quyết 26/10/2026)
+   và mang theo ngày học bù. Các buổi sau KHÔNG dồn lên. */
+function chuoiThu(cac){
+  if(!cac || !cac.length) return '';
+  if(cac.length === 1) return TEN_THU[cac[0]];
+  return 'Thứ ' + cac.map(function(t){ return t===8 ? 'CN' : t; }).join(' · ');
+}
+function lichBuoiCuaLop(lop){
+  const ra = {thieuThu:true, thieuNgayKG:!(lop && lop.ngayKG), buoi:[], ngayKetThuc:'',
+              soDaDay:0, soNghi:0, soChuaBu:0, buoiToi:null, ngayThi:'', tenKyThi:''};
+  if(!lop) return ra;
+  const thu = thuCuaLop(lop);
+  ra.thieuThu = !thu.length;
+  const soBuoi = Number(lop.soBuoiKH) || 0;
+
+  const ky = lop.kyThiId ? kyThiList.find(function(k){ return k.id === lop.kyThiId; }) : null;
+  if(ky){ ra.ngayThi = ky.ngayThi || ''; ra.tenKyThi = ky.ten || ''; }
+
+  if(ra.thieuThu || ra.thieuNgayKG || soBuoi <= 0) return ra;
+
+  const nghiTheoNgay = {};
+  (lop.buoiNghi || []).forEach(function(x){ if(x && x.ngay) nghiTheoNgay[x.ngay] = x; });
+  const dayTheoNgay = {};
+  buoiHocList.forEach(function(b){ if(b.lopId === lop.id && b.ngay) dayTheoNgay[b.ngay] = b; });
+
+  let ngay = lop.ngayKG;
+  const tran = soBuoi * 7 + 21;          /* chặn vòng lặp vô hạn nếu dữ liệu hỏng */
+  for(let i = 0; i < tran && ra.buoi.length < soBuoi; i++){
+    if(thu.indexOf(thuCuaNgay(ngay)) >= 0){
+      const n = nghiTheoNgay[ngay] || null;
+      const b = dayTheoNgay[ngay] || null;
+      ra.buoi.push({buoiSo: ra.buoi.length + 1, ngay: ngay,
+        nghi: !!n, lyDo: n ? (n.lyDo || '') : '',
+        ngayBu: n ? (n.ngayBu || '') : '', gioBu: n ? (n.gioBu || '') : '',
+        daDay: !!b, buoiHocId: b ? b.id : ''});
+    }
+    ngay = addDaysISO(ngay, 1);
+  }
+
+  const hnay = todayISO();
+  let cuoi = ra.buoi.length ? ra.buoi[ra.buoi.length - 1].ngay : '';
+  ra.buoi.forEach(function(b){
+    if(b.daDay) ra.soDaDay++;
+    if(b.nghi){ ra.soNghi++; if(!b.ngayBu) ra.soChuaBu++; }
+    if(b.ngayBu && b.ngayBu > cuoi) cuoi = b.ngayBu;
+    if(!ra.buoiToi && !b.daDay && !b.nghi && b.ngay >= hnay) ra.buoiToi = b;
+  });
+  ra.ngayKetThuc = cuoi;
+  return ra;
+}
+/* Ngày kết thúc là số MÁY TÍNH, không phải số người gõ. Gõ tay thì mỗi lần
+   nghỉ bù là ngày kết thúc sai mà không ai nhớ sửa lại. */
+function ngayKetThucTinh(lop){ return lichBuoiCuaLop(lop).ngayKetThuc; }
+function buoiTiepTheo(lop){ return lichBuoiCuaLop(lop).buoiToi; }
+/* Lớp đã tích thứ chưa — dùng để báo rõ thay vì đoán bừa từ ô chữ cũ */
+function lopDaTichThu(lop){ return Array.isArray(lop.cacThu) && lop.cacThu.length > 0; }
+function lopThieuLichBuoi(){
+  return lopList.filter(function(l){
+    if(l.trangThai !== 'Đang học' && l.trangThai !== 'Sắp khai giảng') return false;
+    return lichBuoiCuaLop(l).thieuThu || !l.ngayKG || !(Number(l.soBuoiKH) > 0);
+  });
+}
+/* Buổi cả lớp nghỉ mà chưa hẹn ngày bù — màn Học bù đọc thẳng từ đây,
+   KHÔNG chép sang fcv_hocbu. fcv_hocbu là bù cho TỪNG học viên vắng. */
+function buoiLopNghiChuaBu(){
+  const ra = [];
+  lopList.forEach(function(l){
+    if(l.trangThai !== 'Đang học' && l.trangThai !== 'Sắp khai giảng') return;
+    (l.buoiNghi || []).forEach(function(n){
+      if(n && n.ngay && !n.ngayBu) ra.push({lop:l, ngay:n.ngay, lyDo:n.lyDo || ''});
+    });
+  });
+  return ra.sort(function(a,b){ return (a.ngay||'').localeCompare(b.ngay||''); });
+}
+
+function formNghiBuoi(lopId, ngay){
+  const lop = lopList.find(function(l){ return l.id === lopId; });
+  if(!lop) return;
+  const cu = (lop.buoiNghi || []).find(function(x){ return x.ngay === ngay; }) || {};
+  openModal('<h3>Báo nghỉ buổi ' + fmtDate(ngay) + '</h3>'
+    + '<div class="small muted">Lớp <b>' + esc(lop.maLop || '') + '</b>. '
+    + 'Buổi này vẫn giữ nguyên chỗ trong lịch, các buổi sau không dồn lên. '
+    + 'Hẹn được ngày bù thì điền luôn; chưa hẹn được thì để trống, màn Học bù sẽ nhắc.</div>'
+    + '<label>Lý do nghỉ</label><input id="mNBLyDo" value="' + esc(cu.lyDo || '') + '" placeholder="VD: Giáo viên bận, nghỉ lễ">'
+    + '<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày học bù</label>'
+    + '<input type="date" id="mNBNgayBu" value="' + esc(cu.ngayBu || '') + '"></div>'
+    + '<div style="flex:1;"><label>Giờ học bù</label>'
+    + '<input id="mNBGioBu" value="' + esc(cu.gioBu || '') + '" placeholder="' + esc(lop.gioHoc || 'VD: 18:00 - 20:15') + '"></div></div>'
+    + '<div class="row" style="margin-top:14px;gap:8px;">'
+    + '<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    + (cu.ngay ? '<button class="btn btn-block" onclick="boNghiBuoi(\'' + lopId + '\',\'' + ngay + '\')">Bỏ báo nghỉ</button>' : '')
+    + '<button class="btn btn-primary btn-block" onclick="luuNghiBuoi(\'' + lopId + '\',\'' + ngay + '\')">Lưu</button></div>');
+}
+/* Chốt quyền nằm ở HÀM GHI, không chỉ ở chỗ ẩn nút */
+function luuNghiBuoi(lopId, ngay){
+  if(!canQuyen('luuNghiBuoi')) return;
+  const lop = lopList.find(function(l){ return l.id === lopId; });
+  if(!lop){ showToast('Không tìm thấy lớp'); return; }
+  const lyDo = $('mNBLyDo').value.trim();
+  if(!lyDo){ showToast('Ghi lý do nghỉ để sau này còn tra lại'); return; }
+  const ngayBu = $('mNBNgayBu').value;
+  if(ngayBu && ngayBu < ngay){
+    showToast('Ngày học bù không được trước ngày buổi nghỉ'); return;
+  }
+  const lich = lichBuoiCuaLop(lop);
+  const b = lich.buoi.find(function(x){ return x.ngay === ngay; });
+  if(!b){ showToast('Ngày này không nằm trong lịch buổi của lớp'); return; }
+  if(b.daDay){ showToast('Buổi này đã có điểm danh, không báo nghỉ được'); return; }
+
+  const ds = (lop.buoiNghi || []).filter(function(x){ return x.ngay !== ngay; });
+  ds.push({ngay:ngay, lyDo:lyDo, ngayBu:ngayBu || '', gioBu:$('mNBGioBu').value.trim(),
+           nguoiGhi:currentUser.hoTen, ngayGhi:todayISO()});
+  ds.sort(function(a,b2){ return (a.ngay||'').localeCompare(b2.ngay||''); });
+  db.collection('fcv_lop').doc(lopId).update({buoiNghi:ds, ngayKT:ngayKetThucTinh(
+      Object.assign({}, lop, {buoiNghi:ds}))})
+    .then(function(){
+      closeModal();
+      showToast('✅ Đã báo nghỉ buổi ' + fmtDate(ngay));
+      logAct('Báo nghỉ buổi ' + fmtDate(ngay) + ' lớp ' + (lop.maLop||'')
+             + ' · lý do: ' + lyDo + (ngayBu ? ' · bù ' + fmtDate(ngayBu) : ' · CHƯA hẹn bù'));
+    }).catch(fsErr);
+}
+function boNghiBuoi(lopId, ngay){
+  if(!canQuyen('boNghiBuoi')) return;
+  const lop = lopList.find(function(l){ return l.id === lopId; });
+  if(!lop) return;
+  if(!confirm('Bỏ báo nghỉ buổi ' + fmtDate(ngay) + '?\nBuổi này trở lại là buổi học bình thường.')) return;
+  const ds = (lop.buoiNghi || []).filter(function(x){ return x.ngay !== ngay; });
+  db.collection('fcv_lop').doc(lopId).update({buoiNghi:ds, ngayKT:ngayKetThucTinh(
+      Object.assign({}, lop, {buoiNghi:ds}))})
+    .then(function(){
+      closeModal();
+      showToast('✅ Đã bỏ báo nghỉ');
+      logAct('Bỏ báo nghỉ buổi ' + fmtDate(ngay) + ' lớp ' + (lop.maLop||''));
+    }).catch(fsErr);
+}
+
+/* ---------- Màn Lịch buổi học ---------- */
+let lbCheDo = 'thang';
+function doiCheDoLB(k){ lbCheDo = k; render(); }
+
+function luoiLichLop(lop, lich){
+  if(!lich.buoi.length) return '';
+  const moc = {};
+  lich.buoi.forEach(function(b){
+    moc[b.ngay] = {buoiSo:b.buoiSo, nghi:b.nghi, lyDo:b.lyDo, daDay:b.daDay,
+      toi: !!(lich.buoiToi && lich.buoiToi.ngay === b.ngay)};
+    if(b.ngayBu) moc[b.ngayBu] = {bu:true, buoiSo:b.buoiSo, gioBu:b.gioBu};
+  });
+  if(lich.ngayThi && !moc[lich.ngayThi]) moc[lich.ngayThi] = {thi:true, ten:lich.tenKyThi};
+  const cac = Object.keys(moc).sort();
+  const dau = thuHaiCuaTuan(cac[0]);
+  const chot = addDaysISO(thuHaiCuaTuan(cac[cac.length-1]), 6);
+
+  let h = '<div class="tbl-wrap"><table class="lb-lich"><thead><tr>'
+    + [2,3,4,5,6,7,8].map(function(t){ return '<th>'+(t===8?'CN':TEN_THU[t])+'</th>'; }).join('')
+    + '</tr></thead><tbody>';
+  let ngay = dau, canh = 0;
+  while(ngay <= chot && canh < 60){
+    canh++;
+    h += '<tr>';
+    for(let i = 0; i < 7; i++){
+      const m = moc[ngay];
+      if(!m) h += '<td class="off"></td>';
+      else {
+        const lop2 = m.thi ? 'thi' : m.bu ? 'bu' : m.nghi ? 'nghi' : m.daDay ? 'xong' : m.toi ? 'toi' : '';
+        const phu = m.thi ? 'THI ' + esc(m.ten || '')
+          : m.bu ? 'học bù buổi ' + m.buoiSo + (m.gioBu ? ' · ' + esc(m.gioBu) : '')
+          : m.nghi ? 'nghỉ — ' + esc(m.lyDo || 'chưa ghi lý do')
+          : 'buổi ' + m.buoiSo + (m.daDay ? ' ✓' : m.toi ? ' · tiếp theo' : '');
+        h += '<td class="' + lop2 + '"><div class="lb-ng">' + fmtDate(ngay).slice(0,5) + '</div>'
+           + '<div class="lb-bs">' + phu + '</div></td>';
+      }
+      ngay = addDaysISO(ngay, 1);
+    }
+    h += '</tr>';
+  }
+  h += '</tbody></table></div>'
+    + '<div class="lb-chu">'
+    + '<span><s class="s-xong"></s>đã dạy</span>'
+    + '<span><s class="s-toi"></s>buổi tiếp theo</span>'
+    + '<span><s class="s-nghi"></s>nghỉ</span>'
+    + '<span><s class="s-bu"></s>học bù</span>'
+    + '<span><s class="s-thi"></s>ngày thi</span></div>';
+  return h;
+}
+function daiNgayLop(lich){
+  if(!lich.buoi.length) return '';
+  /* Xếp theo NGÀY, kể cả ngày học bù. Dải ngày mà không theo thứ tự thì
+     chuyên viên đọc cho học viên nghe sẽ đọc nhầm. */
+  const o = [];
+  lich.buoi.forEach(function(b){
+    const c = b.nghi ? 'ng' : b.daDay ? 'q' : (lich.buoiToi && lich.buoiToi.ngay === b.ngay) ? 'n' : '';
+    o.push({ngay:b.ngay, html:'<em class="' + c + '" title="buổi ' + b.buoiSo
+      + (b.nghi ? ' · nghỉ: ' + esc(b.lyDo) : '') + '">' + fmtDate(b.ngay).slice(0,5) + '</em>'});
+    if(b.ngayBu) o.push({ngay:b.ngayBu, html:'<em class="b" title="học bù buổi ' + b.buoiSo + '">'
+      + fmtDate(b.ngayBu).slice(0,5) + ' bù</em>'});
+  });
+  o.sort(function(a,b){ return a.ngay.localeCompare(b.ngay); });
+  return '<div class="lb-day">' + o.map(function(x){ return x.html; }).join('') + '</div>';
+}
+function dongTomTatLich(lop, lich){
+  const bits = ['Đã dạy <b>' + lich.soDaDay + '/' + lich.buoi.length + '</b> buổi'];
+  if(lich.soNghi) bits.push('nghỉ <b>' + lich.soNghi + '</b> buổi'
+    + (lich.soChuaBu ? ' (<b style="color:var(--warn-ink);">' + lich.soChuaBu + ' chưa hẹn bù</b>)' : ''));
+  const toi = buoiTiepTheo(lop);
+  if(toi) bits.push('buổi tới <b>' + fmtDate(toi.ngay) + '</b> (buổi ' + toi.buoiSo + ')');
+  if(lich.ngayKetThuc) bits.push('kết thúc <b>' + fmtDate(lich.ngayKetThuc) + '</b>');
+  if(lich.ngayThi) bits.push('thi <b>' + fmtDate(lich.ngayThi) + '</b>');
+  return bits.join(' · ');
+}
+/* Câu Tuyển sinh cần khi đang nghe máy: vào bây giờ thì bỏ lỡ mấy buổi */
+function loiTuVanVaoTre(lop, lich){
+  if(lop.trangThai !== 'Đang học' || !lich.soDaDay) return '';
+  const sau = lopList.filter(function(l){
+    return l.id !== lop.id && l.nhomCT === lop.nhomCT
+      && l.trangThai === 'Sắp khai giảng' && l.ngayKG > todayISO(); })
+    .sort(function(a,b){ return (a.ngayKG||'').localeCompare(b.ngayKG||''); })[0];
+  return '<div class="small" style="background:var(--warn-bg);border:1px solid var(--warn-br);'
+    + 'border-radius:8px;padding:9px 12px;margin-top:10px;color:var(--warn-ink);">'
+    + 'Lớp đã học <b>' + lich.soDaDay + ' buổi</b>. Học viên vào bây giờ là <b>bỏ lỡ '
+    + lich.soDaDay + ' buổi</b>'
+    + (sau ? ' — tư vấn lớp <b>' + esc(sau.maLop) + '</b> khai giảng <b>' + fmtDate(sau.ngayKG) + '</b> nếu em ấy không theo kịp.'
+           : '. Nhóm này chưa có lớp nào sắp khai giảng để tư vấn thay.')
+    + '</div>';
+}
+
+function viewLichBuoiHoc(){
+  const ds = lopList.filter(function(l){
+      return l.trangThai === 'Đang học' || l.trangThai === 'Sắp khai giảng'; })
+    .sort(function(a,b){ return (a.ngayKG||'').localeCompare(b.ngayKG||''); });
+  const thieu = lopThieuLichBuoi();
+
+  let h = '<div class="card"><div class="row wrap">'
+    + '<div><h3 style="margin:0;">Lịch buổi học</h3>'
+    + '<div class="small muted" style="margin-top:4px;">Ngày của từng buổi, tính từ ngày khai giảng '
+    + 'và các thứ đã tích trong hồ sơ lớp. Màn này không nhập gì — muốn đổi thì sửa trong Danh mục lớp.</div></div>'
+    + '<div class="seg"><button class="' + (lbCheDo==='thang'?'on':'') + '" onclick="doiCheDoLB(\'thang\')">Lịch tháng</button>'
+    + '<button class="' + (lbCheDo==='day'?'on':'') + '" onclick="doiCheDoLB(\'day\')">Dải ngày</button></div>'
+    + '</div></div>';
+
+  if(thieu.length){
+    h += '<div class="card" style="border-color:var(--warn-br);">'
+      + '<div class="small" style="color:var(--warn-ink);">'
+      + '<b>' + thieu.length + ' lớp chưa dựng được lịch:</b> '
+      + esc(thieu.map(function(l){ return l.maLop; }).join(', '))
+      + '<div style="margin-top:4px;">Vào Danh mục lớp, mở lớp đó và tích các thứ học, '
+      + 'điền ngày khai giảng và số buổi. Phần mềm <b>không đoán</b> từ ô chữ cũ — '
+      + 'đoán sai thì Tuyển sinh tư vấn sai ngày cho học viên.</div></div></div>';
+  }
+
+  const chay = ds.filter(function(l){ return !lichBuoiCuaLop(l).thieuThu && l.ngayKG && Number(l.soBuoiKH) > 0; });
+  if(!chay.length) return h + '<div class="card">' + emptyBox('📅','Chưa lớp nào có đủ dữ kiện để dựng lịch') + '</div>';
+
+  if(lbCheDo === 'day'){
+    h += '<div class="card"><h3>Lịch khai giảng các lớp</h3>';
+    h += chay.map(function(l){
+      const lich = lichBuoiCuaLop(l);
+      const ss = siSoLop(l.id);
+      return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
+        + '<div class="small"><b>' + esc(l.maLop||'') + '</b> · ' + esc(l.nhomCT||'')
+        + ' · ' + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV')
+        + ' · ' + esc(l.lichHoc||'') + ' · ' + esc(l.gioHoc||'')
+        + ' · ' + esc(l.phongHoc||'chưa có phòng') + '</div>'
+        + daiNgayLop(lich) + '</div>'
+        + '<div style="text-align:right;flex-shrink:0;">'
+        + '<div style="font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;">' + ss + '</div>'
+        + badge(l.trangThai === 'Đang học' ? 'ok' : 'warn',
+                l.trangThai + ' · ' + lich.soDaDay + '/' + lich.buoi.length + ' buổi')
+        + '</div></div>';
+    }).join('');
+    return h + '</div>';
+  }
+
+  h += chay.map(function(l){
+    const lich = lichBuoiCuaLop(l);
+    return '<div class="card"><div class="row wrap"><div style="min-width:0;">'
+      + '<h3 style="margin:0;">' + esc(l.maLop||'') + ' · ' + esc(l.nhomCT||'') + '</h3>'
+      + '<div class="small muted" style="margin-top:3px;">'
+      + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV') + ' · ' + esc(l.lichHoc||'')
+      + ' · ' + esc(l.gioHoc||'') + ' · ' + esc(l.phongHoc||'chưa có phòng')
+      + ' · ' + siSoLop(l.id) + ' học viên</div></div>'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+      + '<button class="btn btn-sm" onclick="inLichLop(\'' + l.id + '\')">In lịch gửi học viên</button>'
+      + (hasPerm('suaLop')
+         ? '<button class="btn btn-sm" onclick="chonBuoiBaoNghi(\'' + l.id + '\')">Báo nghỉ một buổi</button>' : '')
+      + '</div></div>'
+      + luoiLichLop(l, lich)
+      + '<hr style="border:0;border-top:1px solid var(--vien-2);margin:12px 0;">'
+      + '<div class="small">' + dongTomTatLich(l, lich) + '</div>'
+      + loiTuVanVaoTre(l, lich)
+      + '</div>';
+  }).join('');
+  return h;
+}
+function chonBuoiBaoNghi(lopId){
+  const lop = lopList.find(function(l){ return l.id === lopId; });
+  if(!lop) return;
+  const lich = lichBuoiCuaLop(lop);
+  const chon = lich.buoi.filter(function(b){ return !b.daDay; });
+  if(!chon.length){ showToast('Mọi buổi của lớp đã có điểm danh, không còn buổi nào để báo nghỉ'); return; }
+  openModal('<h3>Chọn buổi báo nghỉ · ' + esc(lop.maLop||'') + '</h3>'
+    + '<div class="small muted">Chỉ buổi chưa điểm danh mới báo nghỉ được.</div>'
+    + chon.map(function(b){
+        return '<div class="list-row"><div><b>Buổi ' + b.buoiSo + '</b> · ' + fmtDate(b.ngay)
+          + (b.nghi ? ' <span class="small" style="color:var(--warn-ink);">đang báo nghỉ: '
+                      + esc(b.lyDo||'') + (b.ngayBu ? ' · bù ' + fmtDate(b.ngayBu) : ' · chưa hẹn bù') + '</span>' : '')
+          + '</div><button class="btn btn-sm" onclick="formNghiBuoi(\'' + lopId + '\',\'' + b.ngay + '\')">'
+          + (b.nghi ? 'Sửa' : 'Báo nghỉ') + '</button></div>';
+      }).join('')
+    + '<div class="row" style="margin-top:14px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button></div>');
+}
+/* In ra đúng dạng bảng mà Tuyển sinh đang phải gõ tay trong Excel rồi gửi Zalo */
+function inLichLop(lopId){
+  const lop = lopList.find(function(l){ return l.id === lopId; });
+  if(!lop){ showToast('Không tìm thấy lớp'); return; }
+  const lich = lichBuoiCuaLop(lop);
+  if(!lich.buoi.length){ showToast('Lớp chưa đủ dữ kiện để dựng lịch'); return; }
+  const thu = thuCuaLop(lop);
+  const win = window.open('', '_blank');
+  if(!win){ showToast('Trình duyệt chặn cửa sổ in. Cho phép pop-up rồi thử lại'); return; }
+
+  const theoTuan = {};
+  lich.buoi.forEach(function(b){
+    const tuan = thuHaiCuaTuan(b.ngay);
+    theoTuan[tuan] = theoTuan[tuan] || {};
+    theoTuan[tuan][thuCuaNgay(b.ngay)] = b;
+  });
+  const tuans = Object.keys(theoTuan).sort();
+
+  win.document.write('<html><head><meta charset="utf-8"><title>Lịch học '
+    + esc(lop.maLop||'') + '</title><style>'
+    + 'body{font-family:Arial,Helvetica,sans-serif;margin:12mm;color:#000;}'
+    + 'h1{font-size:15pt;text-align:center;margin:0 0 2mm;text-transform:uppercase;}'
+    + 'h2{font-size:12pt;text-align:center;margin:0 0 1mm;font-weight:700;}'
+    + 'p.gio{font-size:11pt;text-align:center;margin:0 0 5mm;font-weight:700;}'
+    + 'table{border-collapse:collapse;width:100%;font-size:11pt;}'
+    + 'th,td{border:1px solid #000;padding:3mm 2mm;text-align:center;}'
+    + 'th{font-weight:700;}'
+    + 'td.nghi{text-decoration:line-through;}'
+    + 'td small{display:block;font-size:8.5pt;font-weight:400;}'
+    + 'p.thi{margin-top:4mm;text-align:center;font-weight:700;font-size:11.5pt;}'
+    + 'p.cuoi{margin-top:6mm;font-size:9.5pt;text-align:center;}'
+    + '@media print{.noprint{display:none;}} .noprint{position:fixed;top:8px;right:8px;}'
+    + '</style></head><body>');
+  win.document.write('<div class="noprint"><button onclick="window.print()">In</button></div>');
+  win.document.write('<h1>Lịch học ' + esc(lop.nhomCT || '') + '</h1>');
+  win.document.write('<h2>Lớp ' + esc(lop.maLop||'') + ' · khai giảng '
+    + fmtDate(lop.ngayKG) + ' (' + lich.buoi.length + ' buổi)</h2>');
+  win.document.write('<p class="gio">' + esc(lop.phongHoc || '') + (lop.phongHoc ? ' · ' : '')
+    + esc(lop.lichHoc||'') + ' · ' + esc(lop.gioHoc||'') + '</p>');
+
+  let b2 = '<table><thead><tr>' + thu.map(function(t){
+      return '<th>' + (t===8?'Chủ nhật':TEN_THU[t]) + '</th>'; }).join('') + '</tr></thead><tbody>';
+  tuans.forEach(function(tu){
+    b2 += '<tr>' + thu.map(function(t){
+      const b = theoTuan[tu][t];
+      if(!b) return '<td>/</td>';
+      return '<td class="' + (b.nghi?'nghi':'') + '">' + fmtDate(b.ngay)
+        + (b.nghi ? '<small>nghỉ' + (b.ngayBu ? ', bù ' + fmtDate(b.ngayBu) : '') + '</small>' : '')
+        + '</td>';
+    }).join('') + '</tr>';
+  });
+  b2 += '</tbody></table>';
+  win.document.write(b2);
+  if(lich.ngayThi) win.document.write('<p class="thi">LỊCH THI DỰ KIẾN: '
+    + fmtDate(lich.ngayThi) + (lich.tenKyThi ? ' · ' + esc(lich.tenKyThi) : '') + '</p>');
+  win.document.write('<p class="cuoi">Trung tâm Ngoại ngữ – Tin học FLIC DNTU · in ngày '
+    + fmtDate(todayISO()) + '</p>');
+  win.document.write('</body></html>');
+  win.document.close();
+}
+
 function viewThoiKhoaBieu(){
   const dang = lopList.filter(function(l){ return l.trangThai==='Đang học'; });
   const trung = timTrungPhong();
@@ -18378,7 +18908,7 @@ function viewThoiKhoaBieu(){
 
   const thieuLich = dang.filter(function(l){ return !thuCuaLop(l).length || !khoangGio(l); });
   if(thieuLich.length){
-    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:#8A4A1E;">'
+    h += '<div class="card" style="border-color:var(--warn);"><div class="small" style="color:var(--warn-ink);">'
       + '<b>'+thieuLich.length+' lớp chưa ghi rõ thứ hoặc giờ học:</b> '
       + esc(thieuLich.map(function(l){ return l.maLop; }).join(', '))
       + '<br>Vào Danh mục lớp bổ sung để lớp hiện lên thời khoá biểu.</div></div>';
@@ -18520,7 +19050,7 @@ function formXuLyPhanAnh(id){
   const x = phanAnhList.find(function(y){ return y.id===id; });
   openModal('<h3>Ghi kết quả xử lý</h3>'
     +'<div class="small muted">'+esc(x.nguoiPhanAnh)+' · '+fmtDate(x.ngayNhan)+'</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'+esc(x.noiDung)+'</div></div>'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'+esc(x.noiDung)+'</div></div>'
     +'<label>Trạng thái</label><select id="mXLTT">'
       + TT_PA.filter(function(t){ return t!=='Mới tiếp nhận'; })
         .map(function(t){ return '<option '+(x.trangThai===t?'selected':'')+'>'+t+'</option>'; }).join('')+'</select>'
@@ -18708,7 +19238,7 @@ function xemPhieuTT(id){
   openModal('<h3>' + esc(y.tieuDe) + '</h3>'
     +'<div class="small muted">Phiếu ' + esc(y.maPhieu || '') + ' · mẫu BM-TT-01 · '
     + 'lập bởi ' + esc(y.nguoiYeuCauTen || '') + ' ngày ' + fmtDate(y.ngayYeuCau) + '</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
     + dong('Loại sản phẩm', y.loaiSanPham)
     + dong('Mục tiêu', y.mucTieu)
     + dong('Đối tượng', y.doiTuong)
@@ -19492,7 +20022,7 @@ function viewDonKhach(){
   if(coBaoGia) canhBao.push(coBaoGia + ' báo giá đang gắn với khách, sẽ mất liên kết tương tự.');
   if(canhBao.length){
     h += '<div class="card" style="border-color:var(--warn);">'
-      + '<div class="small" style="color:#8A4A1E;line-height:1.7;"><b>⚠️ Cần biết trước khi xoá</b><br>'
+      + '<div class="small" style="color:var(--warn-ink);line-height:1.7;"><b>⚠️ Cần biết trước khi xoá</b><br>'
       + canhBao.map(function(x){ return '· ' + esc(x); }).join('<br>') + '</div></div>';
   }
 
@@ -20671,12 +21201,12 @@ function viewLichTuan(){
       if(!theoBP[x.boPhan]) theoBP[x.boPhan] = {nguoi: x.nguoi, ca: []};
       theoBP[x.boPhan].ca.push(x.tenNgay.replace('Thứ ', 'T') + ' ' + x.tenCa.toLowerCase());
     });
-    h += '<div class="card" style="border-color:var(--danger);background:#FBF2F1;">'
+    h += '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);">'
       + '<div class="small" style="color:var(--danger);"><b>⚠️ ' + thieu.length
       + ' ca chưa có người trực</b></div>'
       + Object.keys(theoBP).map(function(bp){
           const x = theoBP[bp];
-          return '<div class="small" style="color:#9E2B25;margin-top:3px;"><b>' + esc(bp)
+          return '<div class="small" style="color:var(--m1);margin-top:3px;"><b>' + esc(bp)
             + '</b> (' + esc(x.nguoi) + ') thiếu ' + x.ca.length + ' ca: '
             + esc(x.ca.join(' · ')) + '</div>'; }).join('')
       + '<div class="small muted" style="margin-top:5px;">Mỗi ca phải có ít nhất một người '
@@ -20706,11 +21236,11 @@ function viewLichTuan(){
 
   const vp = xemCaNhom ? viPhamDangKy(tuan) : [];
   if(vp.length)
-    h += '<div class="card" style="border-color:var(--warn);background:#FBF4EE;">'
-      + '<div class="small" style="color:#8A4A1E;"><b>⚠️ ' + vp.length
+    h += '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);">'
+      + '<div class="small" style="color:var(--warn-ink);"><b>⚠️ ' + vp.length
       + ' ô sai quy ước</b></div>'
       + vp.slice(0, 8).map(function(x){
-          return '<div class="small" style="color:#8A4A1E;">• ' + esc(x.hoTen) + ' · '
+          return '<div class="small" style="color:var(--warn-ink);">• ' + esc(x.hoTen) + ' · '
             + esc(x.tenNgay) + ' ca ' + esc(x.tenCa.toLowerCase()) + ' — '
             + esc(x.loi) + '</div>'; }).join('')
       + (vp.length > 8 ? '<div class="small muted">… và ' + (vp.length - 8) + ' ô nữa</div>' : '')
@@ -20772,7 +21302,7 @@ function luoiCaNhom(tuan, ds){
               || (laViTriHanhChinh(u.maViTri) && iCa === 2 && v
                   && GIA_TRI_NGHI.indexOf(String(v).toUpperCase()) < 0);
             return '<td class="lc-o' + (sua ? ' lc-sua' : '') + '"'
-              + (xau ? ' style="background:#FBF4EE;"' : '')
+              + (xau ? ' style="background:var(--warn-bg);"' : '')
               + (sua ? ' onclick="formChonCa(\'' + u.id + '\',' + iNgay + ',' + iCa + ')"' : '')
               + '>' + nhanO(v) + dauDuyetO(tuan, u.id, iNgay, iCa) + '</td>'; }).join('')
         + '</tr>';
@@ -21167,7 +21697,7 @@ function formChonCa(userId, iNgay, iCa){
     + esc(ca.batDau) + '–' + esc(ca.ketThuc) + '</div>'
     + (laHC && iCa === 2
        ? '<div class="card" style="margin:9px 0;border-color:var(--warn);">'
-         + '<div class="small" style="color:#8A4A1E;">Vị trí hành chính chỉ làm lịch hành chính, '
+         + '<div class="small" style="color:var(--warn-ink);">Vị trí hành chính chỉ làm lịch hành chính, '
          + 'không đăng ký ca tối. Chỉ chọn được nghỉ hoặc xoá.</div></div>'
        : '')
     + (laHC && iCa === 2 ? '' : nut('X', 'Làm đúng khung ca (' + ca.batDau + '–' + ca.ketThuc + ')'))
@@ -21748,7 +22278,7 @@ function khoiDoiSoatSach(){
             return maLopCua(g.lopId); }))).join(', ')) + '</div></div>';
 
   if(chuaThu.length)
-    h += '<div class="card" style="margin:8px 0;border-color:var(--danger);background:#FBF2F1;">'
+    h += '<div class="card" style="margin:8px 0;border-color:var(--danger);background:var(--danger-bg);">'
       + '<div class="small" style="color:var(--danger);"><b>' + chuaThu.length
       + ' em đã nhận sách nhưng chưa ghi nhận khoản thu Tiền sách.</b></div>'
       + '<div class="small muted" style="margin-top:4px;">Sách bán riêng, không nằm trong học phí. '
@@ -21824,7 +22354,7 @@ function viewTonKho(){
 
   h += '<div class="grid" style="margin-bottom:12px;">'
     + '<div class="stat"><div class="lbl">Mặt hàng</div><div class="val">' + ds.length + '</div></div>'
-    + '<div class="stat" style="' + (canMua.length ? 'background:#FBF4EE;' : '') + '">'
+    + '<div class="stat" style="' + (canMua.length ? 'background:var(--warn-bg);' : '') + '">'
     + '<div class="lbl" style="' + (canMua.length ? 'color:var(--warn);' : '') + '">Dưới mức tối thiểu</div>'
     + '<div class="val" style="' + (canMua.length ? 'color:var(--warn);' : '') + '">' + canMua.length + '</div></div>'
     + '<div class="stat"><div class="lbl">Giá trị tồn</div>'
@@ -21835,7 +22365,7 @@ function viewTonKho(){
 
   if(canMua.length){
     h += '<div class="card" style="border-color:var(--warn);">'
-      + '<h3 style="color:#8A4A1E;">Cần mua bổ sung · ' + canMua.length + '</h3>';
+      + '<h3 style="color:var(--warn-ink);">Cần mua bổ sung · ' + canMua.length + '</h3>';
     h += canMua.map(function(x){
       return '<div class="list-row"><div style="min-width:0;flex:1;">'
         + '<div>' + esc(x.ten) + '</div>'
@@ -21859,7 +22389,7 @@ function viewTonKho(){
     ds.forEach(function(x){
       if(x.nhom !== nhomHT){
         nhomHT = x.nhom;
-        h += '<tr style="background:#FBFAF7;"><td colspan="6"><b>' + esc(nhomHT || 'Chưa phân nhóm') + '</b></td></tr>';
+        h += '<tr style="background:var(--surface-2);"><td colspan="6"><b>' + esc(nhomHT || 'Chưa phân nhóm') + '</b></td></tr>';
       }
       const thieu = Number(x.tonToiThieu) > 0 && x.ton < Number(x.tonToiThieu);
       h += '<tr><td>' + esc(x.ten)
@@ -21964,7 +22494,7 @@ function xemPhieuKho(id){
   openModal('<h3>' + (laXuat ? 'Giấy đề nghị xuất kho' : 'Phiếu nhập kho') + '</h3>'
     +'<div class="small muted">' + esc(p.maPhieu || '') + ' · lập bởi ' + esc(p.nguoiLap || '')
     + ' ngày ' + fmtDate(p.ngayLap) + '</div>'
-    +'<div class="card" style="margin:10px 0;background:#FBFAF7;"><div class="small">'
+    +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
     + '<div style="margin-bottom:5px;"><b>Lý do:</b> ' + esc(p.lyDo || '') + '</div>'
     + (laXuat
        ? '<div style="margin-bottom:5px;"><b>Bộ phận:</b> ' + esc(p.tenBoPhan || '') + '</div>'
@@ -22196,7 +22726,7 @@ function viewBuoiDayGV(){
         + '<td style="text-align:right;"><button class="btn btn-sm" onclick="xemBuoiDayGV(\'' + esc(x.ten) + '\')">Chi tiết</button></td>'
         + '</tr>';
     }).join('');
-    h += '<tr style="background:#FBFAF7;font-weight:700;"><td>Tổng</td>'
+    h += '<tr style="background:var(--surface-2);font-weight:700;"><td>Tổng</td>'
       + '<td style="text-align:right;">' + tongBuoi + '</td><td colspan="4"></td></tr>';
     h += '</tbody></table></div></div>';
   }
@@ -22387,11 +22917,11 @@ function viewDoiSoatNR(){
     + '</div></div>';
 
   h += '<div class="grid" style="margin-bottom:12px;">'
-    + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Newsale' ? 'background:#F2F5F8;' : '') + '" '
+    + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Newsale' ? 'background:var(--info-bg);' : '') + '" '
     + 'onclick="locNR(\'Newsale\')"><div class="lbl">Newsale</div>'
     + '<div class="val">' + kq.moi.length + '</div>'
     + '<div class="small muted">' + fmtTrieu(kq.tienMoi) + '</div></div>'
-    + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Renew' ? 'background:#F1F5F0;' : '') + '" '
+    + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Renew' ? 'background:var(--ok-bg);' : '') + '" '
     + 'onclick="locNR(\'Renew\')"><div class="lbl">Renew</div>'
     + '<div class="val" style="color:var(--ok);">' + kq.cu.length + '</div>'
     + '<div class="small muted">' + fmtTrieu(kq.tienCu) + '</div></div>'
@@ -23046,7 +23576,7 @@ function viewNhapLieu(){
     /* Không nhận ra dòng tiêu đề thì nói thẳng, kèm bảng đối chiếu tên cột.
        Trước đây màn này chỉ hiện "Tổng dòng 0" — người nhập tưởng file hỏng. */
     if(nlKetQua.khongThayTieuDe){
-      h += '<div class="card" style="border-color:var(--danger);background:#FBF2F1;">'
+      h += '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);">'
         + '<h3 style="margin-top:0;color:var(--danger);">Không đọc được file này</h3>'
         + '<div class="small" style="line-height:1.7;">'
         + ((nlKetQua.thieuBatBuoc || []).length
@@ -23095,7 +23625,7 @@ function viewNhapLieu(){
       + '<div class="stat"><div class="lbl">Tổng dòng</div><div class="val">'+nlKetQua.dong.length+'</div></div>'
       + '<div class="stat"><div class="lbl">Hợp lệ</div><div class="val" style="color:var(--ok);">'+hopLe.length+'</div></div>'
       + (dsBoQua.length
-          ? '<div class="stat" style="background:#FBFAF7;"><div class="lbl">Bỏ qua vì đã có</div>'
+          ? '<div class="stat" style="background:var(--surface-2);"><div class="lbl">Bỏ qua vì đã có</div>'
             + '<div class="val muted">'+dsBoQua.length+'</div></div>'
           : '')
       + '<div class="stat" style="'+(loi.length?'background:var(--danger-bg);':'')+'"><div class="lbl" style="'+(loi.length?'color:var(--danger);':'')+'">Có vấn đề</div>'
@@ -23114,7 +23644,7 @@ function viewNhapLieu(){
       + m.cot.slice(0,4).map(function(c){ return '<th>'+esc(c.nhan)+'</th>'; }).join('')
       + '<th>Kết quả</th></tr></thead><tbody>';
     nlKetQua.dong.slice(0,80).forEach(function(d){
-      h += '<tr style="'+(d.loi?'background:#FBF2F1;':(d.boQua?'opacity:.6;':''))+'"><td>'+d.dongSo+'</td>'
+      h += '<tr style="'+(d.loi?'background:var(--danger-bg);':(d.boQua?'opacity:.6;':''))+'"><td>'+d.dongSo+'</td>'
         + m.cot.slice(0,4).map(function(c){ return '<td>'+esc(d.data[c.key]||'')+'</td>'; }).join('')
         + '<td>'+(d.loi
              ? '<span style="color:var(--danger);">'+esc(d.loi)+'</span>'
@@ -24347,10 +24877,10 @@ function viewToChuc(){
     if(c.length) xungDot.push({u:u, cases:c});
   });
   if(xungDot.length){
-    h += '<div class="card" style="border-color:var(--danger);background:#FBF2F1;">'
+    h += '<div class="card" style="border-color:var(--danger);background:var(--danger-bg);">'
       + '<div style="color:var(--danger);font-weight:700;">⚠️ Vi phạm nguyên tắc phân tách nhiệm vụ</div>'
       + xungDot.map(function(x){
-          return '<div class="small" style="margin-top:7px;color:#8A251F;"><b>'+esc(x.u.hoTen)+'</b> đang giữ đồng thời '
+          return '<div class="small" style="margin-top:7px;color:var(--danger-ink);"><b>'+esc(x.u.hoTen)+'</b> đang giữ đồng thời '
             + x.cases.map(function(c){
                 const la = PERM_LIST.find(function(p){ return p.key===c.a; }).label;
                 const lb = PERM_LIST.find(function(p){ return p.key===c.b; }).label;
@@ -24395,12 +24925,12 @@ function viewToChuc(){
   const thieuQuyen = dsTaiKhoanThieuQuyen();
   if(thieuQuyen.length){
     h += '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);">'
-      + '<div style="color:#8A4A1E;font-weight:700;">⚠️ '+thieuQuyen.length+' tài khoản thiếu quyền so với vị trí</div>'
-      + '<div class="small" style="margin-top:6px;color:#8A4A1E;line-height:1.6;">'
+      + '<div style="color:var(--warn-ink);font-weight:700;">⚠️ '+thieuQuyen.length+' tài khoản thiếu quyền so với vị trí</div>'
+      + '<div class="small" style="margin-top:6px;color:var(--warn-ink);line-height:1.6;">'
       + 'Tài khoản tạo từ phiên bản cũ không tự nhận quyền của các tab bổ sung sau này, '
       + 'nên người dùng sẽ không thấy tab mới.</div>'
       + thieuQuyen.map(function(x){
-          return '<div class="small" style="margin-top:7px;color:#8A4A1E;"><b>'+esc(x.u.hoTen)+'</b> thiếu: '
+          return '<div class="small" style="margin-top:7px;color:var(--warn-ink);"><b>'+esc(x.u.hoTen)+'</b> thiếu: '
             + esc(x.thieu.map(nhanQuyen).join(', '))+'</div>';
         }).join('')
       + (hasPerm('quanLyTaiKhoan')
@@ -24414,7 +24944,7 @@ function viewToChuc(){
 
   const thieuQT = quyTrinhThieuNguoi();
   if(thieuQT.length){
-    h += '<div class="card" style="border-color:var(--warn);"><div style="color:#8A4A1E;font-weight:700;">⚠️ Quy trình chưa đủ người</div>'
+    h += '<div class="card" style="border-color:var(--warn);"><div style="color:var(--warn-ink);font-weight:700;">⚠️ Quy trình chưa đủ người</div>'
       + '<div class="small" style="margin-top:6px;">'+thieuQT.map(function(x){
           return esc(x.q.ma+' · '+x.q.ten+' — thiếu '+x.thieu.join(', '));
         }).join('<br>')+'</div></div>';
@@ -24599,7 +25129,7 @@ function veOGiaoVien(gvDangChon){
     return g.trangThai !== 'Ngừng dạy' || g.id === chon; });
   if(!ds.length){
     el.innerHTML = '<div class="card" style="margin:8px 0;border-color:var(--warn);">'
-      + '<div class="small" style="color:#8A4A1E;">Danh mục giáo viên đang trống. '
+      + '<div class="small" style="color:var(--warn-ink);">Danh mục giáo viên đang trống. '
       + 'Vào Học vụ → Giáo viên thêm hồ sơ trước, rồi quay lại nối tài khoản này.</div></div>';
     return;
   }
@@ -24733,7 +25263,7 @@ function viewThamSo(){
     + (suaDuoc
        ? '<div class="small muted">Thay đổi ở đây áp dụng cho toàn Trung tâm. Mỗi lần lưu đều ghi nhật ký.</div>'
        : '<div class="card" style="margin:8px 0;border-color:var(--warn);">'
-         + '<div class="small" style="color:#8A4A1E;">Bạn xem được nhưng không sửa được tham số. '
+         + '<div class="small" style="color:var(--warn-ink);">Bạn xem được nhưng không sửa được tham số. '
          + 'Việc điều chỉnh do Phó Giám đốc thực hiện.</div></div>')
     +'<label>Ngưỡng sĩ số nguy cấp (dưới mức này báo đỏ)</label>'
     +'<input type="number" id="tsNguyCap" value="'+(settings.nguongNguyCap||6)+'">'
