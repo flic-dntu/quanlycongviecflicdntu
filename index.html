@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.28.0   |   Ngày: 26/10/2026
+ Phiên bản: V1.28.1   |   Ngày: 26/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -987,6 +987,10 @@
   .lb-lich td.thi{background:var(--danger-bg);}
   .lb-lich td.thi .lb-ng{color:var(--danger-ink);}
   .lb-lich td.thi .lb-bs{color:var(--danger-ink);font-weight:600;}
+  .lb-lich td.off .lb-ng{color:var(--muc-4);font-weight:500;}
+  .lb-thi{margin-top:10px;padding:8px 12px;border:1px solid var(--danger-br);
+    background:var(--danger-bg);border-radius:8px;font-size:12.5px;color:var(--danger-ink);
+    text-align:center;font-weight:600;}
   .lb-chu{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muc-3);margin-top:9px;}
   .lb-chu s{display:inline-block;width:11px;height:11px;border-radius:3px;
     vertical-align:-1px;margin-right:5px;text-decoration:none;}
@@ -1348,10 +1352,18 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.28.0';
+const PHIEN_BAN = 'V1.28.1';
 const NGAY_PHIEN_BAN = '26/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.28.1', ngay:'26/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Màn Lịch buổi học bản V1.28.0 xếp DỌC mỗi lớp một lịch tháng. Trung tâm có hàng trăm lớp thì chuyên viên phải cuộn hàng chục trang mới tới lớp cần xem — màn như vậy là không dùng được. Nay chuyển sang Ô XỔ CHỌN: chế độ Một lớp cho chọn lớp từ danh sách gom theo trạng thái, mỗi lần chỉ vẽ đúng một lưới lịch. Lỗi này do em dựng màn sai kiểu ngay từ đầu, Ban lãnh đạo phát hiện khi xem bản thật.'},
+    {loai:'Sửa lỗi', nd:'Lưới lịch trước đây luôn vẽ đủ bảy cột. Lớp học Thứ 7 và Chủ nhật thì năm cột trống chiếm hết bề ngang màn hình mà không chứa gì. Nay chỉ vẽ cột của thứ lớp thật sự học, cộng thêm thứ của các ngày học bù nếu rơi vào thứ khác. Bản in vốn đã làm đúng từ đầu; màn hình mới là chỗ làm sai.'},
+    {loai:'Cải tiến', nd:'Chế độ Nhiều lớp có ô tìm theo mã lớp, nhóm chương trình, giáo viên và phòng, có ô lọc nhóm chương trình, và có trần bốn mươi dòng kèm dòng nói rõ đang hiện bao nhiêu trên tổng bao nhiêu. Mỗi dòng có nút Xem lịch nhảy thẳng sang chế độ Một lớp.'},
+    {loai:'Cải tiến', nd:'Ngày thi tách khỏi lưới, thành một dòng riêng ngay dưới lưới. Trước đây ngày thi chen vào lưới nên lưới phải giữ đủ cột cho nó.'},
+    {loai:'Cải tiến', nd:'Rà lại toàn bộ các màn khác xem còn chỗ nào cùng lỗi. Thêm ô tìm cho màn Chọn lớp điểm danh (kèm trần bốn mươi dòng) và màn Giáo viên. Màn Đối soát hai bên CỐ Ý giữ nguyên liệt kê đủ mọi lớp — đó là biên bản đối soát, giấu bớt dòng là làm hỏng chính mục đích của nó.'},
+    {loai:'Cải tiến', nd:'Phép phân tích tĩnh 22 nay chặn luôn việc đổ hết danh sách ra màn: bắt buộc có ô xổ chọn, ô tìm và trần số dòng ở màn Lịch buổi học, và bắt buộc có ô tìm ở màn Chọn lớp điểm danh và màn Giáo viên.'},
+  ]},
   {v:'V1.28.0', ngay:'26/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Ô Lịch học của lớp trước đây là ô GÕ CHỮ TỰ DO, và phần mềm đoán thứ học bằng cách nhặt các chữ số trong câu. Gõ "Thứ 2 - 4 - 6" thì may mà đúng, nhưng gõ "Thứ 2 đến thứ 6" là nó hiểu thành Thứ 2 và Thứ 6, mất ba buổi giữa; gõ "Hai - Tư - Sáu" thì ra rỗng và lớp biến mất khỏi thời khoá biểu. Vì không chắc được thứ nên phần mềm không thể tính ra ngày cụ thể của từng buổi. Nay thay bằng bảy ô tích, máy không phải đoán nữa. Đây là lần thứ ba cùng một bài học: cái gì máy phải tính thì không được để người gõ chữ tự do.'},
     {loai:'Mới', nd:'Lịch buổi học được TÍNH ra từ ngày khai giảng, các thứ đã tích và số buổi kế hoạch. Không sinh thêm bản ghi nào xuống cơ sở dữ liệu — sinh sẵn thì chúng trộn vào sổ điểm danh và mọi con số đã học bao nhiêu trên bao nhiêu buổi sẽ sai. Buổi đã dạy vẫn đọc từ sổ điểm danh như cũ. Mọi màn cần ngày của từng buổi đều gọi chung một cửa, không ai tự cộng ngày lấy.'},
@@ -6685,18 +6697,30 @@ let ddXemKetThuc = false;
 /* Ghi chú riêng từng em vừa sửa trong phiên này, để màn hiện ngay không chờ tải lại */
 let ddGhiChuEm = {};
 function doiXemLopKetThuc(){ ddXemKetThuc = !ddXemKetThuc; render(); }
+let ddTim = '';
+function doiTimDD(){ ddTim = $('ddTim') ? $('ddTim').value : ''; render(); }
 function viewChonLopDiemDanh(){
   if(ddLopId) return viewDiemDanh();
   /* Lớp đã kết thúc vẫn cần xuất bảng điểm danh để thanh toán hợp đồng */
-  const ds = lopList.filter(function(l){
+  const tatCa = lopList.filter(function(l){
       return l.trangThai==='Đang học' || (ddXemKetThuc && l.trangThai==='Đã kết thúc'); })
     .sort(function(a,b){ return (a.maLop||'').localeCompare(b.maLop||'','vi'); });
+  /* Trung tâm có thể có hàng trăm lớp — bắt cuộn hết là không dùng được */
+  const timDD = stripDia(ddTim||'').trim();
+  const loc = timDD ? tatCa.filter(function(l){
+      return stripDia((l.maLop||'')+' '+(l.nhomCT||'')+' '+(l.gvPhuTrach||'')+' '
+        +(tenGiaoVienCuaLop(l)||'')+' '+(l.phongHoc||'')).indexOf(timDD) >= 0; }) : tatCa;
+  const ds = loc.slice(0, 40);
   let h = '<div class="card"><h3>Chọn lớp để điểm danh</h3>'
     + '<div class="small muted">Chọn lớp, hệ thống tự đề xuất số buổi tiếp theo và tải danh sách học viên đang học.</div>'
+    + '<label>Tìm lớp</label><input id="ddTim" value="'+esc(ddTim||'')+'" oninput="doiTimDD()" '
+    + 'placeholder="mã lớp, nhóm chương trình, giáo viên, phòng...">'
+    + '<div class="small muted" style="margin-top:8px;">Hiện <b>'+ds.length+'</b> trên '+loc.length+' lớp'
+    + (loc.length > 40 ? ' — gõ tìm để thu hẹp lại.' : '.') + '</div>'
     + '<button class="btn btn-sm" style="margin-top:8px;" onclick="doiXemLopKetThuc()">'
     + (ddXemKetThuc ? 'Chỉ xem lớp đang học' : 'Xem cả lớp đã kết thúc')
     + '</button></div><div class="card">';
-  if(!ds.length) h += emptyBox('🏫','Chưa có lớp nào đang học');
+  if(!ds.length) h += emptyBox('🏫', loc.length ? 'Không lớp nào khớp' : 'Chưa có lớp nào đang học');
   else h += ds.map(function(l){
     const dh = soBuoiDaHoc(l.id);
     const buoiHomNay = buoiHocList.find(function(b){ return b.lopId===l.id && b.ngay===todayISO(); });
@@ -18227,6 +18251,8 @@ function thongKeGiaoVien(gv){
     lops: lops
   };
 }
+let gvTim = '';
+function doiTimGV(){ gvTim = $('gvTim') ? $('gvTim').value : ''; render(); }
 function viewGiaoVien(){
   /* Phát hiện tên giáo viên gõ tay chưa có trong danh mục */
   const tenTrongLop = [];
@@ -18252,11 +18278,17 @@ function viewGiaoVien(){
       + '</div>';
   }
 
+  const timGV = stripDia(gvTim||'').trim();
+  const dsGV = giaoVienList.filter(function(g){
+      if(!timGV) return true;
+      return stripDia((g.tenGoi||'')+' '+(g.hoTen||'')+' '+(g.chuyenMon||'')+' '+(g.sdt||'')).indexOf(timGV) >= 0; })
+    .sort(function(a,b){ return (a.tenGoi||a.hoTen||'').localeCompare(b.tenGoi||b.hoTen||'','vi'); });
+  h += '<div class="card"><label style="margin-top:0;">Tìm giáo viên</label>'
+    + '<input id="gvTim" value="'+esc(gvTim||'')+'" oninput="doiTimGV()" placeholder="tên, chuyên môn, số điện thoại...">'
+    + '<div class="small muted" style="margin-top:6px;">Hiện <b>'+dsGV.length+'</b> trên '+giaoVienList.length+' giáo viên.</div></div>';
   h += '<div class="card">';
-  if(!giaoVienList.length) h += emptyBox('👩‍🏫','Chưa có giáo viên nào trong danh mục');
-  else h += giaoVienList.slice().sort(function(a,b){
-      return (a.tenGoi||a.hoTen||'').localeCompare(b.tenGoi||b.hoTen||'','vi'); })
-    .map(function(g){
+  if(!dsGV.length) h += emptyBox('👩‍🏫', giaoVienList.length ? 'Không giáo viên nào khớp' : 'Chưa có giáo viên nào trong danh mục');
+  else h += dsGV.map(function(g){
       const t = thongKeGiaoVien(g);
       return '<div class="list-row"><div style="min-width:0;flex:1;">'
         + '<div><b>'+esc(g.tenGoi||g.hoTen)+'</b>'
@@ -18651,53 +18683,121 @@ function boNghiBuoi(lopId, ngay){
     }).catch(fsErr);
 }
 
-/* ---------- Màn Lịch buổi học ---------- */
-let lbCheDo = 'thang';
+/* ---------- Màn Lịch buổi học ----------
+   Bản đầu xếp DỌC mỗi lớp một lịch tháng. Trung tâm có hàng trăm lớp thì
+   chuyên viên phải cuộn hàng chục trang mới tới lớp cần xem — sai hẳn.
+   Nay: XỔ CHỌN một lớp để xem lịch, và một chế độ danh sách có ô tìm.
+   Lưới cũng chỉ vẽ cột của THỨ LỚP THẬT SỰ HỌC: lớp học Thứ 7 và CN mà
+   vẽ đủ 7 cột thì 5 cột trống chiếm hết bề ngang. */
+let lbCheDo = 'thang', lbLopId = '', lbTim = '', lbNhom = '';
+const LB_TOI_DA = 40;   /* số lớp hiện tối đa ở chế độ dải ngày */
+
 function doiCheDoLB(k){ lbCheDo = k; render(); }
+function doiLopLB(){ lbLopId = $('lbChonLop') ? $('lbChonLop').value : ''; render(); }
+function doiTimLB(){
+  lbTim = $('lbTim') ? $('lbTim').value : '';
+  lbNhom = $('lbNhom') ? $('lbNhom').value : '';
+  render();
+}
+
+/* MỘT CỬA lấy danh sách lớp lên được lịch: đang học trước, sắp khai giảng sau */
+function dsLopCoLich(){
+  const du = lopList.filter(function(l){
+    if(l.trangThai !== 'Đang học' && l.trangThai !== 'Sắp khai giảng') return false;
+    const lich = lichBuoiCuaLop(l);
+    return !lich.thieuThu && !!l.ngayKG && Number(l.soBuoiKH) > 0;
+  });
+  return du.sort(function(a, b){
+    if(a.trangThai !== b.trangThai) return a.trangThai === 'Đang học' ? -1 : 1;
+    /* Đang học: lớp mới mở lên trước. Sắp khai giảng: khai giảng sớm lên trước */
+    return a.trangThai === 'Đang học'
+      ? (b.ngayKG || '').localeCompare(a.ngayKG || '')
+      : (a.ngayKG || '').localeCompare(b.ngayKG || '');
+  });
+}
+function lopDangXemLB(){
+  const ds = dsLopCoLich();
+  if(!ds.length) return null;
+  return ds.find(function(l){ return l.id === lbLopId; }) || ds[0];
+}
+function oChonLopLB(){
+  const ds = dsLopCoLich();
+  if(!ds.length) return '';
+  const chon = lopDangXemLB();
+  const nhom = {'Đang học':[], 'Sắp khai giảng':[]};
+  ds.forEach(function(l){ nhom[l.trangThai].push(l); });
+  let o = '';
+  ['Đang học','Sắp khai giảng'].forEach(function(tt){
+    if(!nhom[tt].length) return;
+    o += '<optgroup label="' + tt + ' · ' + nhom[tt].length + ' lớp">'
+      + nhom[tt].map(function(l){
+          const lich = lichBuoiCuaLop(l);
+          return '<option value="' + l.id + '"' + (chon && chon.id === l.id ? ' selected' : '') + '>'
+            + esc(l.maLop || '') + ' · ' + esc(l.nhomCT || '')
+            + ' · KG ' + fmtDate(l.ngayKG)
+            + ' · ' + lich.soDaDay + '/' + lich.buoi.length + ' buổi</option>';
+        }).join('')
+      + '</optgroup>';
+  });
+  return '<select id="lbChonLop" onchange="doiLopLB()">' + o + '</select>';
+}
+
+/* Chỉ lấy cột của thứ lớp thật sự học, cộng thứ của các ngày học bù */
+function cotLichLop(lop, lich){
+  const co = {};
+  thuCuaLop(lop).forEach(function(t){ co[t] = true; });
+  lich.buoi.forEach(function(b){ if(b.ngayBu) co[thuCuaNgay(b.ngayBu)] = true; });
+  return [2,3,4,5,6,7,8].filter(function(t){ return co[t]; });
+}
+function ngayCuaThu(thuHai, t){ return addDaysISO(thuHai, t === 8 ? 6 : t - 2); }
 
 function luoiLichLop(lop, lich){
   if(!lich.buoi.length) return '';
+  const cot = cotLichLop(lop, lich);
+  if(!cot.length) return '';
   const moc = {};
   lich.buoi.forEach(function(b){
     moc[b.ngay] = {buoiSo:b.buoiSo, nghi:b.nghi, lyDo:b.lyDo, daDay:b.daDay,
       toi: !!(lich.buoiToi && lich.buoiToi.ngay === b.ngay)};
     if(b.ngayBu) moc[b.ngayBu] = {bu:true, buoiSo:b.buoiSo, gioBu:b.gioBu};
   });
-  if(lich.ngayThi && !moc[lich.ngayThi]) moc[lich.ngayThi] = {thi:true, ten:lich.tenKyThi};
   const cac = Object.keys(moc).sort();
   const dau = thuHaiCuaTuan(cac[0]);
-  const chot = addDaysISO(thuHaiCuaTuan(cac[cac.length-1]), 6);
+  const chotTuan = thuHaiCuaTuan(cac[cac.length - 1]);
 
-  let h = '<div class="tbl-wrap"><table class="lb-lich"><thead><tr>'
-    + [2,3,4,5,6,7,8].map(function(t){ return '<th>'+(t===8?'CN':TEN_THU[t])+'</th>'; }).join('')
+  /* Lớp học 2 buổi một tuần mà để bảng rộng hết màn thì ô bị kéo giãn,
+     nhìn loãng và khó đọc. Chặn bề ngang theo số cột. */
+  let h = '<div class="tbl-wrap"><table class="lb-lich" style="max-width:'
+    + (cot.length * 168) + 'px;"><thead><tr>'
+    + cot.map(function(t){ return '<th>' + (t === 8 ? 'Chủ nhật' : TEN_THU[t]) + '</th>'; }).join('')
     + '</tr></thead><tbody>';
-  let ngay = dau, canh = 0;
-  while(ngay <= chot && canh < 60){
+  let tuan = dau, canh = 0;
+  while(tuan <= chotTuan && canh < 80){
     canh++;
-    h += '<tr>';
-    for(let i = 0; i < 7; i++){
+    h += '<tr>' + cot.map(function(t){
+      const ngay = ngayCuaThu(tuan, t);
       const m = moc[ngay];
-      if(!m) h += '<td class="off"></td>';
-      else {
-        const lop2 = m.thi ? 'thi' : m.bu ? 'bu' : m.nghi ? 'nghi' : m.daDay ? 'xong' : m.toi ? 'toi' : '';
-        const phu = m.thi ? 'THI ' + esc(m.ten || '')
-          : m.bu ? 'học bù buổi ' + m.buoiSo + (m.gioBu ? ' · ' + esc(m.gioBu) : '')
-          : m.nghi ? 'nghỉ — ' + esc(m.lyDo || 'chưa ghi lý do')
-          : 'buổi ' + m.buoiSo + (m.daDay ? ' ✓' : m.toi ? ' · tiếp theo' : '');
-        h += '<td class="' + lop2 + '"><div class="lb-ng">' + fmtDate(ngay).slice(0,5) + '</div>'
-           + '<div class="lb-bs">' + phu + '</div></td>';
-      }
-      ngay = addDaysISO(ngay, 1);
-    }
-    h += '</tr>';
+      if(!m) return '<td class="off"><div class="lb-ng">' + fmtDate(ngay).slice(0,5) + '</div></td>';
+      const cls = m.bu ? 'bu' : m.nghi ? 'nghi' : m.daDay ? 'xong' : m.toi ? 'toi' : '';
+      const phu = m.bu ? 'học bù buổi ' + m.buoiSo + (m.gioBu ? ' · ' + esc(m.gioBu) : '')
+        : m.nghi ? 'nghỉ — ' + esc(m.lyDo || 'chưa ghi lý do')
+        : 'buổi ' + m.buoiSo + (m.daDay ? ' ✓' : m.toi ? ' · tiếp theo' : '');
+      return '<td class="' + cls + '"><div class="lb-ng">' + fmtDate(ngay).slice(0,5) + '</div>'
+        + '<div class="lb-bs">' + phu + '</div></td>';
+    }).join('') + '</tr>';
+    tuan = addDaysISO(tuan, 7);
   }
+  /* Chú giải chỉ nêu những loại ô THẬT SỰ có trên lưới này. Liệt kê cả
+     "nghỉ" và "học bù" cho lớp không có buổi nào nghỉ là chữ thừa. */
+  const chu = [];
+  if(lich.soDaDay) chu.push('<span><s class="s-xong"></s>đã dạy</span>');
+  if(lich.buoiToi) chu.push('<span><s class="s-toi"></s>buổi tiếp theo</span>');
+  if(lich.soNghi) chu.push('<span><s class="s-nghi"></s>nghỉ</span>');
+  if(lich.soNghi > lich.soChuaBu) chu.push('<span><s class="s-bu"></s>học bù</span>');
   h += '</tbody></table></div>'
-    + '<div class="lb-chu">'
-    + '<span><s class="s-xong"></s>đã dạy</span>'
-    + '<span><s class="s-toi"></s>buổi tiếp theo</span>'
-    + '<span><s class="s-nghi"></s>nghỉ</span>'
-    + '<span><s class="s-bu"></s>học bù</span>'
-    + '<span><s class="s-thi"></s>ngày thi</span></div>';
+    + (chu.length ? '<div class="lb-chu">' + chu.join('') + '</div>' : '');
+  if(lich.ngayThi) h += '<div class="lb-thi">LỊCH THI DỰ KIẾN: <b>' + fmtDate(lich.ngayThi) + '</b>'
+    + (lich.tenKyThi ? ' · ' + esc(lich.tenKyThi) : '') + '</div>';
   return h;
 }
 function daiNgayLop(lich){
@@ -18712,7 +18812,7 @@ function daiNgayLop(lich){
     if(b.ngayBu) o.push({ngay:b.ngayBu, html:'<em class="b" title="học bù buổi ' + b.buoiSo + '">'
       + fmtDate(b.ngayBu).slice(0,5) + ' bù</em>'});
   });
-  o.sort(function(a,b){ return a.ngay.localeCompare(b.ngay); });
+  o.sort(function(a, b){ return a.ngay.localeCompare(b.ngay); });
   return '<div class="lb-day">' + o.map(function(x){ return x.html; }).join('') + '</div>';
 }
 function dongTomTatLich(lop, lich){
@@ -18722,7 +18822,6 @@ function dongTomTatLich(lop, lich){
   const toi = buoiTiepTheo(lop);
   if(toi) bits.push('buổi tới <b>' + fmtDate(toi.ngay) + '</b> (buổi ' + toi.buoiSo + ')');
   if(lich.ngayKetThuc) bits.push('kết thúc <b>' + fmtDate(lich.ngayKetThuc) + '</b>');
-  if(lich.ngayThi) bits.push('thi <b>' + fmtDate(lich.ngayThi) + '</b>');
   return bits.join(' · ');
 }
 /* Câu Tuyển sinh cần khi đang nghe máy: vào bây giờ thì bỏ lỡ mấy buổi */
@@ -18731,7 +18830,7 @@ function loiTuVanVaoTre(lop, lich){
   const sau = lopList.filter(function(l){
     return l.id !== lop.id && l.nhomCT === lop.nhomCT
       && l.trangThai === 'Sắp khai giảng' && l.ngayKG > todayISO(); })
-    .sort(function(a,b){ return (a.ngayKG||'').localeCompare(b.ngayKG||''); })[0];
+    .sort(function(a, b){ return (a.ngayKG || '').localeCompare(b.ngayKG || ''); })[0];
   return '<div class="small" style="background:var(--warn-bg);border:1px solid var(--warn-br);'
     + 'border-radius:8px;padding:9px 12px;margin-top:10px;color:var(--warn-ink);">'
     + 'Lớp đã học <b>' + lich.soDaDay + ' buổi</b>. Học viên vào bây giờ là <b>bỏ lỡ '
@@ -18742,62 +18841,44 @@ function loiTuVanVaoTre(lop, lich){
 }
 
 function viewLichBuoiHoc(){
-  const ds = lopList.filter(function(l){
-      return l.trangThai === 'Đang học' || l.trangThai === 'Sắp khai giảng'; })
-    .sort(function(a,b){ return (a.ngayKG||'').localeCompare(b.ngayKG||''); });
   const thieu = lopThieuLichBuoi();
+  const chay = dsLopCoLich();
 
   let h = '<div class="card"><div class="row wrap">'
-    + '<div><h3 style="margin:0;">Lịch buổi học</h3>'
+    + '<div style="min-width:0;"><h3 style="margin:0;">Lịch buổi học</h3>'
     + '<div class="small muted" style="margin-top:4px;">Ngày của từng buổi, tính từ ngày khai giảng '
     + 'và các thứ đã tích trong hồ sơ lớp. Màn này không nhập gì — muốn đổi thì sửa trong Danh mục lớp.</div></div>'
-    + '<div class="seg"><button class="' + (lbCheDo==='thang'?'on':'') + '" onclick="doiCheDoLB(\'thang\')">Lịch tháng</button>'
-    + '<button class="' + (lbCheDo==='day'?'on':'') + '" onclick="doiCheDoLB(\'day\')">Dải ngày</button></div>'
+    + '<div class="seg"><button class="' + (lbCheDo === 'thang' ? 'on' : '') + '" onclick="doiCheDoLB(\'thang\')">Một lớp</button>'
+    + '<button class="' + (lbCheDo === 'day' ? 'on' : '') + '" onclick="doiCheDoLB(\'day\')">Nhiều lớp</button></div>'
     + '</div></div>';
 
   if(thieu.length){
     h += '<div class="card" style="border-color:var(--warn-br);">'
       + '<div class="small" style="color:var(--warn-ink);">'
       + '<b>' + thieu.length + ' lớp chưa dựng được lịch:</b> '
-      + esc(thieu.map(function(l){ return l.maLop; }).join(', '))
+      + esc(thieu.slice(0, 12).map(function(l){ return l.maLop; }).join(', '))
+      + (thieu.length > 12 ? ' và ' + (thieu.length - 12) + ' lớp nữa' : '')
       + '<div style="margin-top:4px;">Vào Danh mục lớp, mở lớp đó và tích các thứ học, '
       + 'điền ngày khai giảng và số buổi. Phần mềm <b>không đoán</b> từ ô chữ cũ — '
       + 'đoán sai thì Tuyển sinh tư vấn sai ngày cho học viên.</div></div></div>';
   }
 
-  const chay = ds.filter(function(l){ return !lichBuoiCuaLop(l).thieuThu && l.ngayKG && Number(l.soBuoiKH) > 0; });
   if(!chay.length) return h + '<div class="card">' + emptyBox('📅','Chưa lớp nào có đủ dữ kiện để dựng lịch') + '</div>';
 
-  if(lbCheDo === 'day'){
-    h += '<div class="card"><h3>Lịch khai giảng các lớp</h3>';
-    h += chay.map(function(l){
-      const lich = lichBuoiCuaLop(l);
-      const ss = siSoLop(l.id);
-      return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
-        + '<div class="small"><b>' + esc(l.maLop||'') + '</b> · ' + esc(l.nhomCT||'')
-        + ' · ' + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV')
-        + ' · ' + esc(l.lichHoc||'') + ' · ' + esc(l.gioHoc||'')
-        + ' · ' + esc(l.phongHoc||'chưa có phòng') + '</div>'
-        + daiNgayLop(lich) + '</div>'
-        + '<div style="text-align:right;flex-shrink:0;">'
-        + '<div style="font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;">' + ss + '</div>'
-        + badge(l.trangThai === 'Đang học' ? 'ok' : 'warn',
-                l.trangThai + ' · ' + lich.soDaDay + '/' + lich.buoi.length + ' buổi')
-        + '</div></div>';
-    }).join('');
-    return h + '</div>';
-  }
-
-  h += chay.map(function(l){
+  /* ---- Một lớp: xổ chọn, không cuộn ---- */
+  if(lbCheDo === 'thang'){
+    const l = lopDangXemLB();
     const lich = lichBuoiCuaLop(l);
-    return '<div class="card"><div class="row wrap"><div style="min-width:0;">'
-      + '<h3 style="margin:0;">' + esc(l.maLop||'') + ' · ' + esc(l.nhomCT||'') + '</h3>'
+    h += '<div class="card"><label style="margin-top:0;">Chọn lớp để xem lịch · '
+      + chay.length + ' lớp</label>' + oChonLopLB() + '</div>';
+    h += '<div class="card"><div class="row wrap"><div style="min-width:0;">'
+      + '<h3 style="margin:0;">' + esc(l.maLop || '') + ' · ' + esc(l.nhomCT || '') + '</h3>'
       + '<div class="small muted" style="margin-top:3px;">'
-      + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV') + ' · ' + esc(l.lichHoc||'')
-      + ' · ' + esc(l.gioHoc||'') + ' · ' + esc(l.phongHoc||'chưa có phòng')
+      + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV') + ' · ' + esc(l.lichHoc || '')
+      + ' · ' + esc(l.gioHoc || '') + ' · ' + esc(l.phongHoc || 'chưa có phòng')
       + ' · ' + siSoLop(l.id) + ' học viên</div></div>'
       + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
-      + '<button class="btn btn-sm" onclick="inLichLop(\'' + l.id + '\')">In lịch gửi học viên</button>'
+      + '<button class="btn btn-sm btn-primary" onclick="inLichLop(\'' + l.id + '\')">In lịch gửi học viên</button>'
       + (hasPerm('suaLop')
          ? '<button class="btn btn-sm" onclick="chonBuoiBaoNghi(\'' + l.id + '\')">Báo nghỉ một buổi</button>' : '')
       + '</div></div>'
@@ -18806,9 +18887,56 @@ function viewLichBuoiHoc(){
       + '<div class="small">' + dongTomTatLich(l, lich) + '</div>'
       + loiTuVanVaoTre(l, lich)
       + '</div>';
-  }).join('');
+    return h;
+  }
+
+  /* ---- Nhiều lớp: ô tìm, lọc nhóm, có trần ---- */
+  const nhomCo = [];
+  chay.forEach(function(l){ if(l.nhomCT && nhomCo.indexOf(l.nhomCT) < 0) nhomCo.push(l.nhomCT); });
+  nhomCo.sort(function(a, b){ return a.localeCompare(b, 'vi'); });
+  const tim = stripDia(lbTim || '').trim();
+  const loc = chay.filter(function(l){
+    if(lbNhom && l.nhomCT !== lbNhom) return false;
+    if(!tim) return true;
+    return stripDia((l.maLop || '') + ' ' + (l.nhomCT || '') + ' '
+      + (tenGiaoVienCuaLop(l) || '') + ' ' + (l.phongHoc || '')).indexOf(tim) >= 0;
+  });
+  const hien = loc.slice(0, LB_TOI_DA);
+
+  h += '<div class="card"><div class="row wrap" style="gap:8px;">'
+    + '<div style="flex:2;min-width:180px;"><label style="margin-top:0;">Tìm lớp</label>'
+    + '<input id="lbTim" value="' + esc(lbTim) + '" oninput="doiTimLB()" '
+    + 'placeholder="mã lớp, nhóm chương trình, giáo viên, phòng..."></div>'
+    + '<div style="flex:1;min-width:160px;"><label style="margin-top:0;">Nhóm chương trình</label>'
+    + '<select id="lbNhom" onchange="doiTimLB()"><option value="">— tất cả —</option>'
+    + nhomCo.map(function(n){ return '<option' + (lbNhom === n ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('')
+    + '</select></div></div>'
+    + '<div class="small muted" style="margin-top:8px;">Hiện <b>' + hien.length + '</b> trên '
+    + loc.length + ' lớp hợp điều kiện'
+    + (loc.length > LB_TOI_DA ? ' — gõ tìm để thu hẹp lại.' : '.') + '</div></div>';
+
+  if(!hien.length) return h + '<div class="card">' + emptyBox('🔍','Không lớp nào khớp') + '</div>';
+
+  h += '<div class="card">' + hien.map(function(l){
+    const lich = lichBuoiCuaLop(l);
+    return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
+      + '<div class="small"><b>' + esc(l.maLop || '') + '</b> · ' + esc(l.nhomCT || '')
+      + ' · ' + esc(tenGiaoVienCuaLop(l) || 'chưa phân GV')
+      + ' · ' + esc(l.lichHoc || '') + ' · ' + esc(l.gioHoc || '')
+      + ' · ' + esc(l.phongHoc || 'chưa có phòng') + '</div>'
+      + daiNgayLop(lich) + '</div>'
+      + '<div style="flex-shrink:0;display:flex;align-items:center;gap:10px;">'
+      + '<div style="text-align:right;">'
+      + '<div style="font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;">' + siSoLop(l.id) + '</div>'
+      + badge(l.trangThai === 'Đang học' ? 'ok' : 'warn',
+              l.trangThai + ' · ' + lich.soDaDay + '/' + lich.buoi.length + ' buổi') + '</div>'
+      + '<button class="btn btn-sm" onclick="xemLichMotLop(\'' + l.id + '\')">Xem lịch</button>'
+      + '</div></div>';
+  }).join('') + '</div>';
   return h;
 }
+function xemLichMotLop(lopId){ lbLopId = lopId; lbCheDo = 'thang'; render(); }
+
 function chonBuoiBaoNghi(lopId){
   const lop = lopList.find(function(l){ return l.id === lopId; });
   if(!lop) return;
