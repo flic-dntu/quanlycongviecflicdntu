@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.28.1   |   Ngày: 26/10/2026
+ Phiên bản: V1.29.0   |   Ngày: 30/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -823,6 +823,11 @@
   .section-nhom .sn-hang button:hover{border-color:var(--vien-dam);background:var(--surface-2);}
   .section-nhom .sn-hang button.active{background:var(--son);color:#fff;
     border-color:var(--son);font-weight:650;}
+  /* Con số đỏ trên tab chính — biết có việc chờ mình mà không phải mở tab */
+  .dem-tab{display:inline-flex;align-items:center;justify-content:center;
+    min-width:17px;height:17px;border-radius:9px;padding:0 5px;margin-left:6px;
+    background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;
+    vertical-align:1px;}
   .dem-muc{min-width:17px;height:17px;border-radius:9px;font-size:10.5px;font-weight:700;
     display:inline-flex;align-items:center;justify-content:center;padding:0 5px;}
 
@@ -1352,10 +1357,18 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.28.1';
-const NGAY_PHIEN_BAN = '26/10/2026';
+const PHIEN_BAN = 'V1.29.0';
+const NGAY_PHIEN_BAN = '30/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.29.0', ngay:'30/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Ban lãnh đạo phát hiện 30/10/2026: đề nghị miễn giảm của Hành chính Kế toán gửi mấy hôm trước mà tài khoản Phó Giám đốc không hề thấy. Soi mã thì đây là lỗi hệ thống chứ không phải một màn lẻ. Phần mềm có BẢY hàng đợi duyệt nằm ở NĂM tab khác nhau, nhưng màn Chờ tôi duyệt chỉ đọc đúng một bảng là bảng công việc giao nhau. Sáu hàng đợi còn lại nằm im ở tab của nó: không con số, không cảnh báo, không ai biết. Người có quyền duyệt phải tự nhớ mở từng tab mỗi ngày, mà thực tế là không ai nhớ nên đề nghị nằm đó hàng tuần.'},
+    {loai:'Mới', nd:'Một cửa gom mọi thứ đang chờ chính người đang đăng nhập duyệt: miễn giảm học phí, hoàn phí và bảo lưu, phiếu xuất kho ở cả hai bước Hành chính và Ban Giám đốc, giấy đề nghị in, sản phẩm truyền thông chờ duyệt nội dung và chờ duyệt phát hành. Lọc theo đúng quyền nên không ai thấy việc chờ duyệt của người khác. Thêm hàng đợi mới sau này chỉ khai một dòng vào bảng chung, không phải sửa Tổng quan, không phải sửa màn Chờ tôi duyệt, không phải sửa con số trên tab.'},
+    {loai:'Mới', nd:'Màn Chờ tôi duyệt có thêm khối Chờ bạn duyệt ở nơi khác. Gom theo loại việc kèm số lượng và tổng số tiền, bấm vào một dòng mới xoè ra từng đề nghị đích danh học viên, người đề nghị và ngày gửi. Liệt kê thẳng tất cả thì màn dài mà vẫn không biết loại nào gấp. Mỗi dòng có nút nhảy thẳng sang đúng tab và đúng mục để duyệt.'},
+    {loai:'Mới', nd:'Con số đỏ trên tab Công việc, đếm cả việc chờ phê duyệt lẫn mọi hàng đợi duyệt của riêng mình. Nhìn thanh menu là biết có việc chờ, không phải mở từng tab ra mới biết.'},
+    {loai:'Sửa lỗi', nd:'Màn Tổng quan trước đây chỉ báo ba trong bảy hàng đợi: giấy đề nghị in và hai loại truyền thông. Miễn giảm, hoàn phí và phiếu xuất kho không có dòng cảnh báo nào. Nay cả bảy đều lên Tổng quan, dựng từ cùng một cửa nên thêm loại mới là tự có, không thể quên.'},
+    {loai:'Cải tiến', nd:'Thêm phép phân tích tĩnh thứ 23: mọi quyền duyệt khai trong danh mục quyền đều phải có hàng đợi tương ứng trong bảng chung, một cửa phải lọc theo quyền, và Tổng quan phải dựng cảnh báo từ một cửa chứ không tự liệt kê. Ai sau này thêm quyền duyệt mà quên khai hàng đợi là kiểm tra báo đỏ ngay. Thêm bộ kiểm thử thứ 26 với 53 phép thử, và 8 phép thử đột biến đều bị bắt.'},
+  ]},
   {v:'V1.28.1', ngay:'26/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Màn Lịch buổi học bản V1.28.0 xếp DỌC mỗi lớp một lịch tháng. Trung tâm có hàng trăm lớp thì chuyên viên phải cuộn hàng chục trang mới tới lớp cần xem — màn như vậy là không dùng được. Nay chuyển sang Ô XỔ CHỌN: chế độ Một lớp cho chọn lớp từ danh sách gom theo trạng thái, mỗi lần chỉ vẽ đúng một lưới lịch. Lỗi này do em dựng màn sai kiểu ngay từ đầu, Ban lãnh đạo phát hiện khi xem bản thật.'},
     {loai:'Sửa lỗi', nd:'Lưới lịch trước đây luôn vẽ đủ bảy cột. Lớp học Thứ 7 và Chủ nhật thì năm cột trống chiếm hết bề ngang màn hình mà không chứa gì. Nay chỉ vẽ cột của thứ lớp thật sự học, cộng thêm thứ của các ngày học bù nếu rơi vào thứ khác. Bản in vốn đã làm đúng từ đầu; màn hình mới là chỗ làm sai.'},
@@ -2883,6 +2896,133 @@ function viecChoToiXuLy(){
     return false;
   });
 }
+
+/* ========== MỘT CỬA: MỌI THỨ ĐANG CHỜ TÔI DUYỆT ==========
+   App có BẢY hàng đợi duyệt nằm ở NĂM tab khác nhau. Trước V1.29.0 màn
+   "Chờ tôi duyệt" chỉ đọc bảng công việc, nên đề nghị miễn giảm, hoàn phí
+   hay phiếu xuất kho nằm im ở tab của nó mà người có quyền duyệt không hề
+   biết. Ban lãnh đạo phải tự nhớ mở từng tab mỗi ngày — và trên thực tế
+   là không ai nhớ, nên đề nghị nằm đó hàng tuần.
+
+   Khai hàng đợi mới thì THÊM MỘT DÒNG vào bảng này, không sửa chỗ nào
+   khác. Phép phân tích tĩnh 23 chặn việc sinh hàng đợi mà quên khai. */
+const HANG_DOI_DUYET = [
+  {ma:'mienGiam', nhan:'Đề nghị miễn giảm học phí', quyen:'duyetMienGiam',
+   tab:'taiChinh', sec:'mienGiam',
+   lay:function(){ return (mienGiamList||[]).filter(function(m){ return m.trangThai==='Chờ duyệt'; }); },
+   dong:function(m){ return {ten:m.tenHocVien||'', phu:'Lớp '+(m.maLop||'—')
+     +(m.uuDaiTen? ' · '+m.uuDaiTen : '')+(m.lyDo? ' · '+m.lyDo : ''),
+     ai:m.nguoiDeNghi||'', ngay:m.ngayDeNghi||'', tien:uocTongCamKet(m)}; }},
+
+  {ma:'hoanPhi', nhan:'Đề nghị hoàn phí, bảo lưu, chuyển lớp', quyen:'duyetHoanPhi',
+   tab:'taiChinh', sec:'hoanPhi',
+   lay:function(){ return (hoanPhiList||[]).filter(function(x){ return x.trangThai==='Chờ duyệt'; }); },
+   dong:function(x){ return {ten:x.tenHocVien||'', phu:(x.loai||'')+' · lớp '+(x.maLop||'—')
+     +(x.lyDo? ' · '+x.lyDo : ''),
+     ai:x.nguoiDeXuat||'', ngay:x.ngayDeXuat||'', tien:Number(x.soTien)||0}; }},
+
+  {ma:'khoHanhChinh', nhan:'Phiếu xuất kho chờ Hành chính duyệt', quyen:'quanLyKho',
+   tab:'taiSan', sec:'kho',
+   lay:function(){ return (phieuKhoList||[]).filter(function(p){ return p.trangThai==='Chờ Hành chính duyệt'; }); },
+   dong:function(p){ return {ten:p.maPhieu||'', phu:(p.lyDo||'')+' · bộ phận '+(p.tenBoPhan||'—'),
+     ai:p.nguoiLap||'', ngay:p.ngayLap||'', tien:0}; }},
+
+  {ma:'khoBanGiamDoc', nhan:'Phiếu xuất kho chờ Ban Giám đốc duyệt', quyen:'duyetXuatKho',
+   tab:'taiSan', sec:'kho',
+   lay:function(){ return (phieuKhoList||[]).filter(function(p){ return p.trangThai==='Chờ Ban Giám đốc duyệt'; }); },
+   dong:function(p){ return {ten:p.maPhieu||'', phu:(p.lyDo||'')+' · bộ phận '+(p.tenBoPhan||'—'),
+     ai:p.nguoiLap||'', ngay:p.ngayLap||'', tien:0}; }},
+
+  {ma:'phieuIn', nhan:'Giấy đề nghị in', quyen:'duyetIn',
+   tab:'inAn', sec:'phieu',
+   lay:function(){ return (phieuInList||[]).filter(function(p){ return p.trangThai==='Chờ duyệt'; }); },
+   dong:function(p){ return {ten:p.veViec||p.hangMuc||'', phu:(p.soGDN? 'Số '+p.soGDN+' · ' : '')
+     +(p.soLuong? p.soLuong+' '+(p.donViTinh||'') : ''),
+     ai:p.nguoiDeXuatTen||'', ngay:p.ngayCanCo||'', tien:Number(p.thanhTien)||0}; }},
+
+  {ma:'ttNoiDung', nhan:'Sản phẩm truyền thông chờ duyệt nội dung', quyen:'duyetNoiDungTT',
+   tab:'truyenThong', sec:'yeuCau',
+   lay:function(){ return (yeuCauTTList||[]).filter(function(y){ return y.trangThai==='Chờ duyệt nội dung'; }); },
+   dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }},
+
+  {ma:'ttPhatHanh', nhan:'Sản phẩm truyền thông chờ duyệt phát hành', quyen:'duyetPhatHanhTT',
+   tab:'truyenThong', sec:'yeuCau',
+   lay:function(){ return (yeuCauTTList||[]).filter(function(y){ return y.trangThai==='Chờ duyệt phát hành'; }); },
+   dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }}
+];
+
+let cdMoRong = {};
+function xoeChoDuyet(ma){ cdMoRong[ma] = !cdMoRong[ma]; render(); }
+function toiHangDoi(tab, sec){ currentSection[tab] = sec; switchTab(tab); }
+
+/* MỘT CỬA. Mọi màn cần biết "có gì chờ tôi duyệt" đều gọi hàm này. */
+function moiThuChoToiDuyet(){
+  if(!currentUser) return [];
+  const ra = [];
+  HANG_DOI_DUYET.forEach(function(q){
+    if(!hasPerm(q.quyen)) return;
+    let ds = [];
+    try{ ds = q.lay() || []; }catch(e){ ds = []; }
+    if(!ds.length) return;
+    const dong = ds.map(function(x){
+      try{ return q.dong(x); }catch(e){ return {ten:'', phu:'', ai:'', ngay:'', tien:0}; }
+    });
+    ra.push({ma:q.ma, nhan:q.nhan, tab:q.tab, sec:q.sec, so:ds.length, dong:dong,
+      tien: dong.reduce(function(s, d){ return s + (Number(d.tien)||0); }, 0)});
+  });
+  return ra;
+}
+/* Tổng số việc đang chờ chính tôi — dùng cho con số đỏ trên thanh tab */
+function soChoToiDuyet(){
+  return moiThuChoToiDuyet().reduce(function(s, q){ return s + q.so; }, 0)
+    + viecChoToiXuLy().length;
+}
+
+/* Khối gom hiện ở màn Chờ tôi duyệt. Gom theo LOẠI, bấm mới xoè ra từng dòng:
+   liệt kê thẳng tất cả thì màn dài mà vẫn không biết loại nào gấp. */
+function khoiChoToiDuyet(){
+  const nhom = moiThuChoToiDuyet();
+  if(!nhom.length) return '';
+  const tong = nhom.reduce(function(s, q){ return s + q.so; }, 0);
+
+  let h = '<div class="card" style="border-color:var(--warn-br);">'
+    + '<div class="row wrap"><div style="min-width:0;">'
+    + '<h3 style="margin:0;color:var(--warn-ink);">Chờ bạn duyệt ở nơi khác · ' + tong + '</h3>'
+    + '<div class="small muted" style="margin-top:4px;">Những đề nghị này nằm ở tab khác '
+    + 'nhưng đang chờ chính bạn. Bấm vào một dòng để xem chi tiết, bấm nút để sang đúng chỗ duyệt.</div>'
+    + '</div></div>';
+
+  h += nhom.map(function(q){
+    const mo = !!cdMoRong[q.ma];
+    let r = '<div class="list-row" style="align-items:flex-start;">'
+      + '<div style="min-width:0;flex:1;cursor:pointer;" onclick="xoeChoDuyet(\'' + q.ma + '\')">'
+      + '<div><b>' + esc(q.nhan) + '</b> '
+      + '<span class="badge b-warn" style="margin-left:4px;">' + q.so + '</span>'
+      + (q.tien ? ' <span class="small muted">· ' + fmtTien(q.tien) + 'đ</span>' : '')
+      + '</div>'
+      + '<div class="small muted">' + (mo ? '▾ thu lại' : '▸ xem ' + q.so + ' dòng') + '</div></div>'
+      + '<button class="btn btn-sm btn-primary" onclick="toiHangDoi(\'' + q.tab + '\',\'' + q.sec + '\')">Tới chỗ duyệt</button>'
+      + '</div>';
+    if(mo) r += '<div style="padding:2px 0 8px 10px;border-left:2px solid var(--vien);margin-left:2px;">'
+      + q.dong.slice(0, 20).map(function(d){
+          return '<div class="small" style="padding:5px 0 5px 10px;border-bottom:1px solid var(--vien-2);">'
+            + '<b>' + esc(d.ten) + '</b>'
+            + (d.tien ? ' · <b>' + fmtTien(d.tien) + 'đ</b>' : '')
+            + (d.phu ? '<div class="muted">' + esc(d.phu) + '</div>' : '')
+            + ((d.ai || d.ngay) ? '<div class="muted">'
+                + (d.ai ? 'đề nghị bởi ' + esc(d.ai) : '')
+                + (d.ai && d.ngay ? ' · ' : '')
+                + (d.ngay ? fmtDate(d.ngay) : '') + '</div>' : '')
+            + '</div>';
+        }).join('')
+      + (q.dong.length > 20 ? '<div class="small muted" style="padding:6px 0 0 10px;">còn '
+          + (q.dong.length - 20) + ' dòng nữa — bấm Tới chỗ duyệt để xem hết.</div>' : '')
+      + '</div>';
+    return r;
+  }).join('');
+
+  return h + '</div>';
+}
 function viecQuaHan(list){
   const t=todayISO();
   return (list||congViecList).filter(function(v){
@@ -3026,6 +3166,23 @@ function render(){
      (gõ tìm kiếm, lưu xong, dữ liệu về từ máy chủ) thì hiện thẳng kết quả. */
   if(canChayHieuUng){ canChayHieuUng = false; chayHieuUngBieuDo(); }
   else datNgayKetQua();
+  veSoChoDuyetTab();
+}
+
+/* Con số đỏ trên tab Công việc. Nhìn thanh menu là biết có việc chờ mình,
+   không phải mở từng tab ra mới biết. */
+function veSoChoDuyetTab(){
+  const b = document.querySelector('#tabbar button[data-tab="congViec"]');
+  if(!b) return;
+  let so = 0;
+  try{ so = soChoToiDuyet(); }catch(e){ so = 0; }
+  const cu = b.querySelector('.dem-tab');
+  if(!so){ if(cu) cu.remove(); return; }
+  const chu = so > 99 ? '99+' : String(so);
+  if(cu){ if(cu.textContent !== chu) cu.textContent = chu; return; }
+  const s = document.createElement('span');
+  s.className = 'dem-tab'; s.textContent = chu;
+  b.appendChild(s);
 }
 
 function emptyBox(ico, txt){ return '<div class="empty"><div class="ico">'+ico+'</div>'+esc(txt)+'</div>'; }
@@ -3507,13 +3664,16 @@ function thuThapCanhBao(){
     tieuDe: viecQH.length + ' việc quá hạn có phần của tôi',
     chiTiet: viecQH.slice(0,2).map(function(v){ return v.tenViec || v.maQT; }).join(' · '),
     tab:'congViec', sec:'cuaToi'});
-  if(hasPerm('duyetIn')){
-    const inCho = phieuInList.filter(function(p){ return p.trangThai === 'Chờ duyệt'; });
-    them({tang:1, mau:'warn', soLuong:inCho.length,
-      tieuDe: inCho.length + ' giấy đề nghị in chờ tôi duyệt',
-      chiTiet: inCho.slice(0,3).map(function(p){ return p.veViec || p.hangMuc; }).join(' · '),
-      tab:'inAn', sec:'phieu'});
-  }
+  /* MỘT CỬA: mọi hàng đợi duyệt đều lên Tổng quan, không bỏ sót loại nào.
+     Trước V1.29.0 chỉ có phiếu in và hai loại truyền thông được báo; miễn
+     giảm, hoàn phí và phiếu xuất kho nằm im ở tab của nó. */
+  moiThuChoToiDuyet().forEach(function(q){
+    them({tang:1, mau:'danger', soLuong:q.so,
+      tieuDe: q.so + ' ' + q.nhan.toLowerCase() + ' chờ tôi duyệt'
+        + (q.tien ? ' · ' + fmtTien(q.tien) + 'đ' : ''),
+      chiTiet: q.dong.slice(0,3).map(function(d){ return d.ten; }).filter(Boolean).join(' · '),
+      tab:q.tab, sec:q.sec});
+  });
   if(hasPerm('xemInAn')){
     const treHan = phieuInList.filter(function(p){
       return ['Hoàn tất','Từ chối'].indexOf(p.trangThai) < 0
@@ -7307,6 +7467,7 @@ function setFilterViec(){ filterViecText=$('fViecText').value; render(); }
 function viewCongViec(){
   const sec = currentSection.congViec || 'choDuyet';
   if(sec==='quyTrinh') return viewDanhSachQuyTrinh();
+  if(sec==='choDuyet' && !cdMoRong) cdMoRong = {};
   let ds, tieuDe, moTa;
   if(sec==='choDuyet'){ ds = viecChoToiXuLy(); tieuDe='Chờ tôi xử lý'; moTa='Việc đang chờ bạn xác nhận hoặc phê duyệt.'; }
   else if(sec==='cuaToi'){ ds = vieccuaToi(); tieuDe='Việc của tôi'; moTa='Việc bạn chủ trì, phối hợp, xác nhận hoặc phê duyệt.'; }
@@ -7333,6 +7494,10 @@ function viewCongViec(){
     + '<div class="small muted" style="margin-top:9px;border-top:1px solid var(--border);padding-top:8px;">'
     + 'QĐ 14 Phần A mục 3: việc giao nhiệm vụ có sản phẩm bàn giao và thời hạn phải thực hiện qua kênh chính thức và lưu vết được. '
     + 'Việc phát sinh từ cảnh báo học vụ hoặc công nợ thì bấm Giao việc ngay tại đó, hệ thống tự điền và gắn với học viên.</div></div>';
+
+  /* Khối gom mọi hàng đợi duyệt ở các tab khác. Chỉ hiện ở mục Chờ tôi duyệt,
+     vì đó là chỗ người dùng vào để hỏi "có gì chờ tôi không". */
+  if(sec === 'choDuyet') h += khoiChoToiDuyet();
 
   /* Ba ô đếm để thấy ngay việc nào gấp */
   const hnV = todayISO();
