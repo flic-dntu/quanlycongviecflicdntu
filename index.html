@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.29.0   |   Ngày: 30/10/2026
+ Phiên bản: V1.29.1   |   Ngày: 30/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -1357,10 +1357,18 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.29.0';
+const PHIEN_BAN = 'V1.29.1';
 const NGAY_PHIEN_BAN = '30/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.29.1', ngay:'30/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Tách quyền đối soát làm hai. Trước đây tick đối soát từng học viên và ký biên bản đối soát tháng dùng CHUNG một quyền, nên ai ký được biên bản thì cũng phải đi tick từng em trên màn Học phí học viên. Phó Giám đốc mở một lớp chín em là thấy chín cái nút tick, trong khi đó là việc hằng ngày của Kế toán. Nay xacNhanDoiSoat chỉ còn nghĩa tick từng em, và quyền mới duyetBienBanDoiSoat là ký biên bản tháng.'},
+    {loai:'Mới', nd:'Phân lại quyền theo đúng việc: CV Hành chính Kế toán được tick đối soát từng em, vì đó là thao tác đối chiếu với phiếu thu bên Sổ Thu Chi, việc của chính bộ phận đó. Giám đốc, Phó Giám đốc và Trưởng bộ phận Kế toán Tài chính ký biên bản tháng. Phó Giám đốc KHÔNG còn thấy nút tick trên màn Học phí học viên nữa.'},
+    {loai:'Mới', nd:'Chuyển chốt tách bạch của QĐ 14 từ cái TICK sang cái KÝ BIÊN BẢN. Cái tick không phải chốt kiểm soát, nó là bảng kê công việc của Kế toán. Chốt thật gồm ba lớp đã có sẵn và vẫn nguyên vẹn: hai bên khoá số độc lập không ai sửa được số của bên kia, máy tự so và lệch chỗ nào phải giải trình chỗ đó, còn một khoản lệch chưa giải trình thì nút ký biên bản không hiện ra. Thêm vào đó người ký không được là người ghi nhận thu hay người khoá số thu.'},
+    {loai:'Mới', nd:'Biên bản đối soát chờ ký nay là hàng đợi thứ tám trong một cửa Chờ tôi duyệt. Chỉ hiện khi CẢ HAI bên đã khoá số; một bên chưa khoá thì việc đang nằm ở bên đó chứ không phải chờ Ban lãnh đạo. Dòng chi tiết nói rõ còn mấy khoản lệch chưa giải trình để biết vì sao chưa ký được.'},
+    {loai:'Sửa lỗi', nd:'Ba chỗ trong phần mềm nói ba kiểu khác nhau về việc ai phải đối soát: ghi chú trong mã viết Kế toán chốt số, câu báo lỗi viết Chỉ Phó Giám đốc hoặc người được giao, màn biên bản viết Chờ Phó Giám đốc kiêm Trưởng bộ phận Kế toán Tài chính. Nay thống nhất một cách nói theo đúng phân quyền mới.'},
+    {loai:'Cải tiến', nd:'Gom việc đếm khoản lệch chưa giải trình về một cửa, trước đây màn đối soát tự đếm riêng nên có thể ra số khác với màn Chờ tôi duyệt. Phép phân tích tĩnh 23 nay chặn luôn việc gộp ngược hai quyền lại, đặt chốt tách bạch nhầm lên cái tick, hoặc để biên bản hiện là chờ ký khi một bên chưa khoá số. Bộ kiểm thử thứ 26 lên 71 phép thử, thêm 8 phép thử đột biến đều bị bắt.'},
+  ]},
   {v:'V1.29.0', ngay:'30/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Ban lãnh đạo phát hiện 30/10/2026: đề nghị miễn giảm của Hành chính Kế toán gửi mấy hôm trước mà tài khoản Phó Giám đốc không hề thấy. Soi mã thì đây là lỗi hệ thống chứ không phải một màn lẻ. Phần mềm có BẢY hàng đợi duyệt nằm ở NĂM tab khác nhau, nhưng màn Chờ tôi duyệt chỉ đọc đúng một bảng là bảng công việc giao nhau. Sáu hàng đợi còn lại nằm im ở tab của nó: không con số, không cảnh báo, không ai biết. Người có quyền duyệt phải tự nhớ mở từng tab mỗi ngày, mà thực tế là không ai nhớ nên đề nghị nằm đó hàng tuần.'},
     {loai:'Mới', nd:'Một cửa gom mọi thứ đang chờ chính người đang đăng nhập duyệt: miễn giảm học phí, hoàn phí và bảo lưu, phiếu xuất kho ở cả hai bước Hành chính và Ban Giám đốc, giấy đề nghị in, sản phẩm truyền thông chờ duyệt nội dung và chờ duyệt phát hành. Lọc theo đúng quyền nên không ai thấy việc chờ duyệt của người khác. Thêm hàng đợi mới sau này chỉ khai một dòng vào bảng chung, không phải sửa Tổng quan, không phải sửa màn Chờ tôi duyệt, không phải sửa con số trên tab.'},
@@ -1938,7 +1946,10 @@ const PERM_LIST = [
   {key:'suaThamSo',       label:'Sửa tham số hệ thống', nhom:'Hệ thống'},
   {key:'quanLyTaiKhoan',  label:'Quản lý tài khoản',     nhom:'Hệ thống'},
   {key:'nhapDuLieu',      label:'Nhập dữ liệu từ Excel', nhom:'Hệ thống'},
-  {key:'xacNhanDoiSoat',  label:'Xác nhận đối soát',     nhom:'Tài chính'},
+  /* Hai việc KHÁC HẲN nhau, V1.29.1 tách ra vì gộp chung thì ai ký được biên
+     bản tháng cũng phải đi tick từng em — việc hằng ngày của Kế toán. */
+  {key:'xacNhanDoiSoat',  label:'Tick đối soát từng học viên', nhom:'Tài chính'},
+  {key:'duyetBienBanDoiSoat', label:'Ký biên bản đối soát tháng', nhom:'Tài chính'},
   {key:'duyetMienGiam',   label:'Duyệt miễn giảm học phí', nhom:'Tài chính'}
 ];
 /* Cặp quyền không được giữ đồng thời — QĐ 14 Phần A mục 3 và mục III.5 */
@@ -1947,24 +1958,28 @@ const CAP_XUNG_DOT = [
      làm cả hai, và quyền đó là ghiNhanThu. Nên chốt của QĐ 14 phải đặt lên
      chính ghiNhanThu; trước đây đặt lên thuTien, một quyền không dòng nào dùng,
      nên chốt chỉ nằm trên giấy. */
-  {a:'ghiNhanThu', b:'xacNhanDoiSoat', lyDo:'Người ghi nhận thu học phí không đồng thời là người xác nhận đối soát cùng một nguồn thu (Phần A mục 3; mục III.5).'},
+  /* V1.29.1: chốt chuyển từ cái TICK sang cái KÝ BIÊN BẢN. Tick từng em chỉ là
+     bảng kê công việc của Kế toán, không phải chốt kiểm soát. Chốt thật là:
+     hai bên khoá số độc lập → máy so → lệch phải giải trình → mới ký được biên
+     bản, và người ký KHÔNG được là người ghi thu hay khoá số. */
+  {a:'ghiNhanThu', b:'duyetBienBanDoiSoat', lyDo:'Người ghi nhận thu học phí không đồng thời là người ký biên bản đối soát cùng một nguồn thu (Phần A mục 3; mục III.5).'},
   {a:'khoaSoThu', b:'khoaDsLop', lyDo:'Đối soát phải do hai bộ phận độc lập thực hiện. Một người không được khoá cả danh sách lớp lẫn số thu (Phần A mục 3).'},
-  {a:'khoaSoThu', b:'xacNhanDoiSoat', lyDo:'Người khoá số thu không đồng thời là người xác nhận biên bản đối soát.'},
+  {a:'khoaSoThu', b:'duyetBienBanDoiSoat', lyDo:'Người khoá số thu không đồng thời là người ký biên bản đối soát.'},
   {a:'ghiNhanThu', b:'duyetMienGiam', lyDo:'Người ghi nhận thu học phí không đồng thời là người duyệt miễn giảm học phí. Để một người vừa ghi thu vừa xoá được công nợ là bỏ hẳn chốt kiểm soát (Phần A mục 3).'}
 ];
 
 /* Quyền mặc định theo vị trí */
 const QUYEN_MAC_DINH = {
-  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','duyetMienGiam','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
-  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','duyetMienGiam','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','xacNhanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','suaThamSo','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
+  'FLIC-GD-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','duyetMienGiam','duyetBienBanDoiSoat','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
+  'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','duyetMienGiam','xuLyPhanAnh','quanLyGiaoVien','giaoViec','pheDuyetViec','quanLyTaiKhoan','duyetBienBanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','suaThamSo','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
   'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe','nhapDuLieu','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
   'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest','quanLyLead','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa','chotMoLopOn'],
   'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
   'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
   'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','xemLichCa','dangKyCa'],
-  'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn','xemTaiSan','quanLyKho','deNghiXuatKho','nhapDuLieu','xemHeThong','xemLichCa','dangKyCa'],
+  'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn','xemTaiSan','quanLyKho','deNghiXuatKho','nhapDuLieu','xemHeThong','xemLichCa','dangKyCa','xacNhanDoiSoat'],
   'FLIC-TVTS-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','tiepNhanPhanAnh','suaHocVien','giaoViec','quanLyLead','ghiCuocGoi','chotNhapHoc','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa','themThiSinhTuDo'],
-  'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetHoanPhi','xemLichCa','dangKyCa'],
+  'FLIC-KTTC-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','xacNhanDoiSoat','duyetBienBanDoiSoat','duyetHoanPhi','xemLichCa','dangKyCa'],
   'FLIC-CM-00':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','deXuatIn','xemTuyenSinh','xemPhieuTest','tuVanSauTest','xemLichCa','dangKyCa'],
   'FLIC-GV-01':   ['xemTuyenSinh','xemPhieuTest','nhapKetQuaTest','xemLichCa','dangKyCa']
 };
@@ -2135,6 +2150,8 @@ const QUYEN_GHI = {
   luuHocBu:'quanLyHocBu', doiTrangThaiHocBu:'quanLyHocBu',
   /* Báo nghỉ một buổi là sửa lịch lớp, nên đi cùng quyền sửa lớp */
   luuNghiBuoi:'suaLop', boNghiBuoi:'suaLop',
+  /* Tick từng em là việc của Kế toán; ký biên bản tháng là việc của Ban lãnh đạo */
+  doiSoatHocPhi:'xacNhanDoiSoat', xacNhanDoiSoatKy:'duyetBienBanDoiSoat',
   luuPhanAnh:'tiepNhanPhanAnh',
   luuXuLyPhanAnh:'xuLyPhanAnh', chuyenBGD:'xuLyPhanAnh',
 
@@ -2948,8 +2965,42 @@ const HANG_DOI_DUYET = [
   {ma:'ttPhatHanh', nhan:'Sản phẩm truyền thông chờ duyệt phát hành', quyen:'duyetPhatHanhTT',
    tab:'truyenThong', sec:'yeuCau',
    lay:function(){ return (yeuCauTTList||[]).filter(function(y){ return y.trangThai==='Chờ duyệt phát hành'; }); },
-   dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }}
+   dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }},
+
+  /* Biên bản đối soát tháng: chỉ chờ ký khi CẢ HAI bên đã khoá số. Một bên
+     chưa khoá thì việc đang nằm ở bên đó, không phải chờ Ban lãnh đạo. */
+  {ma:'bienBanDoiSoat', nhan:'Biên bản đối soát tháng chờ ký', quyen:'duyetBienBanDoiSoat',
+   tab:'taiChinh', sec:'doiSoat',
+   lay:function(){
+     return (doiSoatList||[]).filter(function(d){
+       if(!d.hocVu || !d.hocVu.ngayKhoa) return false;
+       if(!d.keToan || !d.keToan.ngayKhoa) return false;
+       return !(d.xacNhan && d.xacNhan.ngay);
+     });
+   },
+   dong:function(d){
+     const con = soLechChuaGiaiTrinh(d);
+     return {ten:'Kỳ ' + (d.ky || ''),
+       phu: con ? 'Còn ' + con + ' khoản lệch chưa giải trình — giải trình xong mới ký được'
+                : 'Hai bên đã khoá số, đã giải trình xong, sẵn sàng ký',
+       ai:'', ngay:(d.keToan && d.keToan.ngayKhoa) || '', tien:0};
+   }}
 ];
+/* Đếm khoản còn lệch mà chưa giải trình — dùng chung cho màn đối soát và
+   cho một cửa, để hai nơi không đếm ra hai số khác nhau. */
+function soLechChuaGiaiTrinh(d){
+  if(!d || !d.hocVu || !d.keToan) return 0;
+  const r = {};
+  (d.hocVu.dong || []).forEach(function(x){ r[x.lopId] = {duKien:Number(x.duKien)||0, thu:0}; });
+  (d.keToan.dong || []).forEach(function(x){
+    if(!r[x.lopId]) r[x.lopId] = {duKien:0, thu:0};
+    r[x.lopId].thu = Number(x.thu)||0;
+  });
+  const gt = d.giaiTrinh || {};
+  return Object.keys(r).filter(function(k){
+    return (r[k].duKien - r[k].thu) !== 0 && !gt[k];
+  }).length;
+}
 
 let cdMoRong = {};
 function xoeChoDuyet(ma){ cdMoRong[ma] = !cdMoRong[ma]; render(); }
@@ -14857,11 +14908,18 @@ function setFilterHp(){ filterHpText = $('fHpText').value; render(); }
 
 /* ============ ĐỐI SOÁT LẦN 2 CỦA KẾ TOÁN ============
    Học vụ theo dõi và ghi chú tình hình (rà soát lần 1), Kế toán đối chiếu
-   với phiếu thu bên Sổ Thu Chi rồi xác nhận ở đây (rà soát lần 2).
-   Hai vai tách bạch theo QĐ 14: Học vụ không ghi nhận tiền, Kế toán chốt số. */
+   với phiếu thu bên Sổ Thu Chi rồi tick ở đây (rà soát lần 2).
+
+   V1.29.1 tách làm HAI quyền, vì gộp chung thì ai ký được biên bản tháng
+   cũng phải đi tick từng em — việc hằng ngày của Kế toán:
+     · xacNhanDoiSoat      — tick từng em, Kế toán làm
+     · duyetBienBanDoiSoat — ký biên bản tháng, Ban lãnh đạo làm
+
+   Cái TICK không phải chốt kiểm soát; nó là bảng kê công việc của Kế toán.
+   Chốt thật nằm ở biên bản: hai bên khoá số độc lập, máy so, lệch phải giải
+   trình, và người ký KHÔNG được là người ghi thu hay khoá số. */
 function doiSoatHocPhi(gdId){
-  if(!hasPerm('xacNhanDoiSoat')){
-    showToast('Chỉ Phó Giám đốc hoặc người được giao mới xác nhận đối soát'); return; }
+  if(!canQuyen('doiSoatHocPhi')) return;
   const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
   if(!gd) return;
   if(!khoanThu(gd).length){
@@ -14947,8 +15005,12 @@ function viewHocPhi(){
       + (coGhiChu ? ' · <span style="color:var(--info);">' + coGhiChu
           + ' em có ghi chú của Học vụ</span>' : '')
       + '</div>'
+      /* Nói đúng việc của người đang xem: ai không tick được thì đừng bảo họ bấm */
       + '<div class="small muted">Học vụ rà soát lần 1 và ghi chú tình hình trao đổi với phụ huynh. '
-      + 'Kế toán đối chiếu với phiếu thu bên Sổ Thu Chi FLIC rồi bấm Xác nhận đối soát ở từng em. '
+      + (hasPerm('xacNhanDoiSoat')
+         ? 'Anh chị đối chiếu với phiếu thu bên Sổ Thu Chi FLIC rồi bấm Xác nhận đối soát ở từng em. '
+         : 'Kế toán đối chiếu với phiếu thu bên Sổ Thu Chi FLIC rồi tick ở từng em — '
+           + 'đây là việc của Kế toán, không cần Ban lãnh đạo. Biên bản tháng ký ở mục Đối soát hai bên. ')
       + 'Ghi chú của Học vụ hiện ngay dưới tên, không phải mở tab khác.</div></div>';
   })();
 
@@ -16552,15 +16614,17 @@ function viewDoiSoat(){
   }
 
   /* Xác nhận */
-  const chuaGiaiTrinh = lech.filter(function(k){ return !((d.giaiTrinh||{})[k]); });
+  /* MỘT CỬA đếm khoản lệch chưa giải trình. Màn này và màn Chờ tôi duyệt
+     cùng gọi một hàm, nên không thể ra hai số khác nhau. */
+  const soChuaGiaiTrinh = soLechChuaGiaiTrinh(d);
   h += '<div class="card"><h3>Xác nhận biên bản</h3>';
   if(d.xacNhan && d.xacNhan.ngay){
     h += '<div class="small" style="color:var(--ok);">✔ Đã xác nhận ngày '+fmtDate(d.xacNhan.ngay)
       + ' bởi '+esc(d.xacNhan.nguoi)+'</div>';
-  } else if(!hasPerm('xacNhanDoiSoat')){
-    h += '<div class="small muted">Chờ Phó Giám đốc kiêm Trưởng bộ phận Kế toán – Tài chính xác nhận.</div>';
-  } else if(chuaGiaiTrinh.length){
-    h += '<div class="small" style="color:var(--warn);">Còn '+chuaGiaiTrinh.length
+  } else if(!hasPerm('duyetBienBanDoiSoat')){
+    h += '<div class="small muted">Chờ Ban lãnh đạo hoặc Trưởng bộ phận Kế toán – Tài chính ký biên bản.</div>';
+  } else if(soChuaGiaiTrinh){
+    h += '<div class="small" style="color:var(--warn);">Còn '+soChuaGiaiTrinh
       + ' khoản lệch chưa giải trình. Giải trình xong mới xác nhận được.</div>';
   } else {
     h += '<button class="btn btn-primary btn-block" onclick="xacNhanDoiSoatKy(\''+dsKy+'\')">Xác nhận biên bản đối soát</button>';
@@ -16643,7 +16707,7 @@ function ghiGiaiTrinh(ky, lopId){
   }).catch(fsErr);
 }
 function xacNhanDoiSoatKy(ky){
-  if(!hasPerm('xacNhanDoiSoat')){ showToast('Bạn không có quyền xác nhận đối soát'); return; }
+  if(!canQuyen('xacNhanDoiSoatKy')) return;
   const d = timDoiSoat(ky);
   if(!d || !d.hocVu || !d.keToan){ showToast('Cả hai bên phải khoá số trước'); return; }
   if(!confirm('Xác nhận biên bản đối soát kỳ '+ky+'?\nSau khi xác nhận không mở khoá được nữa.')) return;
