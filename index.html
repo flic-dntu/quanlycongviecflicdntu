@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.29.1   |   Ngày: 30/10/2026
+ Phiên bản: V1.29.2   |   Ngày: 30/10/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -1357,10 +1357,19 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.29.1';
+const PHIEN_BAN = 'V1.29.2';
 const NGAY_PHIEN_BAN = '30/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.29.2', ngay:'30/10/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Bấm Giao việc ở màn Cảnh báo học vụ, điền form, lưu xong thì dòng cảnh báo vẫn y nguyên như chưa làm gì. Nguyên nhân: nút Giao việc chỉ TẠO một đầu việc rồi thôi, còn màn Cảnh báo không bao giờ đọc ngược lại xem đã có việc nào cho dòng này chưa. Hai bên không biết nhau tồn tại. Hậu quả là không biết mình đã giao hay chưa, và giao đi giao lại cùng một học viên nhiều lần mà phần mềm không cản. Màn Công nợ mắc đúng lỗi này, sửa luôn một thể.'},
+    {loai:'Mới', nd:'Việc giao từ một cảnh báo nay mang theo MÃ NGUỒN của đúng cảnh báo đó. Trước đây chỉ mang mã học viên nên không phân biệt được việc này giao cho cảnh báo nào, mà một em có thể có nhiều cảnh báo khác nhau cùng lúc.'},
+    {loai:'Mới', nd:'Dòng cảnh báo và dòng công nợ hiện dấu đã giao việc, kèm tên người nhận, hạn chót và trạng thái việc. Nút đổi từ Giao việc thành Giao thêm việc, và có thêm nút Xem việc nhảy thẳng sang tab Công việc đã lọc sẵn đúng việc đó.'},
+    {loai:'Mới', nd:'Giao thêm việc khi dòng đó đã có việc đang chạy thì phải xác nhận, hộp hỏi nêu rõ tên việc và người đang nhận. Trước đây bấm bao nhiêu lần là tạo bấy nhiêu việc trùng mà không ai hay.'},
+    {loai:'Mới', nd:'Việc hoàn thành thì dòng chuyển xanh và nhắc soát lại rồi bấm Đã xử lý để đóng cảnh báo. TUYỆT ĐỐI không tự đóng — Ban lãnh đạo quyết ngày 30/10/2026: người nhận việc tự đánh dấu hoàn thành là tự khai, còn học viên có quay lại học hay không thì Học vụ mới biết, nên phải có người soát rồi bấm.'},
+    {loai:'Cải tiến', nd:'Việc giao trước bản này không có mã nguồn nên vẫn được nêu ra, nhưng ghi rõ là việc giao trước đây khớp theo học viên chứ không theo đúng cảnh báo. Thà nói rõ còn hơn im lặng khớp nhầm.'},
+    {loai:'Cải tiến', nd:'Thêm phép phân tích tĩnh thứ 24: mọi chỗ giao việc từ một cảnh báo đều phải ghi mã nguồn, hai màn nguồn đều phải đọc ngược và vẽ dấu đã giao, giao trùng phải hỏi, và giao việc tuyệt đối không được tự đóng cảnh báo. Ai thêm chỗ giao việc mới mà quên nối là kiểm tra báo đỏ. Thêm bộ kiểm thử thứ 27 với 45 phép thử và 8 phép thử đột biến đều bị bắt.'},
+  ]},
   {v:'V1.29.1', ngay:'30/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Tách quyền đối soát làm hai. Trước đây tick đối soát từng học viên và ký biên bản đối soát tháng dùng CHUNG một quyền, nên ai ký được biên bản thì cũng phải đi tick từng em trên màn Học phí học viên. Phó Giám đốc mở một lớp chín em là thấy chín cái nút tick, trong khi đó là việc hằng ngày của Kế toán. Nay xacNhanDoiSoat chỉ còn nghĩa tick từng em, và quyền mới duyetBienBanDoiSoat là ký biên bản tháng.'},
     {loai:'Mới', nd:'Phân lại quyền theo đúng việc: CV Hành chính Kế toán được tick đối soát từng em, vì đó là thao tác đối chiếu với phiếu thu bên Sổ Thu Chi, việc của chính bộ phận đó. Giám đốc, Phó Giám đốc và Trưởng bộ phận Kế toán Tài chính ký biên bản tháng. Phó Giám đốc KHÔNG còn thấy nút tick trên màn Học phí học viên nữa.'},
@@ -2330,6 +2339,73 @@ function viecDaKhep(v){
   return VIEC_DA_KHEP.indexOf(v && v.trangThai) >= 0;
 }
 function viecConChay(v){ return !viecDaKhep(v); }
+
+/* ===== MỘT CỬA: NỐI NGƯỢC TỪ CẢNH BÁO VỀ VIỆC ĐÃ GIAO =====
+   Trước V1.29.2, nút "Giao việc" ở màn Cảnh báo và màn Công nợ chỉ TẠO một
+   đầu việc rồi thôi. Hai màn đó không bao giờ đọc ngược lại xem đã có việc
+   nào cho dòng này chưa. Bấm giao việc xong, dòng cảnh báo y nguyên như chưa
+   làm gì — không biết mình đã giao hay chưa, và giao đi giao lại được nhiều
+   lần mà phần mềm không cản.
+
+   Nay mọi chỗ giao việc từ một cảnh báo đều ghi kèm MÃ NGUỒN vào ganVoi.khoa,
+   và màn đó gọi hàm này để biết đã giao chưa. Thêm chỗ giao việc mới thì phải
+   ghi khoa — phép phân tích tĩnh 24 chặn việc quên. */
+function viecTheoKhoaNguon(khoa, hocVienId){
+  const ra = {dung:[], theoEm:[]};
+  if(!khoa && !hocVienId) return ra;
+  (congViecList || []).forEach(function(v){
+    const g = v.ganVoi;
+    if(!g) return;
+    if(khoa && g.khoa === khoa){ ra.dung.push(v); return; }
+    /* Việc giao TRƯỚC V1.29.2 không có mã nguồn. Vẫn nêu ra cho người dùng
+       biết, nhưng nói rõ là khớp theo học viên chứ không theo đúng cảnh báo. */
+    if(!g.khoa && hocVienId && g.loai === 'hocVien' && g.id === hocVienId) ra.theoEm.push(v);
+  });
+  return ra;
+}
+/* Vẽ dòng "đã giao việc" — dùng chung cho màn Cảnh báo và màn Công nợ, để
+   hai nơi không mô tả hai kiểu khác nhau về cùng một thứ. */
+function dongViecDaGiao(tt){
+  if(!tt) return '';
+  const v = tt.viec;
+  const ai = esc(v.chuTriTen || 'chưa rõ người nhận');
+  const dauTheoEm = tt.theoEm
+    ? ' <span style="color:var(--warn-ink);">(việc giao trước đây, khớp theo học viên)</span>' : '';
+  if(tt.dangChay){
+    return '<div class="small" style="color:var(--info-ink);background:var(--info-bg);'
+      + 'border:1px solid var(--info-br);border-radius:7px;padding:5px 9px;margin-top:5px;">'
+      + '📋 Đã giao việc · <b>' + ai + '</b>'
+      + (v.hanChot ? ' · hạn ' + fmtDate(v.hanChot) : '')
+      + ' · ' + esc(v.trangThai || '')
+      + (tt.soChay > 1 ? ' · và ' + (tt.soChay - 1) + ' việc khác' : '')
+      + dauTheoEm + '</div>';
+  }
+  if(tt.daXong){
+    return '<div class="small" style="color:var(--ok-ink);background:var(--ok-bg);'
+      + 'border:1px solid var(--ok-br);border-radius:7px;padding:5px 9px;margin-top:5px;">'
+      + '✓ Việc đã hoàn thành'
+      + (v.tsHoanThanh ? ' ngày ' + fmtDate(new Date(v.tsHoanThanh).toISOString().slice(0,10)) : '')
+      + ' bởi <b>' + ai + '</b> — soát lại rồi bấm <b>Đã xử lý</b> để đóng cảnh báo.'
+      + dauTheoEm + '</div>';
+  }
+  return '<div class="small muted" style="margin-top:5px;">Việc đã giao trước đây nay '
+    + esc(v.trangThai || 'đã khép') + ' · ' + ai + dauTheoEm + '</div>';
+}
+
+/* Tóm tắt để vẽ lên dòng: đang có việc chạy không, hay việc đã xong chờ đóng */
+function tomTatViecDaGiao(khoa, hocVienId){
+  const v = viecTheoKhoaNguon(khoa, hocVienId);
+  const tatCa = v.dung.concat(v.theoEm);
+  if(!tatCa.length) return null;
+  const chay = tatCa.filter(viecConChay)
+    .sort(function(a, b){ return (a.hanChot||'9999').localeCompare(b.hanChot||'9999'); });
+  const xong = tatCa.filter(function(x){ return x.trangThai === 'Hoàn thành'; })
+    .sort(function(a, b){ return (b.tsHoanThanh||0) - (a.tsHoanThanh||0); });
+  return {viec: chay[0] || xong[0] || tatCa[0],
+          dangChay: chay.length > 0, soChay: chay.length,
+          daXong: chay.length === 0 && xong.length > 0,
+          theoEm: v.dung.length === 0};
+}
 /* Chỉ việc CÒN CHẠY mới tính quá hạn: việc đã từ chối hay đã huỷ thì hạn chót
    không còn ý nghĩa gì. */
 function viecTreHan(v, mocNgay){
@@ -5778,6 +5854,7 @@ function viewCanhBaoHocVu(){
       : 'Không có cảnh báo nào. Mọi lớp đang chạy bình thường.');
   else {
     h += locHv.slice(0, 150).map(function(m){
+      const ttViec = tomTatViecDaGiao(m.khoa[0], m.hocVienId);
       return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
         + '<div><b>' + esc(m.hoTen) + '</b> <span class="small muted">· lớp ' + esc(m.maLop) + '</span>'
         + (m.vanDe.length > 1 ? ' <span class="small muted">· ' + m.vanDe.length + ' vấn đề</span>' : '')
@@ -5791,13 +5868,17 @@ function viewCanhBaoHocVu(){
         + '<div class="small muted">' + esc(m.goiY)
         + (m.sdtPH ? ' · ' + esc(m.sdtPH) : ' · <span style="color:var(--warn);">chưa có SĐT phụ huynh</span>')
         + (m.tenPH ? ' · PH ' + esc(m.tenPH) : '') + '</div>'
+        + dongViecDaGiao(ttViec)
         + '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">'
         + '<button class="btn btn-sm btn-primary" onclick="danhDauNhieu(\'' + esc(m.khoa.join('|||')) + '\')">'
         + (m.khoa.length > 1 ? 'Đã xử lý cả ' + m.khoa.length : 'Đã xử lý') + '</button>'
         + (m.vanDe.length > 1
            ? '<button class="btn btn-sm" onclick="chonVanDeXuLy(\'' + m.gdId + '\')">Xử lý một phần</button>' : '')
         + (hasPerm('giaoViec')
-           ? '<button class="btn btn-sm" onclick="giaoViecTuCanhBao(\'' + m.khoa[0] + '\')">Giao việc</button>' : '')
+           ? '<button class="btn btn-sm" onclick="giaoViecTuCanhBao(\'' + m.khoa[0] + '\')">'
+             + (ttViec && ttViec.dangChay ? 'Giao thêm việc' : 'Giao việc') + '</button>' : '')
+        + (ttViec
+           ? '<button class="btn btn-sm" onclick="moViecDaGiao(\'' + ttViec.viec.id + '\')">Xem việc</button>' : '')
         + '<button class="btn btn-sm" onclick="moHoSoHocVienTuCB(\'' + m.hocVienId + '\')">Hồ sơ</button>'
         + '</div></div>'
         + '<div style="text-align:right;flex-shrink:0;">'
@@ -5837,6 +5918,11 @@ function giaoViecTuCanhBao(khoa){
   if(!hasPerm('giaoViec')){ showToast('Bạn không có quyền giao việc'); return; }
   const cb = gomCanhBaoHocVu().find(function(x){ return x.khoa === khoa; });
   if(!cb){ showToast('Cảnh báo này không còn'); return; }
+  const dangCo = tomTatViecDaGiao(khoa, cb.hocVienId);
+  if(dangCo && dangCo.dangChay
+     && !confirm('Cảnh báo này đã có việc đang chạy:\n'
+       + (dangCo.viec.tieuDe || '') + '\nNgười nhận: ' + (dangCo.viec.chuTriTen || '—')
+       + '\n\nVẫn giao thêm một việc nữa?')) return;
   formGiaoViec({
     tieuDe: cb.nhom + ': ' + cb.hoTen + ' (lớp ' + cb.maLop + ')',
     sanPham: 'Kết quả liên hệ và hướng xử lý, ghi lại trong mục Cảnh báo',
@@ -5844,9 +5930,19 @@ function giaoViecTuCanhBao(khoa){
       + (cb.sdtPH ? '\nSố điện thoại phụ huynh: ' + cb.sdtPH : '')
       + (cb.tenPH ? '\nPhụ huynh: ' + cb.tenPH : ''),
     hanChot: addDaysISO(todayISO(), cb.mucDo === 'Cao' ? 1 : 3),
-    ganVoi: {loai: 'hocVien', id: cb.hocVienId,
+    /* khoa = mã của ĐÚNG cảnh báo này, để màn Cảnh báo nối ngược về được.
+       Thiếu nó thì giao việc xong dòng cảnh báo vẫn y nguyên như chưa làm gì. */
+    ganVoi: {loai: 'hocVien', id: cb.hocVienId, khoa: khoa, nguon: 'canhBaoHocVu',
              ten: cb.hoTen + ' · lớp ' + cb.maLop, moTa: cb.nhom}
   });
+}
+/* Nhảy sang tab Công việc và lọc đúng việc đó, để không phải tự đi tìm */
+function moViecDaGiao(viecId){
+  const v = (congViecList || []).find(function(x){ return x.id === viecId; });
+  if(!v){ showToast('Việc này không còn'); return; }
+  filterViecText = v.tieuDe || '';
+  currentSection.congViec = 'tatCa';
+  switchTab('congViec');
 }
 function moHoSoHocVienTuCB(hocVienId){
   if(!hasPerm('xemHocVu')){ showToast('Bạn không có quyền xem hồ sơ'); return; }
@@ -15627,6 +15723,7 @@ function viewCongNoChiTiet(){
           + esc(tenGiaoVienCuaLop(x.lop) || '') + ' · ' + cung.length + ' học viên · nợ '
           + fmtTien(noLop) + 'đ</div>';
       }
+      const ttvCN = tomTatViecDaGiao('congNo|' + x.gd.id, x.hv.id);
       h += '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
         + '<div><b>' + esc(x.hv.hoTen) + '</b>'
         + (x.hv.sdtPH ? ' <span class="small muted">· ' + esc(x.hv.sdtPH) + '</span>' : '') + '</div>'
@@ -15640,12 +15737,16 @@ function viewCongNoChiTiet(){
              + (x.dot.hanDong ? ' · hạn ' + fmtDate(x.dot.hanDong) : '')
              + (x.dot.quaHan ? ' · <b>quá ' + x.dot.soNgayQua + ' ngày</b>' : '') + '</div>'
            : '<div class="small muted">Đóng một lần, chưa chia đợt</div>')
+        + dongViecDaGiao(ttvCN)
         + '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">'
         + (hasPerm('ghiNhanThu')
            ? '<button class="btn btn-sm btn-primary" onclick="formGhiThu(\'' + x.gd.id + '\')">Ghi thu</button>' : '')
         + '<button class="btn btn-sm" onclick="formKeHoachDong(\'' + x.gd.id + '\')">Kế hoạch đóng</button>'
         + (hasPerm('giaoViec')
-           ? '<button class="btn btn-sm" onclick="giaoViecThuNo(\'' + x.gd.id + '\')">Giao việc</button>' : '')
+           ? '<button class="btn btn-sm" onclick="giaoViecThuNo(\'' + x.gd.id + '\')">'
+             + (ttvCN && ttvCN.dangChay ? 'Giao thêm việc' : 'Giao việc') + '</button>' : '')
+        + (ttvCN
+           ? '<button class="btn btn-sm" onclick="moViecDaGiao(\'' + ttvCN.viec.id + '\')">Xem việc</button>' : '')
         + '<button class="btn btn-sm" onclick="moHoSoHocVienTuCB(\'' + x.hv.id + '\')">Hồ sơ</button>'
         + '</div></div>'
         + '<div style="text-align:right;flex-shrink:0;">'
@@ -15661,6 +15762,11 @@ function giaoViecThuNo(gdId){
   if(!hasPerm('giaoViec')){ showToast('Bạn không có quyền giao việc'); return; }
   const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
   if(!gd) return;
+  const dangCo = tomTatViecDaGiao('congNo|' + gd.id, gd.hocVienId);
+  if(dangCo && dangCo.dangChay
+     && !confirm('Khoản nợ này đã có việc đang chạy:\n'
+       + (dangCo.viec.tieuDe || '') + '\nNgười nhận: ' + (dangCo.viec.chuTriTen || '—')
+       + '\n\nVẫn giao thêm một việc nữa?')) return;
   const hv = hocVienList.find(function(x){ return x.id === gd.hocVienId; });
   const no = conNoCua(gd);
   const dot = dotSapDenHan(gd);
@@ -15674,6 +15780,7 @@ function giaoViecThuNo(gdId){
       + (hv && hv.sdtPH ? '\nSố điện thoại phụ huynh: ' + hv.sdtPH : ''),
     hanChot: addDaysISO(todayISO(), 3),
     ganVoi: {loai: 'hocVien', id: gd.hocVienId,
+             khoa: 'congNo|' + gd.id, nguon: 'congNo',
              ten: (hv ? hv.hoTen : '') + ' · lớp ' + maLopCua(gd.lopId),
              moTa: 'Công nợ ' + fmtTien(no) + 'đ'}
   });
