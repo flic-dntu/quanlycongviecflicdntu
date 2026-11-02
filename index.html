@@ -2,7 +2,7 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.29.2   |   Ngày: 30/10/2026
+ Phiên bản: V1.31.0   |   Ngày: 02/11/2026
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -1357,10 +1357,55 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.29.2';
+const PHIEN_BAN = 'V1.31.0';
 const NGAY_PHIEN_BAN = '30/10/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.31.0', ngay:'02/11/2026', muc:[
+    {loai:'Cải tiến', nd:'Gộp 13 hạng mục: 2 việc Ban lãnh đạo nêu 30/10/2026 và 9 góp ý của Khảo thí 02/11/2026, cộng 2 việc tinh gọn giao diện. Làm một đợt theo yêu cầu "đừng làm nhỏ lẻ nữa".'},
+    {loai:'Sửa lỗi', nd:'Lớp luyện thi bị nhắc tái phí sai. Aptis ESOL, UDCNTT, Tin học quốc tế, Tin học văn phòng, Lập trình và AI đều không nằm trong lộ trình nào — học xong, thi xong là hết, không có khoá kế tiếp. Nhưng màn Tái đăng ký chỉ xét lớp còn ít buổi hay sắp hết ngày, không hề hỏi có khoá sau không, nên vẫn đẩy các em đó vào ô Cần gọi mời. Học vụ gọi phụ huynh mời một khoá KHÔNG TỒN TẠI. Nay tách hai câu hỏi: mocTaiPhi hỏi đã chạm mốc chưa, lopCoKhoaKeTiep hỏi có khoá sau không, phải đủ cả hai mới nhắc. Câu trả lời lấy từ Tham số → Lộ trình, không gõ cứng tên nhóm vào mã nguồn.'},
+    {loai:'Mới', nd:'Màn Tái đăng ký hiện dòng "N lớp sắp kết thúc nhưng không nhắc tái phí", bấm xem được từng lớp kèm lý do. Bỏ qua mà im lặng là nguy hiểm: nếu Học vụ khai thiếu một lộ trình thì phần mềm nín luôn, cả lớp Cambridge cũng không ai nhắc mà không ai hay.'},
+    {loai:'Sửa lỗi', nd:'Form Miễn giảm đổ cả 9 gói ưu đãi cho mọi học viên, trong khi 8 gói chỉ dành cho Cambridge. Kế toán mở ra thấy 9 dòng không dùng được dòng nào, tưởng phần mềm thiếu chức năng. Nay lọc theo đúng nhóm chương trình của em đó, dùng CHUNG một hàm với màn Bảng giá của Tư vấn — hai nơi lọc khác nhau là tư vấn báo một kiểu, kế toán miễn một kiểu. Nhóm chưa có gói nào thì nói thẳng phải liên hệ Tư vấn tuyển sinh theo quy trình C6, và chỉ đường "Khác" cho trường hợp một lần. KHÔNG mở ô nhập tay: gõ được tên gói tuỳ ý thì số tiền miễn không còn căn cứ nào đối chiếu.'},
+    {loai:'Sửa lỗi', nd:'Định mức thù lao hội đồng thi đang cài sẵn trong phần mềm SAI so với Quyết định 19/QĐ-TTNNTH ngày 08/10/2026. Ra đề để 250.000/đề trong khi QĐ 19 là 200.000/đề; phản biện để 250.000/đề trong khi QĐ 19 là 100.000/đề với Tin học; chấm bài kỳ chứng nhận để 10.000/vòng trong khi QĐ 19 là 5.000/vòng; cán bộ coi thi và giám sát kỳ Tiếng Anh để 300.000 trong khi QĐ 19 là 400.000. Thiếu hẳn 5 vị trí QĐ 19 có: Phó Chủ tịch Hội đồng, Thư ký, Tổ trưởng hậu cần, Giữ đồ, Kỹ thuật mạng. Điều 4 QĐ 19 đã bãi bỏ mọi mức cũ trái với nó.'},
+    {loai:'Mới', nd:'Dựng lại bảng định mức đúng cấu trúc QĐ 19: 37 dòng, hai phụ lục áp dụng độc lập (Phụ lục I kỳ thi Tiếng Anh 16 dòng, Phụ lục II kỳ thi Tin học 21 dòng), trong Phụ lục II có NĂM CẶP nhiệm vụ (10 dòng) tách riêng mức chứng nhận với mức chứng chỉ, đơn giá cặp nào cũng khác nhau: Trưởng ban coi thi, Giám sát, Cán bộ coi thi, Giữ đồ, Chấm bài thi thực hành. Đơn giá KHÔNG còn là một ô: mỗi dòng có 5 bậc quy mô theo số thí sinh (0–100, 101–250, 251–500, 501–1.000, trên 1.000) kèm định biên từng bậc. Phần mềm tự chọn bậc theo số thí sinh của kỳ.'},
+    {loai:'Mới', nd:'Hai chốt chặn theo QĐ 19 khi xếp người vào hội đồng, chặn ở HÀM GHI chứ không chỉ tô đỏ trên form. Bậc nào QĐ 19 ghi dấu gạch ngang là không được chi — chặn thẳng, vì null khác 0 đồng. Vượt định biên thì hỏi lại kèm trích Điều 2 khoản 4: phát sinh thêm người phải có ý kiến Giám đốc trước ngày thi.'},
+    {loai:'Mới', nd:'Kỳ Cambridge được tách riêng và nói thẳng là nằm NGOÀI QĐ 19, vì QĐ 19 chỉ quy định thù lao thành viên Hội đồng thi mà kỳ này FLIC không lập hội đồng. Bốn mức đội hỗ trợ ghi rõ là mức trước QĐ 19, cần Giám đốc xác nhận trước khi quyết toán. Không lẳng lặng mượn đơn giá Phụ lục I.'},
+    {loai:'Mới', nd:'Đợt gửi danh sách cho Hội đồng VN290. Khảo thí chốt một lần danh sách khi tới hạn đăng ký thi giấy, sau đó vẫn nhận thêm thí sinh vì còn đề dư và thi máy đăng ký được tới trước ngày thi 10 ngày. Nay bấm Chốt đợt là đóng dấu số đợt và ngày lên toàn bộ em hiện có; em thêm sau tự gom thành đợt mới, có nút Xuất bổ sung chỉ xuất những em đó. Đợt đã chốt không mở ngược được. Em hoãn thi không gom vào đợt gửi.'},
+    {loai:'Sửa lỗi', nd:'Ô Hoãn thi trước đây chỉ có ở màn Điểm nên Khảo thí mở nút Sửa không thấy, tưởng phần mềm không có. Nay đưa ô Kết quả vào form Sửa thí sinh, chọn Hoãn thi là hiện ngay nút Chuyển sang kỳ bổ sung kèm giải thích lệ phí đã đóng được mang theo. Phần chuyển kỳ và không thu lại lệ phí vốn đã có sẵn, chỉ là nằm sai chỗ.'},
+    {loai:'Sửa lỗi', nd:'Danh sách thi xếp theo HỌ trong khi hội đồng thi xếp theo TÊN. Nguyễn Văn An phải đứng trước Trần Thị Ánh. Khảo thí dò tên và nhập điểm theo thứ tự của hội đồng nên phải lần mò. Nay xếp theo tên ở cả bốn nơi: màn Thí sinh, file xuất mẫu VN290, file danh sách tổng của kỳ, và màn cấp phát chứng chỉ — một hàm duy nhất, ba nơi ba kiểu sắp là file lệch với màn hình.'},
+    {loai:'Mới', nd:'Thêm ba trường in lên phôi chứng chỉ ƯDCNTT: nơi sinh theo giấy khai sinh, số CCCD, địa chỉ đang ở. Có cả ở form Sửa lẫn mẫu nhập Excel. Kỳ cấp chứng chỉ thiếu ba mục này thì báo đỏ; kỳ cấp chứng nhận dùng nội bộ nên không đòi. Số CCCD là dữ liệu định danh cá nhân nên màn danh sách chỉ hiện 4 số cuối, xem đủ phải mở hồ sơ và phải có quyền quản lý thí sinh. Nhập Excel sai định dạng CCCD bị chặn ngay ở bước xem trước.'},
+    {loai:'Mới', nd:'Ba mốc trước ngày thi khai được trong từng kỳ: hạn đăng ký, hạn đóng lệ phí, hạn chốt danh sách. Quá hạn thì đỏ, sắp hết hạn thì vàng, cùng vào khối Cần xử lý hôm nay ở Tổng quan. Mốc để sau ngày thi bị chặn ngay lúc lưu. Kỳ đã thi xong, đã huỷ hoặc hoàn tất thì thôi kêu. Ngưỡng báo trước để trong Tham số.'},
+    {loai:'Mới', nd:'Xuất Excel lịch thi theo tháng, quý, năm hoặc tất cả, gồm đủ ba mốc hạn, ngày thi, phòng, số thí sinh đã có và dự kiến, lệ phí, người phụ trách. Ô chọn phạm vi lọc cả màn hình lẫn file xuất, không để nút nói một đằng làm một nẻo.'},
+    {loai:'Mới', nd:'Khối Sắp khai giảng trong màn Lớp ôn và kỳ thi: xếp theo ngày khai giảng gần nhất, kèm đích đến kỳ thi, lịch học, giờ, phòng, giáo viên, và chỉ rõ lớp nào còn thiếu ngày khai giảng, thiếu tick thứ trong tuần hay thiếu giáo viên.'},
+    {loai:'Mới', nd:'Cảnh báo ký lại hợp đồng đối tác khi đủ kỳ hạn tính từ ngày bắt đầu hợp tác. Quá hạn thì đỏ, sắp tới hạn thì vàng, hiện ngay đầu màn Đối tác và vào Cần xử lý hôm nay. Kỳ hạn 12 tháng và mốc báo trước 30 ngày đều để trong Tham số, không gõ cứng. Đối tác đã ngừng hợp tác thì không nhắc.'},
+    {loai:'Mới', nd:'Mẫu nhập Excel Lớp học thêm hai cột Khảo thí cần để nạp lịch sử lớp ôn thi: Ôn cho kỳ thi và Trạng thái. Thiếu hai cột này thì nhập xong phải mở từng lớp gán tay.'},
+    {loai:'Sửa lỗi', nd:'Nhập Excel lớp học: Excel tự đổi "2-4-6" thành ngày 02/04/2006 và "3-5-7" thành 03/05/2007. File Khảo thí gửi dính đúng lỗi này ở 7 trên 18 dòng. Nay chặn thẳng và chỉ cách sửa, KHÔNG đoán ngược — "2006-04-02" có thể là 2-4-6 mà cũng có thể là 2-4-6-CN. Đồng thời đọc được lịch kiểu 2-4-6 hay 3-5-7-CN thành các thứ tick sẵn, để lớp nhập vào dựng được Lịch buổi học ngay chứ không nằm im.'},
+    {loai:'Cải tiến', nd:'Màn Thí sinh: gom cảnh báo thiếu thông tin thành một dòng kèm nút lọc, thay vì lặp dòng "Thiếu ngày sinh, số điện thoại" dưới từng em — kỳ 300 thí sinh thì 300 dòng giống hệt nhau, đọc xong không biết làm gì. Thêm trần 60 dòng vì kỳ Cambridge của Trung tâm từng có hơn ba trăm thí sinh.'},
+    {loai:'Sửa lỗi', nd:'Nhập Excel lớp học của Khảo thí chỉ nhận được 5 trên 15 cột, nên 37 lớp vào phần mềm rỗng ruột: không lịch học, không giáo viên, không giờ học, mà vẫn báo hợp lệ. Nguyên nhân là tên cột của Khảo thí khác tên mẫu — họ ghi "Buổi học", "Tgian học", "GV Phụ trách", "LỚP". Nay nhận đủ các cách gọi đó. Đồng thời đảo thứ tự Mã lớp lên trước Nhóm chương trình trong mẫu, vì cả hai cùng nhận bí danh "Lớp" mà Mã lớp là cột bắt buộc: file chỉ có một cột "Lớp" thì phải vào Mã lớp, file có cả "Mã lớp" lẫn "LỚP" thì vòng khớp chính xác lấy Mã lớp trước rồi "LỚP" mới rơi vào Nhóm chương trình.'},
+    {loai:'Sửa lỗi', nd:'Hai bảng nối đuôi trong cùng một sheet thì dòng tiêu đề của bảng thứ hai lọt vào giữa vùng dữ liệu và bị nhập thành một lớp mang mã "Mã lớp". File Khảo thí gửi 02/11/2026 xếp bảng ƯDCNTT rồi tới bảng Tiếng Anh ngay bên dưới. Nay nhận ra và bỏ qua, nhưng HIỆN LÊN bảng xem trước kèm lý do chứ không nuốt im.'},
+    {loai:'Cải tiến', nd:'Nhận cách gọi trạng thái lớp của Khảo thí: "Hoàn thành" quy về Đã kết thúc, "Đang chiêu sinh" quy về Sắp khai giảng. Bắt sửa tay 42 dòng chỉ vì khác cách gọi là hành người dùng, nhưng quy đổi lặng lẽ cũng sai — nên bước xem trước hiện rõ từng phép quy đổi, cả trạng thái lẫn lịch học. Chữ không hiểu được thì vẫn chặn, không đoán sang Đang học.'},
+    {loai:'Sửa lỗi', nd:'Màn Tồn kho in "Còn undefined Cái" và huy hiệu "Thiếu NaN" ở mọi dòng trong khối Cần mua bổ sung — chị Hành chính–Kế toán chụp màn hình báo 02/11/2026. Nguyên nhân: hàm hangDuoiMucToiThieu trả về bản ghi GỐC trong kho, mà bản ghi gốc không mang số tồn; số tồn chỉ được gắn thêm cho danh sách chính bên dưới. Màn đọc số tồn của bản ghi gốc ra undefined, rồi lấy mức tối thiểu trừ undefined ra NaN. Lỗi này lọt qua cả 28 bộ kiểm thử, 26 phép phân tích tĩnh, ESLint và hai lượt quét 62 màn — vì màn vẫn dựng ra bình thường, không ném lỗi, không trống; nó chỉ in sai chữ.'},
+    {loai:'Mới', nd:'Bộ kiểm thử thứ 29 chuyên cho kiểu lỗi in sai chữ: dựng từng màn trong 62 màn với dữ liệu thật rồi soi chuỗi kết quả, cấm undefined, NaN và [object Object] lọt ra giao diện. Đã thử đột biến bằng cách cài lại đúng lỗi chị Trang chụp — bắt được ngay.'},
+    {loai:'Cải tiến', nd:'Kho sách theo ba việc Hành chính–Kế toán đề nghị 02/11/2026. KHÔNG dựng kho sách riêng: sách đã nằm trong cùng một kho, cùng một hệ phiếu, cùng một công thức tồn — dựng bảng thứ hai cho cùng dữ liệu là đúng bệnh đã chữa ở V1.22.0. Thay vào đó tách thẻ Phiếu nhập xuất thành hai thẻ riêng để Hành chính vào thẻ nhập, Học vụ và Tuyển sinh vào thẻ xuất; thêm ô chọn nhóm hàng lọc cả bốn thẻ, mặc định vẫn Tất cả nên ai không cần lọc thì màn hình y như cũ; và khi lọc nhóm Sách thì cột cuối đổi thành Lớp đang dùng, đọc từ ô Sách của lớp đã có sẵn trong danh mục lớp.'},
+    {loai:'Mới', nd:'Hai cảnh báo đi kèm kho sách: đầu sách đã hết mà lớp vẫn đang chạy thì báo đỏ ngay đầu màn Tồn kho kèm nút nhập kho, và phiếu xuất còn chờ duyệt mà kho không đủ số lượng thì báo ngay trên dòng phiếu thay vì để tới lúc bấm Xuất hàng mới biết. Đầu sách đã nằm ở khối đỏ thì không lặp lại ở khối vàng Cần mua bổ sung, nhưng thẻ đếm vẫn đếm đủ.'},
+    {loai:'Cải tiến', nd:'PHIẾU XUẤT KHO THÀNH CỬA DUY NHẤT CỦA SÁCH — Ban lãnh đạo quyết 02/11/2026. Trước đây có hai chỗ ghi: Học vụ tick tay Đã nhận ở màn tình trạng học viên, Hành chính lập phiếu ở kho, hai bên không biết nhau — nên phần mềm phải có hẳn một màn đối soát để bắt chênh lệch, đó là vá chứ không phải chữa. Nay bỏ hẳn đường tick tay: muốn ghi nhận em nào nhận sách thì lập phiếu xuất, chọn lớp, tích các em. Học vụ chỉ còn chọn giữa Chưa nhận và Không mua, vì không mua là một quyết định chứ không phải việc xuất kho.'},
+    {loai:'Mới', nd:'Tiền sách phải thu lấy đơn giá ghi trên phiếu xuất, không lấy giá trong danh mục — sửa giá danh mục không được đổi công nợ của giao dịch đã xong. Phiếu thêm ô Hình thức: Bán thì học viên phải đóng tiền sách, Phát miễn phí thì không thu. Phiếu cũ không ghi hình thức thì mặc định là Bán, không tự cho miễn phí.'},
+    {loai:'Mới', nd:'Chặn đường tick tay ở BA cửa chứ không chỉ bỏ lựa chọn trên form: chặn ở hàm ghi của màn tình trạng, chặn ở bước xem trước khi nhập Excel, và chặn ở cả hàm ghi của nhập Excel — ẩn nút không ngăn được ai gọi thẳng hàm. Mẫu nhập Excel ghi rõ cột trạng thái nhận sách chỉ nhận Chưa nhận hoặc Không mua.'},
+    {loai:'Cải tiến', nd:'Dữ liệu cũ đã tick tay trước V1.31.0 vẫn tính là đã nhận sách và giữ nguyên công nợ, không bỗng dưng về 0 — lặng lẽ đổi các em đó thành chưa nhận là làm hoảng cả Trung tâm. Nhưng phần mềm nhận diện riêng được các bản ghi đó: màn tình trạng hiện khung vàng "đã nhận theo sổ cũ, chưa có phiếu xuất kho nào", và màn kho đổi tên khối đối soát thành Chuẩn hoá sổ sách cũ, nói rõ danh sách này chỉ còn giảm chứ không phát sinh thêm.'},
+    {loai:'Cải tiến', nd:'Việc THU TIỀN vẫn ở Kế toán, không chuyển sang phiếu xuất. QĐ 14 tách người ghi nhận thu khỏi người làm nghiệp vụ, và Học vụ cố tình không có quyền ghiNhanThu. Phiếu xuất quyết định PHẢI THU bao nhiêu của em nào; Kế toán vẫn là người ghi ĐÃ THU. Bộ kiểm thử thứ 30 canh đúng điều này.'},
+    {loai:'Mới', nd:'Bộ kiểm thử thứ 30 với 62 phép thử cho cửa duy nhất của sách, chia theo bốn luật phải giữ. Đã thử 12 đột biến — cố tình bỏ từng chốt chặn, cho phát miễn phí thành tính tiền, cho sổ cũ thành chưa nhận — và bắt được cả 12. Trong lúc thử còn phát hiện một phép thử của chính bộ này ĐẠT VÌ LÝ DO SAI: dữ liệu thử thiếu quyền nhapDuLieu nên hàm ghi dừng ngay, nhật ký rỗng, và phép thử "không ghi trạng thái Đã nhận" đạt vì chẳng ghi gì cả. Đã bổ sung quyền và thêm một phép thử canh rằng hàm ghi có thật sự chạy.'},
+    {loai:'Mới', nd:'Bộ kiểm thử thứ 28 với 168 phép thử cho 13 hạng mục Khảo thí, trong đó đối chiếu từng con số của QĐ 19 với bản PDF. Phần nhập Excel được thử bằng workbook thật dựng trong bộ nhớ, chạy qua đúng hàm đọc file. Đã thử 30 đột biến — cố tình cài lại từng lỗi — và bộ kiểm thử bắt được cả 30.'}
+  ]},
+  {v:'V1.30.0', ngay:'30/10/2026', muc:[
+    {loai:'Cải tiến', nd:'Bản RÀ SOÁT HỆ THỐNG. Ban lãnh đạo nhận xét đúng rằng mấy ngày qua toàn vá lẻ từng lỗi được phát hiện chứ chưa lần nào tự quét cả phần mềm. Bản này quét máy móc toàn bộ mã nguồn theo bốn kiểu lỗi đã gặp, sửa những chỗ thật sự hỏng, và dựng hàng rào để không kiểu nào tái phát.'},
+    {loai:'Sửa lỗi', nd:'Nút Gửi thông báo ở màn Tái đăng ký KHÔNG gửi gì cả. Phần mềm chạy trên trình duyệt nên không nhắn Zalo hay SMS thay người được; nút đó chỉ ghi sổ là đã gửi. Tên nút nói dối thì người dùng tưởng máy tự nhắn, rồi không ai nhắn thật mà sổ vẫn ghi đã gửi. Nay đổi thành Đánh dấu đã nhắn, và thêm hai nút Mở Zalo và Gọi mở thẳng đúng số phụ huynh.'},
+    {loai:'Sửa lỗi', nd:'Chặn đánh dấu đã nhắn khi chưa có số điện thoại phụ huynh. Trước đây đánh dấu được cho cả em không có số nào để nhắn, tức sổ ghi khống. Trong dữ liệu thật đã có đúng một trường hợp như vậy.'},
+    {loai:'Cải tiến', nd:'Thêm ô tìm và trần số dòng cho màn Chờ xếp lớp và màn Phiếu yêu cầu thiết kế. Hai màn này trước đây đổ hết danh sách ra bắt cuộn, cùng bệnh với màn Lịch buổi học đã sửa ở V1.28.1.'},
+    {loai:'Cải tiến', nd:'Đã soi 55 chỗ trong mã so khớp bằng TÊN thay vì bằng MÃ. Kết quả KHÔNG có lỗi nào: 17 chỗ cố ý chặn trùng tên khi tạo mới hoặc dò hồ sơ trùng, 7 chỗ so với danh mục chứ không phải tên gõ tự do, 2 chỗ chỉ gợi ý xếp lớp không ghi dữ liệu, 7 chỗ đã ưu tiên mã và tên chỉ là đường lui cho bản ghi cũ, 22 chỗ nhập Excel đã ưu tiên mã học viên hoặc mã số sinh viên và chặn khi trùng tên. Ba đợt sửa trước đã bịt hết các chỗ nguy hiểm. KHÔNG sửa gì ở nhóm này — sửa cái đang đúng là tự tạo lỗi mới.'},
+    {loai:'Mới', nd:'Phép phân tích tĩnh 25: tên nút phải nói đúng việc nó làm. Nút mang động từ gửi ra ngoài như Gửi thông báo, Nhắn tin, Mở Zalo, Gọi điện thì hàm của nó phải thật sự mở ra ngoài; chỉ ghi sổ thì tên nút phải nói là ghi sổ. Kèm chốt chặn ghi sổ khống khi chưa có số điện thoại.'},
+    {loai:'Mới', nd:'Phép phân tích tĩnh 26: màn nào đổ cả một bảng dữ liệu ra mà không có ô tìm, không có xổ chọn, không có trần số dòng là báo lỗi. Màn cố ý liệt kê đủ như biên bản đối soát phải khai vào bảng miễn trừ kèm lý do, không được im lặng bỏ qua.'},
+    {loai:'Sửa lỗi', nd:'Sửa chính hai phép kiểm vừa viết. Lúc đầu chúng cắt thân hàm bằng biểu thức chính quy không tham, mà hàm nào cũng có hàm con bên trong nên nó cắt cụt rồi tưởng không có gì — bốn phép thử đột biến lọt lưới. Nay cắt thân hàm bằng cách đếm ngoặc. Điều kiện tha của phép 26 trước đây có cả dấu chấm find, mà màn nào cũng dùng nên nó bỏ qua gần hết; nay chỉ tha khi có thật một ô nhập có oninput, một ô xổ chọn, hoặc một trần số dòng.'},
+  ]},
   {v:'V1.29.2', ngay:'30/10/2026', muc:[
     {loai:'Sửa lỗi', nd:'Bấm Giao việc ở màn Cảnh báo học vụ, điền form, lưu xong thì dòng cảnh báo vẫn y nguyên như chưa làm gì. Nguyên nhân: nút Giao việc chỉ TẠO một đầu việc rồi thôi, còn màn Cảnh báo không bao giờ đọc ngược lại xem đã có việc nào cho dòng này chưa. Hai bên không biết nhau tồn tại. Hậu quả là không biết mình đã giao hay chưa, và giao đi giao lại cùng một học viên nhiều lần mà phần mềm không cản. Màn Công nợ mắc đúng lỗi này, sửa luôn một thể.'},
     {loai:'Mới', nd:'Việc giao từ một cảnh báo nay mang theo MÃ NGUỒN của đúng cảnh báo đó. Trước đây chỉ mang mã học viên nên không phân biệt được việc này giao cho cảnh báo nào, mà một em có thể có nhiều cảnh báo khác nhau cùng lúc.'},
@@ -2254,6 +2299,7 @@ const QUYEN_GHI = {
   luuTaiKhoan:'quanLyTaiKhoan', xoaTaiKhoan:'quanLyTaiKhoan',
   luuMienXungDot:'quanLyTaiKhoan', boMienXungDot:'quanLyTaiKhoan',
   chuyenKyThiSinh:'quanLyThiSinh', boSoTayThiSinh:'quanLyKyThi',
+  chotDotVN290:'quanLyThiSinh',
   chotMoLop:'chotMoLopOn',
   themLopVaoKyThi:'quanLyThiSinh',
   xoaMauGan:'nhapDuLieu'
@@ -3906,6 +3952,37 @@ function thuThapCanhBao(){
         return x.ky.ten + ': ' + x.moc.ten + ' (quá ' + x.moc.soNgayQua + ' ngày)'; }).join(' · '),
       tab:'khaoThi', sec:'kyThi'});
 
+    /* Ba mốc trước ngày thi — Khảo thí đề nghị 02/11/2026. Quá hạn thì đỏ,
+       sắp hết hạn thì vàng; tách hai dòng để biết việc nào gấp hơn. */
+    const mocTruoc = mocCanBaoTatCa();
+    const mocQua = mocTruoc.filter(function(m){ return m.quaHan; });
+    const mocSap = mocTruoc.filter(function(m){ return !m.quaHan; });
+    them({tang:1, mau:'danger', soLuong: mocQua.length,
+      tieuDe: mocQua.length + ' mốc đăng ký, lệ phí hoặc chốt danh sách ĐÃ QUÁ HẠN',
+      chiTiet: mocQua.slice(0,3).map(function(m){
+        return m.kyTen + ': ' + m.ten + ' quá ' + Math.abs(m.con) + ' ngày'; }).join(' · '),
+      tab:'khaoThi', sec:'kyThi'});
+    them({tang:2, mau:'warn', soLuong: mocSap.length,
+      tieuDe: mocSap.length + ' mốc kỳ thi sắp tới hạn',
+      chiTiet: mocSap.slice(0,3).map(function(m){
+        return m.kyTen + ': ' + m.ten + ' còn ' + m.con + ' ngày'; }).join(' · '),
+      tab:'khaoThi', sec:'kyThi'});
+
+    /* Hợp đồng đối tác đủ kỳ hạn thì nhắc ký lại */
+    const kyLai = doiTacCanKyLai();
+    const hdQua = kyLai.filter(function(x){ return x.quaHan; });
+    const hdSap = kyLai.filter(function(x){ return !x.quaHan; });
+    them({tang:1, mau:'danger', soLuong: hdQua.length,
+      tieuDe: hdQua.length + ' hợp đồng đối tác đã quá hạn ký lại',
+      chiTiet: hdQua.slice(0,3).map(function(x){
+        return x.dt.ten + ' (quá ' + Math.abs(x.con) + ' ngày)'; }).join(' · '),
+      tab:'khaoThi', sec:'doiTac'});
+    them({tang:2, mau:'warn', soLuong: hdSap.length,
+      tieuDe: hdSap.length + ' hợp đồng đối tác sắp tới hạn ký lại',
+      chiTiet: hdSap.slice(0,3).map(function(x){
+        return x.dt.ten + ' (còn ' + x.con + ' ngày)'; }).join(' · '),
+      tab:'khaoThi', sec:'doiTac'});
+
     const sapThi = kyThiList.filter(function(k){
       if(!k.ngayThi) return false;
       const d = diffDays(todayISO(), k.ngayThi);
@@ -4543,7 +4620,7 @@ function formLop(id){
     +'<div class="small muted">Nên chọn từ danh mục để thống kê giờ dạy và đúng giờ không bị lệch.</div>'
     +'<label>Phòng học</label><input id="mLopPhong" value="'+esc(v.phongHoc||'')+'" placeholder="VD: G404 hoặc Online">'
     +'<label>Trạng thái</label><select id="mLopTT">'
-      +['Sắp khai giảng','Đang học','Tạm dừng','Đã kết thúc'].map(function(t){ return '<option '+(v.trangThai===t?'selected':'')+'>'+t+'</option>'; }).join('')
+      +TT_LOP.map(function(t){ return '<option '+(v.trangThai===t?'selected':'')+'>'+t+'</option>'; }).join('')
     +'</select>'
     + khoiDichKyThi(v)
     +'<label>Ghi chú</label><input id="mLopGC" value="'+esc(v.ghiChu||'')+'">'
@@ -5279,9 +5356,10 @@ function nguongTaiPhi(){
     ngay: Number(settings.taiPhiConNgay) || 14
   };
 }
-function canhBaoTaiPhi(gd){
-  if(!gd || gd.trangThai!=='Đang học') return null;
-  const lop = lopList.find(function(x){ return x.id===gd.lopId; });
+/* Chạm mốc sắp kết thúc hay chưa — MỘT CỬA cho câu hỏi thời gian. Tách
+   riêng khỏi câu hỏi "có khoá kế tiếp không" để màn Tái đăng ký còn đếm
+   được những lớp chạm mốc mà bị bỏ qua. */
+function mocTaiPhi(lop){
   if(!lop || lop.trangThai!=='Đang học') return null;
   const ng = nguongTaiPhi();
   const conB = buoiConLai(lop);
@@ -5293,6 +5371,31 @@ function canhBaoTaiPhi(gd){
   if(!lyDo.length) return null;
   return {lop:lop, conBuoi:conB, conNgay:conN, lyDo:lyDo.join(' · '),
           gap: (conB!==null && conB<=1) || (conN!==null && conN<=3)};
+}
+/* Lớp có khoá kế tiếp để mời hay không — MỘT CỬA cho câu hỏi lộ trình.
+   Lớp luyện thi (Aptis ESOL, UDCNTT, Tin học quốc tế, Lập trình…) không
+   nằm trong lộ trình nào: đóng học phí, học, thi là hết, không có khoá sau
+   để tái đăng ký. Trước V1.31.0 màn Tái đăng ký không hỏi câu này nên vẫn
+   đẩy các em đó vào ô "Cần gọi mời", Học vụ gọi phụ huynh mời một khoá
+   KHÔNG TỒN TẠI. Câu trả lời lấy từ Tham số → Lộ trình chứ không gõ cứng
+   tên nhóm vào mã nguồn: thêm nhóm mới chỉ cần khai lộ trình là chạy. */
+function lopCoKhoaKeTiep(lop){
+  return !!(lop && khoaKeTiep(lop.maLop));
+}
+function canhBaoTaiPhi(gd){
+  if(!gd || gd.trangThai!=='Đang học') return null;
+  const lop = lopList.find(function(x){ return x.id===gd.lopId; });
+  if(!lop) return null;
+  if(!lopCoKhoaKeTiep(lop)) return null;
+  return mocTaiPhi(lop);
+}
+/* Lớp đã chạm mốc nhưng bị bỏ qua vì không có khoá kế tiếp. BẮT BUỘC hiện
+   ra màn hình, không được im lặng: nếu Học vụ khai thiếu một lộ trình thì
+   phần mềm nín luôn, cả khoá Cambridge cũng không ai nhắc mà không ai hay. */
+function lopBoQuaTaiPhi(){
+  return (lopList || []).filter(function(lop){
+    return !lopCoKhoaKeTiep(lop) && mocTaiPhi(lop);
+  });
 }
 /* Danh sách học viên cần mời tái đăng ký */
 function dsCanTaiPhi(){
@@ -5364,10 +5467,36 @@ function phanNhomTaiPhi(){
 
 /* Ghi một bước chăm sóc. Vòng đời đóng chặn ở đây chứ không chỉ ẩn nút:
    ẩn nút là chặn con mắt, chặn ở hàm ghi mới là chặn thật. */
+/* Số điện thoại phụ huynh của một lần ghi danh — MỘT CỬA, vì màn này và
+   các nút mở Zalo, gọi điện phải lấy cùng một số. */
+function sdtPhuHuynhCua(gd){
+  if(!gd) return '';
+  const hv = (hocVienList || []).find(function(x){ return x.id === gd.hocVienId; });
+  return chuanSdt((hv && hv.sdtPH) || gd.sdtPH || '');
+}
+/* Mở Zalo đúng số. Trình duyệt không nhắn thay người được — nút này chỉ mở
+   ứng dụng, người dùng tự gõ và tự bấm gửi. */
+function moZaloPhuHuynh(sdt){
+  const s = chuanSdt(sdt);
+  if(!s){ showToast('Chưa có số điện thoại phụ huynh'); return; }
+  window.open('https://zalo.me/' + s, '_blank');
+}
+function goiPhuHuynh(sdt){
+  const s = chuanSdt(sdt);
+  if(!s){ showToast('Chưa có số điện thoại phụ huynh'); return; }
+  window.location.href = 'tel:' + s;
+}
+
 function ghiChamSocTaiPhi(gdId, den, ghiChu){
   if(!canQuyen('ghiChamSocTaiPhi')) return Promise.resolve(false);
   const g = ghiDanhList.find(function(x){ return x.id === gdId; });
   if(!g){ showToast('Không tìm thấy lần ghi danh'); return Promise.resolve(false); }
+  /* CHẶN đánh dấu "đã nhắn" khi không có số nào để nhắn. Không chặn thì sổ
+     ghi đã gửi thông báo mà phụ huynh chưa nhận được gì, và không ai hay. */
+  if(den === 'daGui' && !sdtPhuHuynhCua(g)){
+    showToast('Chưa có số điện thoại phụ huynh — bổ sung trong hồ sơ học viên rồi mới đánh dấu đã nhắn');
+    return Promise.resolve(false);
+  }
   const tu = g.taiDangKy || '';
   if(!chuyenDuocCS(tu, den)){
     showToast('Không chuyển được từ "' + tenChamSoc(tu) + '" sang "' + tenChamSoc(den) + '"');
@@ -6307,10 +6436,21 @@ function dongTaiPhi(m, nhom){
       + '</div>';
   }
   let nut = '<button class="btn btn-sm" onclick="moHoSoHocVien(\'' + m.gd.hocVienId + '\')">Hồ sơ</button>';
-  if(nhom === 'canGoi' && hasPerm('suaHocVien'))
+  if(nhom === 'canGoi' && hasPerm('suaHocVien')){
+    /* Nút này KHÔNG gửi gì cả — phần mềm chạy trên trình duyệt, không nhắn
+       Zalo hay SMS thay người được. Nó chỉ GHI SỔ là đã nhắn. Tên nút phải
+       nói đúng việc nó làm, nếu không người dùng tưởng máy tự nhắn rồi
+       không ai nhắn thật. */
+    const sdt = sdtPhuHuynhCua(m.gd);
     nut = (m.cs === ''
-        ? '<button class="btn btn-sm btn-primary" onclick="ghiChamSocTaiPhi(\'' + m.gd.id + '\',\'daGui\')">Gửi thông báo</button>'
+        ? (sdt
+           ? '<button class="btn btn-sm btn-primary" onclick="moZaloPhuHuynh(\'' + esc(sdt) + '\')">Mở Zalo</button>'
+             + '<button class="btn btn-sm" onclick="goiPhuHuynh(\'' + esc(sdt) + '\')">Gọi</button>'
+             + '<button class="btn btn-sm" onclick="ghiChamSocTaiPhi(\'' + m.gd.id + '\',\'daGui\')">Đánh dấu đã nhắn</button>'
+           : '<button class="btn btn-sm" disabled title="Chưa có số điện thoại phụ huynh nên không nhắn được" '
+             + 'style="opacity:.5;cursor:not-allowed;">Chưa có SĐT</button>')
         : '<button class="btn btn-sm" onclick="moTraLoiTaiPhi(\'' + m.gd.id + '\')">Ghi trả lời</button>');
+  }
   if(nhom === 'xepLop' && hasPerm('suaHocVien')){
     const mo = lopDangMoCuaKhoa(m.khoaKe);
     nut = mo.length
@@ -6355,6 +6495,36 @@ function khoiNhomTaiPhi(ds, nhom, mau, tieuDe, moTa){
   return h + '</div>';
 }
 
+/* Khối "đã bỏ qua" của màn Tái đăng ký. Nói rõ bỏ qua lớp nào và vì sao,
+   kèm đường đi để sửa — chứ không chỉ giấu đi cho sạch màn hình. */
+let tpMoBoQua = false;
+function doiMoBoQuaTaiPhi(){ tpMoBoQua = !tpMoBoQua; render(); }
+function khoiBoQuaTaiPhi(){
+  const ds = lopBoQuaTaiPhi();
+  if(!ds.length) return '';
+  return '<div class="card" style="border-color:var(--vien-dam);">'
+    + '<div class="row"><div style="min-width:0;">'
+    + '<b>' + ds.length + ' lớp sắp kết thúc nhưng không nhắc tái phí</b>'
+    + '<div class="small muted" style="line-height:1.7;margin-top:2px;">'
+    + 'Các lớp này không nằm trong lộ trình nào ở Hệ thống → Tham số → Lộ trình, '
+    + 'nên không có khoá kế tiếp để mời. Lớp luyện thi là vậy: học xong, thi xong là hết. '
+    + '<b>Nếu thấy lớp nào ở đây đáng lẽ phải có khoá sau, là lộ trình khai còn thiếu</b> — khai bổ sung thì lớp đó quay lại danh sách mời.'
+    + '</div></div>'
+    + '<button class="btn btn-sm" onclick="doiMoBoQuaTaiPhi()">'
+    + (tpMoBoQua ? 'Thu gọn' : 'Xem ' + ds.length + ' lớp') + '</button></div>'
+    + (tpMoBoQua
+        ? '<div style="margin-top:8px;">' + ds.slice(0, 40).map(function(l){
+            const m = mocTaiPhi(l);
+            return '<div class="list-row"><div style="min-width:0;">'
+              + '<b>' + esc(l.maLop) + '</b> <span class="small muted">· ' + esc(l.nhomCT || '(chưa rõ nhóm)') + '</span>'
+              + '<div class="small muted">' + esc(m ? m.lyDo : '') + '</div></div></div>';
+          }).join('')
+          + (ds.length > 40 ? '<div class="small muted" style="margin-top:6px;">… và ' + (ds.length - 40) + ' lớp nữa</div>' : '')
+          + '</div>'
+        : '')
+    + '</div>';
+}
+
 function viewTaiPhi(){
   const n = phanNhomTaiPhi();
   const ng = nguongTaiPhi();
@@ -6375,6 +6545,8 @@ function viewTaiPhi(){
     + '<div class="val" style="' + (n.xepLop.length ? 'color:var(--ok-ink);' : '') + '">' + n.xepLop.length + '</div></div>'
     + '<div class="stat"><div class="lbl">Đã xử lý</div><div class="val">' + n.xong.length + '</div></div>'
     + '</div>';
+
+  h += khoiBoQuaTaiPhi();
 
   if(!tong) return h + '<div class="card">' + emptyBox('👍', 'Chưa có lớp nào sắp kết thúc') + '</div>';
 
@@ -6512,12 +6684,26 @@ function luuTraLoiTaiPhi(gdId){
   ghiChamSocTaiPhi(gdId, den, gc).then(function(ok){ if(ok) closeModal(); });
 }
 
+let cxTim = '';
+function doiTimCX(){ cxTim = $('cxTim') ? $('cxTim').value : ''; render(); }
 function viewChoXepLop(){
   let h = '<div class="card"><div class="row"><h3 style="margin:0;">Danh sách chờ xếp lớp</h3>'
-    + (hasPerm('suaHocVien')?'<button class="btn btn-primary btn-sm" onclick="formChoXep()">+ Thêm</button>':'')+'</div></div>';
+    + (hasPerm('suaHocVien')?'<button class="btn btn-primary btn-sm" onclick="formChoXep()">+ Thêm</button>':'')+'</div>'
+    + '<label>Tìm</label><input id="cxTim" value="'+esc(cxTim)+'" oninput="doiTimCX()" '
+    + 'placeholder="tên học viên, lớp chờ, số điện thoại...">';
+  /* Danh sách chờ có thể lên hàng trăm em vào mùa khai giảng — đổ hết ra
+     bắt cuộn là không dùng được. */
+  const tim = stripDia(cxTim || '').trim();
+  const loc = (choXepLopList || []).filter(function(x){
+    if(!tim) return true;
+    return stripDia((x.hoTen||'')+' '+(x.lopCho||'')+' '+(x.sdt||'')+' '+(x.ghiChu||'')).indexOf(tim) >= 0; })
+    .sort(function(a,b){ return (a.ngayDangKy||'').localeCompare(b.ngayDangKy||''); });
+  const hien = loc.slice(0, 50);
+  h += '<div class="small muted" style="margin-top:8px;">Hiện <b>'+hien.length+'</b> trên '
+    + loc.length + ' em đang chờ' + (loc.length > 50 ? ' — gõ tìm để thu hẹp lại.' : '.') + '</div></div>';
   h += '<div class="card">';
-  if(!choXepLopList.length) h += emptyBox('⏳','Chưa có học viên nào chờ xếp lớp');
-  else h += choXepLopList.slice().sort(function(a,b){ return (a.ngayDangKy||'').localeCompare(b.ngayDangKy||''); })
+  if(!hien.length) h += emptyBox('⏳', loc.length ? 'Không em nào khớp' : 'Chưa có học viên nào chờ xếp lớp');
+  else h += hien
     .map(function(x){
       const cho = x.ngayDangKy? diffDays(x.ngayDangKy, todayISO()) : 0;
       return '<div class="list-row"><div><div>'+esc(x.hoTen)+'</div>'
@@ -11286,10 +11472,8 @@ function viewBangGia(){
     .sort(function(a,b){ return (Number(a.hocPhi)||0)-(Number(b.hocPhi)||0); });
   if(!bgCapDo || !dsCap.some(function(g){ return g.capDo===bgCapDo; })) bgCapDo = dsCap.length? dsCap[0].capDo : '';
   const dong = timDongGia(bgNhom, bgCapDo);
-  const udApDung = uuDaiList.filter(function(u){
-    return !u.apDungCho || u.apDungCho==='Tất cả' || bgNhom.indexOf(u.apDungCho)>=0 || u.apDungCho.indexOf(bgNhom)>=0
-      || (u.apDungCho==='Tin học' && bgNhom.indexOf('Tin học')>=0);
-  });
+  /* MỘT CỬA với form Miễn giảm — xem goiUuDaiChoNhom */
+  const udApDung = goiUuDaiChoNhom(bgNhom);
   const kq = tinhHocPhi(dong, bgUuDai, bgHSSV);
 
   let h = '<div class="card" style="border-color:var(--warn);"><div class="small">'
@@ -11859,6 +12043,68 @@ const LOAI_KY_THI = [
 ];
 function timLoaiKyThi(ma){ return LOAI_KY_THI.find(function(l){ return l.ma===ma; }) || LOAI_KY_THI[0]; }
 
+/* ===== BA MỐC TRƯỚC NGÀY THI — MỘT CỬA =====
+   Khảo thí đề nghị 02/11/2026: cần nơi khai hạn đăng ký, hạn đóng lệ phí, hạn
+   chốt danh sách, và được cảnh báo khi gần hết hạn.
+   Khác với MOC_KY_THI / MOC_CAMBRIDGE đã có: bộ đó là mốc tổ chức SAU khi đã
+   có ngày thi (lập kế hoạch, quyết định hội đồng, chấm bài, công bố điểm).
+   Ba mốc dưới đây là mốc TRƯỚC đó, quyết định việc còn nhận thí sinh và còn
+   thu tiền được hay không.
+   Màn Kỳ thi, cảnh báo Tổng quan và file Excel lịch thi đều đọc bảng này. */
+const MOC_TRUOC_THI = [
+  {key:'hanDangKy',   ten:'Hạn đăng ký thi'},
+  {key:'hanNopLePhi', ten:'Hạn đóng lệ phí thi'},
+  {key:'hanChotDS',   ten:'Hạn chốt danh sách thi'}
+];
+function baoTruocMocThi(){ return Number(settings.baoTruocMocThi) || 7; }
+function trangThaiMoc(ngay){
+  if(!ngay) return null;
+  const con = diffDays(todayISO(), ngay);
+  return {ngay: ngay, con: con, quaHan: con < 0,
+          sapHet: con >= 0 && con <= baoTruocMocThi()};
+}
+/* Những mốc đang cần để ý của một kỳ. Kỳ đã thi xong, đã hoàn tất hoặc đã huỷ
+   thì thôi — nếu không thì mốc quá hạn của kỳ năm ngoái kêu mãi, kêu nhiều quá
+   thành ra không ai đọc nữa, đúng cái bệnh cần tránh. */
+function mocCanBaoCuaKy(k){
+  if(!k) return [];
+  if(k.trangThai === 'Đã huỷ' || k.trangThai === 'Hoàn tất') return [];
+  if(k.ngayThi && diffDays(todayISO(), k.ngayThi) < 0) return [];
+  return MOC_TRUOC_THI.map(function(m){
+    const t = trangThaiMoc(k[m.key]);
+    return t ? Object.assign({kyId: k.id, kyTen: k.ten, ten: m.ten, key: m.key}, t) : null;
+  }).filter(function(x){ return x && (x.quaHan || x.sapHet); });
+}
+function mocCanBaoTatCa(){
+  return (kyThiList || []).reduce(function(a, k){ return a.concat(mocCanBaoCuaKy(k)); }, [])
+    .sort(function(a, b){ return (a.ngay || '').localeCompare(b.ngay || ''); });
+}
+
+/* ===== HẠN KÝ LẠI HỢP ĐỒNG ĐỐI TÁC =====
+   Khảo thí đề nghị 02/11/2026: hợp đồng đủ một năm kể từ ngày bắt đầu hợp tác
+   thì nhắc ký lại. Hai ngưỡng để trong Tham số, không gõ cứng. */
+function hanHopDongThang(){ return Number(settings.hanHopDongThang) || 12; }
+function baoTruocHopDongNgay(){ return Number(settings.baoTruocHopDongNgay) || 30; }
+function hanKyLaiDoiTac(d){
+  if(!d || !d.ngayBatDau || d.dangHopTac === false) return null;
+  const p = String(d.ngayBatDau).split('-');
+  if(p.length !== 3) return null;
+  const n = new Date(d.ngayBatDau + 'T00:00:00');
+  if(isNaN(n.getTime())) return null;
+  n.setMonth(n.getMonth() + hanHopDongThang());
+  const het = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0')
+            + '-' + String(n.getDate()).padStart(2, '0');
+  const con = diffDays(todayISO(), het);
+  return {ngayHet: het, con: con, quaHan: con < 0,
+          sapHet: con >= 0 && con <= baoTruocHopDongNgay()};
+}
+function doiTacCanKyLai(){
+  return (doiTacList || []).map(function(d){
+    const h = hanKyLaiDoiTac(d);
+    return (h && (h.quaHan || h.sapHet)) ? Object.assign({dt: d}, h) : null;
+  }).filter(Boolean).sort(function(a, b){ return a.con - b.con; });
+}
+
 /* Cột "Bài thi" trong danh sách của Khảo thí ghi theo thứ được cấp, không theo
    mã kỳ thi. Hệ thống phân kỳ theo CHỨNG NHẬN hay CHỨNG CHỈ, không phân cơ bản
    với nâng cao — nên "Chứng chỉ ƯDCNTT Cơ bản" và "Chứng chỉ ƯDCNTT Nâng cao"
@@ -12170,23 +12416,178 @@ const DINH_MUC_CAMBRIDGE = [
   {ban:'Đội hỗ trợ kỳ thi', nhiemVu:'Hỗ trợ kỹ thuật máy', donGia:250000, dvt:'buổi'},
   {ban:'Đội hỗ trợ kỳ thi', nhiemVu:'Đón tiếp thí sinh',   donGia:150000, dvt:'buổi'}
 ];
-const DINH_MUC_MAC_DINH = [
-  {ban:'Hội đồng thi',  nhiemVu:'Chủ tịch Hội đồng',      donGia:500000, dvt:'buổi'},
-  {ban:'Ban thư ký',    nhiemVu:'Trưởng ban thư ký',      donGia:400000, dvt:'buổi'},
-  {ban:'Ban thư ký',    nhiemVu:'Thành viên thư ký',      donGia:400000, dvt:'buổi'},
-  {ban:'Ban coi thi',   nhiemVu:'Trưởng ban coi thi',     donGia:400000, dvt:'buổi'},
-  {ban:'Ban coi thi',   nhiemVu:'Cán bộ giám sát',        donGia:300000, dvt:'buổi'},
-  {ban:'Ban coi thi',   nhiemVu:'Cán bộ coi thi',         donGia:300000, dvt:'buổi'},
-  {ban:'Ban thanh tra', nhiemVu:'Trưởng ban thanh tra',   donGia:400000, dvt:'buổi'},
-  {ban:'Ban thanh tra', nhiemVu:'Cán bộ thanh tra',       donGia:300000, dvt:'buổi'},
-  {ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Cán bộ kỹ thuật',  donGia:200000, dvt:'buổi'},
-  {ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Trật tự viên',     donGia:200000, dvt:'buổi'},
-  {ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Bảo quản thiết bị thi', donGia:250000, dvt:'buổi'},
-  {ban:'Ban đề thi',    nhiemVu:'Cán bộ ra đề thi',       donGia:250000, dvt:'đề'},
-  {ban:'Ban đề thi',    nhiemVu:'Cán bộ phản biện đề',    donGia:250000, dvt:'đề'},
-  {ban:'Ban chấm thi',  nhiemVu:'Chấm vòng 1',            donGia:10000,  dvt:'bài'},
-  {ban:'Ban chấm thi',  nhiemVu:'Chấm vòng 2',            donGia:10000,  dvt:'bài'}
+/* ================= ĐỊNH MỨC THÙ LAO — QUYẾT ĐỊNH 19 =================
+   Quyết định số 19/QĐ-TTNNTH ngày 08/10/2026, hiệu lực từ ngày ký.
+   Điều 4: "Các mức chi thù lao Hội đồng thi trước đây của Trung tâm trái
+   với Quyết định này đều bãi bỏ." Bộ định mức phẳng dùng trước V1.31.0 đã
+   bị bãi bỏ — nó để một ô đơn giá duy nhất cho mỗi nhiệm vụ, trong khi QĐ 19
+   quy định đơn giá ĐỔI THEO BẬC QUY MÔ, và nhiều dòng còn sai số tiền
+   (ra đề 250.000/đề trong khi QĐ 19 là 200.000/đề, chấm bài kỳ chứng nhận
+   10.000/vòng trong khi QĐ 19 là 5.000/vòng).
+
+   Cấu trúc đúng theo QĐ 19 gồm hai chiều:
+     · Phụ lục I — kỳ thi Tiếng Anh   (phuLuc 'TA')
+     · Phụ lục II — kỳ thi Tin học    (phuLuc 'TH')
+   và trong Phụ lục II, tám nhiệm vụ tách riêng mức chứng nhận với mức chứng
+   chỉ (muc 'chungNhan' / 'chungChi'); nhiệm vụ không phân biệt để muc ''.
+   Điều 2 khoản 8: hai phụ lục áp dụng ĐỘC LẬP, không lấy đơn giá bảng này
+   áp cho bảng kia. */
+
+const BAC_QUY_MO = [
+  {ma:'b1', ten:'0 – 100',     tu:0,    den:100},
+  {ma:'b2', ten:'101 – 250',   tu:101,  den:250},
+  {ma:'b3', ten:'251 – 500',   tu:251,  den:500},
+  {ma:'b4', ten:'501 – 1.000', tu:501,  den:1000},
+  {ma:'b5', ten:'trên 1.000',  tu:1001, den:null}
 ];
+/* Bậc quy mô xác định theo SỐ THÍ SINH. Điều 2 khoản 3: dự trù kinh phí
+   theo số thí sinh ĐĂNG KÝ, thanh toán theo số thí sinh DỰ THI THỰC TẾ —
+   nên cùng một kỳ có thể rơi vào hai bậc khác nhau ở hai thời điểm. Hàm này
+   chỉ nhận một con số, bên gọi phải nói rõ đang hỏi theo số nào. */
+function chiSoBac(soThiSinh){
+  const n = Number(soThiSinh) || 0;
+  for(let i = 0; i < BAC_QUY_MO.length; i++){
+    const b = BAC_QUY_MO[i];
+    if(n >= b.tu && (b.den === null || n <= b.den)) return i;
+  }
+  return 0;
+}
+function tenBac(i){ return (BAC_QUY_MO[i] || BAC_QUY_MO[0]).ten; }
+
+/* Loại kỳ thi nào dùng phụ lục nào. Cambridge KHÔNG có trong QĐ 19: FLIC chỉ
+   tổ chức thi, không lập Hội đồng, mà QĐ 19 chỉ quy định thù lao thành viên
+   Hội đồng thi. Trả null để màn định mức nói thẳng điều đó thay vì lẳng lặng
+   mượn đơn giá của Phụ lục I. */
+const PHU_LUC_QD19 = {
+  'TACDR':     {phuLuc:'TA', muc:''},
+  'UDCNTT_CN': {phuLuc:'TH', muc:'chungNhan'},
+  'UDCNTT_CC': {phuLuc:'TH', muc:'chungChi'},
+  'CAMBRIDGE': null
+};
+const TEN_PHU_LUC = {TA:'Phụ lục I · kỳ thi Tiếng Anh', TH:'Phụ lục II · kỳ thi Tin học'};
+const TEN_MUC_QD19 = {'':'', chungNhan:'kỳ thi chứng nhận', chungChi:'kỳ thi chứng chỉ'};
+function qd19Cua(loaiKy){
+  return Object.prototype.hasOwnProperty.call(PHU_LUC_QD19, loaiKy)
+    ? PHU_LUC_QD19[loaiKy] : null;
+}
+
+/* Bảng định mức. Mỗi dòng: gia[5] là đơn giá theo 5 bậc, bien[5] là định biên
+   (Điều 2 khoản 4: số người tham gia không vượt định biên). null nghĩa là bậc
+   đó KHÔNG áp dụng nhiệm vụ này — QĐ 19 ghi dấu "-". Trường ban chỉ dùng để
+   gom nhóm khi lập hội đồng, QĐ 19 không chia theo ban. */
+const DINH_MUC_MAC_DINH = [
+  /* ----- Phụ lục I · kỳ thi Tiếng Anh ----- */
+  {phuLuc:'TA', muc:'', tt:1,  ban:'Hội đồng thi',  nhiemVu:'Chủ tịch Hội đồng',
+   dvt:'buổi', gia:[500000,600000,700000,800000,1000000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:2,  ban:'Hội đồng thi',  nhiemVu:'Phó Chủ tịch Hội đồng',
+   dvt:'buổi', gia:[null,400000,500000,600000,700000], bien:[null,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:3,  ban:'Ban thư ký',    nhiemVu:'Thư ký',
+   dvt:'buổi', gia:[400000,400000,500000,500000,500000], bien:[1,1,2,2,2]},
+  {phuLuc:'TA', muc:'', tt:4,  ban:'Ban thư ký',    nhiemVu:'Trưởng ban Thư ký',
+   dvt:'buổi', gia:[400000,400000,500000,600000,600000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:5,  ban:'Ban coi thi',   nhiemVu:'Trưởng ban Coi thi',
+   dvt:'buổi', gia:[400000,400000,400000,500000,600000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:6,  ban:'Ban thanh tra', nhiemVu:'Trưởng ban Thanh tra',
+   dvt:'buổi', gia:[400000,400000,500000,500000,500000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:7,  ban:'Ban thanh tra', nhiemVu:'Thành viên Ban Thanh tra',
+   dvt:'buổi', gia:[null,null,null,300000,400000], bien:[null,null,null,1,1]},
+  {phuLuc:'TA', muc:'', tt:8,  ban:'Ban coi thi',   nhiemVu:'Giám sát',
+   dvt:'buổi', gia:[400000,400000,400000,400000,400000], bien:[1,1,2,2,2]},
+  {phuLuc:'TA', muc:'', tt:9,  ban:'Ban coi thi',   nhiemVu:'Cán bộ coi thi',
+   dvt:'buổi', gia:[400000,400000,400000,400000,400000],
+   bien:['4 – 6 (2 – 3 phòng)','6 – 12 (3 – 6 phòng)','12 – 24 (6 – 12 phòng)','24 – 50 (12 – 25 phòng)','02 người/phòng thi']},
+  {phuLuc:'TA', muc:'', tt:10, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Tổ trưởng hậu cần',
+   dvt:'buổi', gia:[null,null,200000,200000,300000], bien:[null,null,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:11, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Giữ đồ',
+   dvt:'buổi', gia:[200000,200000,200000,200000,200000], bien:[1,1,1,2,2]},
+  {phuLuc:'TA', muc:'', tt:12, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Kỹ thuật mạng',
+   dvt:'buổi', gia:[200000,200000,200000,200000,200000], bien:[1,1,1,2,2]},
+  {phuLuc:'TA', muc:'', tt:13, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Bảo quản thiết bị',
+   dvt:'buổi', gia:[250000,250000,250000,250000,250000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:14, ban:'Ban đề thi',    nhiemVu:'Ra đề (bộ đề gồm 03 đề thi)',
+   dvt:'bộ đề', theoBac:false, gia:[600000,600000,600000,600000,600000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:15, ban:'Ban đề thi',    nhiemVu:'Phản biện đề thi (bộ đề gồm 03 đề thi)',
+   dvt:'bộ đề', theoBac:false, gia:[500000,500000,500000,500000,500000], bien:[1,1,1,1,1]},
+  {phuLuc:'TA', muc:'', tt:16, ban:'Ban chấm thi',  nhiemVu:'Chấm bài thi Nói và Viết, nhập điểm vào hệ thống',
+   dvt:'buổi', gia:[500000,500000,500000,500000,500000],
+   bien:['2 – 3','3 – 6','6 – 12','12 – 25','01 người/phòng thi']},
+
+  /* ----- Phụ lục II · kỳ thi Tin học ----- */
+  {phuLuc:'TH', muc:'', tt:1,  ban:'Hội đồng thi',  nhiemVu:'Chủ tịch Hội đồng',
+   dvt:'buổi', gia:[500000,500000,600000,700000,800000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:2,  ban:'Hội đồng thi',  nhiemVu:'Phó Chủ tịch Hội đồng',
+   dvt:'buổi', gia:[null,400000,500000,600000,700000], bien:[null,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:3,  ban:'Ban thư ký',    nhiemVu:'Thư ký',
+   dvt:'buổi', gia:[400000,400000,400000,500000,500000], bien:[1,1,2,2,2]},
+  {phuLuc:'TH', muc:'', tt:4,  ban:'Ban thư ký',    nhiemVu:'Trưởng ban Thư ký',
+   dvt:'buổi', gia:[400000,400000,500000,500000,600000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'chungNhan', tt:5, ban:'Ban coi thi', nhiemVu:'Trưởng ban coi thi (chứng nhận)',
+   dvt:'buổi', gia:[300000,300000,400000,500000,600000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'chungChi',  tt:6, ban:'Ban coi thi', nhiemVu:'Trưởng ban coi thi (chứng chỉ)',
+   dvt:'buổi', gia:[400000,400000,400000,400000,400000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:7,  ban:'Ban thanh tra', nhiemVu:'Trưởng ban Thanh tra',
+   dvt:'buổi', gia:[400000,400000,500000,500000,500000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:8,  ban:'Ban thanh tra', nhiemVu:'Thành viên Ban Thanh tra',
+   dvt:'buổi', gia:[null,null,null,300000,400000], bien:[null,null,null,1,1]},
+  {phuLuc:'TH', muc:'chungNhan', tt:9,  ban:'Ban coi thi', nhiemVu:'Giám sát (kỳ thi chứng nhận)',
+   dvt:'buổi', gia:[300000,300000,300000,300000,300000], bien:[1,1,2,2,2]},
+  {phuLuc:'TH', muc:'chungChi',  tt:10, ban:'Ban coi thi', nhiemVu:'Giám sát (kỳ thi chứng chỉ)',
+   dvt:'buổi', gia:[400000,400000,400000,400000,400000], bien:[1,1,2,2,2]},
+  {phuLuc:'TH', muc:'chungNhan', tt:11, ban:'Ban coi thi', nhiemVu:'Cán bộ coi thi (kỳ thi chứng nhận)',
+   dvt:'buổi', gia:[300000,300000,300000,300000,300000],
+   bien:['4 – 6 (2 – 3 phòng)','6 – 12 (3 – 6 phòng)','12 – 24 (6 – 12 phòng)','24 – 50 (12 – 25 phòng)','02 người/phòng thi']},
+  {phuLuc:'TH', muc:'chungChi',  tt:12, ban:'Ban coi thi', nhiemVu:'Cán bộ coi thi (kỳ thi chứng chỉ, bài thi 120 – 150 phút)',
+   dvt:'buổi', gia:[400000,400000,400000,400000,400000],
+   bien:['4 – 6 (2 – 3 phòng)','6 – 12 (3 – 6 phòng)','12 – 24 (6 – 12 phòng)','24 – 50 (12 – 25 phòng)','02 người/phòng thi']},
+  {phuLuc:'TH', muc:'', tt:13, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Tổ trưởng hậu cần',
+   dvt:'buổi', gia:[null,null,null,200000,300000], bien:[null,null,null,1,1]},
+  {phuLuc:'TH', muc:'chungNhan', tt:14, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Giữ đồ (kỳ thi chứng nhận)',
+   dvt:'buổi', gia:[100000,100000,100000,100000,100000], bien:[1,1,1,2,2]},
+  {phuLuc:'TH', muc:'chungChi',  tt:15, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Giữ đồ (kỳ thi chứng chỉ)',
+   dvt:'buổi', gia:[200000,200000,200000,200000,200000], bien:[1,1,1,2,2]},
+  {phuLuc:'TH', muc:'', tt:16, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Kỹ thuật mạng',
+   dvt:'buổi', gia:[200000,200000,200000,200000,200000], bien:[1,1,1,2,2]},
+  {phuLuc:'TH', muc:'', tt:17, ban:'Ban hậu cần, y tế và trật tự viên', nhiemVu:'Bảo quản thiết bị',
+   dvt:'buổi', gia:[250000,250000,250000,250000,250000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:18, ban:'Ban đề thi',    nhiemVu:'Ra đề (bộ đề gồm 02 đề thi)',
+   dvt:'bộ đề', theoBac:false, gia:[400000,400000,400000,400000,400000], bien:[1,1,1,1,1]},
+  {phuLuc:'TH', muc:'', tt:19, ban:'Ban đề thi',    nhiemVu:'Phản biện đề thi (bộ đề gồm 02 đề thi)',
+   dvt:'bộ đề', theoBac:false, gia:[200000,200000,200000,200000,200000], bien:[1,1,1,1,1]},
+  /* Phụ lục II mục 3: chấm thực hành tính theo SỐ BÀI, không theo bậc quy mô;
+     mỗi bài chấm 02 vòng độc lập nên đơn giá dưới đây là MỘT vòng. */
+  {phuLuc:'TH', muc:'chungNhan', tt:20, ban:'Ban chấm thi', nhiemVu:'Chấm bài thi thực hành (kỳ thi chứng nhận)',
+   dvt:'bài · một vòng chấm', theoBac:false, gia:[5000,5000,5000,5000,5000], bien:[2,2,2,3,3]},
+  {phuLuc:'TH', muc:'chungChi',  tt:21, ban:'Ban chấm thi', nhiemVu:'Chấm bài thi thực hành (kỳ thi chứng chỉ)',
+   dvt:'bài · một vòng chấm', theoBac:false, gia:[10000,10000,10000,10000,10000], bien:[2,2,3,3,4]}
+];
+
+/* Lọc đúng bảng cho một kỳ thi: phụ lục của loại kỳ, cộng các dòng không phân
+   biệt mức và các dòng đúng mức của kỳ đó. Trả mảng rỗng cho Cambridge —
+   bên gọi phải xử lý, không được mặc định sang bảng khác. */
+function dongDinhMucQD19(loaiKy){
+  const q = qd19Cua(loaiKy);
+  if(!q) return [];
+  const nguon = (dinhMucList && dinhMucList.length) ? dinhMucList : DINH_MUC_MAC_DINH;
+  return nguon.filter(function(d){
+    return d.phuLuc === q.phuLuc && (!d.muc || d.muc === q.muc);
+  }).sort(function(a, b){ return (a.tt || 0) - (b.tt || 0); });
+}
+/* Đơn giá một dòng ở một bậc. Trả null khi bậc đó không áp dụng — null KHÁC 0:
+   0 là miễn phí, null là không được chi. Bên gọi phải chặn, không quy về 0. */
+function giaTheoBac(d, iBac){
+  if(!d) return null;
+  if(Array.isArray(d.gia)){
+    const v = d.gia[iBac];
+    return (v === null || v === undefined) ? null : Number(v);
+  }
+  /* Dòng do người dùng tự thêm trước V1.31.0 chỉ có một ô đơn giá */
+  return (d.donGia === null || d.donGia === undefined) ? null : Number(d.donGia);
+}
+function bienTheoBac(d, iBac){
+  if(!d || !Array.isArray(d.bien)) return null;
+  const v = d.bien[iBac];
+  return (v === null || v === undefined) ? null : v;
+}
 
 const TT_KY_THI = ['Chuẩn bị','Đã thi','Đã có kết quả','Hoàn tất','Đã huỷ'];
 const KQ_THI = ['Chưa có','Đạt','Không đạt','Vắng thi','Hoãn thi'];
@@ -12394,13 +12795,60 @@ let dtSoKy = 6;
 function doiSoKyDoiTac(){ dtSoKy = Number($('dtSoKy').value) || 6; veLaiCoHieuUng(); }
 
 /* Xuất danh sách thí sinh theo mẫu đăng ký của Hội đồng VN290 */
-function xuatDsVN290(kyId){
+/* ===== ĐỢT GỬI DANH SÁCH CHO HỘI ĐỒNG VN290 =====
+   Khảo thí mô tả 02/11/2026: tới hạn đăng ký thi giấy thì chốt một lần danh
+   sách gửi VN290. Sau đó team vẫn nhận thêm thí sinh — còn đề dư, và thi trên
+   máy đăng ký được tới trước ngày thi 10 ngày. Những em mới này phải gom thành
+   NHÓM để báo bổ sung, chứ không báo lẻ từng bạn.
+   Nên phần mềm phải biết em nào đã nằm trong đợt gửi nào. Trước đây không có
+   dấu nào cả, xuất ra là xuất lại từ đầu toàn bộ danh sách.
+   Vòng đời đóng: đợt đã chốt KHÔNG mở ngược được — danh sách đã nằm bên VN290
+   rồi, sửa ngược là hai bên lệch nhau mà không ai biết bên nào đúng. */
+function dotVN290Cua(t){ return Number(t && t.dotVN290) || 0; }
+function soDotVN290(kyId){
+  return thiSinhCuaKy(kyId).reduce(function(m, t){
+    return Math.max(m, dotVN290Cua(t)); }, 0);
+}
+/* Thí sinh chưa nằm trong đợt gửi nào. Em hoãn thi không tính: không gửi đi thi. */
+function thiSinhChuaGuiVN290(kyId){
+  return thiSinhCuaKy(kyId)
+    .filter(function(t){ return !dotVN290Cua(t) && t.ketQua !== 'Hoãn thi'; })
+    .sort(soSanhTenThiSinh);
+}
+function chotDotVN290(kyId){
+  if(!canQuyen('chotDotVN290')) return;
+  const ky = kyThiList.find(function(x){ return x.id === kyId; });
+  if(!ky){ showToast('Không tìm thấy kỳ thi'); return; }
+  const moi = thiSinhChuaGuiVN290(kyId);
+  if(!moi.length){ showToast('Không có thí sinh mới nào để chốt'); return; }
+  const dot = soDotVN290(kyId) + 1;
+  if(!confirm('Chốt đợt ' + dot + ' gồm ' + moi.length + ' thí sinh của kỳ "' + ky.ten + '"?\n\n'
+      + 'Đợt đã chốt không mở ngược được. Thí sinh thêm sau sẽ vào đợt ' + (dot + 1) + '.')) return;
+  Promise.all(moi.map(function(t){
+    return db.collection('fcv_thisinh').doc(t.id).update({
+      dotVN290: dot, ngayDotVN290: todayISO(), nguoiChotDot: (currentUser && currentUser.hoTen) || ''
+    });
+  })).then(function(){
+    showToast('✅ Đã chốt đợt ' + dot + ' · ' + moi.length + ' thí sinh');
+    logAct('Chốt đợt ' + dot + ' gửi VN290 kỳ ' + ky.ten + ' · ' + moi.length + ' thí sinh');
+  }).catch(fsErr);
+}
+
+/* chiDotMoi = true thì chỉ xuất những em CHƯA nằm trong đợt nào — đó là file
+   bổ sung gửi VN290, không phải cả danh sách gửi lại từ đầu. */
+function xuatDsVN290(kyId, chiDotMoi){
   if(typeof ExcelJS === 'undefined'){ showToast('Thư viện Excel chưa tải xong'); return; }
   const ky = kyThiList.find(function(x){ return x.id === kyId; });
   if(!ky) return;
-  const ds = thiSinhCuaKy(kyId).filter(function(t){ return t.ketQua !== 'Hoãn thi'; })
-    .sort(function(a, b){ return (a.hoTen || '').localeCompare(b.hoTen || '', 'vi'); });
-  if(!ds.length){ showToast('Kỳ thi chưa có thí sinh nào'); return; }
+  const ds = (chiDotMoi
+      ? thiSinhChuaGuiVN290(kyId)
+      : thiSinhCuaKy(kyId).filter(function(t){ return t.ketQua !== 'Hoãn thi'; })
+          .sort(soSanhTenThiSinh));
+  if(!ds.length){
+    showToast(chiDotMoi ? 'Không có thí sinh mới nào kể từ đợt gửi gần nhất'
+                        : 'Kỳ thi chưa có thí sinh nào');
+    return;
+  }
 
   const wb = new ExcelJS.Workbook();
   wb.creator = 'FLIC DNTU';
@@ -12478,12 +12926,16 @@ function xuatDsVN290(kyId){
     const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'FLIC-DS-dang-ky-' + stripDia(ky.ten).replace(/[^a-z0-9]+/g, '-').slice(0, 30)
+    a.download = 'FLIC-DS-dang-ky-' + (chiDotMoi ? 'bo-sung-dot' + (soDotVN290(kyId) + 1) + '-' : '')
+      + stripDia(ky.ten).replace(/[^a-z0-9]+/g, '-').slice(0, 30)
       + '-' + todayISO() + '.xlsx';
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
-    showToast('✅ Đã xuất ' + ds.length + ' thí sinh theo mẫu VN290');
-    logAct('Xuất danh sách đăng ký VN290 kỳ ' + ky.ten);
+    showToast('✅ Đã xuất ' + ds.length + ' thí sinh'
+      + (chiDotMoi ? ' bổ sung' : '') + ' theo mẫu VN290');
+    logAct('Xuất danh sách đăng ký VN290'
+      + (chiDotMoi ? ' BỔ SUNG đợt ' + (soDotVN290(kyId) + 1) : '') + ' kỳ ' + ky.ten
+      + ' · ' + ds.length + ' thí sinh');
   }).catch(fsErr);
 }
 
@@ -12539,6 +12991,35 @@ function viewDoiTacKhaoThi(){
        : '<div class="stat"><div class="lbl">Kỳ gần nhất</div><div class="val">'
          + (dCuoi ? dCuoi.tong : '—') + '</div></div>')
     + '</div>';
+
+  /* Hợp đồng tới hạn ký lại — Khảo thí đề nghị 02/11/2026. Đặt NGAY đầu màn
+     Đối tác, vì đây là việc phải làm, không phải con số để ngắm. */
+  const kyLai = doiTacCanKyLai();
+  if(kyLai.length){
+    const coQua = kyLai.some(function(x){ return x.quaHan; });
+    h += '<div class="card" style="border-color:' + (coQua ? 'var(--danger-br)' : 'var(--warn)')
+      + ';background:' + (coQua ? 'var(--danger-bg)' : 'var(--warn-bg)') + ';">'
+      + '<b>' + kyLai.length + ' hợp đồng đối tác tới hạn ký lại</b>'
+      + '<div class="small muted" style="margin-top:2px;line-height:1.7;">'
+      + 'Tính đủ ' + hanHopDongThang() + ' tháng kể từ ngày bắt đầu hợp tác, báo trước '
+      + baoTruocHopDongNgay() + ' ngày. Sửa hai mốc trong Hệ thống → Tham số.</div>'
+      + '<div style="margin-top:8px;">'
+      + kyLai.map(function(x){
+          return '<div class="list-row"><div style="min-width:0;flex:1;">'
+            + '<div><b>' + esc(x.dt.ten) + '</b></div>'
+            + '<div class="small muted">bắt đầu ' + fmtDate(x.dt.ngayBatDau)
+            + ' · hết hạn ' + fmtDate(x.ngayHet)
+            + (x.dt.nguoiLienHe ? ' · ' + esc(x.dt.nguoiLienHe) : '')
+            + (x.dt.dienThoai ? ' · ' + esc(x.dt.dienThoai) : '') + '</div></div>'
+            + '<div style="flex-shrink:0;text-align:right;">'
+            + badge(x.quaHan ? 'danger' : 'warn',
+                x.quaHan ? 'Quá hạn ' + Math.abs(x.con) + ' ngày' : 'Còn ' + x.con + ' ngày')
+            + (hasPerm('quanLyKyThi')
+               ? ' <button class="btn btn-sm" onclick="formDoiTac(\'' + x.dt.id + '\')">Sửa</button>' : '')
+            + '</div></div>';
+        }).join('')
+      + '</div></div>';
+  }
 
   /* Biểu đồ cột chồng */
   h += '<div class="card"><h3>Số thí sinh theo kỳ, tách theo nguồn</h3>';
@@ -12917,6 +13398,25 @@ function viewLePhiCap(){
 
 function thiSinhCuaKy(kyId){ return thiSinhList.filter(function(t){ return t.kyThiId===kyId; }); }
 
+/* ===== THỨ TỰ DANH SÁCH THI — MỘT CỬA =====
+   Khảo thí đề nghị 02/11/2026: danh sách thi thực tế của hội đồng xếp theo
+   ABC của TÊN, không phải của HỌ. "Nguyễn Văn An" đứng trước "Trần Thị Ánh"
+   vì An < Ánh, dù N > T. Trước đây phần mềm xếp theo cả chuỗi họ tên nên
+   Khảo thí dò tên và nhập điểm phải lần mò.
+   Cột hiển thị vẫn giữ nguyên "Họ đệm và tên" đầy đủ, chỉ đổi thứ tự.
+   Mọi nơi liệt kê thí sinh phải gọi hàm này; ba nơi ba kiểu sắp là file xuất
+   lệch với màn hình, dò tên lại sai tiếp. */
+function khoaSapTen(hoTen){
+  const t = String(hoTen || '').trim().replace(/\s+/g, ' ');
+  if(!t) return '￿';
+  const p = t.split(' ');
+  const ten = p.pop();
+  return ten + ' ' + p.join(' ');
+}
+function soSanhTenThiSinh(a, b){
+  return khoaSapTen(a && a.hoTen).localeCompare(khoaSapTen(b && b.hoTen), 'vi');
+}
+
 /* ================= LỚP ÔN VÀ KỲ THI =================
    Khảo thí đề xuất 26/10/2026: "thấy danh sách học viên ôn tập được điểm danh và
    ngày kết thúc, kiểm tra được học viên đã đăng ký kỳ thi theo kế hoạch của lớp".
@@ -12963,11 +13463,63 @@ function dsLopOn(){
     });
 }
 
+/* ===== LỊCH KHAI GIẢNG LỚP ÔN =====
+   Khảo thí đề nghị 02/11/2026: cần thấy ngày dự kiến khai giảng, ngày kết thúc,
+   đích đến kỳ thi và lịch học của các lớp ôn sắp mở.
+   Không tạo bảng riêng: đọc thẳng lopList, vì chép sang bảng khác là có ngày
+   hai bên lệch nhau mà không ai biết bên nào đúng. */
+function lopOnSapKhaiGiang(){
+  const hn = todayISO();
+  return (lopList || []).filter(function(l){
+    if(l.trangThai !== 'Sắp khai giảng') return false;
+    return !l.ngayKG || l.ngayKG >= hn;
+  }).sort(function(a, b){ return (a.ngayKG || '9999').localeCompare(b.ngayKG || '9999'); });
+}
+function khoiSapKhaiGiang(){
+  const ds = lopOnSapKhaiGiang();
+  if(!ds.length) return '';
+  return '<div class="card"><h3 style="margin:0 0 4px;">Sắp khai giảng · ' + ds.length + ' lớp</h3>'
+    + '<div class="small muted" style="margin-bottom:6px;">Xếp theo ngày khai giảng gần nhất. '
+    + 'Lớp nào chưa khai ngày hoặc chưa tick thứ trong tuần thì hiện rõ ở đây để bổ sung.</div>'
+    + ds.slice(0, 40).map(function(l){
+        const ky = l.kyThiId ? (kyThiList || []).find(function(k){ return k.id === l.kyThiId; }) : null;
+        const con = l.ngayKG ? diffDays(todayISO(), l.ngayKG) : null;
+        const thieu = [];
+        if(!l.ngayKG) thieu.push('ngày khai giảng');
+        if(!lopDaTichThu(l)) thieu.push('các thứ trong tuần');
+        if(!l.gvPhuTrach && !l.gvId) thieu.push('giáo viên');
+        return '<div class="list-row"><div style="min-width:0;flex:1;">'
+          + '<div><b>' + esc(l.maLop) + '</b>'
+          + (l.nhomCT ? ' <span class="small muted">· ' + esc(l.nhomCT) + '</span>' : '') + '</div>'
+          + '<div class="small muted">'
+          + (l.ngayKG ? 'khai giảng ' + fmtDate(l.ngayKG) : 'chưa có ngày khai giảng')
+          + (l.ngayKT ? ' → ' + fmtDate(l.ngayKT) : '')
+          + (l.lichHoc ? ' · ' + esc(l.lichHoc) : '')
+          + (l.gioHoc ? ' · ' + esc(l.gioHoc) : '')
+          + (l.phongHoc ? ' · ' + esc(l.phongHoc) : '') + '</div>'
+          + '<div class="small muted">'
+          + (ky ? 'ôn cho <b>' + esc(ky.ten) + '</b> · thi ' + fmtDate(ky.ngayThi)
+                : '<span style="color:var(--warn);">chưa khai đích đến kỳ thi</span>')
+          + (l.gvPhuTrach ? ' · ' + esc(l.gvPhuTrach) : '') + '</div>'
+          + (thieu.length
+              ? '<div class="small" style="color:var(--warn);">⚠️ Còn thiếu ' + thieu.join(', ') + '</div>' : '')
+          + '</div><div style="text-align:right;flex-shrink:0;">'
+          + (con === null ? '' : badge(con <= 7 ? 'warn' : 'gray',
+              con === 0 ? 'Khai giảng hôm nay' : 'Còn ' + con + ' ngày'))
+          + (hasPerm('suaLop')
+             ? '<div style="margin-top:5px;"><button class="btn btn-sm" onclick="formLop(\'' + l.id + '\')">Sửa lớp</button></div>' : '')
+          + '</div></div>';
+      }).join('')
+    + (ds.length > 40 ? '<div class="small muted" style="margin-top:6px;">… và ' + (ds.length - 40) + ' lớp nữa</div>' : '')
+    + '</div>';
+}
+
 function viewLopOnVaKyThi(){
   const ds = dsLopOn();
   let h = '<div class="card"><h3>Lớp ôn và kỳ thi</h3>'
     + '<div class="small muted">Đối chiếu học viên đang học lớp ôn với danh sách thí sinh của '
     + 'kỳ thi mà lớp đó ôn cho. Khai đích cho lớp ở <b>Học vụ → Danh mục lớp → Sửa lớp</b>.</div></div>';
+  h += khoiSapKhaiGiang();
   if(!ds.length)
     return h + '<div class="card">' + emptyBox('🎯',
       'Chưa lớp nào khai đích là một kỳ thi') + '</div>';
@@ -13194,21 +13746,107 @@ let ktKyId = null;
 function moKyThi(id){ ktKyId = id; render(); }
 function dongKyThi(){ ktKyId = null; render(); }
 
+/* ===== LỊCH THI THEO THÁNG / QUÝ / NĂM =====
+   Khảo thí đề nghị 02/11/2026: cần xem tổng quan lịch thi theo khung thời gian
+   và xuất được ra Excel. Phạm vi tính từ HÔM NAY trở đi, vì lịch là để chuẩn bị
+   việc sắp tới, không phải để tra lại việc đã xong. */
+const LICH_THI_PHAM_VI = [
+  {ma:'thang', ten:'Trong tháng này',  ngay:  0},
+  {ma:'quy',   ten:'Trong quý này',    ngay:  0},
+  {ma:'nam',   ten:'Trong năm nay',    ngay:  0},
+  {ma:'tatCa', ten:'Tất cả kỳ thi',    ngay: -1}
+];
+/* Mặc định "Tất cả" để màn Kỳ thi giữ nguyên nếp cũ; chọn phạm vi thì màn và
+   file Excel cùng thu hẹp theo — nút không được nói một đằng làm một nẻo. */
+let ltPhamVi = 'tatCa';
+function doiPhamViLichThi(){ ltPhamVi = $('ltPhamVi').value; render(); }
+function cuoiPhamViLichThi(ma){
+  const hn = todayISO();
+  const d = new Date(hn + 'T00:00:00');
+  const y = d.getFullYear(), m = d.getMonth();
+  if(ma === 'thang') return new Date(y, m + 1, 0);
+  if(ma === 'quy')   return new Date(y, Math.floor(m / 3) * 3 + 3, 0);
+  if(ma === 'nam')   return new Date(y, 12, 0);
+  return null;
+}
+function kyThiTrongPhamVi(ma){
+  const hn = todayISO();
+  const cuoi = cuoiPhamViLichThi(ma);
+  const het = cuoi ? (cuoi.getFullYear() + '-' + String(cuoi.getMonth() + 1).padStart(2, '0')
+                      + '-' + String(cuoi.getDate()).padStart(2, '0')) : null;
+  return (kyThiList || []).filter(function(k){
+    if(!het) return true;
+    if(!k.ngayThi) return false;
+    return k.ngayThi >= hn && k.ngayThi <= het;
+  }).sort(function(a, b){ return (a.ngayThi || '').localeCompare(b.ngayThi || ''); });
+}
+function xuatExcelLichThi(){
+  if(typeof ExcelJS === 'undefined'){ showToast('Thư viện Excel chưa tải xong'); return; }
+  const pv = LICH_THI_PHAM_VI.find(function(p){ return p.ma === ltPhamVi; }) || LICH_THI_PHAM_VI[1];
+  const ds = kyThiTrongPhamVi(ltPhamVi);
+  if(!ds.length){ showToast('Không có kỳ thi nào trong phạm vi ' + pv.ten.toLowerCase()); return; }
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'FLIC DNTU';
+  const ws = wb.addWorksheet('Lich thi');
+  ws.addRow(['LỊCH THI · ' + pv.ten.toUpperCase() + ' · lập ngày ' + fmtDate(todayISO())]);
+  ws.getRow(1).font = {bold: true, size: 13};
+  ws.addRow([]);
+  ws.addRow(['TT', 'Tên kỳ thi', 'Loại kỳ thi', 'Khoá',
+             'Hạn đăng ký thi', 'Hạn đóng lệ phí', 'Hạn chốt danh sách',
+             'Ngày thi dự kiến', 'Giờ thi', 'Phòng thi',
+             'Thí sinh đã có', 'Dự kiến', 'Lệ phí mỗi thí sinh',
+             'Người phụ trách', 'Trạng thái']);
+  ws.getRow(3).font = {bold: true};
+  ds.forEach(function(k, i){
+    ws.addRow([i + 1, k.ten || '', timLoaiKyThi(k.loai).ten, k.khoa || '',
+      k.hanDangKy ? fmtDate(k.hanDangKy) : '',
+      k.hanNopLePhi ? fmtDate(k.hanNopLePhi) : '',
+      k.hanChotDS ? fmtDate(k.hanChotDS) : '',
+      k.ngayThi ? fmtDate(k.ngayThi) : '',
+      k.gioThi || '', k.phongThi || '',
+      thiSinhCuaKy(k.id).length, Number(k.soLuongDuKien) || 0,
+      Number(k.lePhi) || 0, k.phuTrachTen || '', k.trangThai || '']);
+  });
+  [6, 34, 26, 12, 17, 17, 19, 17, 16, 18, 14, 10, 18, 22, 16]
+    .forEach(function(w, i){ ws.getColumn(i + 1).width = w; });
+  wb.xlsx.writeBuffer().then(function(buf){
+    const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'FLIC-Lich-thi-' + ltPhamVi + '-' + todayISO() + '.xlsx';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+    showToast('✅ Đã xuất ' + ds.length + ' kỳ thi');
+    logAct('Xuất lịch thi ' + pv.ten.toLowerCase() + ' · ' + ds.length + ' kỳ');
+  }).catch(fsErr);
+}
+
 function viewKyThi(){
   if(ktKyId) return viewKyThiChiTiet();
   /* Kỳ sắp diễn ra lên đầu, gần nhất trước; kỳ đã qua xuống dưới, mới nhất trước */
   const hn = todayISO();
-  const ds = kyThiList.slice().sort(function(a,b){
-    const na = a.ngayThi||'', nb = b.ngayThi||'';
-    const aToi = na >= hn, bToi = nb >= hn;
-    if(aToi !== bToi) return aToi ? -1 : 1;
-    return aToi ? na.localeCompare(nb) : nb.localeCompare(na);
-  });
+  const ds = (ltPhamVi === 'tatCa' ? kyThiList.slice() : kyThiTrongPhamVi(ltPhamVi))
+    .sort(function(a,b){
+      const na = a.ngayThi||'', nb = b.ngayThi||'';
+      const aToi = na >= hn, bToi = nb >= hn;
+      if(aToi !== bToi) return aToi ? -1 : 1;
+      return aToi ? na.localeCompare(nb) : nb.localeCompare(na);
+    });
   let h = '<div class="card"><div class="row wrap"><div><h3 style="margin:0;">Kỳ thi</h3>'
     + '<div class="small muted" style="margin-top:4px;">Mỗi loại kỳ thi có cấu hình riêng, chỉ hiện phần liên quan</div></div>'
-    + (hasPerm('quanLyKyThi')?'<button class="btn btn-primary" onclick="formKyThi()">+ Tạo kỳ thi</button>':'')+'</div></div>';
+    + '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'
+    + '<select id="ltPhamVi" onchange="doiPhamViLichThi()" style="width:auto;margin:0;">'
+    + LICH_THI_PHAM_VI.map(function(p){
+        return '<option value="' + p.ma + '"' + (ltPhamVi === p.ma ? ' selected' : '') + '>'
+          + esc(p.ten) + '</option>'; }).join('')
+    + '</select>'
+    + '<button class="btn btn-sm" onclick="xuatExcelLichThi()">📤 Xuất lịch thi</button>'
+    + (hasPerm('quanLyKyThi')?'<button class="btn btn-primary btn-sm" onclick="formKyThi()">+ Tạo kỳ thi</button>':'')
+    + '</div></div></div>';
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📝','Chưa có kỳ thi nào');
+  if(!ds.length) h += emptyBox('📝', ltPhamVi === 'tatCa'
+    ? 'Chưa có kỳ thi nào'
+    : 'Không có kỳ thi nào từ hôm nay tới hết phạm vi đã chọn');
   else h += ds.map(function(k){
     const c = timLoaiKyThi(k.loai);
     const ts = thiSinhCuaKy(k.id);
@@ -13224,6 +13862,18 @@ function viewKyThi(){
       + '<div class="small muted">'+ts.length+' thí sinh'
       + (dat? ' · '+dat+' đạt ('+fmtNum(dat/ts.length*100,1)+'%)':'')
       + ' · tiến độ '+xongB+'/'+tongB+' việc</div>'
+      /* Ba mốc trước ngày thi: hiện đủ cả ba, mốc nào gấp thì tô màu */
+      + (function(){
+          const bit = MOC_TRUOC_THI.map(function(m){
+            const t = trangThaiMoc(k[m.key]);
+            if(!t) return '';
+            const mau = t.quaHan ? 'var(--danger)' : (t.sapHet ? 'var(--warn)' : 'var(--muc-3)');
+            const duoi = t.quaHan ? ' (quá ' + Math.abs(t.con) + ' ngày)'
+                       : (t.sapHet ? ' (còn ' + t.con + ' ngày)' : '');
+            return '<span style="color:' + mau + ';">' + esc(m.ten) + ' ' + fmtDate(t.ngay) + duoi + '</span>';
+          }).filter(Boolean);
+          return bit.length ? '<div class="small">' + bit.join(' · ') + '</div>' : '';
+        })()
       + (function(){
           const mc = mocCanLam(k);
           if(!mc) return '';
@@ -13256,6 +13906,21 @@ function formKyThi(id){
     +'<label>Khoá</label><input id="mKKhoa" value="'+esc(v.khoa||'')+'" placeholder="VD: Khóa 13">'
     +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Ngày thi</label><input type="date" id="mKNgay" value="'+esc(v.ngayThi||'')+'"></div>'
     +'<div style="flex:1;"><label>Giờ thi</label><input id="mKGio" value="'+esc(v.gioThi||'')+'" placeholder="17h00 – 20h00"></div></div>'
+    /* Ba mốc TRƯỚC ngày thi — Khảo thí đề nghị 02/11/2026. Khác với bộ mốc tổ
+       chức thi đã có (lập kế hoạch, quyết định hội đồng, chấm bài…), vì ba mốc
+       này quyết định việc nhận thí sinh và thu tiền, phải cảnh báo sớm. */
+    +'<label style="margin-top:10px;">Các mốc trước ngày thi</label>'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><div class="small muted">Hạn đăng ký thi</div>'
+      +'<input type="date" id="mKHanDK" value="'+esc(v.hanDangKy||'')+'"></div>'
+      +'<div style="flex:1;"><div class="small muted">Hạn đóng lệ phí</div>'
+      +'<input type="date" id="mKHanLePhi" value="'+esc(v.hanNopLePhi||'')+'"></div></div>'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><div class="small muted">Hạn chốt danh sách thi</div>'
+      +'<input type="date" id="mKHanChot" value="'+esc(v.hanChotDS||'')+'"></div>'
+      +'<div style="flex:1;"></div></div>'
+    +'<div class="small muted">Để trống mốc nào thì mốc đó không cảnh báo. '
+    +'Hệ thống báo trước '+(Number(settings.baoTruocMocThi)||7)+' ngày, sửa trong Hệ thống → Tham số.</div>'
     +'<label>Phòng thi</label><input id="mKPhong" value="'+esc(v.phongThi||'')+'" placeholder="G202, G203, G204, G205">'
     +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Lệ phí mỗi thí sinh</label><input type="number" id="mKLePhi" value="'+(v.lePhi||600000)+'"></div>'
     +'<div style="flex:1;"><label>Số lượng dự kiến</label><input type="number" id="mKDuKien" value="'+(v.soLuongDuKien||0)+'"></div></div>'
@@ -13290,8 +13955,22 @@ function luuKyThi(id){
     ngayThi:$('mKNgay').value, gioThi:$('mKGio').value.trim(), phongThi:$('mKPhong').value.trim(),
     lePhi:Number($('mKLePhi').value)||0, soLuongDuKien:Number($('mKDuKien').value)||0,
     phuTrachUserId:$('mKPhuTrach').value, phuTrachTen: pt? pt.hoTen : '',
-    trangThai:$('mKTT').value
+    trangThai:$('mKTT').value,
+    hanDangKy:   $('mKHanDK')     ? $('mKHanDK').value     : '',
+    hanNopLePhi: $('mKHanLePhi')  ? $('mKHanLePhi').value  : '',
+    hanChotDS:   $('mKHanChot')   ? $('mKHanChot').value   : ''
   };
+  /* Mốc nằm SAU ngày thi là nhập nhầm — chặn ngay, vì cảnh báo sẽ chạy sai
+     suốt và không ai để ý cho tới khi quá hạn thật. */
+  if(data.ngayThi){
+    const sai = MOC_TRUOC_THI.filter(function(m){
+      return data[m.key] && data[m.key] > data.ngayThi; });
+    if(sai.length){
+      showToast(sai.map(function(m){ return m.ten; }).join(', ')
+        + ' đang để sau ngày thi ' + fmtDate(data.ngayThi) + ' — kiểm tra lại');
+      return;
+    }
+  }
   if(!id){
     data.vanBan = {};
     data.hoiDong = [];
@@ -13626,14 +14305,36 @@ function luuVanBan(kyId, ma){
 }
 
 /* --- Hội đồng thi --- */
+/* Kỳ thi đang mở form thành viên. Phải nhớ, vì đơn giá QĐ 19 phụ thuộc loại kỳ
+   (phụ lục nào, mức chứng nhận hay chứng chỉ) và số thí sinh (bậc quy mô) —
+   mà ô "Ban" đổi thì nạp lại nhiệm vụ, lúc đó không còn kyId truyền vào. */
+let hdKyId = null;
+/* Dòng mô tả bậc quy mô, dùng chung cho form thêm và form sửa */
+function dongBacQuyMo(k){
+  const q = qd19Cua(k ? k.loai : '');
+  const ts = k ? thiSinhCuaKy(k.id).length : 0;
+  if(!q)
+    return '<div class="small" style="color:var(--warn-ink);line-height:1.7;">'
+      + '<b>Kỳ Cambridge không thuộc QĐ 19.</b> QĐ 19 chỉ quy định thù lao thành viên Hội đồng thi; '
+      + 'kỳ này FLIC không lập hội đồng. Đơn giá dưới đây là mức đang dùng trước QĐ 19, cần Giám đốc xác nhận.</div>';
+  const i = chiSoBac(ts);
+  return '<div class="small muted" style="line-height:1.7;">'
+    + esc(TEN_PHU_LUC[q.phuLuc]) + (q.muc ? ' · ' + esc(TEN_MUC_QD19[q.muc]) : '') + '<br>'
+    + 'Bậc quy mô: <b>' + esc(tenBac(i)) + '</b> theo <b>' + ts + '</b> thí sinh đang có trong kỳ. '
+    + 'QĐ 19 Điều 2 khoản 3: dự trù theo số đăng ký, thanh toán theo số dự thi thực tế — '
+    + 'số thí sinh đổi bậc thì đơn giá đổi theo, phải soát lại trước khi quyết toán.</div>';
+}
 function formThanhVienHD(kyId){
+  hdKyId = kyId;
   const k = kyThiList.find(function(x){ return x.id===kyId; });
   const ts = thiSinhCuaKy(kyId).length;
   const laCamHD = k && k.loai === 'CAMBRIDGE';
   openModal('<h3>' + (laCamHD ? 'Thêm thành viên đội hỗ trợ' : 'Thêm thành viên hội đồng') + '</h3>'
+    + dongBacQuyMo(k)
     +'<label>Ban</label><select id="mHDBan" onchange="loNhiemVuHD()">'
       + banApDung(k ? k.loai : '').map(function(b){ return '<option>'+esc(b)+'</option>'; }).join('')+'</select>'
-    +'<label>Nhiệm vụ</label><select id="mHDNhiemVu" onchange="tinhTienHD()"></select>'
+    +'<label>Nhiệm vụ</label><select id="mHDNhiemVu" onchange="tinhTienHD(true)"></select>'
+    +'<div class="small" id="mHDBien" style="margin-top:4px;"></div>'
     +'<label>Họ và tên</label><input id="mHDTen">'
     +'<label>Chức danh</label><input id="mHDChucDanh" placeholder="VD: Giảng viên Khoa CNTT">'
     +'<div class="row" style="gap:8px;">'
@@ -13645,35 +14346,82 @@ function formThanhVienHD(kyId){
     +'<button class="btn btn-primary btn-block" onclick="luuThanhVienHD(\''+kyId+'\')">Thêm</button></div>');
   loNhiemVuHD();
 }
+/* Nguồn định mức cho kỳ đang mở — MỘT CỬA, cả form thêm lẫn form sửa đều
+   phải lấy cùng một bảng, nếu không hai nơi ra hai đơn giá cho cùng một việc. */
+function nguonDinhMucHD(ban){
+  const k = kyThiList.find(function(x){ return x.id === hdKyId; });
+  const loai = k ? k.loai : '';
+  /* Cambridge nằm ngoài QĐ 19 — dùng bảng đội hỗ trợ riêng */
+  if(!qd19Cua(loai)){
+    const nguon = (dinhMucList && dinhMucList.length) ? dinhMucList
+      : DINH_MUC_MAC_DINH.concat(DINH_MUC_CAMBRIDGE);
+    return nguon.filter(function(d){ return d.ban === ban && !d.phuLuc; });
+  }
+  /* MỘT CỬA: cùng hàm lọc phụ lục và mức với màn Định mức, chỉ thêm lọc ban */
+  return dongDinhMucQD19(loai).filter(function(d){ return d.ban === ban; });
+}
 /* Khi SỬA một thành viên, truyền nhiệm vụ và đơn giá đang có vào để giữ nguyên.
    Không truyền gì (lúc thêm mới) thì vẫn kéo đơn giá về định mức như trước.
    Nhiệm vụ cũ không còn trong định mức — vì định mức đã sửa sau đó — thì vẫn
    giữ lại làm một lựa chọn, đừng lặng lẽ đổi người ta sang nhiệm vụ khác. */
 function loNhiemVuHD(nhiemVuCu, donGiaCu, dvtCu){
   const ban = $('mHDBan').value;
-  const ds = dinhMucList.filter(function(d){ return d.ban===ban; });
-  const nguon = ds.length? ds
-    : DINH_MUC_MAC_DINH.concat(DINH_MUC_CAMBRIDGE).filter(function(d){ return d.ban===ban; });
+  const k = kyThiList.find(function(x){ return x.id === hdKyId; });
+  const iBac = chiSoBac(k ? thiSinhCuaKy(k.id).length : 0);
+  const nguon = nguonDinhMucHD(ban);
   const co = nhiemVuCu && nguon.some(function(d){ return d.nhiemVu === nhiemVuCu; });
   let html = nguon.map(function(d){
-    return '<option value="'+esc(d.nhiemVu)+'" data-gia="'+d.donGia+'" data-dvt="'+esc(d.dvt)+'"'
-      + (d.nhiemVu === nhiemVuCu ? ' selected' : '') + '>'+esc(d.nhiemVu)+'</option>';
+    const g = giaTheoBac(d, iBac);
+    const b = bienTheoBac(d, iBac);
+    return '<option value="'+esc(d.nhiemVu)+'" data-gia="'+(g === null ? '' : g)+'"'
+      + ' data-dvt="'+esc(d.dvt || 'buổi')+'" data-bien="'+esc(b === null ? '' : String(b))+'"'
+      + (d.nhiemVu === nhiemVuCu ? ' selected' : '') + '>'+esc(d.nhiemVu)
+      + (g === null ? ' — bậc này không áp dụng' : '') + '</option>';
   }).join('');
   if(nhiemVuCu && !co)
     html = '<option value="'+esc(nhiemVuCu)+'" data-gia="'+(Number(donGiaCu)||0)+'"'
-      + ' data-dvt="'+esc(dvtCu||'buổi')+'" selected>'+esc(nhiemVuCu)
+      + ' data-dvt="'+esc(dvtCu||'buổi')+'" data-bien="" selected>'+esc(nhiemVuCu)
       + ' (ngoài định mức hiện hành)</option>' + html;
   $('mHDNhiemVu').innerHTML = html || '<option value="">— chưa có định mức —</option>';
   /* Đang sửa thì giữ nguyên đơn giá đã nhập, chỉ cập nhật dòng chữ đơn vị */
   tinhTienHD(donGiaCu === undefined);
 }
-function tinhTienHD(dongBoGia){
+/* Đã xếp bao nhiêu người vào nhiệm vụ này rồi — để đối chiếu định biên */
+function soDaXepHD(nhiemVu, boQuaIdx){
+  const k = kyThiList.find(function(x){ return x.id === hdKyId; });
+  if(!k) return 0;
+  return (k.hoiDong || []).filter(function(x, i){
+    return i !== boQuaIdx && x.nhiemVu === nhiemVu; }).length;
+}
+function tinhTienHD(dongBoGia, boQuaIdx){
   const sel = $('mHDNhiemVu');
   const op = sel.options[sel.selectedIndex];
-  if(op && dongBoGia) $('mHDDonGia').value = op.getAttribute('data-gia') || 0;
+  const gia = op ? op.getAttribute('data-gia') : '';
+  const bien = op ? op.getAttribute('data-bien') : '';
+  if(op && dongBoGia) $('mHDDonGia').value = gia === '' ? 0 : gia;
   /* Dòng chữ đơn vị luôn cập nhật, kể cả khi không kéo lại đơn giá */
   if(op && $('mHDDvt'))
     $('mHDDvt').textContent = 'đơn vị: ' + (op.getAttribute('data-dvt') || 'buổi');
+
+  /* Hai cảnh báo QĐ 19: bậc không áp dụng, và vượt định biên */
+  const o = $('mHDBien');
+  if(o){
+    if(op && gia === ''){
+      o.innerHTML = '<b style="color:var(--danger-ink);">Bậc quy mô hiện tại không áp dụng nhiệm vụ này.</b> '
+        + 'QĐ 19 ghi dấu “–” ở bậc này, nghĩa là không được chi. Không lưu được.';
+    } else if(bien !== '' && bien !== null){
+      const sb = Number(bien);
+      const da = soDaXepHD(sel.value, boQuaIdx);
+      if(!isNaN(sb) && da + 1 > sb)
+        o.innerHTML = '<b style="color:var(--warn-ink);">Vượt định biên.</b> QĐ 19 cho tối đa <b>'
+          + sb + '</b> người ở bậc này, đang có ' + da + '. Điều 2 khoản 4: phát sinh thêm người '
+          + 'phải có ý kiến Giám đốc trước ngày thi.';
+      else
+        o.innerHTML = '<span class="muted">Định biên QĐ 19 ở bậc này: <b>' + esc(String(bien))
+          + '</b> · đang có ' + da + '</span>';
+    } else o.innerHTML = '';
+  }
+
   const sl = Number($('mHDSoLuong').value)||0, dg = Number($('mHDDonGia').value)||0;
   const tt = sl*dg;
   const thue = thueTNCNCua(tt);
@@ -13708,6 +14456,7 @@ function viSaoKhoaHoiDong(k){
     + 'sửa xong thì trình lại.';
 }
 function formSuaThanhVienHD(kyId, idx){
+  hdKyId = kyId;
   const k = kyThiList.find(function(x){ return x.id===kyId; });
   if(!k){ showToast('Không tìm thấy kỳ thi'); return; }
   if(!suaDuocHoiDong(k)){ showToast(viSaoKhoaHoiDong(k)); return; }
@@ -13716,6 +14465,7 @@ function formSuaThanhVienHD(kyId, idx){
   const laCamHD = k.loai === 'CAMBRIDGE';
   openModal('<h3>' + (laCamHD ? 'Sửa thành viên đội hỗ trợ' : 'Sửa thành viên hội đồng') + '</h3>'
     +'<div class="small muted">' + esc(k.ten) + ' · ' + fmtDate(k.ngayThi) + '</div>'
+    + dongBacQuyMo(k)
     +'<div class="card" style="margin:10px 0;background:var(--surface-2);"><div class="small">'
       +'Đang sửa: <b>' + esc(x.hoTen) + '</b> · ' + esc(x.ban || '') + ' · ' + esc(x.nhiemVu || '')
       +' · ' + fmtNum(x.soLuong, 0) + ' ' + esc(x.dvt || 'buổi') + ' × ' + fmtTien(x.donGia) + 'đ'
@@ -13724,7 +14474,8 @@ function formSuaThanhVienHD(kyId, idx){
       + banApDung(k.loai).map(function(b){
           return '<option' + (x.ban === b ? ' selected' : '') + '>'+esc(b)+'</option>'; }).join('')
       +'</select>'
-    +'<label>Nhiệm vụ</label><select id="mHDNhiemVu" onchange="tinhTienHD()"></select>'
+    +'<label>Nhiệm vụ</label><select id="mHDNhiemVu" onchange="tinhTienHD(true,'+idx+')"></select>'
+    +'<div class="small" id="mHDBien" style="margin-top:4px;"></div>'
     +'<label>Họ và tên</label><input id="mHDTen" value="'+esc(x.hoTen||'')+'">'
     +'<label>Chức danh</label><input id="mHDChucDanh" value="'+esc(x.chucDanh||'')+'" placeholder="VD: Giảng viên Khoa CNTT">'
     +'<div class="row" style="gap:8px;">'
@@ -13749,6 +14500,7 @@ function luuSuaThanhVienHD(kyId, idx){
   if(!cu){ showToast('Không tìm thấy thành viên'); return; }
   const ten = $('mHDTen').value.trim();
   if(!ten){ showToast('Nhập họ tên'); return; }
+  if(!chanQD19(idx)) return;
   const sel = $('mHDNhiemVu');
   const op = sel.options[sel.selectedIndex];
   const sl = Number($('mHDSoLuong').value)||0, dg = Number($('mHDDonGia').value)||0;
@@ -13768,11 +14520,34 @@ function luuSuaThanhVienHD(kyId, idx){
   }).catch(fsErr);
 }
 
+/* Chặn ở hàm GHI, không chỉ tô đỏ trên form. QĐ 19 ghi dấu "–" ở một bậc là
+   không được chi nhiệm vụ đó ở quy mô đó — ghi vào rồi thì tiền đã vào bảng
+   quyết toán, lúc Kế toán phát hiện là đã trễ. Vượt định biên thì chỉ hỏi lại,
+   vì Điều 2 khoản 4 cho phép khi có ý kiến Giám đốc. */
+function chanQD19(boQuaIdx){
+  const sel = $('mHDNhiemVu');
+  if(!sel) return true;
+  const op = sel.options[sel.selectedIndex];
+  if(!op) return true;
+  if(op.getAttribute('data-gia') === ''){
+    showToast('QĐ 19 không áp dụng nhiệm vụ này ở bậc quy mô hiện tại — không chi được');
+    return false;
+  }
+  const bien = op.getAttribute('data-bien');
+  if(bien !== '' && bien !== null && !isNaN(Number(bien))){
+    const sb = Number(bien), da = soDaXepHD(sel.value, boQuaIdx);
+    if(da + 1 > sb && !confirm('Vượt định biên QĐ 19: tối đa ' + sb + ' người, đang có ' + da
+        + '.\nĐiều 2 khoản 4 — phát sinh thêm người phải có ý kiến Giám đốc trước ngày thi.\nVẫn thêm?'))
+      return false;
+  }
+  return true;
+}
 function luuThanhVienHD(kyId){
   const k = kyThiList.find(function(x){ return x.id===kyId; });
   if(!suaDuocHoiDong(k)){ showToast(viSaoKhoaHoiDong(k || {})); return; }
   const ten = $('mHDTen').value.trim();
   if(!ten){ showToast('Nhập họ tên'); return; }
+  if(!chanQD19()) return;
   const sel = $('mHDNhiemVu');
   const op = sel.options[sel.selectedIndex];
   const sl = Number($('mHDSoLuong').value)||0, dg = Number($('mHDDonGia').value)||0;
@@ -13813,8 +14588,13 @@ function chepHoiDongKyTruoc(kyId){
 <script>
 /* ================= THÍ SINH ================= */
 let tsKyId = '', filterTsText='';
-function doiKyThiSinh(){ tsKyId = $('tsChonKy').value; veLaiCoHieuUng(); }
+/* Trần số dòng: kỳ Cambridge của Trung tâm từng có hơn ba trăm thí sinh.
+   Đổ hết ra một màn thì không ai cuộn nổi, mà tìm một em cũng không ra. */
+const TS_TOI_DA = 60;
+let tsChiThieu = false;
+function doiKyThiSinh(){ tsKyId = $('tsChonKy').value; tsChiThieu = false; veLaiCoHieuUng(); }
 function setFilterTs(){ filterTsText = $('fTsText').value; render(); }
+function doiChiThieuTS(){ tsChiThieu = !tsChiThieu; render(); }
 
 function viewThiSinh(){
   if(!kyThiList.length)
@@ -13827,7 +14607,12 @@ function viewThiSinh(){
   const q = stripDia(filterTsText);
   if(q) ds = ds.filter(function(t){
     return stripDia((t.hoTen||'')+' '+(t.mssv||'')+' '+(t.lopFLIC||'')).indexOf(q)>=0; });
-  ds = ds.sort(function(a,b){ return (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
+  ds = ds.sort(soSanhTenThiSinh);
+  /* Gom cảnh báo thiếu thông tin thành MỘT dòng thay vì lặp dưới từng em.
+     Kỳ 300 thí sinh mà mỗi em một dòng "⚠️ Thiếu ngày sinh, số điện thoại"
+     thì 300 dòng giống hệt nhau, đọc xong không biết phải làm gì. */
+  const dsThieu = ds.filter(function(t){ return thieuThongTinTS(t, k).length; });
+  if(tsChiThieu) ds = dsThieu;
 
   const chuaNop = ds.filter(function(t){ return !t.daNopLePhi; }).length;
   const dat = ds.filter(function(t){ return t.ketQua==='Đạt'; }).length;
@@ -13864,7 +14649,69 @@ function viewThiSinh(){
     + '<div class="small muted" style="margin-top:7px;">Danh sách tổng xuất đúng cột của '
     + 'mẫu nhập, nên soát xong sửa thẳng trên file rồi nạp ngược lại được.</div></div>';
 
+  /* Đợt gửi VN290 — chỉ kỳ Cambridge mới có chuyện này */
+  if(k.loai === 'CAMBRIDGE'){
+    const soDot = soDotVN290(tsKyId);
+    const chuaGui = thiSinhChuaGuiVN290(tsKyId);
+    h += '<div class="card"' + (chuaGui.length && soDot ? ' style="border-color:var(--warn);background:var(--warn-bg);"' : '') + '>'
+      + '<div class="row wrap"><div style="min-width:0;">'
+      + '<b>Gửi danh sách cho Hội đồng VN290</b>'
+      + '<div class="small muted" style="margin-top:2px;line-height:1.7;">'
+      + (soDot
+          ? 'Đã chốt <b>' + soDot + '</b> đợt. '
+            + (chuaGui.length
+                ? '<b style="color:var(--warn-ink);">' + chuaGui.length
+                  + ' thí sinh mới chưa nằm trong đợt nào</b> — gom lại gửi bổ sung một lần.'
+                : 'Chưa có thí sinh mới nào kể từ đợt gần nhất.')
+          : 'Chưa chốt đợt nào. Tới hạn đăng ký thi giấy thì chốt đợt 1, '
+            + 'sau đó em nào thêm vào sẽ tự gom thành đợt bổ sung.')
+      + '</div></div>'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+      + (chuaGui.length
+          ? '<button class="btn btn-sm" onclick="xuatDsVN290(\'' + tsKyId + '\',true)">'
+            + '📤 Xuất bổ sung đợt ' + (soDot + 1) + ' · ' + chuaGui.length + ' em</button>'
+            + (hasPerm('quanLyThiSinh')
+               ? '<button class="btn btn-sm btn-primary" onclick="chotDotVN290(\'' + tsKyId + '\')">'
+                 + '🔒 Chốt đợt ' + (soDot + 1) + '</button>' : '')
+          : '')
+      + '</div></div>'
+      + (chuaGui.length
+          ? '<div style="margin-top:8px;">'
+            + chuaGui.slice(0, 20).map(function(t){
+                return '<div class="list-row"><div style="min-width:0;"><div>' + esc(t.hoTen) + '</div>'
+                  + '<div class="small muted">'
+                  + (t.monThi ? esc(t.monThi) + ' · ' : '')
+                  + (t.hinhThucThi ? esc(t.hinhThucThi) + ' · ' : '')
+                  + (t.ngayDangKy ? 'đăng ký ' + fmtDate(t.ngayDangKy) : 'chưa rõ ngày đăng ký')
+                  + '</div></div></div>';
+              }).join('')
+            + (chuaGui.length > 20
+                ? '<div class="small muted" style="margin-top:6px;">… và ' + (chuaGui.length - 20) + ' em nữa</div>' : '')
+            + '</div>'
+          : '')
+      + '</div>';
+  }
+
+  if(dsThieu.length)
+    h += '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);">'
+      + '<div class="row"><div style="min-width:0;">'
+      + '<b>' + dsThieu.length + ' thí sinh còn thiếu thông tin bắt buộc</b>'
+      + '<div class="small" style="margin-top:2px;line-height:1.7;">'
+      + esc(k.loai === 'UDCNTT_CC'
+          ? 'Kỳ cấp chứng chỉ in nơi sinh, số CCCD và địa chỉ lên phôi — thiếu là không in được.'
+          : 'Thiếu thì không đăng ký hoặc không cấp kết quả được.')
+      + '</div></div>'
+      + '<button class="btn btn-sm' + (tsChiThieu ? ' btn-primary' : '') + '" onclick="doiChiThieuTS()">'
+      + (tsChiThieu ? 'Xem tất cả' : 'Chỉ xem ' + dsThieu.length + ' em này') + '</button>'
+      + '</div></div>';
+
   h += '<div class="card">';
+  const tongDs = ds.length;
+  if(tongDs > TS_TOI_DA){
+    ds = ds.slice(0, TS_TOI_DA);
+    h += '<div class="small muted" style="margin-bottom:6px;">Hiện <b>' + TS_TOI_DA
+      + '</b> trên ' + tongDs + ' thí sinh — gõ vào ô tìm để thu hẹp, hoặc tải danh sách tổng.</div>';
+  }
   if(!ds.length) h += emptyBox('👤','Chưa có thí sinh nào trong kỳ này');
   else h += ds.map(function(t){
     const phi = phiLayMuonCuaThiSinh(t);
@@ -13880,11 +14727,22 @@ function viewThiSinh(){
       + '<div class="small muted">'
       + (t.daNopLePhi? '<span style="color:var(--ok);">đã nộp lệ phí</span>' : '<span style="color:var(--warn);">chưa nộp lệ phí</span>')
       + (t.diem!==undefined && t.diem!==''? ' · điểm '+fmtNum(t.diem,1) : '')
+      /* Đã nằm trong đợt gửi VN290 nào chưa — để Khảo thí biết em nào còn phải báo */
+      + (k.loai === 'CAMBRIDGE'
+          ? (dotVN290Cua(t)
+              ? ' · <span style="color:var(--ok);">đã gửi VN290 đợt ' + dotVN290Cua(t)
+                + (t.ngayDotVN290 ? ' ngày ' + fmtDate(t.ngayDotVN290) : '') + '</span>'
+              : (t.ketQua === 'Hoãn thi' ? ''
+                 : ' · <span style="color:var(--warn);">chưa gửi VN290</span>'))
+          : '')
       + '</div>'
       + (function(){
           const bit = [];
           if(t.ngaySinh) bit.push(fmtDate(t.ngaySinh));
           if(t.gioiTinh) bit.push(esc(t.gioiTinh));
+          if(t.noiSinh) bit.push(esc(t.noiSinh));
+          /* Chỉ 4 số cuối — xem đủ phải mở hồ sơ */
+          if(t.cccd) bit.push('CCCD ' + esc(cccdRutGon(t.cccd)));
           const lh = (t.sdtPH || t.sdt || '').trim();
           if(lh) bit.push(esc(lh) + (t.tenPH ? ' (' + esc(t.tenPH) + ')' : ''));
           return bit.length ? '<div class="small muted">' + bit.join(' · ') + '</div>' : '';
@@ -13923,7 +14781,7 @@ function xuatDsThiSinhTheoMau(kyId){
   const ds = thiSinhCuaKy(kyId)
     .sort(function(a, b){
       return (a.baiThi||'').localeCompare(b.baiThi||'','vi')
-          || (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
+          || soSanhTenThiSinh(a, b); });
   if(!ds.length){ showToast('Kỳ thi chưa có thí sinh nào'); return; }
 
   const m = MAU_NHAP.thiSinh;
@@ -14059,12 +14917,25 @@ function thieuThongTinTS(t, ky){
   if(!t) return [];
   const thieu = [];
   const laCam = ky && ky.loai === 'CAMBRIDGE';
+  /* Kỳ cấp chứng chỉ ƯDCNTT in nơi sinh, số CCCD và địa chỉ lên phôi, nên ba
+     mục đó là bắt buộc — Khảo thí đề nghị 02/11/2026. Kỳ cấp chứng nhận dùng
+     nội bộ thì không cần. */
+  const capChungChi = ky && ky.loai === 'UDCNTT_CC';
   if(!t.ngaySinh) thieu.push('ngày sinh');
   if(laCam && !t.gioiTinh) thieu.push('giới tính');
   if(laCam && !(t.tenPH || '').trim()) thieu.push('người giám hộ');
   if(!(t.sdtPH || '').trim() && !(t.sdt || '').trim()) thieu.push('số điện thoại');
   if(laCam && !t.hinhThucThi) thieu.push('hình thức thi');
+  if(capChungChi && !(t.noiSinh || '').trim()) thieu.push('nơi sinh');
+  if(capChungChi && !(t.cccd || '').trim()) thieu.push('số CCCD');
+  if(capChungChi && !(t.diaChi || '').trim()) thieu.push('địa chỉ');
   return thieu;
+}
+/* Số CCCD rút gọn cho màn danh sách: chỉ 4 số cuối. Muốn xem đủ thì mở đúng
+   hồ sơ thí sinh đó, và phải có quyền quanLyThiSinh. */
+function cccdRutGon(so){
+  const s = String(so || '').replace(/\s/g, '');
+  return s ? '•••• ' + s.slice(-4) : '';
 }
 
 /* Mở màn nhập dữ liệu với loại Thí sinh và kỳ thi chọn sẵn.
@@ -14112,6 +14983,28 @@ function formThiSinh(kyId, id){
             return '<option'+(v.gioiTinh===x?' selected':'')+'>'+esc(x)+'</option>'; }).join('')
       +'</select></div></div>'
     +'<div class="small muted">Hội đồng VN290 bắt buộc có ngày tháng năm sinh và giới tính khi đăng ký.</div>'
+    /* Ba trường bắt buộc để in chứng chỉ ƯDCNTT — Khảo thí đề nghị 02/11/2026.
+       Số CCCD là dữ liệu định danh cá nhân: màn danh sách chỉ hiện 4 số cuối,
+       xem đủ thì phải mở hồ sơ ra và phải có quyền quanLyThiSinh. */
+    +'<label>Nơi sinh <span class="small muted">theo giấy khai sinh</span></label>'
+    +'<input id="mTSNoiSinh" value="'+esc(v.noiSinh||'')+'" placeholder="VD: Biên Hoà, Đồng Nai">'
+    +'<div class="row" style="gap:8px;">'
+      +'<div style="flex:1;"><label>Số CCCD</label>'
+      +'<input id="mTSCccd" value="'+esc(hasPerm('quanLyThiSinh') ? (v.cccd||'') : '')+'" '
+        + (hasPerm('quanLyThiSinh') ? 'placeholder="12 chữ số"' : 'disabled placeholder="cần quyền quản lý thí sinh"')
+      +'></div>'
+      +'<div style="flex:1;"><label>Địa chỉ đang ở</label>'
+      +'<input id="mTSDiaChi" value="'+esc(v.diaChi||'')+'"></div></div>'
+    +'<div class="small muted">Ba mục trên dùng để in chứng chỉ ƯDCNTT. '
+    +'Danh sách chỉ hiện 4 số cuối của CCCD; muốn xem đủ phải mở đúng hồ sơ này.</div>'
+    /* Hoãn thi vốn chỉ sửa được ở màn Điểm nên Khảo thí không tìm thấy. Đưa về
+       đây, kèm luôn đường chuyển sang kỳ bổ sung — chỗ người ta thật sự đi tìm. */
+    + (t
+       ? '<label style="margin-top:12px;">Kết quả</label><select id="mTSKetQua" onchange="veOHoanThi(\''+t.id+'\')">'
+         + KQ_THI.map(function(x){
+             return '<option'+(v.ketQua===x?' selected':'')+'>'+esc(x)+'</option>'; }).join('')
+         + '</select><div id="mTSOHoan"></div>'
+       : '')
     +'<div class="row" style="gap:8px;">'
       +'<div style="flex:1;"><label>Họ tên người giám hộ</label>'
       +'<input id="mTSTenPH" value="'+esc(v.tenPH||'')+'" placeholder="Cha, mẹ hoặc người giám hộ"></div>'
@@ -14146,6 +15039,29 @@ function formThiSinh(kyId, id){
     +'<button class="btn btn-primary btn-block" onclick="luuThiSinh(\''+kyId+'\','+(t?"'"+t.id+"'":'null')+')">Lưu</button></div>'
     +(t && hasPerm('quanLyThiSinh')? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaThiSinh(\''+t.id+'\',this)">Xoá thí sinh</button>':''));
   kiemTraKhoaTS(kyId);
+  if(t) veOHoanThi(t.id);
+}
+/* Chọn Hoãn thi thì chỉ ngay đường đi tiếp. Lệ phí em đã đóng ở kỳ này được
+   mang sang kỳ bổ sung, kỳ đó KHÔNG thu lại — việc này phần mềm đã làm sẵn từ
+   trước, chỉ là nằm ở màn Điểm nên không ai tìm ra. */
+function veOHoanThi(tsId){
+  const o = $('mTSOHoan'); if(!o) return;
+  const t = (thiSinhList || []).find(function(x){ return x.id === tsId; });
+  if(!$('mTSKetQua') || $('mTSKetQua').value !== 'Hoãn thi'){ o.innerHTML = ''; return; }
+  if(t && t.hoanSangKyId){
+    const ky = (kyThiList || []).find(function(x){ return x.id === t.hoanSangKyId; });
+    o.innerHTML = '<div class="small" style="color:var(--ok-ink);margin-top:6px;line-height:1.7;">'
+      + 'Đã chuyển sang kỳ <b>' + esc(ky ? ky.ten : '(kỳ đã xoá)') + '</b>'
+      + (t.ngayChuyen ? ' ngày ' + fmtDate(t.ngayChuyen) : '')
+      + '. Kỳ đó không thu lại lệ phí vì em đã đóng ở kỳ này.</div>';
+    return;
+  }
+  o.innerHTML = '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);margin:8px 0;">'
+    + '<div class="small" style="line-height:1.8;">Em này hoãn thi. Chuyển sang kỳ bổ sung thì '
+    + '<b>lệ phí đã đóng được mang theo</b>, kỳ bổ sung không thu lại và không cộng trùng vào tổng lệ phí.</div>'
+    + '<button class="btn btn-sm btn-primary" style="margin-top:8px;" onclick="formChuyenKyThi(\'' + tsId + '\')">'
+    + 'Chuyển sang kỳ bổ sung</button>'
+    + '<div class="small muted" style="margin-top:4px;">Lưu kết quả Hoãn thi trước rồi mới chuyển được.</div></div>';
 }
 function kiemTraKhoaTS(kyId){
   const k = kyThiList.find(function(x){ return x.id===kyId; });
@@ -14219,6 +15135,8 @@ function luuThiSinh(kyId, id){
     })(),
     ngaySinh: $('mTSNgaySinh') ? $('mTSNgaySinh').value : '',
     gioiTinh: $('mTSGioiTinh') ? $('mTSGioiTinh').value : '',
+    noiSinh: $('mTSNoiSinh') ? $('mTSNoiSinh').value.trim() : '',
+    diaChi:  $('mTSDiaChi')  ? $('mTSDiaChi').value.trim()  : '',
     tenPH: $('mTSTenPH') ? $('mTSTenPH').value.trim() : '',
     sdtPH: $('mTSSdtPH') ? $('mTSSdtPH').value.trim() : '',
     sdt:   $('mTSSdt')   ? $('mTSSdt').value.trim()   : '',
@@ -14228,6 +15146,18 @@ function luuThiSinh(kyId, id){
     lePhiRieng: $('mTSLePhi') ? (Number($('mTSLePhi').value) || 0) : 0,
     daNopLePhi:$('mTSNop').checked, canhBaoKhoa:cb
   };
+  /* CCCD chỉ ghi khi người đang thao tác có quyền. Không có quyền thì ô bị khoá
+     và để trống — nếu cứ ghi đè thì mở form ra lưu lại là xoá mất số của người
+     khác đã nhập. */
+  if(hasPerm('quanLyThiSinh') && $('mTSCccd')){
+    const so = $('mTSCccd').value.replace(/[\s.\-]/g, '');
+    if(so && !/^(\d{9}|\d{12})$/.test(so)){
+      showToast('Số CCCD phải là 12 chữ số, hoặc 9 chữ số nếu là CMND cũ'); return;
+    }
+    data.cccd = so;
+  }
+  /* Kết quả chỉ có trong form SỬA. Không chạm tới khi thêm mới. */
+  if(id && $('mTSKetQua')) data.ketQua = $('mTSKetQua').value;
   if(!id){ data.ketQua='Chưa có'; data.ngayDangKy=todayISO(); }
   /* Lệ phí riêng chỉ được CAO hơn mức bảng. Thấp hơn là giảm giá, phải qua
      Miễn giảm để có người duyệt — không đặt thẳng ở form thí sinh. */
@@ -14410,7 +15340,7 @@ function viewPhoi(){
   const k = kyThiList.find(function(x){ return x.id===cpKyId; });
   const c = timLoaiKyThi(k.loai);
   const ds = thiSinhCuaKy(cpKyId).filter(function(t){ return t.ketQua==='Đạt'; })
-    .sort(function(a,b){ return (a.hoTen||'').localeCompare(b.hoTen||'','vi'); });
+    .sort(soSanhTenThiSinh);
   const daNhan = ds.filter(function(t){ return t.daNhan; }).length;
   const quaHan = ds.filter(function(t){ return phiLayMuonCuaThiSinh(t)>0; }).length;
 
@@ -14508,43 +15438,130 @@ function xacNhanDaNhan(id){
 }
 
 /* ================= ĐỊNH MỨC CHI ================= */
+/* Dòng theo định mức CŨ: không có phụ lục, hoặc đơn giá còn là một số thay vì
+   bảng 5 bậc. QĐ 19 Điều 4 đã bãi bỏ các mức trái với nó, nên phải chỉ mặt
+   từng dòng chứ không trộn lẫn vào bảng mới cho đẹp mắt. */
+function dongDinhMucCu(){
+  return (dinhMucList || []).filter(function(d){
+    return d.ban !== BAN_CAMBRIDGE[0] && (!d.phuLuc || !Array.isArray(d.gia));
+  });
+}
+function bangDinhMucQD19(phuLuc){
+  const ds = (dinhMucList && dinhMucList.length ? dinhMucList : DINH_MUC_MAC_DINH)
+    .filter(function(d){ return d.phuLuc === phuLuc && Array.isArray(d.gia); })
+    .sort(function(a, b){ return (a.tt || 0) - (b.tt || 0); });
+  if(!ds.length) return '';
+  const o = function(v){ return v === null || v === undefined ? '<span class="muted">–</span>' : fmtTien(v); };
+  let h = '<div class="card"><h3 style="margin:0 0 8px;">' + esc(TEN_PHU_LUC[phuLuc] || phuLuc) + '</h3>'
+    + '<div style="overflow-x:auto;"><table class="tbl" style="min-width:760px;"><thead><tr>'
+    + '<th style="width:34px;">TT</th><th>Nhiệm vụ</th>'
+    + BAC_QUY_MO.map(function(b){ return '<th style="text-align:right;white-space:nowrap;">' + esc(b.ten) + '</th>'; }).join('')
+    + (hasPerm('quanLyKyThi') ? '<th></th>' : '') + '</tr></thead><tbody>';
+  ds.forEach(function(d){
+    const mt = TEN_MUC_QD19[d.muc || ''] || '';
+    h += '<tr><td>' + (d.tt || '') + '</td>'
+      + '<td><div>' + esc(d.nhiemVu) + '</div>'
+      + '<div class="small muted">tính theo ' + esc(d.dvt || 'buổi')
+      + (mt ? ' · chỉ áp dụng ' + esc(mt) : '')
+      + (d.theoBac === false ? ' · không theo bậc quy mô' : '') + '</div>'
+      + '<div class="small muted">định biên: '
+      + BAC_QUY_MO.map(function(b, i){
+          const v = bienTheoBac(d, i);
+          return v === null ? '–' : String(v); }).join(' · ') + '</div></td>'
+      + BAC_QUY_MO.map(function(b, i){
+          return '<td style="text-align:right;white-space:nowrap;">' + o(giaTheoBac(d, i)) + '</td>'; }).join('')
+      + (hasPerm('quanLyKyThi')
+          ? '<td>' + (d.id ? '<button class="btn btn-sm" onclick="formDinhMuc(\'' + d.id + '\')">Sửa</button>' : '') + '</td>'
+          : '')
+      + '</tr>';
+  });
+  return h + '</tbody></table></div></div>';
+}
 function viewDinhMuc(){
+  const daNap = (dinhMucList || []).some(function(d){ return Array.isArray(d.gia); });
   let h = '<div class="card"><div class="row"><div><h3 style="margin:0;">Định mức chi hội đồng thi</h3>'
-    + '<div class="small muted" style="margin-top:4px;">Định mức thay đổi giữa các kỳ. Đây là giá điền sẵn, mỗi kỳ sửa lại được.</div></div>'
+    + '<div class="small muted" style="margin-top:4px;">Theo <b>Quyết định số 19/QĐ-TTNNTH</b> ngày 08/10/2026. '
+    + 'Đơn giá đổi theo bậc quy mô, tính bằng số thí sinh.</div></div>'
     + (hasPerm('quanLyKyThi')
-       ? '<div style="display:flex;gap:6px;">'
-         + (!dinhMucList.length? '<button class="btn btn-primary btn-sm" onclick="napDinhMucMacDinh()">Nạp mặc định</button>':'')
+       ? '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+         + (!daNap ? '<button class="btn btn-primary btn-sm" onclick="napDinhMucMacDinh()">Nạp định mức QĐ 19</button>' : '')
          + '<button class="btn btn-sm" onclick="huongDanDinhMuc()">Dùng thế nào</button>'
          + '<button class="btn btn-sm" onclick="formDinhMuc()">+ Thêm</button></div>' : '')
     + '</div></div>';
-  const ds = dinhMucList.length? dinhMucList : [];
-  if(!ds.length) return h + '<div class="card">'+emptyBox('💵','Chưa có định mức. Bấm "Nạp mặc định" để dùng bộ định mức hiện hành.')+'</div>';
-  h += '<div class="card">';
-  BAN_HOI_DONG.forEach(function(ban){
-    const g = ds.filter(function(d){ return d.ban===ban; });
-    if(!g.length) return;
-    h += '<div class="grp-head">'+esc(ban)+'</div>';
-    g.forEach(function(d){
-      h += '<div class="list-row"><div style="min-width:0;"><div>'+esc(d.nhiemVu)+'</div>'
-        + '<div class="small muted">tính theo '+esc(d.dvt||'buổi')+'</div></div>'
-        + '<div style="text-align:right;"><div style="font-weight:700;">'+fmtTien(d.donGia)+'đ</div>'
-        + (hasPerm('quanLyKyThi')? '<div style="margin-top:5px;"><button class="btn btn-sm" onclick="formDinhMuc(\''+d.id+'\')">Sửa</button></div>':'')
+
+  /* Chặn rõ ràng thay vì im lặng dùng bảng sai */
+  const cu = dongDinhMucCu();
+  if(cu.length)
+    h += '<div class="card" style="border-color:var(--danger-br);background:var(--danger-bg);">'
+      + '<div class="small" style="color:var(--danger-ink);font-weight:700;">'
+      + cu.length + ' dòng còn theo định mức cũ — đã bị QĐ 19 bãi bỏ</div>'
+      + '<div class="small" style="margin-top:4px;line-height:1.8;">'
+      + 'Điều 4 QĐ 19: các mức chi thù lao Hội đồng thi trước đây trái với Quyết định này đều bãi bỏ. '
+      + 'Những dòng dưới đây chỉ có một ô đơn giá, không có bậc quy mô, nên <b>không dùng để quyết toán được</b>. '
+      + 'Xoá đi rồi bấm <b>Nạp định mức QĐ 19</b>.</div>'
+      + '<div style="margin-top:8px;">'
+      + cu.map(function(d){
+          return '<div class="list-row"><div style="min-width:0;"><div>' + esc(d.nhiemVu || '')
+            + '</div><div class="small muted">' + esc(d.ban || '') + ' · ' + fmtTien(d.donGia || 0) + 'đ/' + esc(d.dvt || 'buổi') + '</div></div>'
+            + (hasPerm('quanLyKyThi')
+                ? '<button class="btn btn-sm btn-danger" onclick="xoaDinhMuc(\'' + d.id + '\',this)">Xoá</button>' : '')
+            + '</div>';
+        }).join('') + '</div></div>';
+
+  if(!daNap && !cu.length)
+    return h + '<div class="card">' + emptyBox('💵',
+      'Chưa nạp định mức. Bấm "Nạp định mức QĐ 19" để dùng bộ định mức hiện hành.') + '</div>';
+
+  h += bangDinhMucQD19('TA');
+  h += bangDinhMucQD19('TH');
+
+  /* Cambridge nằm ngoài QĐ 19 — nói thẳng, không mượn giá Phụ lục I */
+  const cam = (dinhMucList && dinhMucList.length ? dinhMucList : DINH_MUC_CAMBRIDGE)
+    .filter(function(d){ return d.ban === BAN_CAMBRIDGE[0]; });
+  if(cam.length){
+    h += '<div class="card" style="border-color:var(--warn);"><h3 style="margin:0 0 4px;">Đội hỗ trợ kỳ thi Cambridge</h3>'
+      + '<div class="small" style="color:var(--warn-ink);line-height:1.8;margin-bottom:6px;">'
+      + '<b>QĐ 19 không quy định định mức cho các nhiệm vụ này.</b> QĐ 19 chỉ quy định thù lao thành viên '
+      + 'Hội đồng thi, mà kỳ Cambridge thì FLIC không lập hội đồng — chỉ có đội hỗ trợ tổ chức. '
+      + 'Bốn mức dưới đây là mức đang dùng trước QĐ 19, <b>cần Giám đốc xác nhận trước khi quyết toán</b>.</div>';
+    cam.forEach(function(d){
+      h += '<div class="list-row"><div style="min-width:0;"><div>' + esc(d.nhiemVu) + '</div>'
+        + '<div class="small muted">tính theo ' + esc(d.dvt || 'buổi') + '</div></div>'
+        + '<div style="text-align:right;"><div style="font-weight:700;">'
+        + fmtTien(Array.isArray(d.gia) ? d.gia[0] : d.donGia) + 'đ</div>'
+        + (hasPerm('quanLyKyThi') && d.id
+            ? '<div style="margin-top:5px;"><button class="btn btn-sm" onclick="formDinhMuc(\'' + d.id + '\')">Sửa</button></div>' : '')
         + '</div></div>';
     });
-  });
-  h += '</div>';
-  h += '<div class="card"><div class="small muted">Thuế thu nhập cá nhân giữ lại '+(settings.thueTNCN||10)
-    + '%, sửa trong Hệ thống → Tham số.</div></div>';
+    h += '</div>';
+  }
+
+  h += '<div class="card"><div class="small muted" style="line-height:1.8;">'
+    + '<b>Nguyên tắc QĐ 19 phần mềm đang áp:</b><br>'
+    + '· Điều 2 khoản 2 — đơn vị tính là đồng/người/<b>buổi thi</b>, không tính theo số ca trong buổi; nhiều buổi thì nhân số buổi thực tế.<br>'
+    + '· Điều 2 khoản 3 — dự trù theo số thí sinh <b>đăng ký</b>, thanh toán theo số thí sinh <b>dự thi thực tế</b>.<br>'
+    + '· Điều 2 khoản 4 — số người không vượt định biên; vượt phải có ý kiến Giám đốc trước ngày thi.<br>'
+    + '· Điều 2 khoản 6 — một người kiêm nhiều nhiệm vụ trong cùng buổi chỉ hưởng <b>một mức cao nhất</b>, trừ ra đề, phản biện và chấm thi.<br>'
+    + '· Điều 2 khoản 8 — hai phụ lục áp dụng <b>độc lập</b>, không lấy đơn giá bảng này áp cho bảng kia.<br>'
+    + '· Điều 2 khoản 9 — mức ghi trên là <b>trước thuế</b>; thuế thu nhập cá nhân giữ lại '
+    + (settings.thueTNCN || 10) + '%, sửa trong Hệ thống → Tham số.'
+    + '</div></div>';
   return h;
 }
 function huongDanDinhMuc(){
   openModal('<h3>Định mức chi dùng thế nào</h3>'
     +'<div class="small" style="line-height:1.8;">'
-    + '<p><b>Định mức là đơn giá cho một nhiệm vụ trong một buổi thi.</b> Khai báo một lần ở đây, '
-    + 'mọi kỳ thi sau đều dùng chung, không phải gõ lại.</p>'
+    + '<p><b>Định mức là đơn giá cho một nhiệm vụ trong một buổi thi, theo Quyết định 19.</b> '
+    + 'Khai báo một lần ở đây, mọi kỳ thi sau đều dùng chung, không phải gõ lại.</p>'
+    + '<p><b>Đơn giá không phải một con số.</b> QĐ 19 chia 5 bậc quy mô theo số thí sinh '
+    + '(0–100, 101–250, 251–500, 501–1.000, trên 1.000). Cùng một nhiệm vụ, kỳ đông thì đơn giá cao hơn. '
+    + 'Phần mềm tự chọn bậc theo số thí sinh đang có trong kỳ, không phải tính tay.</p>'
+    + '<p><b>Hai phụ lục tách rời.</b> Phụ lục I cho kỳ thi Tiếng Anh, Phụ lục II cho kỳ thi Tin học. '
+    + 'Trong Phụ lục II, một số nhiệm vụ còn tách riêng mức chứng nhận với mức chứng chỉ. '
+    + 'Phần mềm chỉ hiện đúng bảng của loại kỳ đang mở, không cho lấy nhầm bảng kia.</p>'
     + '<p><b>Khi tổ chức một kỳ thi:</b></p>'
     + '<p>1. Vào kỳ thi, mục Hội đồng hoặc Đội hỗ trợ, thêm từng người và chọn nhiệm vụ. '
-    + 'Hệ thống tự lấy đơn giá từ bảng này.</p>'
+    + 'Hệ thống tự lấy đơn giá đúng bậc, và báo định biên QĐ 19 cho phép tối đa bao nhiêu người.</p>'
     + '<p>2. Nhập số buổi người đó làm. Thành tiền bằng đơn giá nhân số buổi.</p>'
     + '<p>3. Nếu kỳ thi này trả khác mức chung, sửa thẳng trong kỳ thi đó. '
     + 'Bảng định mức gốc không đổi.</p>'
@@ -14556,35 +15573,89 @@ function huongDanDinhMuc(){
     + '</div>'
     +'<button class="btn btn-block" style="margin-top:12px;" onclick="closeModal()">Đóng</button>');
 }
+/* Khoá trùng: dòng QĐ 19 nhận diện bằng phụ lục + mức + nhiệm vụ, dòng
+   Cambridge bằng ban + nhiệm vụ. Nạp lại không đẻ thêm bản trùng. */
+function khoaDinhMuc(d){
+  return d.phuLuc ? (d.phuLuc + '|' + (d.muc || '') + '|' + d.nhiemVu)
+                  : ((d.ban || '') + '|' + d.nhiemVu);
+}
 function napDinhMucMacDinh(){
   if(!hasPerm('quanLyKyThi')){ showToast('Bạn không có quyền'); return; }
-  const p = DINH_MUC_MAC_DINH.concat(DINH_MUC_CAMBRIDGE).filter(function(d){
-    return !dinhMucList.some(function(x){ return x.ban===d.ban && x.nhiemVu===d.nhiemVu; });
-  }).map(function(d){ return db.collection('fcv_dinhmuc').add(d); });
-  if(!p.length){ showToast('Đã đầy đủ'); return; }
-  Promise.all(p).then(function(){ showToast('✅ Đã nạp '+p.length+' định mức'); }).catch(fsErr);
+  const dangCo = (dinhMucList || []).map(khoaDinhMuc);
+  const them = DINH_MUC_MAC_DINH.concat(DINH_MUC_CAMBRIDGE).filter(function(d){
+    return dangCo.indexOf(khoaDinhMuc(d)) < 0;
+  });
+  if(!them.length){ showToast('Đã đầy đủ'); return; }
+  if(!confirm('Nạp ' + them.length + ' dòng định mức theo Quyết định 19?')) return;
+  Promise.all(them.map(function(d){ return db.collection('fcv_dinhmuc').add(d); }))
+    .then(function(){
+      showToast('✅ Đã nạp ' + them.length + ' định mức');
+      logAct('Nạp định mức theo QĐ 19 · ' + them.length + ' dòng');
+    }).catch(fsErr);
 }
 function formDinhMuc(id){
-  const d = id? dinhMucList.find(function(x){ return x.id===id; }) : null;
-  const v = d || {ban:BAN_HOI_DONG[0], dvt:'buổi'};
+  const d = id ? dinhMucList.find(function(x){ return x.id === id; }) : null;
+  const v = d || {phuLuc:'TA', muc:'', ban:BAN_HOI_DONG[0], dvt:'buổi', gia:[0,0,0,0,0], bien:[null,null,null,null,null]};
   const dsBan = BAN_HOI_DONG.concat(BAN_CAMBRIDGE);
-  openModal('<h3>'+(d?'Sửa định mức':'Thêm định mức')+'</h3>'
-    +'<label>Ban</label><select id="mDMBan">'+dsBan.map(function(b){ return '<option '+(v.ban===b?'selected':'')+'>'+esc(b)+'</option>'; }).join('')+'</select>'
-    +'<label>Nhiệm vụ</label><input id="mDMNhiemVu" value="'+esc(v.nhiemVu||'')+'">'
-    +'<div class="row" style="gap:8px;"><div style="flex:1;"><label>Đơn giá</label><input type="number" id="mDMGia" value="'+(v.donGia||0)+'"></div>'
-    +'<div style="flex:1;"><label>Tính theo</label><select id="mDMDvt">'
-      +['buổi','đề','bài'].map(function(x){ return '<option '+(v.dvt===x?'selected':'')+'>'+x+'</option>'; }).join('')+'</select></div></div>'
-    +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
-    +'<button class="btn btn-primary btn-block" onclick="luuDinhMuc('+(d?"'"+d.id+"'":'null')+')">Lưu</button></div>'
-    +(d? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaDinhMuc(\''+d.id+'\',this)">Xoá</button>':''));
+  const gia = Array.isArray(v.gia) ? v.gia : [v.donGia || 0, v.donGia || 0, v.donGia || 0, v.donGia || 0, v.donGia || 0];
+  openModal('<h3>' + (d ? 'Sửa định mức' : 'Thêm định mức') + '</h3>'
+    + '<div class="small muted" style="line-height:1.7;">Đơn giá khai theo 5 bậc quy mô của QĐ 19. '
+    + 'Bậc nào QĐ 19 ghi dấu “–” thì <b>để trống</b>, đừng điền 0 — để trống là không được chi, 0 là chi không đồng nào.</div>'
+    + '<div class="row" style="gap:8px;">'
+      + '<div style="flex:1;"><label>Phụ lục</label><select id="mDMPhuLuc">'
+        + '<option value="TA"' + (v.phuLuc === 'TA' ? ' selected' : '') + '>Phụ lục I · Tiếng Anh</option>'
+        + '<option value="TH"' + (v.phuLuc === 'TH' ? ' selected' : '') + '>Phụ lục II · Tin học</option>'
+        + '<option value=""'   + (!v.phuLuc ? ' selected' : '') + '>Ngoài QĐ 19 (Cambridge)</option>'
+      + '</select></div>'
+      + '<div style="flex:1;"><label>Áp dụng mức</label><select id="mDMMuc">'
+        + '<option value=""'          + (!v.muc ? ' selected' : '') + '>Không phân biệt</option>'
+        + '<option value="chungNhan"' + (v.muc === 'chungNhan' ? ' selected' : '') + '>Kỳ thi chứng nhận</option>'
+        + '<option value="chungChi"'  + (v.muc === 'chungChi' ? ' selected' : '') + '>Kỳ thi chứng chỉ</option>'
+      + '</select></div></div>'
+    + '<label>Ban</label><select id="mDMBan">'
+    + dsBan.map(function(b){ return '<option ' + (v.ban === b ? 'selected' : '') + '>' + esc(b) + '</option>'; }).join('') + '</select>'
+    + '<label>Nhiệm vụ</label><input id="mDMNhiemVu" value="' + esc(v.nhiemVu || '') + '">'
+    + '<label>Tính theo</label><input id="mDMDvt" list="dsDvtDM" value="' + esc(v.dvt || 'buổi') + '">'
+    + '<datalist id="dsDvtDM">' + ['buổi','bộ đề','đề','bài','bài · một vòng chấm']
+        .map(function(x){ return '<option value="' + x + '">'; }).join('') + '</datalist>'
+    + '<label style="margin-top:10px;">Đơn giá và định biên theo bậc</label>'
+    + BAC_QUY_MO.map(function(b, i){
+        const bv = Array.isArray(v.bien) ? v.bien[i] : null;
+        return '<div class="row" style="gap:8px;align-items:flex-end;margin-bottom:6px;">'
+          + '<div style="flex:0 0 96px;" class="small muted">' + esc(b.ten) + '</div>'
+          + '<div style="flex:1;"><input type="number" id="mDMGia' + i + '" placeholder="để trống nếu không áp dụng" value="'
+            + (gia[i] === null || gia[i] === undefined ? '' : gia[i]) + '"></div>'
+          + '<div style="flex:0 0 130px;"><input id="mDMBien' + i + '" placeholder="định biên" value="'
+            + esc(bv === null || bv === undefined ? '' : String(bv)) + '"></div></div>';
+      }).join('')
+    + '<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    + '<button class="btn btn-primary btn-block" onclick="luuDinhMuc(' + (d ? "'" + d.id + "'" : 'null') + ')">Lưu</button></div>'
+    + (d ? '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="xoaDinhMuc(\'' + d.id + '\',this)">Xoá</button>' : ''));
 }
 function luuDinhMuc(id){
   if(!canQuyen('luuDinhMuc')) return;
   const nv = $('mDMNhiemVu').value.trim();
   if(!nv){ showToast('Nhập tên nhiệm vụ'); return; }
-  const data = {ban:$('mDMBan').value, nhiemVu:nv, donGia:Number($('mDMGia').value)||0, dvt:$('mDMDvt').value};
-  const p = id? db.collection('fcv_dinhmuc').doc(id).update(data) : db.collection('fcv_dinhmuc').add(data);
-  p.then(function(){ closeModal(); showToast('✅ Đã lưu'); }).catch(fsErr);
+  const gia = [], bien = [];
+  for(let i = 0; i < BAC_QUY_MO.length; i++){
+    const sg = $('mDMGia' + i).value.trim();
+    const sb = $('mDMBien' + i).value.trim();
+    if(sg !== '' && (isNaN(Number(sg)) || Number(sg) < 0)){
+      showToast('Đơn giá bậc ' + BAC_QUY_MO[i].ten + ' không hợp lệ'); return;
+    }
+    gia.push(sg === '' ? null : Number(sg));
+    bien.push(sb === '' ? null : (isNaN(Number(sb)) ? sb : Number(sb)));
+  }
+  if(gia.every(function(x){ return x === null; })){
+    showToast('Phải khai đơn giá cho ít nhất một bậc'); return;
+  }
+  const data = {phuLuc: $('mDMPhuLuc').value, muc: $('mDMMuc').value,
+    ban: $('mDMBan').value, nhiemVu: nv, dvt: $('mDMDvt').value.trim() || 'buổi',
+    gia: gia, bien: bien};
+  const p = id ? db.collection('fcv_dinhmuc').doc(id).update(data)
+               : db.collection('fcv_dinhmuc').add(data);
+  p.then(function(){ closeModal(); showToast('✅ Đã lưu');
+    logAct((id ? 'Sửa' : 'Thêm') + ' định mức ' + nv); }).catch(fsErr);
 }
 function xoaDinhMuc(id, btn){
   if(!canQuyen('xoaDinhMuc')) return;
@@ -14664,8 +15735,70 @@ function sachLucGhiDanh(lopId, trangThai){
   return {trangThaiSach: tt, tienSachPhaiDong: s ? giaBanSach(s) : 0};
 }
 
+/* ===== PHIẾU XUẤT KHO LÀ CỬA DUY NHẤT CỦA SÁCH =====
+   Ban lãnh đạo quyết 02/11/2026 (cách A): bỏ hẳn đường Học vụ tick tay
+   "Đã nhận sách" ở màn tình trạng học viên. Muốn ghi nhận em nào nhận sách thì
+   LẬP PHIẾU XUẤT, chọn lớp, tích các em — và tiền sách phải thu cũng sinh ra
+   từ chính phiếu đó.
+
+   Vì sao: trước đây có HAI chỗ ghi. Học vụ tick ở màn học viên, Hành chính lập
+   phiếu ở kho, hai bên không biết nhau. Phần mềm phải có hẳn một màn "Đối soát
+   sách với Học vụ" để bắt chênh lệch — đó là vá, không phải chữa. Nay một cửa:
+   phiếu xuất nói em nào nhận cuốn nào giá bao nhiêu, hết chỗ để lệch.
+
+   Việc THU TIỀN vẫn ở Kế toán, không chuyển sang phiếu xuất: QĐ 14 tách người
+   ghi nhận thu khỏi người làm nghiệp vụ, và Học vụ cố tình không có quyền
+   ghiNhanThu. Phiếu xuất quyết định PHẢI THU bao nhiêu; Kế toán ghi ĐÃ THU. */
+
+/* Phiếu xuất đã thực hiện có phát sách cho lần ghi danh này */
+function phieuPhatSachCua(gdId){
+  if(!gdId) return null;
+  return (phieuKhoList || []).find(function(p){
+    return p.loai === 'xuat' && p.trangThai === 'Đã xuất'
+        && (p.hvNhanSach || []).indexOf(gdId) >= 0;
+  }) || null;
+}
+/* Dòng sách trong một phiếu — phiếu phát sách thì chỉ có một đầu sách */
+function dongSachCuaPhieu(p){
+  if(!p) return null;
+  return (p.dong || []).find(function(d){
+    const h = (khoHangList || []).find(function(x){ return x.id === d.hangId; });
+    return h && (h.nhom || '') === 'Sách';
+  }) || null;
+}
+/* Em đã nhận sách chưa — MỘT CỬA. Có phiếu là đã nhận.
+   Bản ghi cũ tick tay trước V1.31.0 mà chưa có phiếu thì vẫn tính là đã nhận,
+   nhưng đánh dấu riêng để Hành chính lập phiếu bù — xem sachTickTayChuaCoPhieu().
+   Lặng lẽ đổi các em đó thành "chưa nhận" là làm hoảng cả Trung tâm. */
+function daNhanSach(gd){
+  if(!gd) return false;
+  if(phieuPhatSachCua(gd.id)) return true;
+  return gd.trangThaiSach === 'Đã nhận';
+}
+function nhanSachTheoSoCu(gd){
+  return !!gd && gd.trangThaiSach === 'Đã nhận' && !phieuPhatSachCua(gd.id);
+}
+/* Bản ghi còn mang dấu tick tay, chưa có phiếu xuất nào — danh sách cần chuẩn hoá */
+function sachTickTayChuaCoPhieu(){
+  return (ghiDanhList || []).filter(nhanSachTheoSoCu);
+}
+
 function tienSachPhaiDong(gd){
   if(!gd) return 0;
+  /* 1. Có phiếu xuất → lấy đơn giá trên phiếu. Đây là giá của chính giao dịch,
+        khoá chắc hơn giá trong danh mục vì sửa danh mục không đổi phiếu cũ. */
+  const p = phieuPhatSachCua(gd.id);
+  if(p){
+    if(p.hinhThucSach === 'phat') return 0;      /* phát miễn phí thì không thu */
+    const d = dongSachCuaPhieu(p);
+    if(d){
+      const g = Number(d.donGia) || 0;
+      if(g > 0) return g;
+      /* Phiếu cũ không ghi đơn giá thì lùi về giá đang khai trong danh mục */
+      const h = (khoHangList || []).find(function(x){ return x.id === d.hangId; });
+      return giaBanSach(h);
+    }
+  }
   if((gd.trangThaiSach || '') === 'Không mua') return 0;
   /* Ghi danh cũ chưa có số chốt thì lấy giá hiện tại của sách lớp, để dữ liệu
      đang chạy vẫn tính ra số chứ không im lặng bằng 0. */
@@ -15343,11 +16476,40 @@ function formTinhTrangHocVien(gdId){
     +'<option value="canNhac"' + (gd.taiDangKy === 'canNhac' ? ' selected' : '') + '>Đang cân nhắc</option>'
     +'<option value="khong"' + (gd.taiDangKy === 'khong' ? ' selected' : '') + '>Không học tiếp</option>'
     +'</select>'
-    +'<label>Tình trạng sách</label><select id="mTTSach" onchange="veONgaySach()">'
-    + TRANG_THAI_SACH.map(function(x){
-        return '<option' + (gd.trangThaiSach === x ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('')
-    +'</select>'
-    +'<div id="mTTONgaySach"></div>'
+    /* Ban lãnh đạo quyết 02/11/2026 (cách A): "Đã nhận sách" KHÔNG tick tay được
+       nữa — nó sinh ra từ phiếu xuất kho. Học vụ chỉ còn chọn giữa Chưa nhận và
+       Không mua, vì "không mua" là một quyết định chứ không phải việc xuất kho. */
+    + (function(){
+        const p = phieuPhatSachCua(gdId);
+        if(p)
+          return '<label>Tình trạng sách</label>'
+            + '<div class="card" style="margin:0 0 10px;background:var(--ok-bg);border-color:var(--ok);">'
+            + '<div class="small" style="color:var(--ok-ink);"><b>Đã nhận sách</b> — theo phiếu xuất '
+            + esc(p.maPhieu || '') + ' ngày ' + fmtDate(p.ngayXuat || p.ngayLap) + '</div>'
+            + '<div class="small muted" style="margin-top:3px;">'
+            + (p.hinhThucSach === 'phat' ? 'Phát miễn phí, không thu tiền sách.'
+                                         : 'Bán · tiền sách phải thu ' + fmtTien(tienSachPhaiDong(gd)) + 'đ')
+            + '</div></div>'
+            + '<input type="hidden" id="mTTSach" value="Đã nhận">';
+        if(nhanSachTheoSoCu(gd))
+          return '<label>Tình trạng sách</label>'
+            + '<div class="card" style="margin:0 0 10px;background:var(--warn-bg);border-color:var(--warn);">'
+            + '<div class="small"><b>Đã nhận sách — theo sổ cũ</b>, chưa có phiếu xuất kho nào.</div>'
+            + '<div class="small muted" style="margin-top:3px;">Từ V1.31.0 việc nhận sách ghi bằng '
+            + 'phiếu xuất kho. Nhờ Hành chính lập phiếu bù ở <b>Tài sản → Kho → Phiếu xuất</b> '
+            + 'để số liệu kho và công nợ sách khớp nhau.</div></div>'
+            + '<input type="hidden" id="mTTSach" value="Đã nhận">';
+        return '<label>Tình trạng sách</label><select id="mTTSach">'
+          + ['Chưa nhận', 'Không mua'].map(function(x){
+              return '<option' + (gd.trangThaiSach === x ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('')
+          + '</select>'
+          + '<div class="small muted">Muốn ghi <b>đã nhận sách</b> thì lập <b>phiếu xuất kho</b>, '
+          + 'chọn lớp rồi tích các em — phần mềm tự ghi đã nhận và tính tiền sách theo phiếu. '
+          + 'Chọn <b>Không mua</b> cho em không lấy sách.</div>'
+          + (hasPerm('deNghiXuatKho')
+              ? '<button class="btn btn-sm" style="margin-top:6px;" onclick="closeModal();switchSection(\'taiSan\',\'kho\');doiConKho(\'xuat\');">'
+                + 'Tới màn Phiếu xuất kho</button>' : '');
+      })()
     +'<label>Ghi chú của Học vụ</label>'
     +'<textarea id="mTTGhiChu" placeholder="Trao đổi với phụ huynh, lý do chưa đóng phí…">'
     + esc(gd.ghiChuHocVu || '') + '</textarea>'
@@ -15355,25 +16517,22 @@ function formTinhTrangHocVien(gdId){
     + 'Ở đây Học vụ ghi lại tình hình trao đổi với phụ huynh.</div>'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
     +'<button class="btn btn-primary btn-block" onclick="luuTinhTrangHocVien(\'' + gdId + '\')">Lưu</button></div>');
-  veONgaySach(gd.ngayNhanSach || '', gd.nguoiXacNhanSach || '');
 }
-/* Đánh dấu đã nhận sách thì ghi rõ ngày, để đối soát với phiếu xuất kho */
-function veONgaySach(ngayCo, nguoiCo){
-  const el = $('mTTONgaySach');
-  if(!el) return;
-  if(!$('mTTSach') || $('mTTSach').value !== 'Đã nhận'){ el.innerHTML = ''; return; }
-  const ngay = ngayCo !== undefined ? ngayCo : ($('mTTNgaySach') ? $('mTTNgaySach').value : '');
-  el.innerHTML = '<label>Ngày nhận sách</label>'
-    + '<input type="date" id="mTTNgaySach" value="' + esc(ngay || todayISO()) + '">'
-    + '<div class="small muted">'
-    + (nguoiCo ? 'Người xác nhận: ' + esc(nguoiCo) + '. ' : '')
-    + 'Ngày này dùng để đối soát với phiếu xuất kho của Hành chính.</div>';
-}
+/* Hàm veONgaySach bỏ từ V1.31.0: ngày nhận sách nay do phiếu xuất kho ghi,
+   không còn ô nhập tay nào để vẽ. */
 function luuTinhTrangHocVien(gdId){
   if(!hasPerm('suaHocVien')){ showToast('Bạn không có quyền'); return; }
   const gd = ghiDanhList.find(function(x){ return x.id === gdId; });
   const tai = $('mTTTai').value;
   const sach = $('mTTSach').value;
+  /* Chặn ở HÀM GHI, không chỉ bỏ lựa chọn trên form: "Đã nhận sách" chỉ được
+     sinh ra từ phiếu xuất kho. Bản ghi vốn đã "Đã nhận" thì giữ nguyên, không
+     coi là ghi mới — nếu không thì mở form ra lưu lại là xoá mất dấu đã nhận. */
+  if(sach === 'Đã nhận' && !daNhanSach(gd)){
+    showToast('Không đánh dấu đã nhận sách ở đây được — lập phiếu xuất kho, '
+      + 'chọn lớp rồi tích học viên, phần mềm tự ghi');
+    return;
+  }
   /* Ghi ngày nhận sách để đối soát với phiếu xuất kho của Hành chính.
      Trước đây ngày chỉ được ghi khi xuất kho, Học vụ đánh dấu tay thì mất dấu vết. */
   const dl = {
@@ -15382,12 +16541,10 @@ function luuTinhTrangHocVien(gdId){
     trangThaiSach: sach,
     ghiChuHocVu: $('mTTGhiChu').value.trim()
   };
-  if(sach === 'Đã nhận'){
-    /* Giữ nguyên ngày cũ nếu đã có, không ghi đè ngày xuất kho */
-    dl.ngayNhanSach = $('mTTNgaySach') ? ($('mTTNgaySach').value || todayISO())
-                                       : (gd.ngayNhanSach || todayISO());
-    if(!gd.nguoiXacNhanSach) dl.nguoiXacNhanSach = currentUser.hoTen;
-  } else {
+  /* Ngày nhận sách do phiếu xuất kho ghi, màn này KHÔNG đụng vào nữa —
+     ghi đè ở đây là xoá mất dấu vết của phiếu. Chọn "Không mua" hay
+     "Chưa nhận" thì xoá ngày, vì em đó không có sách. */
+  if(sach !== 'Đã nhận'){
     dl.ngayNhanSach = '';
     dl.nguoiXacNhanSach = '';
   }
@@ -16289,7 +17446,7 @@ function formSuaHocPhi(gdId){
       +'oninput="veLaiTienMien('+phaiDongTheoLoai(g, loaiMG)+','+tran+')">'
     +'<div class="small" id="mMGTomTat" style="color:var(--ok-ink);margin-top:4px;">Miễn '
       + fmtTien(tran)+'đ · còn phải đóng '+fmtTien(phaiDongTheoLoai(g, loaiMG) - tran)+'đ</div>'
-    +'<label>Căn cứ</label><select id="mMGCanCu" onchange="veLaiOCanCu()">'
+    +'<label>Căn cứ</label><select id="mMGCanCu" onchange="veLaiOCanCu(\''+gdId+'\')">'
     + CAN_CU_MIEN_GIAM.map(function(c){
         return '<option value="'+c.ma+'">'+esc(c.ten)+'</option>'; }).join('')
     +'</select><div id="mMGCanCuHop"></div>'
@@ -16315,7 +17472,7 @@ function formSuaHocPhi(gdId){
     +'<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
     +'<button class="btn btn-primary btn-block" onclick="guiDeNghiMienGiam(\''+gdId+'\', '+goc+', this)">'
     +'📤 Gửi Ban lãnh đạo duyệt</button></div>');
-  veLaiOCanCu();
+  veLaiOCanCu(gdId);
 }
 
 /* Đổi khoản thì mở lại form để lấy đúng trần và đúng mức chung của khoản đó */
@@ -16342,17 +17499,59 @@ function veLaiTienMien(phai, tran){
   o.style.color = 'var(--ok-ink)';
 }
 
+/* Gói ưu đãi áp dụng được cho một nhóm chương trình — MỘT CỬA. Màn Bảng giá
+   của Tư vấn và form Miễn giảm của Kế toán phải lọc giống hệt nhau; lọc khác
+   nhau là tư vấn báo một kiểu, kế toán miễn một kiểu, tới lúc đối soát mới lộ. */
+function goiUuDaiChoNhom(nhomCT){
+  const n = String(nhomCT || '');
+  return (uuDaiList || []).filter(function(u){
+    const ap = String(u.apDungCho || '');
+    if(!ap || ap === 'Tất cả') return true;
+    if(!n) return false;
+    return n.indexOf(ap) >= 0 || ap.indexOf(n) >= 0;
+  });
+}
+/* Nhóm chương trình của một lần ghi danh */
+function nhomCTCuaGhiDanh(gdId){
+  const g = (ghiDanhList || []).find(function(x){ return x.id === gdId; });
+  if(!g) return '';
+  const l = (lopList || []).find(function(x){ return x.id === g.lopId; });
+  return l ? (l.nhomCT || '') : '';
+}
 /* Chọn "Theo chính sách ưu đãi" thì phải chỉ rõ gói nào; chọn "Khác" thì phải
-   ghi rõ là gì. Không để trống chung chung rồi sau không ai hiểu căn cứ ở đâu. */
-function veLaiOCanCu(){
+   ghi rõ là gì. Không để trống chung chung rồi sau không ai hiểu căn cứ ở đâu.
+
+   KHÔNG mở ô nhập tay cho nhánh "chính sách": gõ được tên gói tuỳ ý thì số tiền
+   miễn không còn căn cứ nào đối chiếu, trái đúng cảnh báo phần mềm đang in ở màn
+   Bảng giá — QĐ 14 cấm cam kết ưu đãi ngoài khung đã duyệt. Trường hợp một lần
+   thì đi đường "Khác", ở đó bắt buộc ghi rõ căn cứ. */
+function veLaiOCanCu(gdId){
   const hop = $('mMGCanCuHop'); if(!hop) return;
   const v = $('mMGCanCu') ? $('mMGCanCu').value : '';
   if(v === 'chinhSach'){
+    const nhom = nhomCTCuaGhiDanh(gdId);
+    const ds = goiUuDaiChoNhom(nhom);
+    const an = (uuDaiList || []).length - ds.length;
+    if(!ds.length){
+      hop.innerHTML = '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);margin:8px 0;">'
+        + '<div class="small" style="line-height:1.8;">'
+        + 'Nhóm <b>' + esc(nhom || '(lớp chưa khai nhóm chương trình)') + '</b> chưa có gói ưu đãi nào.<br>'
+        + 'Gói ưu đãi do <b>Tư vấn tuyển sinh</b> lập — quy trình C6, Áp dụng ưu đãi ngoài khung đã duyệt, '
+        + 'Ban Giám đốc phê duyệt. Cần gói mới thì báo Tư vấn tuyển sinh thêm ở '
+        + '<b>Tuyển sinh → Giá và kịch bản → Gói ưu đãi</b>.<br>'
+        + 'Trường hợp một lần, không theo gói nào: quay lại ô Căn cứ chọn <b>“Khác”</b> rồi ghi rõ.'
+        + '</div></div>';
+      return;
+    }
     hop.innerHTML = '<label>Gói ưu đãi</label><select id="mMGUuDai">'
       + '<option value="">— chọn gói —</option>'
-      + (uuDaiList || []).map(function(u){
+      + ds.map(function(u){
           return '<option value="'+u.id+'">'+esc(u.ten)+'</option>'; }).join('')
-      + '</select>';
+      + '</select>'
+      + '<div class="small muted" style="margin-top:4px;line-height:1.7;">'
+      + 'Chỉ hiện gói áp dụng cho nhóm <b>' + esc(nhom || '(chưa rõ)') + '</b>'
+      + (an > 0 ? ' — ' + an + ' gói khác không áp dụng cho nhóm này nên đã ẩn' : '') + '. '
+      + 'Không có gói phù hợp thì chọn căn cứ <b>“Khác”</b> rồi ghi rõ.</div>';
   } else if(v === 'khac'){
     hop.innerHTML = '<label>Ghi rõ căn cứ</label><input id="mMGCanCuKhac">';
   } else hop.innerHTML = '';
@@ -16381,7 +17580,11 @@ function guiDeNghiMienGiam(gdId, goc, nut){
   const canCu = $('mMGCanCu').value;
   const uuDaiId = $('mMGUuDai') ? $('mMGUuDai').value : '';
   const canCuKhac = $('mMGCanCuKhac') ? $('mMGCanCuKhac').value.trim() : '';
-  if(canCu === 'chinhSach' && !uuDaiId){ showToast('Chọn gói ưu đãi làm căn cứ'); return; }
+  if(canCu === 'chinhSach' && !uuDaiId){
+    showToast($('mMGUuDai') ? 'Chọn gói ưu đãi làm căn cứ'
+      : 'Nhóm này chưa có gói ưu đãi — chọn căn cứ "Khác" rồi ghi rõ');
+    return;
+  }
   if(canCu === 'khac' && !canCuKhac){ showToast('Ghi rõ căn cứ miễn giảm'); return; }
   const khoa = $('mMGKhoa').value.split(',').map(function(x){ return x.trim(); })
     .filter(Boolean);
@@ -18829,6 +20032,27 @@ function doiTrangThaiHocBu(id, tt){
 
 /* ================= THỜI KHOÁ BIỂU ================= */
 const TEN_THU = {2:'Thứ 2',3:'Thứ 3',4:'Thứ 4',5:'Thứ 5',6:'Thứ 6',7:'Thứ 7',8:'Chủ nhật'};
+/* Bốn trạng thái lớp — MỘT CỬA cho form sửa lớp và cho bước nhập Excel */
+const TT_LOP = ['Sắp khai giảng','Đang học','Tạm dừng','Đã kết thúc'];
+/* Khảo thí gọi trạng thái lớp bằng chữ của họ: "Hoàn thành", "Đang chiêu sinh".
+   Nhận đúng chữ đó rồi quy về bốn trạng thái của phần mềm. Bắt họ sửa tay 42
+   dòng chỉ vì khác cách gọi là hành người dùng; nhưng quy đổi LẶNG LẼ cũng sai,
+   nên bước xem trước phải hiện rõ "Hoàn thành → Đã kết thúc". */
+const DONG_NGHIA_TT_LOP = {
+  'hoan thanh':'Đã kết thúc',     'da hoan thanh':'Đã kết thúc',
+  'ket thuc':'Đã kết thúc',       'da ket thuc':'Đã kết thúc',
+  'dang chieu sinh':'Sắp khai giảng', 'chieu sinh':'Sắp khai giảng',
+  'chua khai giang':'Sắp khai giảng', 'sap khai giang':'Sắp khai giảng',
+  'dang hoc':'Đang học',          'dang chay':'Đang học',
+  'tam dung':'Tạm dừng',          'tam ngung':'Tạm dừng'
+};
+/* Trả '' khi không hiểu — bên gọi phải chặn, không được đoán sang "Đang học" */
+function docTrangThaiLop(s){
+  const t = String(s || '').trim();
+  if(!t) return '';
+  if(TT_LOP.indexOf(t) >= 0) return t;
+  return DONG_NGHIA_TT_LOP[stripDia(t).toLowerCase().replace(/\s+/g, ' ')] || '';
+}
 function thuCuaLop(lop){
   if(Array.isArray(lop.cacThu) && lop.cacThu.length) return lop.cacThu.slice();
   const t = (lop.lichHoc||'');
@@ -18888,6 +20112,25 @@ function chuoiThu(cac){
   if(!cac || !cac.length) return '';
   if(cac.length === 1) return TEN_THU[cac[0]];
   return 'Thứ ' + cac.map(function(t){ return t===8 ? 'CN' : t; }).join(' · ');
+}
+/* Đọc ngược: "2-4-6", "3-5-7-CN", "Thứ 3 - 5", "T2, T4" → [2,4,6]
+   Khảo thí ghi lịch kiểu 2-4-6 trong file Excel, còn phần mềm cần mảng số thứ
+   để dựng Lịch buổi học. Chủ nhật quy ước là 8, giống phần còn lại của app.
+   Trả mảng rỗng khi không đọc được — bên gọi phải chặn, không được đoán. */
+function docCacThu(s){
+  const t = stripDia(String(s || '')).toLowerCase();
+  if(!t) return [];
+  const ra = [];
+  const them = function(n){ if(ra.indexOf(n) < 0) ra.push(n); };
+  /* Bắt chủ nhật trước rồi gỡ ra, để chữ "cn" không lẫn vào bước quét số */
+  const conLai = t.replace(/chu nhat|chunhat|\bcn\b/g, function(){ them(8); return ' '; });
+  const so = conLai.match(/\d+/g) || [];
+  so.forEach(function(x){
+    const n = Number(x);
+    if(n >= 2 && n <= 7) them(n);
+    else if(n === 8) them(8);
+  });
+  return ra.sort(function(a, b){ return a - b; });
 }
 function lichBuoiCuaLop(lop){
   const ra = {thieuThu:true, thieuNgayKG:!(lop && lop.ngayKG), buoi:[], ngayKetThuc:'',
@@ -19606,6 +20849,8 @@ function viewTruyenThong(){
 }
 
 /* ================= PHIẾU YÊU CẦU ================= */
+let ycTim = '';
+function doiTimYC(){ ycTim = $('ycTim') ? $('ycTim').value : ''; render(); }
 function viewYeuCauTT(){
   const ds = yeuCauTTList.slice().sort(function(a,b){ return (a.hanChot||'').localeCompare(b.hanChot||''); });
   const dangLam = ds.filter(function(y){ return ['Đã gửi','Đang sản xuất','Chờ duyệt nội dung','Chờ duyệt phát hành'].indexOf(y.trangThai)>=0; });
@@ -19638,14 +20883,28 @@ function viewYeuCauTT(){
     {ten:'Đã phát hành', loc:function(y){ return y.trangThai==='Đã phát hành'; }},
     {ten:'Đã huỷ', loc:function(y){ return y.trangThai==='Huỷ'; }}
   ];
+  /* Phiếu yêu cầu dồn lại theo tháng — không có ô tìm thì cuối quý là cuộn mỏi tay */
+  const timYC = stripDia(ycTim || '').trim();
+  const dsL = timYC ? ds.filter(function(y){
+      return stripDia((y.tieuDe||'')+' '+(y.maPhieu||'')+' '+(y.loaiSanPham||'')
+        +' '+(y.boPhan||'')+' '+(y.nguoiYeuCau||'')).indexOf(timYC) >= 0; }) : ds;
+  h += '<div class="card"><label style="margin-top:0;">Tìm phiếu</label>'
+    + '<input id="ycTim" value="'+esc(ycTim)+'" oninput="doiTimYC()" '
+    + 'placeholder="tiêu đề, mã phiếu, loại sản phẩm, bộ phận...">'
+    + '<div class="small muted" style="margin-top:6px;">Hiện <b>'+dsL.length+'</b> trên '
+    + ds.length + ' phiếu.</div></div>';
+
   h += '<div class="card">';
   let co = false;
   nhom.forEach(function(n){
-    const g = ds.filter(n.loc);
+    const g = dsL.filter(n.loc).slice(0, 60);
+    const tong = dsL.filter(n.loc).length;
     if(!g.length) return;
     co = true;
-    h += '<div class="grp-head" style="'+(n.ten==='Trễ hạn'?'color:var(--danger);':'')+'">'+esc(n.ten)+' · '+g.length+'</div>';
+    h += '<div class="grp-head" style="'+(n.ten==='Trễ hạn'?'color:var(--danger);':'')+'">'+esc(n.ten)+' · '+tong+'</div>';
     h += g.map(function(y){ return dongYeuCauTT(y); }).join('');
+    if(tong > g.length) h += '<div class="small muted" style="padding:6px 0;">Hiện '
+      + g.length + ' trên ' + tong + ' phiếu — gõ tìm để thu hẹp lại.</div>';
   });
   if(!co) h += emptyBox('📢','Chưa có yêu cầu nào');
   h += '</div>';
@@ -20238,13 +21497,16 @@ const MAU_NHAP = {
   lop: {
     ten: 'Lớp học', collection: 'fcv_lop',
     cot: [
-      {key:'nhomCT',     nhan:'Nhóm chương trình', batBuoc:false, vd:'Cambridge thiếu nhi và thiếu niên'},
+      /* maLop đứng TRƯỚC nhomCT: cả hai nhận bí danh 'Lớp', mà maLop là cột bắt
+         buộc. File chỉ có một cột "Lớp" thì phải vào maLop, không được vào nhomCT
+         rồi bỏ trống mã lớp. */
       {key:'maLop',      nhan:'Mã lớp',            batBuoc:true,  vd:'SM2.2'},
+      {key:'nhomCT',     nhan:'Nhóm chương trình', batBuoc:false, vd:'Cambridge thiếu nhi và thiếu niên'},
       {key:'capDo',      nhan:'Cấp độ',            batBuoc:false, vd:'Super Minds 2'},
       {key:'ngayKG',     nhan:'Ngày khai giảng',   batBuoc:false, vd:'30/06/2026'},
       {key:'ngayKT',     nhan:'Ngày kết thúc',     batBuoc:false, vd:'28/08/2026'},
       {key:'soBuoiKH',   nhan:'Số buổi kế hoạch',  batBuoc:false, vd:'16'},
-      {key:'lichHoc',    nhan:'Lịch học',          batBuoc:false, vd:'Thứ 3 - 5'},
+      {key:'lichHoc',    nhan:'Lịch học',          batBuoc:false, vd:'2-4-6 hoặc 3-5-7-CN hoặc Thứ 3 - 5'},
       {key:'gioHoc',     nhan:'Giờ học',           batBuoc:false, vd:'18:00 - 19:30'},
       {key:'gvPhuTrach', nhan:'Giáo viên',         batBuoc:false, vd:'Ms Quỳnh'},
       {key:'phongHoc',   nhan:'Phòng học',         batBuoc:false, vd:'G404'},
@@ -20253,7 +21515,11 @@ const MAU_NHAP = {
        vd:'Giáo trình Starters — tên đúng như trong kho, để trống nếu lớp không dùng sách'},
       {key:'siSoToiThieu', nhan:'Sĩ số tối thiểu', batBuoc:false, vd:'6'},
       {key:'siSoChuan',  nhan:'Sĩ số chuẩn',       batBuoc:false, vd:'12'},
-      {key:'siSoToiDa',  nhan:'Sĩ số tối đa',      batBuoc:false, vd:'20'}
+      {key:'siSoToiDa',  nhan:'Sĩ số tối đa',      batBuoc:false, vd:'20'},
+      /* Hai cột Khảo thí cần để nạp lịch sử lớp ôn thi — đề nghị 02/11/2026.
+         Thiếu hai cột này thì nhập xong phải mở từng lớp gán tay. */
+      {key:'tenKyThi',   nhan:'Ôn cho kỳ thi',     batBuoc:false, vd:'ƯDCNTT 19/11/2026'},
+      {key:'trangThai',  nhan:'Trạng thái',        batBuoc:false, vd:'Đang học, Sắp khai giảng, Đã kết thúc'}
     ]
   },
   hocVien: {
@@ -20335,6 +21601,10 @@ const MAU_NHAP = {
       {key:'nam',        nhan:'Năm',          batBuoc:false, vd:'2014'},
       {key:'ngaySinh',   nhan:'Ngày sinh',    batBuoc:false, vd:'Để trống nếu đã điền ba cột trên'},
       {key:'gioiTinh',   nhan:'Giới tính',    batBuoc:false, vd:'Nam hoặc Nữ'},
+      /* Ba cột in lên phôi chứng chỉ ƯDCNTT — Khảo thí đề nghị 02/11/2026 */
+      {key:'noiSinh',    nhan:'Nơi sinh',     batBuoc:false, vd:'Biên Hoà, Đồng Nai'},
+      {key:'cccd',       nhan:'Số CCCD',      batBuoc:false, vd:'075201001234'},
+      {key:'diaChi',     nhan:'Địa chỉ đang ở', batBuoc:false, vd:'12 Nguyễn Ái Quốc, P. Tân Phong, Biên Hoà'},
       {key:'sdt',        nhan:'Số điện thoại', batBuoc:false, vd:'0979594536'},
       {key:'tenPH',      nhan:'Họ tên phụ huynh', batBuoc:false, vd:'Nguyễn Thị D'},
       {key:'sdtPH',      nhan:'SĐT phụ huynh', batBuoc:false, vd:'0979594536'},
@@ -20399,7 +21669,7 @@ const MAU_NHAP = {
       {key:'tienSach', nhan:'Tiền sách đã thu', batBuoc:false,
        vd:'250000 — để trống nếu chưa thu đồng nào'},
       {key:'trangThaiSach', nhan:'Trạng thái nhận sách', batBuoc:false,
-       vd:'Chưa nhận · Đã nhận · Không mua'},
+       vd:'Chưa nhận hoặc Không mua — "Đã nhận" phải đi qua phiếu xuất kho'},
       {key:'ngayThu', nhan:'Ngày thu',   batBuoc:false, vd:'để trống thì lấy ngày vào lớp'},
       {key:'ghiChu', nhan:'Ghi chú',     batBuoc:false, vd:'VD: đóng tiền mặt'}
     ]
@@ -20597,6 +21867,9 @@ function daThuTienSach(gd){
 }
 /* Các em đã nhận sách theo Học vụ nhưng chưa có phiếu xuất kho nào,
    gom theo đầu sách của lớp. Lớp chưa khai sách thì gom riêng để còn nhắc khai. */
+/* Bản ghi còn mang dấu "Đã nhận" tick tay trước V1.31.0 mà chưa có phiếu xuất
+   kho nào. Từ V1.31.0 không tick tay được nữa, nên danh sách này CHỈ CÒN GIẢM —
+   nó là việc chuẩn hoá dữ liệu cũ, không phải lỗi phát sinh mới. */
 function sachChuaXuatKho(){
   const theoSach = {}, chuaKhaiSach = [];
   ghiDanhList.forEach(function(gd){
@@ -20639,10 +21912,19 @@ function tenHang(id){
   const h = khoHangList.find(function(x){ return x.id === id; });
   return h ? h.ten : '';
 }
+/* Trả về bản sao CÓ SẴN số tồn, không trả bản ghi gốc.
+   Lỗi chị Trang chụp màn hình 02/11/2026: màn Tồn kho in "Còn undefined Cái"
+   và "Thiếu NaN". Nguyên nhân là hàm này trả thẳng bản ghi trong khoHangList,
+   mà bản ghi đó KHÔNG có trường ton — số tồn chỉ được gắn thêm ở viewTonKho
+   cho danh sách chính. Màn đọc x.ton của bản ghi gốc nên ra undefined, rồi
+   tonToiThieu trừ undefined ra NaN.
+   Gắn ton ngay tại đây để mọi nơi gọi đều nhận cùng một hình dạng dữ liệu. */
 function hangDuoiMucToiThieu(){
-  return khoHangList.filter(function(h){
+  return khoHangList.map(function(h){
+    return Object.assign({}, h, {ton: tonKhoHang(h.id)});
+  }).filter(function(h){
     const m = Number(h.tonToiThieu) || 0;
-    return m > 0 && tonKhoHang(h.id) < m;
+    return m > 0 && h.ton < m;
   });
 }
 
@@ -20826,6 +22108,15 @@ function formPhieuKho(loai, id){
                return '<option value="' + l.id + '"' + (v.lopNhan === l.id ? ' selected' : '') + '>'
                  + esc(l.maLop) + ' · ' + siSoLop(l.id) + ' HV</option>'; }).join('')
          + '</select>'
+         /* Bán hay phát miễn phí — quyết định em đó có nợ tiền sách hay không.
+            Để ở phiếu vì phiếu là cửa duy nhất của sách (quyết 02/11/2026). */
+         + '<label>Hình thức</label><select id="mPKHinhThuc">'
+           + '<option value="ban"' + (v.hinhThucSach !== 'phat' ? ' selected' : '') + '>Bán — học viên phải đóng tiền sách</option>'
+           + '<option value="phat"' + (v.hinhThucSach === 'phat' ? ' selected' : '') + '>Phát miễn phí — không thu tiền</option>'
+         + '</select>'
+         + '<div class="small muted">Chọn <b>Bán</b> thì tiền sách phải thu của từng em lấy '
+         + 'theo đơn giá ghi trên phiếu này. Chọn <b>Phát miễn phí</b> thì các em trong phiếu '
+         + 'không nợ tiền sách. Việc thu tiền vẫn do Hành chính – Kế toán ghi nhận.</div>'
          + '<div id="mPKDsNhan"></div>'
          + '<label>Bộ phận đề nghị</label><select id="mPKBoPhan">'
          + BO_PHAN_BC.map(function(b){
@@ -20974,6 +22265,8 @@ function luuPhieuKho(loai, id){
     chung.ngayCan = $('mPKNgayCan').value;
     chung.lopNhan = $('mPKLop') ? $('mPKLop').value : '';
     chung.maLopNhan = chung.lopNhan ? maLopCua(chung.lopNhan) : '';
+    /* Bán hay phát — quyết định tiền sách phải thu của từng em trong phiếu */
+    chung.hinhThucSach = $('mPKHinhThuc') ? $('mPKHinhThuc').value : 'ban';
     chung.hvNhanSach = [];
     Array.prototype.forEach.call(document.querySelectorAll('.cbNhanSach'), function(c){
       if(c.checked && !c.disabled) chung.hvNhanSach.push(c.getAttribute('data-gd'));
@@ -22679,19 +23972,90 @@ function xemTuanDaChot(iso){
 
 
 /* --- Màn hình --- */
-let khoCon = 'ton';   /* ton | phieu | danhMuc */
+let khoCon = 'ton';   /* ton | nhap | xuat | danhMuc */
 function doiConKho(k){ khoCon = k; veLaiCoHieuUng(); }
+
+/* ===== LỌC THEO NHÓM HÀNG =====
+   Hành chính–Kế toán đề nghị 02/11/2026: "tách riêng chức năng nhập và xuất
+   sách để các bộ phận vào mục đó xem cho dễ quản lý".
+   KHÔNG dựng kho sách riêng: sách đã nằm trong cùng một kho, cùng một hệ phiếu,
+   cùng một công thức tồn. Dựng bảng thứ hai cho cùng dữ liệu là đúng bệnh đã
+   chữa ở V1.22.0 — tới ngày hai bên lệch nhau mà không ai biết bên nào đúng.
+   Chỉ thêm MỘT đường lọc, dùng chung cho cả bốn thẻ. */
+let khoNhom = '';     /* '' = tất cả, còn lại là một giá trị trong NHOM_KHO */
+function doiNhomKho(){
+  const o = $('khoChonNhom');
+  khoNhom = o ? o.value : '';
+  render();
+}
+function locTheoNhomKho(ds){
+  if(!khoNhom) return ds;
+  return ds.filter(function(x){ return (x.nhom || '') === khoNhom; });
+}
+/* Phiếu có dính tới nhóm đang lọc hay không — xét theo mặt hàng trong phiếu */
+function phieuThuocNhomKho(p){
+  if(!khoNhom) return true;
+  return (p.dong || []).some(function(d){
+    const h = khoHangList.find(function(x){ return x.id === d.hangId; });
+    return h && (h.nhom || '') === khoNhom;
+  });
+}
+function oChonNhomKho(){
+  const dem = {};
+  (khoHangList || []).forEach(function(x){
+    const n = x.nhom || '';
+    dem[n] = (dem[n] || 0) + 1;
+  });
+  return '<div class="card"><div class="row wrap" style="gap:8px;align-items:center;">'
+    + '<div style="flex:0 0 auto;" class="small muted">Nhóm hàng</div>'
+    + '<select id="khoChonNhom" onchange="doiNhomKho()" style="width:auto;margin:0;min-width:200px;">'
+    + '<option value=""' + (!khoNhom ? ' selected' : '') + '>Tất cả · '
+      + (khoHangList || []).length + ' mặt hàng</option>'
+    + NHOM_KHO.map(function(n){
+        return '<option value="' + esc(n) + '"' + (khoNhom === n ? ' selected' : '') + '>'
+          + esc(n) + ' · ' + (dem[n] || 0) + '</option>'; }).join('')
+    + '</select>'
+    + (khoNhom
+        ? '<button class="btn btn-sm" onclick="xoaLocNhomKho()">Bỏ lọc</button>'
+        : '')
+    + '</div></div>';
+}
+function xoaLocNhomKho(){ khoNhom = ''; render(); }
+
+/* Lớp nào đang dùng đầu sách này — đọc từ ô "Sách của lớp" trong danh mục lớp,
+   KHÔNG tạo bảng mới. Nhờ vậy thấy ngay "hết sách mà lớp vẫn đang chạy". */
+function lopDungSach(hangId){
+  return (lopList || []).filter(function(l){
+    return l.sachId === hangId
+      && (l.trangThai === 'Đang học' || l.trangThai === 'Sắp khai giảng');
+  });
+}
+function soHVDungSach(hangId){
+  const ds = lopDungSach(hangId).map(function(l){ return l.id; });
+  if(!ds.length) return 0;
+  return (ghiDanhList || []).filter(function(g){
+    return g.trangThai === 'Đang học' && ds.indexOf(g.lopId) >= 0; }).length;
+}
 
 function viewKhoTab(){
   const choDuyet = phieuKhoList.filter(function(p){
     return p.loai === 'xuat'
       && ['Chờ Hành chính duyệt', 'Chờ Ban Giám đốc duyệt', 'Đã duyệt'].indexOf(p.trangThai) >= 0; }).length;
+  /* Tách Phiếu nhập và Phiếu xuất thành hai thẻ: Hành chính vào thẻ nhập,
+     Học vụ và Tuyển sinh vào thẻ xuất — mỗi bộ phận một chỗ, không phải lọc
+     trong danh sách chung. */
+  const demHang = locTheoNhomKho(khoHangList || []).length;
   let h = thanhCon([
-    {k: 'ton', ten: 'Tồn kho', dem: khoHangList.length},
-    {k: 'phieu', ten: 'Phiếu nhập xuất', dem: choDuyet || ''},
+    {k: 'ton', ten: 'Tồn kho', dem: demHang},
+    {k: 'nhap', ten: 'Phiếu nhập'},
+    {k: 'xuat', ten: 'Phiếu xuất', dem: choDuyet || ''},
     {k: 'danhMuc', ten: 'Danh mục hàng'}
   ], khoCon, 'doiConKho');
-  if(khoCon === 'phieu')   return h + viewPhieuKho();
+  /* Mốc cũ 'phieu' vẫn nhận, để ai còn ở thẻ đó không rơi vào màn trắng */
+  if(khoCon === 'phieu') khoCon = 'xuat';
+  h += oChonNhomKho();
+  if(khoCon === 'nhap')    return h + viewPhieuKho('nhap');
+  if(khoCon === 'xuat')    return h + viewPhieuKho('xuat');
   if(khoCon === 'danhMuc') return h + viewDanhMucKho();
   return h + viewTonKho();
 }
@@ -22706,10 +24070,12 @@ function khoiDoiSoatSach(){
 
   let h = '<div class="card" style="border-color:var(--warn);background:var(--warn-bg);">'
     + '<div class="row wrap"><div style="min-width:0;">'
-    + '<h3 style="margin:0;">Đối soát sách với Học vụ</h3>'
-    + '<div class="small muted" style="margin-top:4px;">'
-    + 'Học vụ đánh dấu học viên đã nhận sách ngay ở màn tình trạng, không qua kho. '
-    + 'Những em dưới đây đã cầm sách nhưng kho chưa trừ cuốn nào.</div>'
+    + '<h3 style="margin:0;">Chuẩn hoá sổ sách cũ</h3>'
+    + '<div class="small muted" style="margin-top:4px;line-height:1.7;">'
+    + 'Từ V1.31.0 việc nhận sách chỉ ghi bằng <b>phiếu xuất kho</b>, Học vụ không tick tay '
+    + 'được nữa. Những em dưới đây mang dấu đã nhận <b>từ sổ cũ</b> mà kho chưa trừ cuốn nào — '
+    + 'lập phiếu bù để kho và công nợ sách khớp nhau. Danh sách này chỉ còn giảm, '
+    + 'không phát sinh thêm.</div>'
     + '</div></div>';
 
   lech.theoSach.forEach(function(x){
@@ -22799,7 +24165,8 @@ function lapPhieuXuatSach(hangId){
 }
 
 function viewTonKho(){
-  const ds = khoHangList.slice().map(function(x){
+  const laSach = khoNhom === 'Sách';
+  const ds = locTheoNhomKho(khoHangList.slice()).map(function(x){
     return Object.assign({}, x, {ton: tonKhoHang(x.id)}); })
     .sort(function(a, b){
       if(a.nhom !== b.nhom) return (a.nhom || '').localeCompare(b.nhom || '', 'vi');
@@ -22807,23 +24174,66 @@ function viewTonKho(){
     });
   /* Dùng chung một quy tắc "dưới mức tối thiểu" với mọi chỗ khác, đừng tính lại
      tại chỗ — hai định nghĩa song song là hai cơ hội để lệch nhau sau này. */
-  const canMua = hangDuoiMucToiThieu();
+  const canMuaTatCa = locTheoNhomKho(hangDuoiMucToiThieu());
   const giaTri = ds.reduce(function(s, x){ return s + x.ton * (Number(x.donGia) || 0); }, 0);
+  /* Đầu sách đã hết mà lớp vẫn đang chạy — chuyên viên hiện phải tự nhớ */
+  const hetMaConLop = ds.filter(function(x){
+    return (x.nhom || '') === 'Sách' && x.ton <= 0 && soHVDungSach(x.id) > 0; });
+  /* Đầu sách đã nằm ở khối đỏ "hết mà lớp đang chạy" thì KHÔNG lặp lại ở khối
+     vàng "cần mua bổ sung" — cùng một món hiện hai khối liền nhau là rườm. */
+  const canMua = canMuaTatCa.filter(function(x){
+    return !hetMaConLop.some(function(y){ return y.id === x.id; }); });
+  /* Số cuốn đã phát trong tháng này, lấy từ phiếu xuất đã thực hiện */
+  const thangNay = todayISO().slice(0, 7);
+  const cuonDaPhat = (phieuKhoList || []).reduce(function(t, p){
+    if(p.loai !== 'xuat' || p.trangThai !== 'Đã xuất') return t;
+    if(String(p.ngayXuat || p.ngayLap || '').slice(0, 7) !== thangNay) return t;
+    return t + (p.dong || []).reduce(function(s, d){
+      const hg = khoHangList.find(function(y){ return y.id === d.hangId; });
+      return s + (hg && (hg.nhom || '') === 'Sách' ? (Number(d.soLuong) || 0) : 0); }, 0);
+  }, 0);
+  /* Số thiếu luôn là số, kể cả khi dữ liệu cũ để trống tồn tối thiểu */
+  const soThieu = function(x){
+    return Math.max(0, (Number(x.tonToiThieu) || 0) - (Number(x.ton) || 0));
+  };
 
   let h = '<div class="card"><div class="row wrap"><div style="min-width:0;">'
-    + '<h3 style="margin:0;">Tồn kho</h3>'
+    + '<h3 style="margin:0;">Tồn kho' + (khoNhom ? ' · ' + esc(khoNhom) : '') + '</h3>'
     + '<div class="small muted" style="margin-top:4px;">Tồn tính từ tồn đầu kỳ cộng phiếu nhập '
     + 'trừ phiếu xuất đã thực hiện.</div></div>'
     + '<button class="btn btn-sm" onclick="xuatExcelTonKho()">Xuất Excel</button></div></div>';
 
   h += '<div class="grid" style="margin-bottom:12px;">'
-    + '<div class="stat"><div class="lbl">Mặt hàng</div><div class="val">' + ds.length + '</div></div>'
-    + '<div class="stat" style="' + (canMua.length ? 'background:var(--warn-bg);' : '') + '">'
-    + '<div class="lbl" style="' + (canMua.length ? 'color:var(--warn);' : '') + '">Dưới mức tối thiểu</div>'
-    + '<div class="val" style="' + (canMua.length ? 'color:var(--warn);' : '') + '">' + canMua.length + '</div></div>'
+    + '<div class="stat"><div class="lbl">' + (laSach ? 'Đầu sách' : 'Mặt hàng')
+      + '</div><div class="val">' + ds.length + '</div></div>'
+    + '<div class="stat" style="' + (canMuaTatCa.length ? 'background:var(--warn-bg);' : '') + '">'
+    + '<div class="lbl" style="' + (canMuaTatCa.length ? 'color:var(--warn);' : '') + '">Dưới mức tối thiểu</div>'
+    + '<div class="val" style="' + (canMuaTatCa.length ? 'color:var(--warn);' : '') + '">' + canMuaTatCa.length + '</div></div>'
     + '<div class="stat"><div class="lbl">Giá trị tồn</div>'
     + '<div class="val" style="font-size:17px;">' + fmtTrieu(giaTri) + '</div></div>'
+    + (laSach
+        ? '<div class="stat"><div class="lbl">Cuốn đã phát tháng này</div>'
+          + '<div class="val">' + cuonDaPhat + '</div></div>'
+        : '')
     + '</div>';
+
+  /* Hết sách mà lớp đang chạy — việc phải làm ngay, để NGAY đầu màn */
+  if(hetMaConLop.length)
+    h += '<div class="card" style="border-color:var(--danger-br);background:var(--danger-bg);">'
+      + '<b style="color:var(--danger-ink);">' + hetMaConLop.length
+      + ' đầu sách đã hết mà lớp vẫn đang chạy</b>'
+      + '<div class="small muted" style="margin-top:2px;">Nhập bổ sung trước khi học viên tới nhận sách.</div>'
+      + '<div style="margin-top:8px;">'
+      + hetMaConLop.map(function(x){
+          return '<div class="list-row"><div style="min-width:0;flex:1;">'
+            + '<div><b>' + esc(x.ten) + '</b></div>'
+            + '<div class="small muted">Tồn ' + fmtNum(x.ton, 0) + ' · lớp '
+            + esc(lopDungSach(x.id).map(function(l){ return l.maLop; }).join(' · '))
+            + ' · ' + soHVDungSach(x.id) + ' học viên đang học</div></div>'
+            + (hasPerm('quanLyKho')
+               ? '<button class="btn btn-sm btn-primary" onclick="formPhieuKho(\'nhap\')">Nhập kho</button>' : '')
+            + '</div>';
+        }).join('') + '</div></div>';
 
   h += khoiDoiSoatSach();
 
@@ -22833,9 +24243,9 @@ function viewTonKho(){
     h += canMua.map(function(x){
       return '<div class="list-row"><div style="min-width:0;flex:1;">'
         + '<div>' + esc(x.ten) + '</div>'
-        + '<div class="small muted">Còn ' + x.ton + ' ' + esc(x.dvt || '')
-        + ' · mức tối thiểu ' + x.tonToiThieu + '</div></div>'
-        + '<div style="flex-shrink:0;">' + badge('warn', 'Thiếu ' + (x.tonToiThieu - x.ton)) + '</div></div>';
+        + '<div class="small muted">Còn ' + (Number(x.ton) || 0) + ' ' + esc(x.dvt || '')
+        + ' · mức tối thiểu ' + (Number(x.tonToiThieu) || 0) + '</div></div>'
+        + '<div style="flex-shrink:0;">' + badge('warn', 'Thiếu ' + soThieu(x)) + '</div></div>';
     }).join('');
     h += '</div>';
   }
@@ -22844,16 +24254,20 @@ function viewTonKho(){
   if(!ds.length) h += emptyBox('📦', 'Chưa có mặt hàng nào. Vào Danh mục hàng để thêm.');
   else {
     let nhomHT = null;
+    /* Lọc nhóm Sách thì đổi cột cuối thành "Lớp đang dùng" — vị trí kệ không
+       giúp gì cho sách, còn lớp nào đang dùng thì mới là thứ cần biết. */
+    const soCot = 6;
     h += '<div class="tbl-wrap"><table><thead><tr>'
-      + '<th>Mặt hàng</th><th>ĐVT</th>'
+      + '<th>' + (laSach ? 'Đầu sách' : 'Mặt hàng') + '</th><th>ĐVT</th>'
       + '<th style="text-align:right;">Tồn</th>'
       + '<th style="text-align:right;">Tối thiểu</th>'
-      + '<th style="text-align:right;">Giá trị</th>'
-      + '<th>Vị trí</th></tr></thead><tbody>';
+      + '<th style="text-align:right;">' + (laSach ? 'Đơn giá/cuốn' : 'Giá trị') + '</th>'
+      + '<th>' + (laSach ? 'Lớp đang dùng' : 'Vị trí') + '</th></tr></thead><tbody>';
     ds.forEach(function(x){
       if(x.nhom !== nhomHT){
         nhomHT = x.nhom;
-        h += '<tr style="background:var(--surface-2);"><td colspan="6"><b>' + esc(nhomHT || 'Chưa phân nhóm') + '</b></td></tr>';
+        h += '<tr style="background:var(--surface-2);"><td colspan="' + soCot + '"><b>'
+          + esc(nhomHT || 'Chưa phân nhóm') + '</b></td></tr>';
       }
       const thieu = Number(x.tonToiThieu) > 0 && x.ton < Number(x.tonToiThieu);
       h += '<tr><td>' + esc(x.ten)
@@ -22861,8 +24275,22 @@ function viewTonKho(){
         + '<td>' + esc(x.dvt || '') + '</td>'
         + '<td style="text-align:right;font-weight:700;' + (thieu ? 'color:var(--warn);' : '') + '">' + x.ton + '</td>'
         + '<td style="text-align:right;" class="muted">' + (x.tonToiThieu || '—') + '</td>'
-        + '<td style="text-align:right;">' + (x.donGia ? fmtTien(x.ton * x.donGia) : '—') + '</td>'
-        + '<td class="small muted">' + esc(x.viTri || '') + '</td></tr>';
+        + '<td style="text-align:right;">'
+        + (laSach ? (x.donGia ? fmtTien(x.donGia) : '—')
+                  : (x.donGia ? fmtTien(x.ton * x.donGia) : '—')) + '</td>'
+        + '<td class="small muted">'
+        + (laSach
+            ? (function(){
+                const lop = lopDungSach(x.id);
+                if(!lop.length) return '<span class="muted">chưa lớp nào khai dùng</span>';
+                const sohv = soHVDungSach(x.id);
+                return esc(lop.map(function(l){ return l.maLop; }).join(' · '))
+                  + '<div class="small muted">' + sohv + ' học viên đang học</div>'
+                  + (x.ton <= 0 && sohv > 0
+                      ? '<div class="small" style="color:var(--danger);">⚠️ Hết sách mà lớp đang chạy</div>' : '');
+              })()
+            : esc(x.viTri || ''))
+        + '</td></tr>';
     });
     h += '</tbody></table></div>';
   }
@@ -22870,8 +24298,12 @@ function viewTonKho(){
   return h;
 }
 
-function viewPhieuKho(){
-  const ds = phieuKhoList.slice().sort(function(a, b){ return (b.ts || 0) - (a.ts || 0); });
+function viewPhieuKho(loai){
+  const laXuat = loai === 'xuat';
+  const ds = phieuKhoList
+    .filter(function(p){ return !loai || p.loai === loai; })
+    .filter(phieuThuocNhomKho)
+    .sort(function(a, b){ return (b.ts || 0) - (a.ts || 0); });
   const nhom = [
     {ten: 'Chờ Hành chính duyệt', loc: function(p){ return p.trangThai === 'Chờ Hành chính duyệt'; }},
     {ten: 'Chờ Ban Giám đốc duyệt', loc: function(p){ return p.trangThai === 'Chờ Ban Giám đốc duyệt'; }},
@@ -22879,18 +24311,26 @@ function viewPhieuKho(){
     {ten: 'Đã xong', loc: function(p){ return ['Đã xuất', 'Đã nhập'].indexOf(p.trangThai) >= 0; }},
     {ten: 'Từ chối', loc: function(p){ return p.trangThai === 'Từ chối'; }}
   ];
+  const duoi = khoNhom ? ' · ' + khoNhom.toLowerCase() : '';
   let h = '<div class="card"><div class="row wrap"><div style="min-width:0;">'
-    + '<h3 style="margin:0;">Phiếu nhập xuất kho</h3>'
-    + '<div class="small muted" style="margin-top:4px;">Xuất kho qua hai bước duyệt: '
-    + 'Hành chính rồi Ban Giám đốc. Duyệt xong Hành chính mới xuất hàng.</div></div>'
+    + '<h3 style="margin:0;">'
+    + (loai === 'nhap' ? 'Phiếu nhập kho' : (laXuat ? 'Phiếu xuất kho' : 'Phiếu nhập xuất kho'))
+    + esc(duoi) + '</h3>'
+    + '<div class="small muted" style="margin-top:4px;">'
+    + (loai === 'nhap'
+        ? 'Hành chính ghi nhận hàng nhập về kho. Nhập xong tồn kho tăng ngay, không qua bước duyệt.'
+        : 'Học vụ và Tuyển sinh lập phiếu, Hành chính duyệt rồi Ban Giám đốc phê duyệt. '
+          + 'Duyệt xong Hành chính mới xuất hàng.')
+    + '</div></div>'
     + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
-    + (hasPerm('quanLyKho')
-       ? '<button class="btn btn-sm" onclick="formPhieuKho(\'nhap\')">+ Nhập kho</button>' : '')
-    + (hasPerm('deNghiXuatKho') || hasPerm('quanLyKho')
+    + (loai !== 'xuat' && hasPerm('quanLyKho')
+       ? '<button class="btn btn-sm btn-primary" onclick="formPhieuKho(\'nhap\')">+ Nhập kho</button>' : '')
+    + (loai !== 'nhap' && (hasPerm('deNghiXuatKho') || hasPerm('quanLyKho'))
        ? '<button class="btn btn-sm btn-primary" onclick="formPhieuKho(\'xuat\')">+ Đề nghị xuất</button>' : '')
     + '</div></div></div>';
 
-  if(!ds.length) return h + '<div class="card">' + emptyBox('📋', 'Chưa có phiếu nào') + '</div>';
+  if(!ds.length) return h + '<div class="card">' + emptyBox('📋',
+    khoNhom ? 'Chưa có phiếu nào cho nhóm ' + khoNhom : 'Chưa có phiếu nào') + '</div>';
 
   nhom.forEach(function(n){
     const con = ds.filter(n.loc);
@@ -22935,11 +24375,30 @@ function dongPhieuKho(p){
         return esc(d.tenHang) + ' ' + d.soLuong + ' ' + esc(d.dvt || ''); }).join(' · ') + '</div>'
     + (p.hanhChinhDuyet ? '<div class="small muted">Hành chính: ' + esc(p.hanhChinhDuyet) + '</div>' : '')
     + (p.bgdDuyet ? '<div class="small muted">Ban Giám đốc: ' + esc(p.bgdDuyet) + '</div>' : '')
+    /* Bán hay phát miễn phí quyết định em đó có nợ tiền sách không — phải nói
+       ra trên dòng phiếu, đừng bắt mở phiếu mới biết. */
     + (p.maLopNhan ? '<div class="small muted">Phát cho lớp ' + esc(p.maLopNhan)
-        + ((p.hvNhanSach || []).length ? ' · ' + p.hvNhanSach.length + ' học viên' : '') + '</div>' : '')
+        + ((p.hvNhanSach || []).length ? ' · ' + p.hvNhanSach.length + ' học viên' : '')
+        + (p.hinhThucSach === 'phat'
+            ? ' · <b style="color:var(--ok-ink);">phát miễn phí, không thu tiền</b>'
+            : ' · <b>bán</b>, tiền sách thu theo đơn giá trên phiếu')
+        + '</div>' : '')
     + (p.nguoiNhan ? '<div class="small muted">Người nhận: ' + esc(p.nguoiNhan)
         + ' · xuất ' + fmtDate(p.ngayXuat) + '</div>' : '')
     + (p.lyDoTuChoi ? '<div class="small" style="color:var(--danger);">Từ chối: ' + esc(p.lyDoTuChoi) + '</div>' : '')
+    /* Phiếu còn chờ duyệt mà kho không đủ số lượng thì báo NGAY trên dòng phiếu,
+       đừng để tới lúc bấm Xuất hàng mới biết. */
+    + (function(){
+        if(!laXuat) return '';
+        if(['Chờ Hành chính duyệt','Chờ Ban Giám đốc duyệt','Đã duyệt'].indexOf(p.trangThai) < 0) return '';
+        const thieu = (p.dong || []).filter(function(d){
+          return tonKhoHang(d.hangId) < (Number(d.soLuong) || 0); });
+        if(!thieu.length) return '';
+        return '<div class="small" style="color:var(--danger);">⚠️ Kho không đủ: '
+          + thieu.map(function(d){
+              return esc(d.tenHang) + ' cần ' + d.soLuong + ' ' + esc(d.dvt || '')
+                + ', còn ' + fmtNum(tonKhoHang(d.hangId), 0); }).join(' · ') + '</div>';
+      })()
     /* Phiếu đã sửa thì nói ra, đừng để người xem tưởng số này là số nhập ban đầu */
     + (p.daSua ? '<div class="small" style="color:var(--warn);">✎ Đã sửa'
         + (p.nguoiSuaCuoi ? ' bởi ' + esc(p.nguoiSuaCuoi) : '')
@@ -22991,12 +24450,12 @@ function nhapHangKhoExcel(){
   switchSection('heThong', 'nhapLieu');
 }
 function viewDanhMucKho(){
-  const ds = khoHangList.slice().sort(function(a, b){
+  const ds = locTheoNhomKho(khoHangList.slice()).sort(function(a, b){
     if(a.nhom !== b.nhom) return (a.nhom || '').localeCompare(b.nhom || '', 'vi');
     return (a.ten || '').localeCompare(b.ten || '', 'vi');
   });
   let h = '<div class="card"><div class="row wrap"><div style="min-width:0;">'
-    + '<h3 style="margin:0;">Danh mục hàng</h3>'
+    + '<h3 style="margin:0;">Danh mục hàng' + (khoNhom ? ' · ' + esc(khoNhom) : '') + '</h3>'
     + '<div class="small muted" style="margin-top:4px;">Khai báo mặt hàng trước khi lập phiếu nhập xuất.</div></div>'
     + (hasPerm('quanLyKho')
        ? '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
@@ -23006,7 +24465,7 @@ function viewDanhMucKho(){
          + '</div>'
        : '')
     + '</div></div><div class="card">';
-  if(!ds.length) h += emptyBox('📋', 'Chưa có mặt hàng nào');
+  if(!ds.length) h += emptyBox('📋', khoNhom ? 'Nhóm ' + khoNhom + ' chưa có mặt hàng nào' : 'Chưa có mặt hàng nào');
   else {
     let nhomHT = null;
     ds.forEach(function(x){
@@ -24114,7 +25573,10 @@ function viewNhapLieu(){
              ? '<span style="color:var(--danger);">'+esc(d.loi)+'</span>'
              : (d.boQua
                  ? '<span class="muted">Bỏ qua · '+esc(d.boQua)+'</span>'
-                 : '<span style="color:var(--ok);">Hợp lệ</span>'))+'</td></tr>';
+                 : '<span style="color:var(--ok);">Hợp lệ</span>'
+                   + (d.quyDoi
+                       ? '<div class="small" style="color:var(--warn-ink);">quy đổi: '
+                         + esc(d.quyDoi) + '</div>' : '')))+'</td></tr>';
     });
     h += '</tbody></table></div>';
     if(nlKetQua.dong.length>80)
@@ -24289,6 +25751,19 @@ const BI_DANH_COT = {
   daNopLePhi:  ['Nộp lệ phí','Đã nộp','Lệ phí'],
   tenKyThi:    ['Kỳ thi','Tên kỳ'],
   maLop:       ['Lớp','Tên lớp','Mã lớp học'],
+  /* Cách gọi của Khảo thí trong file tổng hợp lớp ôn thi (02/11/2026).
+     'Lớp' nằm ở cả maLop lẫn nhomCT là có chủ ý: file nào có CẢ "Mã lớp" lẫn
+     "LỚP" thì vòng 1 khớp "Mã lớp" vào maLop trước, nên vòng 2 "LỚP" mới rơi
+     vào nhomCT. File nào chỉ có "Lớp" thì vòng 2 đưa vào maLop, vì maLop đứng
+     trước nhomCT trong mẫu — maLop là cột bắt buộc, không được để trống. */
+  nhomCT:      ['Lớp','Loại lớp','Chương trình','Loại chứng chỉ','Nhóm CT','Khoá học'],
+  lichHoc:     ['Buổi học','Lịch','Thứ học','Các thứ','Ngày học trong tuần','Lịch học trong tuần'],
+  gioHoc:      ['Tgian học','Thời gian học','Giờ','Ca học','Thời gian','Khung giờ'],
+  gvPhuTrach:  ['GV Phụ trách','GV phụ trách','Giáo viên phụ trách','GV','Giảng viên','Giáo viên đứng lớp'],
+  phongHoc:    ['Phòng','Phòng học','Địa điểm','Nơi học'],
+  ngayKG:      ['Ngày khai giảng','Khai giảng','Ngày bắt đầu','Ngày KG'],
+  ngayKT:      ['Ngày kết thúc','Kết thúc','Ngày KT'],
+  trangThai:   ['Trạng thái','Tình trạng','Tình trạng lớp'],
   maHV:        ['Mã HV','Mã học viên','Mã số học viên'],
   ten:         ['Tên','Tên hàng','Tên vật tư','Mặt hàng','Tên mặt hàng','Tên kỳ thi'],
   nhom:        ['Nhóm hàng','Phân nhóm','Nhóm vật tư'],
@@ -24668,6 +26143,12 @@ function phanTichFile(wb, ep){
 
   const daThayMa = {}, daThayTen = {};
   let trongLienTiep = 0;
+  /* Chữ của chính dòng tiêu đề, để nhận ra nó khi nó lặp lại ở giữa bảng */
+  const chuTieuDe = {};
+  ws.getRow(chon.hangTieuDe).eachCell({includeEmpty:false}, function(cell, col){
+    const t = stripDia(String(oToText(cell.value) || '')).trim().toLowerCase();
+    if(t) chuTieuDe[col] = t;
+  });
   for(let r = chon.hangTieuDe + 1; r <= ws.rowCount; r++){
     const row = ws.getRow(r);
     const docDong = docDongTheoGan(row, banDoGan, m);
@@ -24686,6 +26167,27 @@ function phanTichFile(wb, ep){
       continue;
     }
     trongLienTiep = 0;
+
+    /* BẢNG THỨ HAI NỐI ĐUÔI trong cùng một sheet.
+       File Khảo thí gửi 02/11/2026 xếp bảng ƯDCNTT rồi tới bảng Tiếng Anh ngay
+       bên dưới, nên dòng "STT | LỚP | Tháng | Loại | Mã lớp | ..." xuất hiện
+       lần thứ hai ở giữa vùng dữ liệu. Nhập nguyên thì sinh ra một lớp mang mã
+       "Mã lớp". Nhận ra và BỎ QUA, nhưng hiện lên bảng xem trước chứ không nuốt
+       im — người nhập phải biết phần mềm đã bỏ dòng nào. */
+    if((function(){
+        let co = 0, khop = 0;
+        row.eachCell({includeEmpty:false}, function(cell, col){
+          const t = stripDia(String(oToText(cell.value) || '')).trim().toLowerCase();
+          if(!t) return;
+          co++;
+          if(chuTieuDe[col] === t) khop++;
+        });
+        return co >= 3 && khop >= 3 && khop >= co * 0.6;
+      })()){
+      dong.push({dongSo:r, data:data,
+        boQua:'dòng tiêu đề của bảng thứ hai trong cùng sheet'});
+      continue;
+    }
 
     /* Dòng ký tên cuối danh sách.
        File Quyết định của Nhà trường kết thúc bằng "KT. HIỆU TRƯỞNG" rồi tên
@@ -24736,6 +26238,24 @@ function phanTichFile(wb, ep){
       else if(nlLoai==='lop'){
         const ngayKG = chuanHoaNgay(data.ngayKG);
         if(data.ngayKG && !ngayKG) d.loi = 'Ngày khai giảng sai định dạng, dùng dd/mm/yyyy';
+        /* Excel tự đổi "2-4-6" thành ngày 02/04/2006 và "3-5-7" thành 03/05/2007.
+           File Khảo thí gửi 02/11/2026 dính đúng lỗi này ở 7 trên 18 dòng. Đoán
+           ngược lại là đoán bừa — "2006-04-02" có thể là 2-4-6 mà cũng có thể là
+           2-4-6-CN. Nên chặn thẳng và chỉ rõ cách sửa. */
+        else if(/^\d{4}-\d{2}-\d{2}$/.test(String(data.lichHoc || '').trim()))
+          d.loi = 'Cột Lịch học đang là ngày tháng "' + data.lichHoc + '" — Excel đã tự đổi '
+                + '"2-4-6" thành ngày. Trong Excel bôi đen cột đó, đặt Định dạng ô là Text, '
+                + 'gõ lại rồi nhập lần nữa.';
+        else if(data.lichHoc && !docCacThu(data.lichHoc).length)
+          d.loi = 'Không đọc được lịch học "' + data.lichHoc + '". Ghi kiểu 2-4-6, 3-5-7-CN '
+                + 'hoặc Thứ 3 - 5.';
+        else if(data.trangThai && !docTrangThaiLop(data.trangThai))
+          d.loi = 'Trạng thái "' + data.trangThai + '" không hiểu được. Dùng: ' + TT_LOP.join(', ')
+                + ' — hoặc cách gọi quen của Khảo thí: Hoàn thành, Đang chiêu sinh.';
+        else if(data.tenKyThi && !kyThiList.some(function(k){
+            return stripDia(k.ten) === stripDia(String(data.tenKyThi).trim()); }))
+          d.loi = 'Không tìm thấy kỳ thi "' + data.tenKyThi + '". Tạo kỳ thi trước, '
+                + 'hoặc để trống cột này rồi gán sau.';
         else if(data.sach && !hangNhomSach().some(function(s){
             return stripDia(s.ten) === stripDia(data.sach.trim()); }))
           d.loi = 'Chưa có đầu sách "' + data.sach + '" trong kho. Thêm ở Tài sản → Danh mục '
@@ -24745,6 +26265,14 @@ function phanTichFile(wb, ep){
           if(lopList.some(function(l){ return l.idTheoDoi===idTd; })) d.loi = 'Đã có lớp này trong hệ thống';
           else if(daThayMa[idTd]) d.loi = 'Trùng với dòng '+daThayMa[idTd];
           else daThayMa[idTd] = r;
+          /* Nói rõ đã quy đổi chữ gì sang chữ gì, đừng đổi lặng lẽ */
+          const ttGoc = String(data.trangThai || '').trim();
+          const ttMoi = docTrangThaiLop(ttGoc);
+          if(ttGoc && ttMoi && ttMoi !== ttGoc) d.quyDoi = ttGoc + ' → ' + ttMoi;
+          const thu = docCacThu(data.lichHoc);
+          if(thu.length && chuoiThu(thu) !== String(data.lichHoc || '').trim())
+            d.quyDoi = (d.quyDoi ? d.quyDoi + ' · ' : '')
+              + String(data.lichHoc).trim() + ' → ' + chuoiThu(thu);
         }
       }
       else if(nlLoai==='hocVien'){
@@ -24849,6 +26377,10 @@ function phanTichFile(wb, ep){
            ngày sinh là sai dữ liệu in chứng chỉ, nên chặn thẳng dòng đó. */
         else if(data.ngaySinh && !chuanHoaNgay(data.ngaySinh))
           d.loi = 'Ngày sinh không đọc được: "' + data.ngaySinh + '". Dùng dd/mm/yyyy.';
+        /* CCCD sai định dạng in lên phôi là hỏng phôi, chặn ngay ở bước xem trước */
+        else if(data.cccd && !/^(\d{9}|\d{12})$/.test(String(data.cccd).replace(/[\s.\-]/g, '')))
+          d.loi = 'Số CCCD "' + data.cccd + '" không hợp lệ — phải 12 chữ số, hoặc 9 chữ số nếu là CMND cũ. '
+                + 'Trong Excel nhớ định dạng cột này là Text, không thì số 0 đầu bị mất.';
         else if(data.doiTac && !doiTacList.some(function(x){
             return stripDia(x.ten) === stripDia(data.doiTac.trim()); }))
           d.loi = 'Chưa có đối tác "'+data.doiTac+'" trong danh mục. Thêm ở Khảo thí → Đối tác trước.';
@@ -25031,6 +26563,13 @@ function phanTichFile(wb, ep){
             return stripDia(x) === stripDia(data.trangThaiSach); }) || '';
           if(!tt) d.loi = 'Trạng thái nhận sách phải là một trong: '
                         + TRANG_THAI_SACH.join(' · ');
+          /* Cửa duy nhất của sách là phiếu xuất kho (quyết 02/11/2026). Cho nhập
+             "Đã nhận" từ Excel là mở lại đúng cái cửa sau vừa đóng: kho không trừ
+             cuốn nào mà sổ ghi em đã nhận. */
+          else if(tt === 'Đã nhận')
+            d.loi = 'Không nhập "Đã nhận" từ Excel được. Việc nhận sách ghi bằng '
+                  + 'phiếu xuất kho: Tài sản → Kho → Phiếu xuất, chọn lớp rồi tích học viên. '
+                  + 'Cột này chỉ nhận "Chưa nhận" hoặc "Không mua".';
         }
 
         const tien = Number(String(data.tienSach || '').replace(/[^\d]/g, '')) || 0;
@@ -25103,13 +26642,28 @@ function nạpDuLieu(){
             return stripDia(x.ten) === stripDia(t); });
           return s2 ? s2.id : '';
         })(),
-        lichHoc:v.lichHoc||'', gioHoc:v.gioHoc||'',
+        /* Tick sẵn các thứ trong tuần, không chỉ lưu dòng chữ. Có cacThu thì
+           Lịch buổi học dựng được ngay; chỉ có chữ thì lớp nhập vào nằm im. */
+        cacThu: docCacThu(v.lichHoc),
+        lichHoc: (function(){
+          const t = docCacThu(v.lichHoc);
+          return t.length ? chuoiThu(t) : (v.lichHoc || '');
+        })(),
+        gioHoc:v.gioHoc||'',
         gvId: gv? gv.id : '', gvPhuTrach: gv? (gv.tenGoi||gv.hoTen) : (v.gvPhuTrach||''),
         phongHoc:v.phongHoc||'',
         siSoToiThieu:Number(v.siSoToiThieu)||Number(settings.nguongNguyCap)||6,
         siSoChuan:Number(v.siSoChuan)||Number(settings.nguongDuoiChuan)||12,
         siSoToiDa:Number(v.siSoToiDa)||Number(settings.siSoToiDa)||20,
-        trangThai:'Đang học', ghiChu:'Nhập từ Excel'});
+        /* Đích đến kỳ thi: tên kỳ đã soát khớp ở bước xem trước */
+        kyThiId: (function(){
+          const t = String(v.tenKyThi || '').trim();
+          if(!t) return '';
+          const k2 = kyThiList.find(function(x){ return stripDia(x.ten) === stripDia(t); });
+          return k2 ? k2.id : '';
+        })(),
+        trangThai: (docTrangThaiLop(v.trangThai) || 'Đang học'),
+        ghiChu:'Nhập từ Excel'});
     }
     if(nlLoai==='hocVien'){
       let ma = v.maHV;
@@ -25199,8 +26753,10 @@ function nạpDuLieu(){
     }
     if(nlLoai === 'tienSach'){
       const sua = {};
-      if(d.ttSach) sua.trangThaiSach = d.ttSach;
-      if(d.ttSach === 'Đã nhận' && !d.gdGoc.ngayNhanSach) sua.ngayNhanSach = todayISO();
+      /* Chặn ở HÀM GHI nữa, không chỉ ở bước xem trước: "Đã nhận sách" chỉ sinh
+         ra từ phiếu xuất kho (quyết 02/11/2026). Ai gọi thẳng hàm này cũng không
+         mở được cửa sau. */
+      if(d.ttSach && d.ttSach !== 'Đã nhận') sua.trangThaiSach = d.ttSach;
       if(d.tienSachThu > 0){
         sua.lichSuThu = (d.gdGoc.lichSuThu || []).concat([{
           ngay: chuanHoaNgay(v.ngayThu) || d.gdGoc.ngayVao || todayISO(),
@@ -25254,6 +26810,9 @@ function nạpDuLieu(){
         })(),
         ngaySinh: gopNgaySinh(v),
         gioiTinh: chuanGioiTinh(v.gioiTinh),
+        noiSinh: (v.noiSinh || '').trim(),
+        cccd: String(v.cccd || '').replace(/[\s.\-]/g, ''),
+        diaChi: (v.diaChi || '').trim(),
         sdt: chuanSdt(v.sdt) || (v.sdt || ''),
         tenPH: (v.tenPH || '').trim(),
         sdtPH: chuanSdt(v.sdtPH) || (v.sdtPH || ''),
@@ -25767,6 +27326,15 @@ function viewThamSo(){
     +'<div class="small muted">Đây là số điền sẵn. Mỗi kỳ thi sửa lại được, hoặc nhập thẳng số tiền thực thu.</div>'
     +'<label>Thuế thu nhập cá nhân giữ lại (%)</label>'
     +'<input type="number" id="tsThue" value="'+(settings.thueTNCN||10)+'">'
+    +'<div class="small muted">Mức thù lao trong QĐ 19 là mức trước thuế.</div>'
+    +'<label>Báo trước mấy ngày khi tới hạn đăng ký, lệ phí, chốt danh sách</label>'
+    +'<input type="number" id="tsBaoMoc" value="'+(settings.baoTruocMocThi||7)+'">'
+    +'<div class="small muted">Ba mốc này khai trong từng kỳ thi. Để trống mốc nào thì mốc đó không nhắc.</div>'
+    +'<label>Hợp đồng đối tác có hiệu lực mấy tháng</label>'
+    +'<input type="number" id="tsHanHD" value="'+(settings.hanHopDongThang||12)+'">'
+    +'<label>Báo trước mấy ngày khi tới hạn ký lại hợp đồng</label>'
+    +'<input type="number" id="tsBaoHD" value="'+(settings.baoTruocHopDongNgay||30)+'">'
+    +'<div class="small muted">Đếm từ ngày bắt đầu hợp tác khai trong danh mục đối tác.</div>'
     +'<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:8px;"><b class="small">In ấn</b></div>'
     +'<label>Hạn mức Phó Giám đốc duyệt in (đồng)</label>'
     +'<input type="number" id="tsHanMuc" value="'+(settings.hanMucPGD||10000000)+'">'
@@ -25932,6 +27500,9 @@ function luuThamSo(){
     tyLeTruongTra: Number($('tsTyLe').value)||25,
     tyLeNopTruongTuDo: Number($('tsTyLeNop').value)||0,
     thueTNCN: Number($('tsThue').value)||10,
+    baoTruocMocThi: Number($('tsBaoMoc').value)||7,
+    hanHopDongThang: Number($('tsHanHD').value)||12,
+    baoTruocHopDongNgay: Number($('tsBaoHD').value)||30,
     capTruc: capTruc().map(function(c, i){
       return {boPhan: c.boPhan,
               viTri: docChonViTri('tsCapChinh' + i),
