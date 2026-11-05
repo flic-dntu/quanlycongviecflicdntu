@@ -2,7 +2,53 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.31.0   |   Ngày: 02/11/2026
+ Phiên bản: V1.31.2   |   Ngày: 04/11/2026
+------------------------------------------------------------------
+ V1.31.2 – 04/11/2026 – BIỂU ĐỒ VÀ THANH HIỂN THỊ
+ - Thêm hình ở 5 chỗ số liệu khó đọc bằng bảng: cơ cấu thu của
+   lớp, xếp hạng lớp nợ nặng, phễu tư vấn, tiến độ buổi dạy,
+   giờ công so chỉ tiêu. KHÔNG rải hình khắp 12 tab.
+ - Dùng lại veCotNgang/veCotChong đã có. Không thêm thư viện
+   biểu đồ: file một trang 1.6MB không gánh thêm được.
+ - Màu nhóm 'Tự do' đổi #C2703A sang #7A4FA3. Màu cũ vừa trùng
+   mã --m2 'cần chú ý', vừa cách xanh lá chỉ dE 6.8 với người
+   mù màu đỏ-lục (ngưỡng an toàn là 8). Tím cho dE 18.6.
+ - SỬA LỖI SẴN CÓ: bốn ô trên bảng điều hành tuyển sinh bấm vào
+   KHÔNG lọc gì cả. moPheuTu đặt filterLeadNhom thành 'chuaGoi'
+   hay 'quaHan' nhưng hàm lọc không biết hai giá trị đó, rơi
+   thẳng xuống return true. Ô chọn cũng không có giá trị tương
+   ứng nên hiện nhầm dòng đầu 'Cần gọi hôm nay'.
+ - Mọi hình đều TRẢ RỖNG khi thiếu căn cứ, không bịa kết luận.
+   tienDoBuoiLop trả mongDoi null chứ không NaN khi thiếu ngày.
+------------------------------------------------------------------
+ V1.31.1 – 04/11/2026 – SỔ SỐ GIẤY ĐỀ NGHỊ MỘT CỬA
+ - Số GĐN phần mềm cấp không khớp sổ Trung tâm (sổ đã tới 172,
+   phần mềm vẫn nhảy ra 01). Bộ đếm chỉ thấy giấy lập trong
+   phần mềm, không biết giấy đã ký trên sổ từ đầu năm.
+ - Trung tâm dùng MỘT sổ GĐN chung, nhưng phần mềm có hai nơi
+   phát sinh số không biết nhau: tab In ấn tự cấp, còn 5 loại
+   giấy đề nghị trong hồ sơ kỳ thi thì Khảo thí gõ tay.
+ - soGDNKeTiep() quét cả hai nguồn + mốc khai ở Tham số.
+   MỌI nơi xin số phải gọi hàm này, không nơi nào tự đếm.
+ - Tham số mới: mocGDNNam + mocGDNSo. Sang năm không khớp thì
+   tự bỏ mốc, chạy lại từ 01.
+ - Số GĐN trên form đổi thành ô nhập, sửa được cả giấy đã lập.
+ - Chặn trùng số ở CẢ HAI cửa; chặn khai mốc lùi; chốt số một
+   lần lúc lưu (trước đây tính hai lần, hai thời điểm).
+ - BỐ CỤC BA CỘT: thanh điều hướng chuyển sang cột dọc bên
+   trái (12 tab lớn, mục con lồng dưới tab đang mở); cột phải
+   mới từ 1500px: Chờ tôi duyệt, Cần để ý, Hoạt động của tôi.
+   Nội dung giữa nới từ 1100px lên 1180–1320px.
+ - Tab nay VẼ từ TAB_CHINH, không viết cứng trong HTML. Phép
+   lọc quyền phải nằm TRONG hàm vẽ — applyTabPerms() kiểu cũ
+   duyệt nút có sẵn trong DOM, giữ nguyên là lọc vào chỗ trống
+   và mọi tài khoản thấy đủ 12 tab.
+ - Cột phải KHÔNG đếm mới: dùng lại thuThapCanhBao(), tầng 1
+   vào "Chờ tôi duyệt", tầng 2-3 vào "Cần để ý".
+ - logAct ghi thêm userId; trần nhật ký 150 → 300 dòng.
+ - Dưới 1000px giữ nguyên nếp cũ. Cột trái KHÔNG được ẩn ở
+   khổ hẹp: thanh tab nằm trong nó, ẩn là điện thoại mất
+   đường chuyển tab.
 ------------------------------------------------------------------
  CĂN CỨ NGHIỆP VỤ
  - Quyết định 14/QĐ-TTNNTH ngày 01/8/2026 (Bản mô tả công việc
@@ -803,6 +849,81 @@
     white-space:nowrap;transition:color .18s var(--ease), background .18s var(--ease);}
   .tabbar button:hover{color:var(--son);background:var(--son-nen);}
   .tabbar button.active{color:var(--son);background:var(--giay);border-color:var(--son);font-weight:650;}
+  .tabbar button .bieu{margin-right:5px;}
+  /* Mục con lồng trong thanh dọc — màn hẹp thì ẩn, đã có thanh ngang lo */
+  .muc-long{display:none;}
+
+  /* ======== BỐ CỤC BA CỘT (từ 1000px trở lên) ========
+     Dưới ngưỡng này mọi thứ giữ nguyên nếp cũ: tiêu đề ngang, tab ngang,
+     thanh mục ngang. Không viết lại giao diện điện thoại. */
+  /* Dưới 1000px: cột trái KHÔNG được ẩn — thanh tab chính nằm trong nó, ẩn đi
+     là điện thoại mất sạch đường chuyển tab. Chỉ giấu phần đầu và phần chân
+     vì hai thứ đó đã có sẵn ở .app-header. */
+  .bo-cuc{display:block;}
+  .cot-trai{display:block;}
+  .cot-trai .dau-trai{display:none;}
+  .cot-trai .chan-trai{display:none;}
+  .cot-phai{display:none;}
+  .cot-giua{min-width:0;}
+
+  @media(min-width:1000px){
+    .app-header{display:none;}
+    .bo-cuc{display:flex;align-items:flex-start;min-height:100vh;}
+    .cot-trai{display:flex;flex-direction:column;flex:0 0 232px;width:232px;
+      position:-webkit-sticky;position:sticky;top:0;height:100vh;
+      background:var(--son);color:#dbeafe;z-index:45;}
+    .cot-trai .tabbar{display:block;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+      background:none;border:0;position:static;padding:10px 8px;}
+    .cot-trai .tabbar button{display:flex;align-items:center;gap:9px;width:100%;
+      flex:0 0 auto;padding:7px 10px;border:0;border-radius:7px;margin-bottom:1px;
+      font-size:13.5px;font-weight:600;color:#cfe2f8;text-align:left;white-space:normal;}
+    .cot-trai .tabbar button .bieu{flex:0 0 17px;text-align:center;margin:0;}
+    .cot-trai .tabbar button:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .cot-trai .tabbar button.active{background:var(--giay);color:var(--son);font-weight:700;}
+    .cot-trai .muc-long{display:block;margin:2px 0 6px 30px;padding-left:9px;
+      border-left:1.5px solid rgba(255,255,255,.2);}
+    .cot-trai .muc-long button{padding:5px 8px;font-size:12.5px;font-weight:500;
+      color:#a8c8ea;border-radius:6px;}
+    .cot-trai .muc-long button:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .cot-trai .muc-long button.active{background:rgba(255,255,255,.17);color:#fff;font-weight:650;}
+    .dau-trai{display:flex;align-items:center;gap:8px;padding:13px 13px 9px;}
+    .dau-hieu{flex:0 0 26px;width:26px;height:26px;border-radius:6px;background:#fff;
+      color:var(--son);display:grid;place-items:center;font-size:13px;font-weight:800;}
+    .ten-pm{font-size:14.5px;font-weight:650;color:#fff;line-height:1.15;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .ver-trai{font-size:10.5px;color:#9fc5f0;margin-top:1px;}
+    .chan-trai{display:flex;align-items:center;gap:8px;padding:9px 13px;cursor:pointer;
+      border-top:1px solid rgba(255,255,255,.15);font-size:12px;line-height:1.3;}
+    .chan-trai:hover{background:rgba(255,255,255,.08);}
+    .chan-trai .ten{font-weight:650;color:#fff;overflow:hidden;text-overflow:ellipsis;
+      white-space:nowrap;}
+    .chan-trai .vt{font-size:10.5px;color:#9fc5f0;}
+    .anh-dai-dien{flex:0 0 25px;width:25px;height:25px;border-radius:50%;
+      background:rgba(255,255,255,.22);color:#fff;display:grid;place-items:center;
+      font-size:10.5px;font-weight:700;}
+    .cot-giua{flex:1;padding-top:16px;}
+    .cot-giua #secTabWrap{display:none;}   /* đã có mục lồng ở cột trái */
+    .container{max-width:1320px;padding:0 18px 18px;}
+  }
+  @media(min-width:1500px){
+    .cot-phai{display:block;flex:0 0 312px;width:312px;padding:16px 16px 16px 0;
+      position:-webkit-sticky;position:sticky;top:0;max-height:100vh;overflow-y:auto;}
+    .container{max-width:1180px;}
+  }
+  /* Khối trong cột phải */
+  .hop-phai{background:var(--card);border:1px solid var(--vien);border-radius:11px;
+    padding:11px 12px;margin-bottom:12px;}
+  .hop-phai h4{margin:0 0 8px;font-size:12.5px;font-weight:700;
+    display:flex;align-items:center;gap:6px;}
+  .hop-phai .dem{margin-left:auto;border-radius:20px;padding:1px 7px;
+    font-size:11px;font-weight:700;color:#fff;}
+  .hop-phai .dong{display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--vien);
+    font-size:12.3px;line-height:1.45;color:var(--muc-2);}
+  .hop-phai .dong:first-of-type{border-top:0;}
+  .hop-phai .cham{flex:0 0 6px;width:6px;height:6px;border-radius:50%;margin-top:6px;}
+  .hop-phai .gio{color:var(--muc-3,#94a3b8);font-size:11px;}
+  .hop-phai .nhan{display:block;margin-top:7px;font-size:11px;font-weight:700;
+    color:var(--son);cursor:pointer;}
 
   .section-tab{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;background:var(--nen);}
   .section-tab button{flex:0 0 auto;padding:7px 13px;border-radius:7px;border:1px solid var(--vien);
@@ -1318,23 +1439,28 @@
     <div class="role-chip" id="roleChip" onclick="moHoSoCuaToi()">—</div>
   </div>
 
-  <div class="tabbar" id="tabbar">
-    <button data-tab="tongQuan" onclick="switchTab('tongQuan')">🏠 Tổng quan</button>
-    <button data-tab="hocVu" onclick="switchTab('hocVu')">🎓 Học vụ</button>
-    <button data-tab="tuyenSinh" onclick="switchTab('tuyenSinh')">📣 Tuyển sinh</button>
-    <button data-tab="truyenThong" onclick="switchTab('truyenThong')">📢 Truyền thông</button>
-    <button data-tab="khaoThi" onclick="switchTab('khaoThi')">📝 Khảo thí</button>
-    <button data-tab="taiChinh" onclick="switchTab('taiChinh')">💰 Tài chính</button>
-    <button data-tab="congViec" onclick="switchTab('congViec')">✅ Công việc</button>
-    <button data-tab="lichCa" onclick="switchTab('lichCa')">🗓️ Lịch ca</button>
-    <button data-tab="taiSan" onclick="switchTab('taiSan')">📦 Tài sản</button>
-    <button data-tab="inAn" onclick="switchTab('inAn')">🖨️ In ấn</button>
-    <button data-tab="baoCao" onclick="switchTab('baoCao')">📊 Báo cáo</button>
-    <button data-tab="heThong" onclick="switchTab('heThong')">⚙️ Hệ thống</button>
+  <!-- Bố cục ba cột. Cột trái là thanh điều hướng dọc, cột phải là việc cần
+       để ý. Thu hẹp màn hình thì CSS lo: dưới 1500px giấu cột phải, dưới
+       1000px cột trái nằm ngang trở lại như nếp cũ. JS KHÔNG đo bề rộng,
+       không dời node — đo bề rộng bằng JS là sai mỗi khi xoay máy. -->
+  <div class="bo-cuc">
+    <nav class="cot-trai" id="cotTrai">
+      <div class="dau-trai">
+        <div class="dau-hieu">F</div>
+        <div style="min-width:0;">
+          <div class="ten-pm">Quản Lý Công Việc</div>
+          <div class="ver-trai" id="verLabelTrai">—</div>
+        </div>
+      </div>
+      <div class="tabbar" id="tabbar"></div>
+      <div class="chan-trai" id="chanTrai" onclick="moHoSoCuaToi()"></div>
+    </nav>
+    <div class="cot-giua">
+      <div id="secTabWrap"></div>
+      <div class="container" id="tabContent"></div>
+    </div>
+    <aside class="cot-phai" id="cotPhai"></aside>
   </div>
-
-  <div id="secTabWrap"></div>
-  <div class="container" id="tabContent"></div>
 </div>
 
 <div id="modalHost"></div>
@@ -1357,10 +1483,38 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.31.0';
-const NGAY_PHIEN_BAN = '30/10/2026';
+const PHIEN_BAN = 'V1.31.2';
+const NGAY_PHIEN_BAN = '04/11/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.31.2', ngay:'04/11/2026', muc:[
+    {loai:'Giao diện', nd:'Ban lãnh đạo nêu 04/11/2026: một số tab chưa trực quan. Thêm hình ở NĂM chỗ mà cái hình thật sự đổi được quyết định, không rải biểu đồ khắp 12 tab — rải khắp nơi là trang trí chứ không phải thông tin. Năm chỗ: cơ cấu thu của lớp ở Học phí học viên, xếp hạng lớp nợ nặng nhất ở Công nợ, phễu tư vấn ở Điều hành tuyển sinh, tiến độ buổi dạy trên từng thẻ lớp, và giờ công so chỉ tiêu ở Lịch ca.'},
+    {loai:'Mới', nd:'Phễu tư vấn là hạng mục đáng giá nhất trong đợt này. Năm trạng thái khách đã có sẵn từ lâu nhưng hiện thành năm con số rời nhau, nhìn mãi không biết khâu nào rụng nhiều. Nay xếp thành phễu kèm tỉ lệ rụng so với bậc ngay trên, bấm vào thanh là sang đúng danh sách khách của bậc đó. Nhìn một cái biết nên dồn người vào khâu nào.'},
+    {loai:'Sửa lỗi', nd:'Bốn ô trên bảng điều hành tuyển sinh bấm vào KHÔNG lọc gì cả. Hàm moPheuTu đặt filterLeadNhom thành chuaGoi, dangTheoDuoi hay quaHan, nhưng hàm lọc chỉ biết ba giá trị cuaToi, chuaGiao, canGoi nên rơi thẳng xuống return true: bấm ô "Data thô · chưa gọi" thì danh sách hiện TOÀN BỘ khách. Tệ hơn, ô chọn không có giá trị tương ứng nên trình duyệt hiện dòng đầu "Cần gọi hôm nay" — vừa không lọc, vừa nói sai đang lọc cái khác. Nay ô chọn có đủ năm trạng thái cộng mục Quá hạn gọi lại, và lọc chạy thật.'},
+    {loai:'Sửa lỗi', nd:'Màu nhóm "Tự do" trong biểu đồ Đối tác dùng #C2703A — chính là mã màu --m2 nghĩa là "cần chú ý", trong khi thí sinh tự do chẳng có gì phải chú ý. Dùng màu trạng thái làm màu nhóm là sai: khi nào cũng đỏ cam thì người đọc hết phân biệt được cái nào đáng lo. Tệ hơn, chạy phép kiểm độ tách màu thì cam và xanh lá chỉ cách nhau dE 6.8 với người mù màu đỏ-lục, dưới ngưỡng an toàn 8 — hai cột "Qua đối tác" và "Tự do" gần như một màu. Cứ mười hai người đàn ông có một người bị tật này. Đổi sang tím #7A4FA3 cho dE 18.6, đạt sạch cả sáu phép kiểm màu.'},
+    {loai:'Nguyên tắc', nd:'Không dùng biểu đồ tròn. Mắt người so độ dài chính xác hơn so góc: hai miếng 28% và 31% trên hình tròn gần như không phân biệt được, đặt cạnh nhau thành thanh thì thấy ngay. Cơ cấu dùng thanh ghép, mỗi đoạn có nhãn CHỮ chứ không chỉ dựa vào màu. Không thêm thư viện biểu đồ: file một trang 1,6 MB không gánh thêm được, mà tải từ mạng ngoài thì mất mạng là mất hình.'},
+    {loai:'Nguyên tắc', nd:'Mọi hình đều trả về RỖNG khi thiếu căn cứ, tuyệt đối không bịa kết luận. tienDoBuoiLop trả mongDoi là null chứ không phải NaN khi lớp thiếu ngày khai giảng hoặc ngày kết thúc — NaN sẽ chảy thẳng vào thuộc tính left của thanh và in ra "left:NaN%" lên màn hình. Lớp chưa khai giảng, thiếu số buổi kế hoạch, hoặc ngày lộn ngược thì không kết luận chậm tiến độ. Ngưỡng báo chậm là 15%, dưới mức đó là dao động bình thường của lịch nghỉ lễ và bù buổi.'},
+    {loai:'Sửa lỗi', nd:'Hai biểu đồ ĐƯỜNG bấm vào không ra gì, và chỉ ĐIỂM CUỐI CÙNG mới có chú thích khi rê chuột — đường ghi danh theo tuần ở Tổng quan và đường xu hướng học viên ở Báo cáo. Người dùng thấy một tuần vọt lên, rê chuột vào không ra con số, bấm vào không đi đâu. Nay sửa ở chính hàm bdDuong nên cả hai cùng được: mỗi mốc có một ô bắt chuột rộng bằng một bước (rộng hơn cái chấm 4px nhiều lần, vì nhắm trúng chấm bằng chuột là cực hình), trong suốt nên không che hình. Bấm vào mốc nào ra danh sách của mốc đó.'},
+    {loai:'Mới', nd:'Thanh xếp hạng lớp nợ bấm được, ra danh sách từng em còn nợ của lớp. Đổi sang dùng bdThanhNgang của bộ vẽ chính thay vì veCotNgang: bộ chính có sẵn chỗ bấm và cùng kiểu dáng với các biểu đồ ở Tổng quan. Hai bộ vẽ cùng một hình là sớm muộn hai nơi trông khác nhau.'},
+    {loai:'Lưu ý', nd:'Đã rà toàn bộ hình trong phần mềm xem bấm vào có ra chi tiết không. Kết quả: vành khuyên Sĩ số theo nhóm, cột Thu học phí 6 tháng, ba thanh ngang ở Báo cáo và cột chồng Vấn đề theo bộ phận đều ĐÃ bấm được từ trước. Chỉ hai biểu đồ đường là thiếu, nay đã bổ sung. Bảng màu sáu màu MAU_BD của bộ vẽ chính đã chạy qua phép kiểm độ tách màu cho người mù màu — đạt, không phải sửa.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 33 cho hình ảnh: 79 phép thử, 7 nhóm, canh ba thứ — số liệu đúng nguồn, dữ liệu rỗng thì không vẽ, và không chia cho 0. Thử đột biến 16 phép, lần đầu LỌT LƯỚI 2: phép thử thiếu ngày chỉ kiểm cham===false nên bỏ chốt chặn vẫn đạt dù mongDoi thành NaN, và phép thử ô chọn soi mã nguồn tìm chuỗi "tt:" mà chuỗi đó còn nằm trong phễu nên bắt nhầm. Đã sửa thành dựng màn thật rồi soi, chạy lại 16/16 đều bị bắt.'}
+  ]},
+  {v:'V1.31.1', ngay:'04/11/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Số Giấy đề nghị phần mềm cấp ra không khớp sổ thực tế của Trung tâm. Ban lãnh đạo báo 04/11/2026: bấm lập giấy thì nhảy ra số 01 trong khi sổ đã tới 172. Nguyên nhân: bộ đếm chỉ quét những giấy đã lập TRONG phần mềm rồi cộng 1, nên giấy Trung tâm ký trên sổ từ đầu năm phần mềm không hề biết, cứ đếm lại từ đầu.'},
+    {loai:'Sửa lỗi', nd:'Trung tâm dùng MỘT sổ GĐN chung cho mọi giấy đề nghị, nhưng phần mềm có tới hai nơi phát sinh số mà không nơi nào biết nơi kia. Tab In ấn tự cấp số từ fcv_phieuin; còn năm loại giấy đề nghị trong hồ sơ kỳ thi — cấp phòng thi, chi tiền hội đồng, cấp khu vực thi, mượn laptop, thanh toán thù lao — thì Khảo thí gõ số tay, phần mềm không ghi nhận vào sổ nào cả. Khảo thí lấy số nào thì lần sau tab In ấn vẫn cấp đè đúng số đó. Con số 172 chính là dấu hiệu: riêng in ấn một năm không thể tới ngần ấy.'},
+    {loai:'Mới', nd:'Dựng sổ số GĐN MỘT CỬA: hàm soGDNKeTiep() quét cả hai nguồn rồi cộng mốc khai ở Tham số, mọi nơi xin số đều gọi hàm này. Thêm một chỗ tự đếm riêng là lệch sổ lại, nên không nơi nào được tự đếm. Văn bản dùng sổ khác — quyết định của Nhà trường mang đuôi QĐ-ĐHCNĐN, kế hoạch mang đuôi KH-TTNNTH — không bị tính lẫn vào.'},
+    {loai:'Mới', nd:'Hệ thống → Tham số thêm mục "Số Giấy đề nghị đã ký ngoài phần mềm", khai năm áp dụng và số cuối cùng đã ký. Khai 2026 và 172 thì giấy kế tiếp mang số 173. Khai một lần, sang năm mà năm áp dụng không còn khớp thì phần mềm tự bỏ mốc và chạy lại từ 01 theo quy định — không phải nhớ xoá. Cố ý bắt khai rõ năm thay vì để phần mềm tự đoán, vì tự đoán thì sang năm nó lặng lẽ cộng tiếp mốc cũ mà không ai hay.'},
+    {loai:'Mới', nd:'Số GĐN trên form Giấy đề nghị đổi từ chữ in thành ô nhập, điền sẵn số kế tiếp của sổ chung. Lệch sổ thì chuyên viên sửa thẳng tại chỗ, không phải viết tay lên giấy đã in. Giấy đã lập cũng sửa được số — trước đây số bị khoá cứng sau khi lưu nên số sai nằm đó vĩnh viễn. Mỗi lần đổi số đều ghi nhật ký kèm số cũ và số mới. Phần đuôi /GĐN-TTNNTH để cố định, không cho gõ, tránh sai mẫu.'},
+    {loai:'Mới', nd:'Ba chốt chặn, đặt ở hàm ghi chứ không chỉ ẩn nút. Trùng số thì chặn ở CẢ HAI cửa — chặn một đầu thì đầu kia vẫn cấp đè được — và câu chặn nêu rõ số đó đang thuộc giấy nào, ngày nào, thuộc tab In ấn hay hồ sơ kỳ thi. Khai mốc thấp hơn số phần mềm đã cấp thì chặn, vì khai lùi là cấp đè lên giấy đã ký. Số rỗng hoặc bằng 0 thì chặn.'},
+    {loai:'Sửa lỗi', nd:'Số GĐN hiển thị trên form được tính lúc MỞ form, nhưng hàm lưu lại tính lại lần nữa lúc bấm Lưu. Hai người cùng lập giấy một lúc thì số in ra khác số vừa nhìn thấy, hoặc ra hai giấy trùng số. Nay số chốt MỘT LẦN, lấy đúng con số người dùng đang nhìn thấy trên màn.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 31 riêng cho sổ số GĐN: 46 phép thử, 8 nhóm, gồm cả tình huống thật mốc 172 của Trung tâm. Thử đột biến 18 phép, lần đầu LỌT LƯỚI 2 — bỏ lọc năm ở nguồn văn bản kỳ thi vẫn đạt vì dữ liệu thử chỉ có văn bản cùng năm, và phép chặn khai lùi so nhầm với mốc thay vì số đã cấp vẫn đạt vì dữ liệu thử để tham số rỗng nên hai cách tính bằng nhau. Đã vá hai lỗ hổng đó, chạy lại 18/18 đều bị bắt.'},
+    {loai:'Giao diện', nd:'Bố cục đổi sang ba cột theo yêu cầu Ban lãnh đạo 04/11/2026: màn rộng 2000px mà nội dung chỉ chiếm 1100px ở giữa, hai bên bỏ trống gần 450px mỗi bên. Nay thanh điều hướng chuyển sang CỘT DỌC bên trái: 12 tab lớn xếp dọc, mục con lồng ngay dưới tab đang mở, chân cột là tên và vị trí người đăng nhập, bấm vào ra hồ sơ. Bỏ được hai hàng tab ngang ở trên, nội dung giữa nới từ 1100px lên 1180–1320px tuỳ khổ màn.'},
+    {loai:'Giao diện', nd:'Cột phải mới, hiện từ 1500px trở lên, ba khối: Chờ tôi duyệt, Cần để ý, Hoạt động của tôi. KHÔNG đếm gì mới — dùng lại thuThapCanhBao() vốn đã là một cửa duy nhất và bên trong nó đã gọi moiThuChoToiDuyet(). Tầng 1 vào khối trên, tầng 2 và 3 vào khối giữa, không chồng nhau. Đếm lại ở cột phải là sớm muộn cột phải nói một con số còn màn Tổng quan nói con số khác.'},
+    {loai:'Sửa lỗi', nd:'Thanh tab trước đây viết cứng 12 nút trong HTML, còn applyTabPerms() lọc quyền bằng cách duyệt các nút CÓ SẴN trong DOM. Khi chuyển sang vẽ động, phép lọc đó sẽ chạy vào chỗ trống và MỌI tài khoản nhìn thấy đủ 12 tab kể cả tab không có quyền — màn vẫn chạy, không ném lỗi, đúng kiểu lỗi lọt qua mọi phép thử dựng màn. Nay phép lọc nằm trong chính hàm vẽ, và có phép thử riêng canh đúng chuyện này.'},
+    {loai:'Sửa lỗi', nd:'Nhật ký hoạt động nhận diện người bằng HỌ TÊN, sai khi hai người trùng tên hoặc khi đổi tên tài khoản. Nay logAct ghi thêm mã tài khoản; dòng cũ không có mã nên khối Hoạt động của tôi vẫn chịu được cả hai cách. Trần nhật ký nới từ 150 lên 300 dòng, vì 150 dòng CHUNG cho cả Trung tâm thì ngày đông việc hoạt động của một người bị đẩy ra ngoài rất nhanh, cột phải trống trơn dù họ vừa làm xong. Khối đó ghi rõ nó đang lấy trong bao nhiêu dòng, không im lặng.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 32 cho bố cục: 47 phép thử, 9 nhóm. Quét lại toàn bộ 62 màn ở ba khổ 1680px, 1280px và 390px — không màn nào tràn ngang hay ném lỗi. Thử đột biến 17 phép, lần đầu LỌT LƯỚI 1: phép thử "cột phải hỏng không kéo sập màn chính" bọc try/catch quanh g.goi, mà harness vốn đã nuốt ngoại lệ rồi trả về đối tượng lỗi, nên phép thử không bao giờ thấy gì. Đã sửa thành soi giá trị trả về, chạy lại 17/17 đều bị bắt.'},
+    {loai:'Lưu ý', nd:'Điện thoại và máy tính bảng giữ nguyên nếp cũ: dưới 1000px thanh tab nằm ngang như trước, dưới 1500px không có cột phải. Trong lúc dựng đã suýt để lọt một lỗi nặng: cột trái bị ẩn ở khổ hẹp, mà thanh tab chính nằm trong cột trái, nên điện thoại mất sạch đường chuyển tab. Phát hiện khi soi ảnh thật khổ 390px, không phép thử nào bắt được. Nay đã có phép thử canh riêng chuyện này.'}
+  ]},
   {v:'V1.31.0', ngay:'02/11/2026', muc:[
     {loai:'Cải tiến', nd:'Gộp 13 hạng mục: 2 việc Ban lãnh đạo nêu 30/10/2026 và 9 góp ý của Khảo thí 02/11/2026, cộng 2 việc tinh gọn giao diện. Làm một đợt theo yêu cầu "đừng làm nhỏ lẻ nữa".'},
     {loai:'Sửa lỗi', nd:'Lớp luyện thi bị nhắc tái phí sai. Aptis ESOL, UDCNTT, Tin học quốc tế, Tin học văn phòng, Lập trình và AI đều không nằm trong lộ trình nào — học xong, thi xong là hết, không có khoá kế tiếp. Nhưng màn Tái đăng ký chỉ xét lớp còn ít buổi hay sắp hết ngày, không hề hỏi có khoá sau không, nên vẫn đẩy các em đó vào ô Cần gọi mời. Học vụ gọi phụ huynh mời một khoá KHÔNG TỒN TẠI. Nay tách hai câu hỏi: mocTaiPhi hỏi đã chạm mốc chưa, lopCoKhoaKeTiep hỏi có khoá sau không, phải đủ cả hai mới nhắc. Câu trả lời lấy từ Tham số → Lộ trình, không gõ cứng tên nhóm vào mã nguồn.'},
@@ -2493,6 +2647,10 @@ function logAct(action){
   if(!db) return;
   db.collection('fcv_activitylog').add({
     nguoi: currentUser? currentUser.hoTen : '(không rõ)',
+    /* Ghi thêm mã tài khoản: nhận diện bằng HỌ TÊN là sai khi hai người
+       trùng tên hoặc khi đổi tên tài khoản. Dòng cũ không có trường này
+       nên khối "Hoạt động của tôi" vẫn phải chịu được cả hai cách. */
+    userId: currentUser? currentUser.id : '',
     viTri: currentUser? currentUser.maViTri : '',
     action: action, ts: Date.now()
   }).catch(()=>{});
@@ -2732,6 +2890,7 @@ function doLogout(){
 function startApp(){
   $('mainApp').style.display='block';
   $('verLabel').textContent = 'Phiên bản: ' + PHIEN_BAN;
+  if($('verLabelTrai')) $('verLabelTrai').textContent = PHIEN_BAN + ' · FLIC DNTU';
   $('roleChip').innerHTML = esc(currentUser.hoTen)+'<br><span style="opacity:.8;font-size:10px;">'+esc(currentUser.maViTri)+'</span>';
   applyTabPerms();
   listenAll();
@@ -2740,13 +2899,18 @@ function startApp(){
   switchTab(currentTab);
 }
 
-function applyTabPerms(){
-  const map={tongQuan:null, hocVu:'xemHocVu', tuyenSinh:'xemTuyenSinh', khaoThi:'xemKhaoThi', truyenThong:'xemTruyenThong', taiChinh:'xemTaiChinh', congViec:'xemCongViec', lichCa:'xemLichCa', taiSan:'xemTaiSan', inAn:'xemInAn', baoCao:'xemBaoCao', heThong:'xemHeThong'};
-  document.querySelectorAll('#tabbar button').forEach(function(b){
-    const k=map[b.dataset.tab];
-    b.style.display = (!k || hasPerm(k)) ? '' : 'none';
-  });
+/* Quyền xem từng tab. Trước V1.31.1 hàm applyTabPerms() duyệt các nút đã có
+   sẵn trong DOM để ẩn bớt; nay nút được VẼ nên phép lọc phải nằm trong hàm
+   vẽ, không thì lọc vào chỗ trống và mọi tài khoản thấy đủ 12 tab. */
+const QUYEN_TAB = {tongQuan:null, hocVu:'xemHocVu', tuyenSinh:'xemTuyenSinh',
+  khaoThi:'xemKhaoThi', truyenThong:'xemTruyenThong', taiChinh:'xemTaiChinh',
+  congViec:'xemCongViec', lichCa:'xemLichCa', taiSan:'xemTaiSan', inAn:'xemInAn',
+  baoCao:'xemBaoCao', heThong:'xemHeThong'};
+function tabXemDuoc(k){
+  const q = QUYEN_TAB[k];
+  return !q || hasPerm(q);
 }
+function applyTabPerms(){ veThanhDieuHuong(); }
 
 function listenAll(){
   const bind = function(col, setter){
@@ -2801,9 +2965,15 @@ function listenAll(){
   bind('fcv_maugancot', function(v){ mauGanList=v; });
   bind('fcv_miengiam',  function(v){ mienGiamList=v; });
   bind('fcv_goi',       function(v){ goiList=v; });
-  db.collection('fcv_activitylog').orderBy('ts','desc').limit(150).onSnapshot(function(snap){
+  /* 300 chứ không phải 150: cột phải hiện "Hoạt động của tôi" lọc ra từ đây,
+     mà 150 dòng CHUNG cho cả Trung tâm thì ngày đông việc hoạt động của một
+     người bị đẩy ra ngoài rất nhanh, cột phải trống trơn dù họ vừa làm xong.
+     Cách đúng hẳn là truy vấn riêng theo tài khoản, nhưng việc đó cần tạo
+     chỉ mục bên Firebase — để cùng đợt siết bảo mật. Trong lúc chờ, khối đó
+     ghi rõ nó đang lấy trong bao nhiêu dòng, không im lặng. */
+  db.collection('fcv_activitylog').orderBy('ts','desc').limit(300).onSnapshot(function(snap){
     activityList = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
-    if(currentTab==='heThong') render();
+    render();
   }, function(e){ console.error(e); });
   db.collection('fcv_settings').doc('chung').onSnapshot(function(doc){
     if(doc.exists) settings = Object.assign(settings, doc.data());
@@ -3240,16 +3410,136 @@ const SECTIONS = {
   heThong:  [{k:'toChuc',ten:'Sơ đồ tổ chức',can:'quanLyTaiKhoan'},{k:'taiKhoan',ten:'Tài khoản',can:'quanLyTaiKhoan'},{k:'thamSo',ten:'Tham số',can:'quanLyTaiKhoan'},{k:'nhapLieu',ten:'Nhập dữ liệu',can:'nhapDuLieu'},{k:'donKhach',ten:'Dọn khách tiềm năng',can:'suaThamSo'},{k:'raTrung',ten:'Rà hồ sơ trùng',can:'suaHocVien'},{k:'nhatKy',ten:'Nhật ký',can:'quanLyTaiKhoan'},{k:'banGiao',ten:'Nhật ký bàn giao'}]
 };
 
+/* Danh sách tab lớn — trước đây viết cứng trong HTML, nay vẽ bằng hàm để
+   thanh dọc và thanh ngang dùng CHUNG một nguồn. Hai nơi khai tab riêng là
+   sớm muộn lệch nhau. */
+const TAB_CHINH = [
+  {k:'tongQuan',   bieu:'🏠', ten:'Tổng quan'},
+  {k:'hocVu',      bieu:'🎓', ten:'Học vụ'},
+  {k:'tuyenSinh',  bieu:'📣', ten:'Tuyển sinh'},
+  {k:'truyenThong',bieu:'📢', ten:'Truyền thông'},
+  {k:'khaoThi',    bieu:'📝', ten:'Khảo thí'},
+  {k:'taiChinh',   bieu:'💰', ten:'Tài chính'},
+  {k:'congViec',   bieu:'✅', ten:'Công việc'},
+  {k:'lichCa',     bieu:'🗓️', ten:'Lịch ca'},
+  {k:'taiSan',     bieu:'📦', ten:'Tài sản'},
+  {k:'inAn',       bieu:'🖨️', ten:'In ấn'},
+  {k:'baoCao',     bieu:'📊', ten:'Báo cáo'},
+  {k:'heThong',    bieu:'⚙️', ten:'Hệ thống'}
+];
+/* Mục con của tab đang mở, đã lọc quyền. Một chỗ tính, bốn nơi dùng. */
+function mucCuaTab(tab){
+  return (SECTIONS[tab] || []).filter(function(x){ return !x.can || hasPerm(x.can); });
+}
+/* Thanh điều hướng. Mục con được vẽ LỒNG ngay dưới tab đang mở (cho cột dọc)
+   VÀ vẽ lại một lần nữa ở secTabWrap (cho thanh ngang khi màn hẹp). Hai bản
+   cùng một nguồn dữ liệu, CSS chỉ cho một bản hiện — không nơi nào tự đếm. */
+function veThanhDieuHuong(){
+  const el = $('tabbar');
+  if(!el) return;
+  el.innerHTML = TAB_CHINH.filter(function(t){ return tabXemDuoc(t.k); }).map(function(t){
+    const mo = (t.k === currentTab);
+    const nut = '<button data-tab="' + t.k + '" class="' + (mo ? 'active' : '') + '" '
+      + 'onclick="switchTab(\'' + t.k + '\')">'
+      + '<span class="bieu">' + t.bieu + '</span><span class="chu">' + esc(t.ten) + '</span>'
+      + '</button>';
+    if(!mo) return nut;
+    const secs = mucCuaTab(t.k);
+    if(!secs.length) return nut;
+    return nut + '<div class="muc-long">' + veNutMuc(t.k, secs) + '</div>';
+  }).join('');
+  const ct = $('chanTrai');
+  if(ct && currentUser){
+    const ten = currentUser.hoTen || '';
+    const tat = ten.trim().split(/\s+/).slice(-2).map(function(x){ return x.charAt(0); })
+      .join('').toUpperCase();
+    ct.innerHTML = '<div class="anh-dai-dien">' + esc(tat) + '</div>'
+      + '<div style="min-width:0;"><div class="ten">' + esc(ten) + '</div>'
+      + '<div class="vt">' + esc(currentUser.maViTri || '') + '</div></div>';
+  }
+}
+/* ===== CỘT PHẢI =====
+   KHÔNG đếm gì mới. thuThapCanhBao() đã là một cửa duy nhất, bên trong nó
+   gọi sẵn moiThuChoToiDuyet(). Tầng 1 là việc chờ chính người đang đăng
+   nhập, tầng 2 và 3 là việc cần để ý. Đếm lại ở đây là sớm muộn cột phải
+   nói một con số, màn Tổng quan nói con số khác. */
+const MAU_CHAM = {danger:'var(--danger)', warn:'var(--warn)', ok:'var(--ok)'};
+function gioNgan(ts){
+  const d = new Date(Number(ts) || 0);
+  const hn = new Date();
+  const hh = String(d.getHours()).padStart(2, '0') + ':'
+           + String(d.getMinutes()).padStart(2, '0');
+  if(d.toDateString() === hn.toDateString()) return hh;
+  return String(d.getDate()).padStart(2, '0') + '/'
+       + String(d.getMonth() + 1).padStart(2, '0');
+}
+/* Nhật ký của chính người đang đăng nhập. Dòng cũ chỉ có họ tên nên phải
+   nhận cả hai cách: có userId thì so userId, không có thì đành so tên. */
+function nhatKyCuaToi(gioiHan){
+  if(!currentUser) return [];
+  return (activityList || []).filter(function(a){
+    if(a.userId) return a.userId === currentUser.id;
+    return (a.nguoi || '') === (currentUser.hoTen || '');
+  }).slice(0, gioiHan || 6);
+}
+function khoiPhai(tieuDe, bieu, ds, mauDem, veDong, nhan, bam){
+  if(!ds.length) return '';
+  return '<div class="hop-phai"><h4>' + bieu + ' ' + esc(tieuDe)
+    + '<span class="dem" style="background:' + mauDem + ';">' + ds.length + '</span></h4>'
+    + ds.map(veDong).join('')
+    + (nhan ? '<span class="nhan" onclick="' + bam + '">' + esc(nhan) + ' →</span>' : '')
+    + '</div>';
+}
+function veCotPhai(){
+  const el = $('cotPhai');
+  if(!el) return;
+  if(!currentUser){ el.innerHTML = ''; return; }
+  let cb = [];
+  try{ cb = thuThapCanhBao() || []; }catch(e){ cb = []; }
+  const dongCB = function(x){
+    return '<div class="dong" onclick="toiHangDoi(\'' + x.tab + '\',\'' + x.sec + '\')" '
+      + 'style="cursor:pointer;"><span class="cham" style="background:'
+      + (MAU_CHAM[x.mau] || 'var(--son)') + ';"></span><div>' + esc(x.tieuDe)
+      + (x.chiTiet ? '<div class="gio">' + esc(x.chiTiet) + '</div>' : '')
+      + '</div></div>';
+  };
+  const toi = cb.filter(function(x){ return x.tang === 1; });
+  const deY = cb.filter(function(x){ return x.tang !== 1; });
+  const lk = nhatKyCuaToi(6);
+
+  let h = khoiPhai('Chờ tôi duyệt', '⏳', toi.slice(0, 6), 'var(--danger)', dongCB,
+                   'Xem tất cả', 'toiHangDoi(\'congViec\',\'choDuyet\')')
+        + khoiPhai('Cần để ý', '⚠️', deY.slice(0, 6), 'var(--warn)', dongCB,
+                   'Xem tất cả', 'switchTab(\'tongQuan\')');
+  if(lk.length){
+    h += '<div class="hop-phai"><h4>🕘 Hoạt động của tôi</h4>'
+      + lk.map(function(a){
+          return '<div class="dong"><span class="gio" style="flex:0 0 auto;">'
+            + esc(gioNgan(a.ts)) + '</span><div>' + esc(a.action || '') + '</div></div>';
+        }).join('')
+      /* Nói rõ phạm vi: nhật ký chỉ giữ 300 dòng chung cho cả Trung tâm, nên
+         ngày đông việc hoạt động cũ của mình có thể đã bị đẩy ra ngoài. Im
+         lặng để người dùng tưởng mình chưa làm gì là tệ hơn. */
+      + '<div class="gio" style="margin-top:6px;">Lấy trong ' + (activityList || []).length
+      + ' dòng nhật ký gần nhất của cả Trung tâm</div>'
+      + (hasPerm('quanLyTaiKhoan')
+         ? '<span class="nhan" onclick="toiHangDoi(\'heThong\',\'nhatKy\')">'
+           + 'Xem đầy đủ nhật ký →</span>' : '')
+      + '</div>';
+  }
+  if(!h) h = '<div class="hop-phai"><div class="gio">Không có việc nào đang chờ bạn.</div></div>';
+  el.innerHTML = h;
+}
 function switchTab(tab){
   currentTab = tab;
   canChayHieuUng = true;
-  document.querySelectorAll('#tabbar button').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===tab); });
-  const secs = (SECTIONS[tab]||[]).filter(function(x){ return !x.can || hasPerm(x.can); });
+  const secs = mucCuaTab(tab);
   if(secs.length){
     if(!currentSection[tab] || !secs.some(function(x){ return x.k===currentSection[tab]; }))
       currentSection[tab]=secs[0].k;
     $('secTabWrap').innerHTML = veThanhMuc(tab, secs);
   } else { $('secTabWrap').innerHTML=''; }
+  veThanhDieuHuong();
   render();
 }
 function switchSection(tab, sec){ currentSection[tab]=sec; switchTab(tab); }
@@ -3283,15 +3573,20 @@ function demMucSection(tab, k){
   return null;
 }
 const MAU_DEM = {do:'var(--danger)', vang:'var(--warn)', xam:'var(--border)'};
-function veThanhMuc(tab, secs){
-  const nutMuc = function(s){
+/* Nút một mục con. Tách riêng vì cả thanh dọc lẫn thanh ngang đều dùng —
+   viết hai bản là sớm muộn một bên thiếu huy hiệu đếm việc. */
+function veNutMuc(tab, secs){
+  return secs.map(function(s){
     const d = demMucSection(tab, s.k);
     return '<button class="' + (currentSection[tab] === s.k ? 'active' : '') + '" '
       + 'onclick="switchSection(\'' + tab + '\',\'' + s.k + '\')">' + esc(s.ten)
       + (d ? '<span class="dem-muc" style="background:' + MAU_DEM[d.mau] + ';'
              + (d.mau === 'xam' ? 'color:var(--text-2);' : 'color:#fff;') + '">' + d.so + '</span>' : '')
       + '</button>';
-  };
+  }).join('');
+}
+function veThanhMuc(tab, secs){
+  const nutMuc = function(s){ return veNutMuc(tab, [s]); };
   /* Không khai nhóm thì giữ nguyên một hàng cuộn ngang như cũ */
   if(!secs.some(function(s){ return s.nhom; }))
     return '<div class="section-tab">' + secs.map(nutMuc).join('') + '</div>';
@@ -3329,6 +3624,8 @@ function render(){
     else if(currentTab==='baoCao') el.innerHTML = viewBaoCaoTab();
     else if(currentTab==='heThong') el.innerHTML = viewHeThong();
   }catch(e){ console.error(e); el.innerHTML='<div class="card"><b>Lỗi hiển thị:</b> '+esc(e.message)+'</div>'; }
+  /* Cột phải vẽ sau nội dung, và lỗi của nó KHÔNG được làm hỏng màn chính */
+  try{ veCotPhai(); }catch(e){ console.error(e); }
   if(aid){
     const n = $(aid);
     if(n && n !== document.activeElement){
@@ -3646,7 +3943,25 @@ function bdDuong(diem, o){
     sv += '<text class="lbl-t" x="' + toaX(i).toFixed(1) + '" y="' + (day + 17)
       + '" text-anchor="middle">' + esc(x.ten) + '</text>';
   });
-  return '<div class="bd-wrap bd-duong">' + sv + '</svg></div>';
+  /* V1.31.2 — TRƯỚC ĐÂY chỉ ĐIỂM CUỐI CÙNG mới có chú thích khi rê chuột, và
+     cả biểu đồ không bấm được chỗ nào. Người dùng nhìn thấy tháng 9 vọt lên
+     mà rê chuột vào không ra con số, bấm vào không đi đâu.
+     Nay mỗi mốc có một ô bắt chuột rộng bằng một bước — rộng hơn cái chấm
+     nhiều lần, vì nhắm trúng chấm 4px bằng chuột là cực hình. Ô này vẽ SAU
+     cùng để nằm trên đường, và trong suốt nên không che gì.
+     Có o.bam thì bấm được; không có thì vẫn giữ được chú thích. */
+  const rongBat = Math.max(12, buoc || 12);
+  ds.forEach(function(x, i){
+    const cx = toaX(i), cy = toaY(Number(x.gt) || 0);
+    sv += '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="2.5" fill="'
+        + MAU_BD[0] + '" fill-opacity=".55"/>'
+      + '<rect' + (o.bam ? ' class="bam" onclick="' + o.bam + '(' + i + ')"' : '')
+      + ' x="' + (cx - rongBat / 2).toFixed(1) + '" y="' + T + '" width="' + rongBat.toFixed(1)
+      + '" height="' + cao + '" fill="transparent"><title>' + esc(x.ten) + ': '
+      + esc(dd(x.gt)) + '</title></rect>';
+  });
+  return '<div class="bd-wrap bd-duong">' + sv + '</svg></div>'
+    + (o.bam ? '<div class="goi-y">👆 Bấm vào một mốc để xem chi tiết</div>' : '');
 }
 
 /* ── 5. Thanh ngang xếp hạng ───────────────────────────────────────
@@ -4204,12 +4519,60 @@ function ghiDanhTheoTuan(mocISO, soTuan){
    chỉ nhận được số thứ tự của mảnh chứ không nhận được dữ liệu. */
 let bdNhomCT = [], bdThu6 = [], bdCcLop = [], bdBoPhanBC = [];
 let bdPheuKy = null, bdViecBP = [], bdViecKy = null;
+let bdGdTuan = [], bdXuHuong = [], bdLopNo = [];
 
 function khungChiTiet(tieuDe, noiDung, moTa){
   openModal('<h3>' + esc(tieuDe) + '</h3>'
     + (moTa ? '<div class="small muted" style="margin-top:3px;">' + esc(moTa) + '</div>' : '')
     + '<div style="margin-top:12px;">' + noiDung + '</div>'
     + '<button class="btn btn-block" style="margin-top:14px;" onclick="closeModal()">Đóng</button>');
+}
+
+/* Đường ghi danh theo tuần: xem từng em đã vào lớp trong tuần đó */
+function xemGhiDanhTuan(i){
+  const t = bdGdTuan[i];
+  if(!t) return;
+  const ds = ghiDanhList.filter(function(g){
+    const n = g.ngayVao || '';
+    return n && n >= t.dau && n <= t.cuoi;
+  }).sort(function(a, b){ return (a.ngayVao || '').localeCompare(b.ngayVao || ''); });
+  khungChiTiet('Ghi danh tuần ' + fmtDate(t.dau) + ' – ' + fmtDate(t.cuoi)
+      + ' · ' + ds.length + ' em',
+    ds.length
+      ? ds.map(function(g){
+          const lop = lopList.find(function(l){ return l.id === g.lopId; }) || {};
+          return '<div class="list-row"><div><b>' + esc(tenHocVien(g.hocVienId)) + '</b>'
+            + '<div class="small muted">' + esc(lop.maLop || '(không rõ lớp)')
+            + ' · vào ngày ' + fmtDate(g.ngayVao) + '</div></div></div>';
+        }).join('')
+      : emptyBox('👤', 'Tuần này không có em nào ghi danh'),
+    'Tính theo ngày vào lớp.');
+}
+/* Đường xu hướng học viên: xem tháng đó có bao nhiêu em đang học ở lớp nào */
+function xemXuHuongThang(i){
+  const t = bdXuHuong[i];
+  if(!t) return;
+  toiHangDoi('baoCao', 'thang');
+}
+
+/* Thanh xếp hạng lớp nợ: xem từng em còn nợ của lớp đó */
+function xemLopNo(i){
+  const x = bdLopNo[i];
+  if(!x) return;
+  const ds = gomCongNo().filter(function(y){
+    return ((y.lop && y.lop.maLop) || '(không rõ lớp)') === x.ten && y.no > 0;
+  }).sort(function(a, b){ return b.no - a.no; });
+  khungChiTiet('Lớp ' + x.ten + ' · ' + ds.length + ' em còn nợ',
+    ds.length
+      ? ds.map(function(y){
+          return '<div class="list-row"><div><b>' + esc(y.hv.hoTen || '') + '</b>'
+            + '<div class="small muted">phải đóng ' + fmtTien(y.phai) + 'đ · đã đóng '
+            + fmtTien(y.da) + 'đ</div></div>'
+            + '<div style="flex-shrink:0;font-weight:700;color:var(--warn);">'
+            + fmtTien(y.no) + 'đ</div></div>';
+        }).join('')
+      : emptyBox('💰', 'Không còn em nào nợ'),
+    'Chỉ tính phần học phí, không gộp tiền sách.');
 }
 
 /* Vành sĩ số: xem các lớp của một nhóm chương trình */
@@ -4445,12 +4808,13 @@ function viewTongQuan(){
 
   /* ── Hàng biểu đồ 2: ghi danh theo tuần + tiến độ sĩ số lớp ── */
   const gdTuan = ghiDanhTheoTuan(t, 8);
+  bdGdTuan = gdTuan;
   let d1 = '';
   if(gdTuan.some(function(x){ return x.gt > 0; }))
     d1 = '<div class="card"><h3>Học viên ghi danh mới · 8 tuần gần nhất '
       + '<span class="small muted" style="font-weight:400;float:right;">Tuần này <b>'
       + gdTuan[gdTuan.length-1].gt + '</b></span></h3>'
-      + bdDuong(gdTuan) + '</div>';
+      + bdDuong(gdTuan, {bam:'xemGhiDanhTuan'}) + '</div>';
 
   let d2 = '';
   const canLuu = lopDangHoc.map(function(l){
@@ -4555,6 +4919,7 @@ function viewDanhMucLop(){
          + '<div><b>'+esc(l.maLop)+'</b> <span class="small muted">· '+esc(l.idTheoDoi||'')+'</span></div>'
          + '<div class="small muted">'+esc(tenGiaoVienCuaLop(l)||'—')+' · '+esc(l.lichHoc||'')+' · '+esc(l.gioHoc||'')+' · '+esc(l.phongHoc||'')+'</div>'
          + '<div class="small muted">'+fmtDate(l.ngayKG)+' → '+fmtDate(l.ngayKT)+' · buổi '+soBuoiDaHoc(l.id)+'/'+(l.soBuoiKH||'?')+'</div>'
+         + thanhTienDoBuoi(l)
          + '</div><div style="text-align:right;flex-shrink:0;">'
          + '<div style="font-size:19px;font-weight:700;">'+siSoLop(l.id)+'</div>'+badge(c.loai,c.text)
          + '<div style="margin-top:6px;display:flex;gap:4px;justify-content:flex-end;">'
@@ -8637,16 +9002,84 @@ function maPhieuInMoi(){
 /* Theo mẫu GĐN-TTNNTH của Trung tâm: quốc hiệu, kính gửi Giám đốc,
    bảng hạng mục, ba chữ ký. In được A4 hoặc A5. */
 
-function soGiayDeNghiMoi(){
-  /* Số chạy lại từ 01 mỗi năm, tính theo năm của ngày đề xuất */
-  const nam = todayISO().slice(0, 4);
-  let max = 0;
-  phieuInList.forEach(function(p){
-    if((p.ngayDeXuat || '').slice(0, 4) !== nam) return;
-    const n = parseInt((p.soGDN || '').split('/')[0], 10);
-    if(!isNaN(n) && n > max) max = n;
+/* ===== SỔ SỐ GIẤY ĐỀ NGHỊ — MỘT CỬA =====
+   Trung tâm dùng MỘT sổ GĐN chung cho mọi giấy đề nghị, không phải sổ riêng
+   của tab In ấn. Ngoài giấy đề nghị in ấn còn năm loại nằm trong hồ sơ kỳ thi
+   (cấp phòng thi, chi tiền hội đồng, cấp khu vực thi, mượn laptop, thanh toán
+   thù lao) — Khảo thí vẫn gõ số tay vào đó.
+   Trước V1.31.1 bộ đếm chỉ nhìn thấy fcv_phieuin nên cấp trùng số với giấy
+   Khảo thí đã lấy. Nay MỌI nơi xin số đều gọi soGDNKeTiep(), không nơi nào
+   được tự đếm lấy — thêm một chỗ đếm riêng là lệch sổ lại. */
+const DUOI_GDN = '/GĐN-TTNNTH';
+const VAN_BAN_GDN = ['GDN_PHONG', 'GDN_CHI', 'GDN_KV', 'GDN_LAPTOP', 'GDN_THULAO'];
+function laVanBanGDN(ma){ return VAN_BAN_GDN.indexOf(ma) >= 0; }
+
+/* Rút số đầu chuỗi: "173/GĐN-TTNNTH" → 173, "Số 173/..." → 173, hỏng → 0.
+   Khảo thí gõ tay nên phải chịu được cả ba cách viết. */
+function soTrongGDN(s){
+  const m = /(\d+)/.exec(String(s == null ? '' : s));
+  const n = m ? parseInt(m[1], 10) : NaN;
+  return isNaN(n) ? 0 : n;
+}
+function namCuaChuoi(s){ return String(s == null ? '' : s).slice(0, 4); }
+
+/* Mọi số GĐN đã cấp trong năm, gom từ CẢ HAI nguồn.
+   boQuaPhieu / boQuaVanBan: loại chính bản ghi đang sửa ra khỏi phép so trùng,
+   nếu không thì sửa lại giấy cũ sẽ báo nó trùng với chính nó. */
+function soGDNDaCap(nam, boQuaPhieu, boQuaVanBan){
+  const ra = [];
+  (phieuInList || []).forEach(function(p){
+    if(namCuaChuoi(p.ngayDeXuat) !== String(nam)) return;
+    if(boQuaPhieu && p.id === boQuaPhieu) return;
+    const n = soTrongGDN(p.soGDN);
+    if(n > 0) ra.push({so: n, nguon: 'Giấy đề nghị in',
+                       ten: p.veViec || p.hangMuc || '', ngay: p.ngayDeXuat});
   });
-  return String(max + 1).padStart(2, '0') + '/GĐN-TTNNTH';
+  (kyThiList || []).forEach(function(k){
+    const vb = k.vanBan || {};
+    VAN_BAN_GDN.forEach(function(ma){
+      const v = vb[ma];
+      if(!v || !v.soVanBan) return;
+      if(namCuaChuoi(v.ngay) !== String(nam)) return;
+      if(boQuaVanBan && boQuaVanBan.kyId === k.id && boQuaVanBan.ma === ma) return;
+      const n = soTrongGDN(v.soVanBan);
+      if(n > 0) ra.push({so: n, nguon: 'Hồ sơ kỳ thi ' + (k.ten || ''),
+                         ten: (timVanBan(k.loai, ma) || {}).ten || ma, ngay: v.ngay});
+    });
+  });
+  return ra;
+}
+/* Mốc khai ở Tham số: số cuối cùng Trung tâm đã ký NGOÀI phần mềm.
+   Chỉ dùng khi đúng năm — sang năm mà vẫn cộng mốc cũ là lặng lẽ chạy sai. */
+function mocGDN(nam){
+  if(String(settings.mocGDNNam || '') !== String(nam)) return 0;
+  return Number(settings.mocGDNSo) || 0;
+}
+/* Số cao nhất đã cấp trong phần mềm, CHƯA tính mốc — dùng cho chốt chặn
+   khai lùi ở Tham số, nơi không được đem mốc ra so với chính nó. */
+function soGDNCaoNhatTrongPM(nam){
+  let max = 0;
+  soGDNDaCap(nam).forEach(function(x){ if(x.so > max) max = x.so; });
+  return max;
+}
+function soGDNCaoNhat(nam){
+  return Math.max(mocGDN(nam), soGDNCaoNhatTrongPM(nam));
+}
+/* Số kế tiếp của sổ chung. Số chạy lại từ 01 mỗi năm theo quy định. */
+function soGDNKeTiep(nam){
+  const n = nam || todayISO().slice(0, 4);
+  return String(soGDNCaoNhat(n) + 1).padStart(2, '0') + DUOI_GDN;
+}
+/* Giấy nào đang giữ số này — để câu chặn nói rõ tên giấy và ngày,
+   chứ không chỉ buông một chữ "trùng số" rồi bắt người dùng tự đi tìm. */
+function giayGiuSoGDN(so, nam, boQuaPhieu, boQuaVanBan){
+  return soGDNDaCap(nam, boQuaPhieu, boQuaVanBan)
+    .find(function(x){ return x.so === so; }) || null;
+}
+/* Câu chặn dùng chung cho cả hai nơi xin số */
+function loiTrungSoGDN(x, so){
+  return 'Số ' + so + ' đã dùng cho "' + (x.ten || x.nguon) + '"'
+    + (x.ngay ? ' ngày ' + fmtDate(x.ngay) : '') + ' · ' + x.nguon + '. Chọn số khác.';
 }
 
 /* Các hạng mục trong một giấy đề nghị */
@@ -8704,8 +9137,14 @@ function formGiayDeNghi(id){
         soLuong: Number(v.soLuong) || 0, donGia: Number(v.donGia) || 0}];
 
   openModal('<h3>' + (p ? 'Sửa giấy đề nghị' : 'Giấy đề nghị') + '</h3>'
-    +'<div class="small muted">Theo mẫu GĐN-TTNNTH. Số: <b>'
-    + esc(v.soGDN || soGiayDeNghiMoi()) + '</b></div>'
+    +'<label>Số giấy đề nghị</label>'
+    +'<div style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">'
+    +'<input type="number" id="mGDNSo" style="max-width:120px;margin:0;flex:0 0 auto;" value="'
+    + esc(String(soTrongGDN(v.soGDN || soGDNKeTiep()))) + '">'
+    +'<b style="white-space:nowrap;">' + DUOI_GDN + '</b></div>'
+    +'<div class="small muted">Theo mẫu GĐN-TTNNTH. Phần mềm điền sẵn số kế tiếp của '
+    +'sổ chung, đã tính cả giấy đề nghị trong hồ sơ kỳ thi. Lệch với sổ thực tế thì '
+    +'sửa thẳng ở đây, không phải viết tay lên giấy đã in.</div>'
     +'<label>Về việc</label><input id="mGDNVeViec" value="' + esc(v.veViec || '') + '" '
     +'placeholder="VD: In tờ rơi tuyển sinh Cambridge đợt tháng 10">'
     +'<label>Căn cứ</label><input id="mGDNCanCu" value="' + esc(v.canCu || '') + '" '
@@ -8746,8 +9185,19 @@ function luuGiayDeNghi(id){
   if(!mucDich){ showToast('Nêu rõ lý do và mục đích sử dụng'); return; }
   const tong = hm.reduce(function(s, d){ return s + d.soLuong * d.donGia; }, 0);
 
+  /* Số GĐN chốt MỘT LẦN tại đây, lấy đúng con số người dùng đang nhìn thấy.
+     Trước V1.31.1 form hiện số tính lúc mở, hàm lưu lại tính lại lần nữa —
+     hai người lập cùng lúc thì số in ra khác số vừa xem. */
+  const pCu = id ? (phieuInList || []).find(function(x){ return x.id === id; }) : null;
+  const namGDN = namCuaChuoi(pCu ? pCu.ngayDeXuat : todayISO()) || todayISO().slice(0, 4);
+  const soNhap = soTrongGDN($('mGDNSo').value);
+  if(soNhap <= 0){ showToast('Nhập số giấy đề nghị, ví dụ 173'); return; }
+  const dungSo = giayGiuSoGDN(soNhap, namGDN, id, null);
+  if(dungSo){ showToast(loiTrungSoGDN(dungSo, soNhap)); return; }
+  const soMoi = String(soNhap).padStart(2, '0') + DUOI_GDN;
+
   const data = {
-    soGDN: id ? undefined : soGiayDeNghiMoi(),
+    soGDN: soMoi,
     veViec: veViec, canCu: $('mGDNCanCu').value.trim(),
     noiDungTrinh: $('mGDNNoiDung').value.trim(),
     hangMucCT: hm,
@@ -8763,9 +9213,13 @@ function luuGiayDeNghi(id){
     taiLieuMat: $('mGDNMat').checked
   };
   if(id){
-    delete data.soGDN;
+    /* Cho sửa số của giấy đã lập — không sửa được thì số sai nằm đó vĩnh viễn,
+       chuyên viên lại phải viết tay lên giấy đã in. Đổi số thì ghi nhật ký. */
+    const soCu = (pCu && pCu.soGDN) || '';
     db.collection('fcv_phieuin').doc(id).update(data).then(function(){
-      closeModal(); showToast('✅ Đã lưu'); logAct('Sửa giấy đề nghị: ' + veViec);
+      closeModal(); showToast('✅ Đã lưu');
+      logAct('Sửa giấy đề nghị: ' + veViec
+        + (soCu && soCu !== soMoi ? ' · đổi số GĐN ' + soCu + ' → ' + soMoi : ''));
     }).catch(fsErr);
     return;
   }
@@ -10052,9 +10506,12 @@ function viewPheu(){
   h += '<div class="card"><div class="row wrap" style="gap:8px;">'
     + '<input id="fLeadText" placeholder="Tìm tên bé, tên phụ huynh, số điện thoại…" value="'+esc(filterLeadText)+'" oninput="setFilterLead()" style="flex:1;min-width:170px;">'
     + '<select id="fLeadNhom" onchange="setFilterLead()" style="width:auto;min-width:150px;">'
-    + ['canGoi','tatCa','cuaToi','chuaGiao'].map(function(k){
-        const ten = {canGoi:'Cần gọi hôm nay', tatCa:'Tất cả', cuaToi:'Của tôi', chuaGiao:'Chưa giao phụ trách'}[k];
-        return '<option value="'+k+'" '+(filterLeadNhom===k?'selected':'')+'>'+ten+'</option>';
+    + ['canGoi','tatCa','cuaToi','chuaGiao','quaHan']
+        .concat(TT_LEAD.map(function(t){ return 'tt:' + t; })).map(function(k){
+        const ten = {canGoi:'Cần gọi hôm nay', tatCa:'Tất cả', cuaToi:'Của tôi',
+                     chuaGiao:'Chưa giao phụ trách', quaHan:'Quá hạn gọi lại'}[k]
+          || ('Trạng thái: ' + k.slice(3));
+        return '<option value="'+k+'" '+(filterLeadNhom===k?'selected':'')+'>'+esc(ten)+'</option>';
       }).join('')
     + '</select></div></div>';
 
@@ -10063,6 +10520,15 @@ function viewPheu(){
     if(q && stripDia((l.hoTen||'')+' '+(l.tenPH||'')+' '+(l.sdtPH||'')).indexOf(q)<0) return false;
     if(filterLeadNhom==='cuaToi' && l.phuTrachUserId!==currentUser.id) return false;
     if(filterLeadNhom==='chuaGiao' && l.phuTrachUserId) return false;
+    /* V1.31.2 — hai nhánh dưới đây TRƯỚC ĐÂY KHÔNG CÓ. Các ô trên bảng điều
+       hành tuyển sinh gọi moPheuTu() đặt filterLeadNhom thành 'chuaGoi',
+       'dangTheoDuoi' hay 'quaHan', nhưng hàm lọc không biết ba giá trị đó nên
+       rơi thẳng xuống return true: bấm ô "Data thô · chưa gọi" thì danh sách
+       hiện TOÀN BỘ khách. Tệ hơn, ô chọn không có giá trị tương ứng nên trình
+       duyệt hiện dòng đầu "Cần gọi hôm nay" — vừa không lọc, vừa nói sai đang
+       lọc cái khác. Nay lọc đúng, và ô chọn có đủ giá trị để nói thật. */
+    if(filterLeadNhom==='quaHan' && !leadQuaHan(l)) return false;
+    if(filterLeadNhom.indexOf('tt:')===0 && l.trangThai !== filterLeadNhom.slice(3)) return false;
     if(filterLeadNhom==='canGoi'){
       if(['Đã nhập học','Không chuyển đổi'].indexOf(l.trangThai)>=0) return false;
       if(l.hanLienHe && l.hanLienHe > todayISO()) return false;
@@ -11686,6 +12152,42 @@ function viewDieuHanhTS(){
       + '<div class="val" style="'+(quaHan?'color:var(--danger);':'')+'">'+quaHan+'</div></div>'
     + '</div></div>';
 
+  /* Phễu tư vấn. Năm trạng thái khách đã có sẵn nhưng đang hiện thành năm con
+     số rời nhau, nhìn mãi không biết khâu nào rụng nhiều. Xếp thành phễu kèm
+     tỉ lệ rơi là thấy ngay chỗ cần dồn người.
+     Chiều dài thanh theo SỐ LƯỢNG, không theo thứ hạng — hai bậc bằng nhau
+     phải dài bằng nhau. "Không chuyển đổi" tách riêng ở dưới vì nó là nhánh
+     rụng ra, không phải một bậc của phễu. */
+  h += (function(){
+    const bac = ['Chưa gọi', 'Đang theo đuổi', 'Hẹn học thử', 'Đã nhập học'];
+    const so = bac.map(dem);
+    const hong = dem('Không chuyển đổi');
+    const max = Math.max.apply(null, so.concat([hong, 1]));
+    if(!so.some(function(x){ return x > 0; }) && !hong) return '';
+    const dong = function(ten, n, mau, truoc, maLoc){
+      const roi = (truoc !== null && truoc > 0)
+        ? Math.round((truoc - n) / truoc * 100) : null;
+      return '<div style="display:flex;align-items:center;gap:9px;margin-bottom:3px;">'
+        + '<div class="small" style="flex:0 0 120px;text-align:right;">' + esc(ten) + '</div>'
+        + '<div style="height:26px;border-radius:4px;display:flex;align-items:center;'
+        + 'padding-left:9px;color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;'
+        + 'min-width:30px;background:' + mau + ';width:' + Math.max(6, n / max * 330) + 'px;" '
+        + 'onclick="moPheuTu(\'' + maLoc + '\')" title="Bấm để xem danh sách">' + n + '</div>'
+        + '<div class="small" style="flex:0 0 76px;'
+        + (roi !== null && roi > 0 ? 'color:var(--danger);' : 'color:var(--muc-3);') + '">'
+        + (roi === null ? '' : (roi > 0 ? '−' + roi + '%' : '')) + '</div></div>';
+    };
+    let b = '<div class="card"><h3>Phễu tư vấn</h3><div style="margin-top:4px;">';
+    bac.forEach(function(t, i){
+      b += dong(t, so[i], i === 3 ? '#2E9E6B' : '#2F6FB4',
+                i === 0 ? null : so[i - 1], 'tt:' + t);
+    });
+    b += dong('Không chuyển đổi', hong, '#94A3B8', null, 'tt:Không chuyển đổi');
+    return b + '</div><div class="small muted" style="margin-top:7px;">'
+      + 'Phần trăm là tỉ lệ rụng so với bậc ngay trên. Bấm vào thanh để xem '
+      + 'danh sách khách của bậc đó.</div></div>';
+  })();
+
   /* Kết quả tháng */
   h += '<div class="card"><h3>Kết quả tháng '+thang.slice(5)+'/'+thang.slice(0,4)+'</h3>'
     + '<div class="grid">'
@@ -11734,9 +12236,13 @@ function viewDieuHanhTS(){
   h += '</div>';
   return h;
 }
+/* Mở danh sách khách đã lọc sẵn. Nhận cả mã cũ của bốn ô trên bảng điều hành
+   lẫn mã 'tt:<trạng thái>' mà phễu tư vấn dùng — MỘT cửa, đừng để hai nơi
+   mỗi nơi hiểu một kiểu. */
 function moPheuTu(loc){
-  filterLeadNhom = (loc === 'nong') ? 'tatCa' : (loc === 'quaHan' ? 'quaHan'
-    : (loc === 'chuaGoi' ? 'chuaGoi' : 'dangTheoDuoi'));
+  const anhXa = {nong:'tatCa', quaHan:'quaHan',
+                 chuaGoi:'tt:Chưa gọi', dangTheoDuoi:'tt:Đang theo đuổi'};
+  filterLeadNhom = anhXa[loc] || (loc.indexOf('tt:') === 0 ? loc : 'tatCa');
   ktnCon = 'pheu';
   switchSection('tuyenSinh', 'khach');
 }
@@ -12718,7 +13224,14 @@ function veCotChong(cacKy, nhom){
   if(!cacKy.length) return '';
   const W = 640, H = 220, L = 46, R = 12, T = 14, B = 42;
   const vung = W - L - R, cao = H - T - B;
-  const mauNhom = {DNTU: '#2F6FB4', doiTac: '#2E9E6B', tuDo: '#C2703A'};
+  /* Màu nhóm thí sinh. Trước V1.31.2 nhóm "Tự do" dùng #C2703A — chính là mã
+     màu --m2 nghĩa là "cần chú ý", trong khi thí sinh tự do chẳng có gì phải
+     chú ý. Dùng màu trạng thái làm màu nhóm là sai: khi nào cũng đỏ cam thì
+     người đọc hết phân biệt được cái nào đáng lo.
+     Tệ hơn: cam và xanh lá chỉ cách nhau ΔE 6.8 với người mù màu đỏ–lục, dưới
+     ngưỡng an toàn 8 — hai cột "Qua đối tác" và "Tự do" gần như một màu.
+     Tím #7A4FA3 cho ΔE 18.6, đạt sạch cả sáu phép kiểm màu. */
+  const mauNhom = {DNTU: '#2F6FB4', doiTac: '#2E9E6B', tuDo: '#7A4FA3'};
   const tenNhom = {DNTU: 'Sinh viên DNTU', doiTac: 'Qua đối tác', tuDo: 'Tự do'};
   const soTheoKy = cacKy.map(function(k){
     const ds = thiSinhCuaKy(k.id).filter(function(t){ return t.ketQua !== 'Hoãn thi'; });
@@ -12773,6 +13286,69 @@ function veCotChong(cacKy, nhom){
 }
 
 /* Biểu đồ cột ngang so sánh các đối tác */
+/* ===== THANH GHÉP — một tổng thể chia thành vài phần =====
+   Dùng cho "cơ cấu của MỘT thứ": lớp này bao nhiêu em đã đóng đủ, bao nhiêu
+   em đóng một phần, bao nhiêu em chưa đóng. Không dùng hình tròn: mắt người
+   so độ dài chính xác hơn so góc, hai miếng 28% và 31% trên hình tròn gần như
+   không phân biệt được.
+   Mỗi đoạn CÓ nhãn chữ bên dưới, không chỉ dựa vào màu — người mù màu vẫn
+   phải đọc được. Chừa 2px trắng giữa các đoạn cho khỏi dính vào nhau.
+   doan = [{ten, so, mau}]. Trả chuỗi rỗng khi không có gì để vẽ. */
+function veThanhGhep(doan, donVi){
+  const co = (doan || []).filter(function(d){ return (Number(d.so) || 0) > 0; });
+  const tong = co.reduce(function(s, d){ return s + Number(d.so); }, 0);
+  if(!tong) return '';
+  return '<div style="display:flex;height:13px;border-radius:4px;overflow:hidden;'
+    + 'background:var(--bg);">'
+    + co.map(function(d, i){
+        return (i ? '<i style="flex:0 0 2px;background:var(--card);"></i>' : '')
+          + '<i style="flex:0 0 ' + (Number(d.so) / tong * 100) + '%;background:'
+          + d.mau + ';" title="' + esc(d.ten + ': ' + d.so) + '"></i>';
+      }).join('')
+    + '</div><div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:7px;" class="small">'
+    + co.map(function(d){
+        return '<span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;'
+          + 'background:' + d.mau + ';margin-right:5px;vertical-align:-1px;"></i>'
+          + esc(d.ten) + ' · ' + d.so + (donVi ? ' ' + esc(donVi) : '') + '</span>';
+      }).join('')
+    + '</div>';
+}
+/* ===== TIẾN ĐỘ BUỔI DẠY CỦA MỘT LỚP =====
+   Dòng chữ "buổi 11/16" không cho biết lớp đang sớm hay muộn. So số buổi đã
+   dạy với phần thời gian đã trôi qua của khoá mới biết.
+   Trả null khi KHÔNG đủ căn cứ để kết luận — thiếu ngày hoặc thiếu số buổi kế
+   hoạch thì vẽ thanh trung tính, tuyệt đối không bịa ra chữ "chậm tiến độ".
+   Ngưỡng 15%: dưới mức đó là dao động bình thường của lịch nghỉ lễ, bù buổi. */
+function tienDoBuoiLop(l){
+  if(!l) return null;
+  const kh = Number(l.soBuoiKH) || 0;
+  if(kh <= 0) return null;
+  const da = soBuoiDaHoc(l.id);
+  const ra = {da: da, kh: kh, tyLe: Math.min(1, da / kh), cham: false, mongDoi: null};
+  if(l.trangThai !== 'Đang học') return ra;
+  if(!l.ngayKG || !l.ngayKT || l.ngayKT <= l.ngayKG) return ra;
+  const tong = diffDays(l.ngayKG, l.ngayKT);
+  const qua = diffDays(l.ngayKG, todayISO());
+  if(tong <= 0 || qua < 0) return ra;
+  ra.mongDoi = Math.min(1, qua / tong);
+  ra.cham = (ra.tyLe < ra.mongDoi - 0.15);
+  return ra;
+}
+/* Thanh mảnh đặt dưới dòng "buổi x/y" trên thẻ lớp */
+function thanhTienDoBuoi(l){
+  const t = tienDoBuoiLop(l);
+  if(!t) return '';
+  const mau = t.cham ? 'var(--danger)' : 'var(--son)';
+  return '<div style="background:var(--bg);border-radius:3px;height:6px;overflow:hidden;'
+    + 'margin-top:4px;max-width:230px;position:relative;">'
+    + '<div style="width:' + (t.tyLe * 100) + '%;height:6px;background:' + mau + ';"></div>'
+    + (t.mongDoi !== null
+       ? '<span style="position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--muc-1,#0f172a);'
+         + 'opacity:.45;left:' + (t.mongDoi * 100) + '%;" title="Mức mong đợi theo lịch"></span>'
+       : '')
+    + '</div>'
+    + (t.cham ? '<div class="small" style="color:var(--danger);">Chậm so với lịch</div>' : '');
+}
 function veCotNgang(ds, lay, nhanGT, mau){
   if(!ds.length) return '<div class="small muted">Chưa có số liệu.</div>';
   const max = Math.max.apply(null, ds.map(lay).concat([1]));
@@ -14284,7 +14860,13 @@ function formVanBan(kyId, ma){
   const v = vanBanCuaKy(k, ma) || {};
   openModal('<h3>'+esc(vb.ten)+'</h3>'
     +'<div class="small muted">'+esc(vb.noiKy)+' ký · '+esc(vb.luuY||'')+'</div>'
-    +'<label>Số văn bản</label><input id="mVBSo" value="'+esc(v.soVanBan||'')+'" placeholder="'+esc(vb.goiY)+'">'
+    +'<label>Số văn bản</label><input id="mVBSo" value="'
+      + esc(v.soVanBan || (laVanBanGDN(ma) ? soGDNKeTiep() : ''))
+      + '" placeholder="'+esc(vb.goiY)+'">'
+    + (laVanBanGDN(ma)
+       ? '<div class="small muted">Số lấy từ sổ GĐN chung của Trung tâm, đã tính cả '
+         + 'giấy đề nghị in ấn. Lệch với sổ thực tế thì sửa thẳng ở đây.</div>'
+       : '')
     +'<label>Ngày ký</label><input type="date" id="mVBNgay" value="'+esc(v.ngay||todayISO())+'">'
     +'<label>Ghi chú</label><input id="mVBGhiChu" value="'+esc(v.ghiChu||'')+'">'
     +'<div class="row" style="margin-top:14px;gap:8px;"><button class="btn btn-block" onclick="closeModal()">Đóng</button>'
@@ -14295,6 +14877,17 @@ function luuVanBan(kyId, ma){
   const k = kyThiList.find(function(x){ return x.id===kyId; });
   const so = $('mVBSo').value.trim();
   if(!so){ showToast('Nhập số văn bản'); return; }
+  /* Giấy đề nghị ăn chung sổ số với tab In ấn — phải chặn trùng ở ĐÂY nữa,
+     chặn một đầu thì đầu kia vẫn cấp đè được. Các văn bản khác (quyết định
+     của Nhà trường, kế hoạch) dùng sổ riêng nên không xét. */
+  if(laVanBanGDN(ma)){
+    const n = soTrongGDN(so);
+    if(n <= 0){
+      showToast('Số giấy đề nghị phải bắt đầu bằng chữ số, ví dụ 173' + DUOI_GDN); return; }
+    const namVB = namCuaChuoi($('mVBNgay').value) || todayISO().slice(0, 4);
+    const dungSo = giayGiuSoGDN(n, namVB, null, {kyId: kyId, ma: ma});
+    if(dungSo){ showToast(loiTrungSoGDN(dungSo, n)); return; }
+  }
   const vb = Object.assign({}, k.vanBan||{});
   vb[ma] = {soVanBan:so, ngay:$('mVBNgay').value, ghiChu:$('mVBGhiChu').value.trim(),
             nguoiGhi:currentUser.hoTen, ts:Date.now()};
@@ -16217,6 +16810,31 @@ function viewHocPhi(){
     + '<div class="val" style="font-size:17px;'+(t.conNo?'color:var(--warn);':'')+'">'+fmtTien(t.conNo)+'</div></div>'
     + '</div>';
 
+  /* Thanh cơ cấu thu của lớp. Bốn ô số trên cho biết TỔNG TIỀN, thanh này cho
+     biết CÒN BAO NHIÊU EM — hai câu hỏi khác nhau: một lớp còn nợ 21 triệu có
+     thể là một em chưa đóng gì, cũng có thể là mười em mỗi em thiếu một ít,
+     hai tình huống đòi hai cách xử lý khác hẳn.
+     Đếm trên TOÀN lớp, không theo ô tìm kiếm — gõ tìm một em mà thanh đổi
+     theo thì nó không còn là cơ cấu của lớp nữa. */
+  h += (function(){
+    const caLop = ghiDanhList.filter(function(g){
+      return g.lopId === hpLopId && g.trangThai === 'Đang học'; });
+    if(!caLop.length) return '';
+    let du = 0, mot = 0, chua = 0;
+    caLop.forEach(function(gd){
+      const phai = hocPhiPhaiDong(gd), da = daDongHocPhi(gd);
+      if(da >= phai && phai > 0) du++;
+      else if(da > 0) mot++;
+      else chua++;
+    });
+    const thanh = veThanhGhep([
+      {ten:'Đã thu đủ',    so:du,   mau:'var(--ok)'},
+      {ten:'Thu một phần', so:mot,  mau:'var(--warn)'},
+      {ten:'Chưa đóng',    so:chua, mau:'var(--danger)'}
+    ], 'em');
+    return thanh ? '<div class="card">' + thanh + '</div>' : '';
+  })();
+
   /* Tiến độ đối soát lần 2: Kế toán nhìn một chỗ biết còn ai chưa rà */
   h += (function(){
     const coThu = ds.filter(function(g){ return khoanThu(g).length; });
@@ -16861,6 +17479,36 @@ function viewCongNoChiTiet(){
       + '<div class="lbl">Chưa đóng đồng nào</div>'
       + '<div class="val" style="' + (chuaDong ? 'color:var(--warn);' : '') + '">' + chuaDong + '</div></div>'
     + '</div>';
+
+  /* Xếp hạng lớp nợ nặng nhất. Danh sách công nợ xếp theo từng học viên, nên
+     nhìn mãi không biết nên đi đòi LỚP nào trước. Gom theo lớp rồi vẽ cột
+     ngang là thấy ngay. Chỉ hiện khi có từ hai lớp trở lên — một lớp thì cái
+     cột dài 100% chẳng nói lên điều gì, chỉ tốn chỗ. */
+  h += (function(){
+    if(!tatCa.length) return '';
+    const theoLop = {};
+    tatCa.forEach(function(x){
+      const ma = (x.lop && x.lop.maLop) || '(không rõ lớp)';
+      if(!theoLop[ma]) theoLop[ma] = {ten: ma, tong: 0, soEm: 0};
+      theoLop[ma].tong += x.no;
+      theoLop[ma].soEm++;
+    });
+    const ds2 = Object.keys(theoLop).map(function(k){ return theoLop[k]; })
+      .filter(function(x){ return x.tong > 0; })
+      .sort(function(a, b){ return b.tong - a.tong; })
+      .slice(0, 8);
+    if(ds2.length < 2) return '';
+    /* Dùng bdThanhNgang của bộ vẽ chính chứ không dùng veCotNgang: bộ chính
+       có sẵn chỗ bấm và cùng một kiểu dáng với các biểu đồ ở Tổng quan. Hai
+       bộ vẽ cùng một hình là sớm muộn hai nơi trông khác nhau. */
+    bdLopNo = ds2;
+    return '<div class="card"><h3>Lớp còn nợ nhiều nhất</h3>'
+      + bdThanhNgang(ds2.map(function(x){
+          return {ten:x.ten, gt:x.tong, phu:x.soEm + ' em còn nợ'};
+        }), {rongTen:118, bam:'xemLopNo',
+             dinhDang:function(v){ return fmtTien(v) + 'đ'; }})
+      + '</div>';
+  })();
 
   if(cnLoc !== 'tatCa')
     h += '<div class="card"><div class="row"><span class="small">Đang lọc: <b>'
@@ -18601,8 +19249,11 @@ function viewBaoCaoDieuHanh(){
     + (cuoi > dau ? ' — <span style="color:var(--ok-ink);font-weight:700;">tăng ' + (cuoi - dau) + '</span>'
        : (cuoi < dau ? ' — <span style="color:var(--danger-ink);font-weight:700;">giảm '
           + (dau - cuoi) + '</span>' : ' — đi ngang')) + '</div>'
-    + bdDuong(xh.map(function(x){
-        return {ten:x.thang, gt:x.so}; }), {soNhan:6})
+    + (function(){
+        bdXuHuong = xh;
+        return bdDuong(xh.map(function(x){
+          return {ten:x.thang, gt:x.so}; }), {soNhan:6, bam:'xemXuHuongThang'});
+      })()
     + '</div>';
 
   /* Chuyên cần */
@@ -23863,6 +24514,43 @@ function viewGioCong(){
     + '<button class="btn btn-sm" onclick="doiTuanLC(1)">→</button></div>'
     + '</div></div>';
 
+  /* Nhìn một cái biết ai thiếu giờ. Bảng bên dưới có đủ số nhưng phải đọc
+     từng dòng mới so được; thanh xếp cạnh nhau thì thấy ngay.
+     Chiều dài theo GIỜ CÔNG, vạch đen là chỉ tiêu — hai người cùng 39 giờ mà
+     chỉ tiêu khác nhau thì thanh bằng nhau nhưng vạch khác chỗ, đúng thực tế. */
+  h += (function(){
+    const hang = ds.map(function(u){
+      return {ten: u.hoTen, gio: gioCongCuaNguoi(tuan, u.id), ct: chiTieuTuan(iso, u.id)};
+    }).filter(function(x){ return x.gio > 0 || x.ct > 0; });
+    if(hang.length < 2) return '';
+    const max = Math.max.apply(null, hang.map(function(x){
+      return Math.max(x.gio, x.ct); }).concat([1]));
+    return '<div class="card"><h3>Giờ công so chỉ tiêu</h3>'
+      + hang.map(function(x){
+          const thieu = x.ct > 0 && x.gio < x.ct;
+          const nang = x.ct > 0 && x.gio < x.ct * 0.8;
+          const mau = nang ? 'var(--danger)' : (thieu ? 'var(--warn)' : 'var(--ok)');
+          return '<div style="margin-bottom:8px;">'
+            + '<div class="small" style="display:flex;justify-content:space-between;gap:8px;">'
+            + '<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;'
+            + 'white-space:nowrap;">' + esc(x.ten) + '</span>'
+            + '<span style="flex-shrink:0;font-weight:700;'
+            + (nang ? 'color:var(--danger);' : '') + '">'
+            + fmtGio2(x.gio) + ' / ' + fmtGio2(x.ct) + ' giờ</span></div>'
+            + '<div style="background:var(--bg);border-radius:3px;height:8px;margin-top:3px;'
+            + 'position:relative;overflow:hidden;">'
+            + '<div style="width:' + (x.gio / max * 100) + '%;height:8px;background:'
+            + mau + ';"></div>'
+            + (x.ct > 0
+               ? '<span style="position:absolute;top:-2px;bottom:-2px;width:2px;'
+                 + 'background:var(--muc-1,#0f172a);opacity:.5;left:'
+                 + (x.ct / max * 100) + '%;"></span>'
+               : '')
+            + '</div></div>';
+        }).join('')
+      + '<div class="small muted">Vạch đen là chỉ tiêu tuần của từng người.</div></div>';
+  })();
+
   h += '<div class="card" style="padding:10px;overflow-x:auto;"><table class="lc-bang">'
     + '<thead><tr><th style="text-align:left;">Chuyên viên</th>'
     + '<th>Giờ đăng ký</th><th>Đi trễ (phút)</th><th>Điều chỉnh (giờ)</th>'
@@ -27339,6 +28027,20 @@ function viewThamSo(){
     +'<label>Hạn mức Phó Giám đốc duyệt in (đồng)</label>'
     +'<input type="number" id="tsHanMuc" value="'+(settings.hanMucPGD||10000000)+'">'
     +'<div class="small muted">Phiếu in từ mức này trở lên sẽ chuyển Giám đốc phê duyệt.</div>'
+    +'<label>Số Giấy đề nghị đã ký ngoài phần mềm</label>'
+    +'<div class="row" style="gap:10px;align-items:flex-end;">'
+    +'<div style="flex:0 0 130px;"><div class="small muted">Năm áp dụng</div>'
+    +'<input type="number" id="tsMocGDNNam" style="margin:0;" value="'
+    + esc(String(settings.mocGDNNam || todayISO().slice(0, 4))) + '"></div>'
+    +'<div style="flex:1;"><div class="small muted">Số cuối cùng đã ký</div>'
+    +'<input type="number" id="tsMocGDNSo" style="margin:0;" value="'
+    + esc(String(Number(settings.mocGDNSo) || 0)) + '"></div></div>'
+    +'<div class="small muted">Khai số GĐN cuối cùng Trung tâm đã ký trên giấy trước khi '
+    +'dùng phần mềm. Giấy kế tiếp sẽ mang số <b>'
+    + esc(soGDNKeTiep(String(settings.mocGDNNam || todayISO().slice(0, 4)))) + '</b>. '
+    +'Sang năm mới, nếu năm áp dụng không còn khớp thì phần mềm bỏ qua mốc này và tự '
+    +'chạy lại từ 01 — không phải xoá. Sổ này dùng chung cho cả giấy đề nghị in ấn lẫn '
+    +'giấy đề nghị trong hồ sơ kỳ thi.</div>'
     +'<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:8px;">'
     +'<b class="small">Lịch ca làm việc</b></div>'
     +'<label>Giờ chuẩn mỗi tuần</label>'
@@ -27483,6 +28185,19 @@ function docLoTrinh(){
 function luuThamSo(){
   if(!hasPerm('suaThamSo')){ showToast('Chỉ Phó Giám đốc được sửa tham số hệ thống'); return; }
   if(docLoTrinh() === null) return;
+  /* Mốc GĐN không được khai lùi: phần mềm đã cấp tới số nào thì khai thấp hơn
+     là cấp đè lên giấy đã ký. Chặn chứ không cảnh báo rồi vẫn lưu. */
+  const mocNam = Number($('tsMocGDNNam').value) || 0;
+  const mocSo = Number($('tsMocGDNSo').value) || 0;
+  if(mocSo < 0){ showToast('Số GĐN đã ký không được âm'); return; }
+  if(mocNam){
+    const daCap = soGDNCaoNhatTrongPM(String(mocNam));
+    if(mocSo < daCap){
+      showToast('Không khai được mốc ' + mocSo + ' — phần mềm đã cấp tới số ' + daCap
+        + ' trong năm ' + mocNam + ', khai lùi sẽ đè lên giấy đã ký');
+      return;
+    }
+  }
   const data = {
     nguongNguyCap: Number($('tsNguyCap').value)||6,
     nguongDuoiChuan: Number($('tsDuoiChuan').value)||12,
@@ -27495,6 +28210,8 @@ function luuThamSo(){
     taiPhiConBuoi: Number($('tsTaiBuoi').value)||3,
     taiPhiConNgay: Number($('tsTaiNgay').value)||14,
     hanMucPGD: Number($('tsHanMuc').value)||10000000,
+    mocGDNNam: mocNam,
+    mocGDNSo: mocSo,
     khoaBatBuocChungChi: Number($('tsKhoaCC').value)||2024,
     phiLayMuon: Number($('tsPhiMuon').value)||100000,
     tyLeTruongTra: Number($('tsTyLe').value)||25,
