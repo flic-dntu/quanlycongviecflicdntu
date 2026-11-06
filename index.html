@@ -2,7 +2,398 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.31.2   |   Ngày: 04/11/2026
+ Phiên bản: V1.31.9   |   Ngày: 06/11/2026
+------------------------------------------------------------------
+ V1.31.9 – 06/11/2026 – CHỮ VÀ MÀU TRÊN MÀN PHẢI NHẤT QUÁN
+
+ Tinh chỉnh hiển thị theo cách các sản phẩm cùng loại làm. Chỉ sửa
+ thứ ĐO ĐƯỢC, không sửa theo cảm tính.
+
+ 1. CÙNG MỘT CHỮ, HAI MÀU. Đo màu thật của 40 nhãn trạng thái trên
+    62 màn: nhãn "Chưa đóng" ra ĐỎ ở màn Học phí nhưng CAM ở màn
+    Công nợ — hai màn cạnh nhau trong cùng tab Tài chính. Soi kỹ
+    thì mỗi màn có một thang riêng và đều hợp lý: Học phí xếp theo
+    còn thiếu bao nhiêu (đủ / còn một phần / chưa đóng), Công nợ
+    xếp theo có quá hạn không (quá hạn / chưa đóng / còn nợ). Va
+    chạm nằm ở chỗ dùng CÙNG MỘT CHỮ cho hai mức khác nhau, không
+    phải ở thang màu. Nay màn Công nợ đổi chữ: "Chưa đóng đồng
+    nào" và "Đóng một phần". Giữ nguyên cả hai thang.
+    Tiện thể: nhãn "Còn nợ" trên màn CÔNG NỢ không nói được gì —
+    cả màn đều là người còn nợ. "Đóng một phần" mới là tin.
+
+ 2. CON SỐ CHƠ VƠ DƯỚI NHÃN. Bốn ô thống kê có dòng tiền phụ dựng
+    bằng fmtTrieu(): Newsale, Renew, So kỳ trước, Quá hạn đợt. Hàm
+    đó trả "96tr" từ một triệu trở lên, nhưng dưới mức đó trả số
+    trần KHÔNG ĐƠN VỊ, và trả đúng chữ "0" khi bằng không. Màn hình
+    hiện một chữ "0" nằm chơ vơ dưới nhãn, không đơn vị, không
+    nghĩa. Nay có hàm chung tienPhu(): không tiền thì không vẽ dòng
+    nào, dưới một triệu thì kèm đơn vị đ.
+
+ 3. ĐÃ ĐO VÀ KHÔNG PHẢI LỖI, ghi lại để khỏi sửa nhầm:
+    · Nhìn ảnh chụp tưởng nút trong dòng danh sách to nhỏ lệch
+      nhau giữa các màn. Đo chiều cao thật của 437 nút trên mọi
+      màn: TẤT CẢ đều 27px. Ảnh trông to là do chụp ở tỉ lệ 1.6.
+      Suýt đi sửa cái không hỏng.
+    · Hai màn Học viên và Công nợ mang 255 trên 437 nút của cả
+      phần mềm, bốn nút mỗi dòng. Cân nhắc gom bớt vào menu phụ
+      nhưng KHÔNG làm: bốn việc đó là việc hằng ngày, giấu đi thì
+      thêm một cú bấm cho mỗi lần dùng.
+
+ Bộ kiểm thử thứ 41, 23 phép. Đột biến 10 phép, bắt hết 10. Hai
+ phép quét mới (màu nhãn, dòng tiền phụ) đều chạy kèm bản cố ý
+ nhét lỗi để chứng minh bắt được trước khi tin con số 0.
+------------------------------------------------------------------
+ V1.31.8 – 06/11/2026 – ĐỐI CHIẾU THỊ TRƯỜNG
+
+ Tham khảo phần mềm cùng loại trong nước (CloudEMS, Easy Edu,
+ EduSpace, iLeader, MONA, Center Online, Faceworks) và quốc tế
+ (Teachworks, TutorCruncher, Jackrabbit, Pike13, TutorBird,
+ Tutorbase, Oases, Teach'n Go), rồi soi lại 61 mục của mình.
+
+ 1. VA CHẠM LỊCH — thị trường gọi là conflict checking, sản phẩm
+    nào cũng có, mình thiếu một nửa:
+    · Có dò trùng PHÒNG nhưng KHÔNG dò giáo viên bị xếp hai lớp
+      cùng giờ. Ở trung tâm mà phần lớn lớp đều 18:00–20:15 thì
+      đây là va chạm dễ xảy ra nhất, lại không ai thấy.
+    · Chỉ dò ở màn Thời khoá biểu, tức phát hiện SAU khi đã lưu.
+      Người xếp lớp lưu xong vẫn tưởng ổn.
+    Nay một cửa vaChamLich() dùng chung cho cả hai nơi, dò cả
+    phòng lẫn giáo viên, và hỏi lại ngay lúc lưu lớp. Không chặn
+    cứng vì dạy ghép vẫn có trường hợp hợp lệ. Giáo viên so bằng
+    MÃ, tên chỉ là đường lui cho bản ghi cũ. Lớp Online không
+    tính trùng phòng nhưng vẫn tính trùng giáo viên.
+ 2. HAI MỤC TRÙNG TÊN trong menu: "Học viên" có ở cả Học vụ và
+    Tuyển sinh, "Điều hành" có ở cả Tuyển sinh và Báo cáo. Soi
+    ra chúng là hai góc nhìn KHÁC nhau thật, chỉ là nhìn menu
+    không phân biệt được. Đổi tên bên Tuyển sinh thành "Học viên
+    đã chốt" và "Phễu tuyển sinh".
+
+ 3. NHỮNG THỨ THỊ TRƯỜNG CÓ MÀ MÌNH CHƯA CÓ — ghi lại để bàn,
+    CHƯA làm vì đều là việc lớn:
+    · Cổng phụ huynh / học viên — gần như sản phẩm nào cũng có.
+    · Lương giáo viên: mình đếm buổi dạy và giờ công nhưng không
+      quy ra tiền. Thị trường tính luôn.
+    · Thanh toán trực tuyến và form đăng ký online.
+    Zalo/SMS tự động thì mình đã cân nhắc và chốt từ V1.30.0:
+    chạy trên trình duyệt nên không nhắn thay người được, chỉ mở
+    Zalo và gọi thẳng số — giữ nguyên cách đó.
+
+ 4. NHỮNG THỨ MÌNH CÓ MÀ THỊ TRƯỜNG KHÔNG CÓ: 16 quy trình kèm
+    chuỗi phê duyệt và lưu vết, đối soát hai bên và khoá sổ,
+    khảo thí trọn gói (kho đề, phôi, lệ phí, đối tác, định mức),
+    sổ in ấn với số GĐN. Không đụng tới.
+
+ Bộ kiểm thử thứ 40, 34 phép. Đột biến 13 phép, bắt hết 13 —
+ trong đó có đúng một đột biến dựng lại LỖI VỪA MẮC khi soạn bản
+ này: lệnh thay chuỗi máy móc đã đổi nhầm tên màn "Báo cáo điều
+ hành" thành "Phễu tuyển sinh", chỉ bộ kiểm thử bắt được.
+------------------------------------------------------------------
+ V1.31.7 – 06/11/2026 – LỚP CHẾT KHÔNG ĐƯỢC CHE LỚP SỐNG
+
+ Ban lãnh đạo hỏi: lớp đã kết thúc sao lại nằm trên lớp đang học,
+ và vài năm nữa hàng trăm lớp thì màn này ra sao?
+
+ Dựng thử 29 lớp trong đó 27 đã kết thúc từ 2024: lớp đang học bị
+ đẩy xuống thứ 28, ba dòng đầu màn là lớp đóng từ hai năm trước.
+
+ 1. Không có bộ lọc trạng thái nào — mọi lớp từ ngày mở phần mềm
+    đều nằm đây vĩnh viễn. Nay mặc định ẩn lớp đã kết thúc, có nút
+    "Hiện N lớp đã kết thúc" ngay cạnh bộ lọc. Đây đúng là cách
+    màn Điểm danh đang làm sẵn, dùng chung một kiểu cho cả phần mềm.
+ 2. Sắp xếp chỉ theo nhóm rồi mã lớp nên lớp chết lẫn lộn với lớp
+    sống theo bảng chữ cái. Nay: Đang học → Sắp khai giảng → Tạm
+    dừng → Đã kết thúc; trong mỗi bậc, khai giảng mới nhất lên
+    trước. Trạng thái lạ xuống cuối chứ không biến mất.
+ 3. Tiêu đề nhóm đếm riêng lớp đang học ("1 lớp đang học") nhưng
+    bên dưới đổ ra cả 29 dòng — đếm một tập, hiện một tập khác.
+    Nay tiêu đề mô tả đúng những dòng nằm dưới nó.
+ 4. Thêm bộ lọc năm khai giảng, chỉ vẽ khi có từ hai năm trở lên.
+    Chọn năm cũ mà lớp năm đó đóng hết thì KHÔNG để màn trắng
+    trơn: nói rõ còn bao nhiêu lớp đã kết thúc và cho bấm một cái
+    là thấy.
+ 5. Chặn trên 20 lớp đã kết thúc mỗi nhóm, kèm dòng "và N lớp nữa
+    — chọn năm hoặc gõ mã lớp vào ô tìm". Thử 229 lớp thì màn vẫn
+    đúng 22 dòng.
+ 6. Lớp đã kết thúc vẽ mờ 62% để mắt lướt qua không nhầm.
+ 7. Con số trên nút đếm SAU bộ lọc nhóm, năm và ô tìm — nút ghi 9
+    thì bấm vào đúng 9 lớp, không phải 27 của cả ba năm.
+
+ Bộ kiểm thử thứ 39, 38 phép. Thử đột biến 14 phép, bắt hết 14;
+ trong đó một phép lúc đầu LỌT: gỡ hẳn ô lọc năm mà bộ thử vẫn
+ báo đạt, vì các phép sau chỉ đặt thẳng biến lọc chứ không ai kiểm
+ ô lọc có được vẽ ra hay không.
+------------------------------------------------------------------
+ V1.31.6 – 06/11/2026 – ẨN NÚT LÀ TRANG TRÍ, CHẶN MỚI LÀ KHOÁ
+
+ Rà lại luồng công việc, 16 quy trình và 12 tab chức năng.
+
+ 1. CHỐT QUYỀN TAB CHỈ LÀ ẨN NÚT  ← nặng nhất
+    Thanh điều hướng lọc nút theo quyền, nhưng switchTab() không
+    hỏi lại câu nào. Dựng một tài khoản giáo viên không có quyền
+    nào rồi gọi thẳng switchTab cho từng tab: 11 trên 12 tab vẫn
+    dựng ra nội dung. Tức là mở Console gõ switchTab('taiChinh')
+    là thấy học phí, công nợ, lương cả trung tâm.
+    Nay chặn ở switchTab, chặn lần hai ở render() (vì render gọi
+    được thẳng sau khi đặt tay currentTab). Cả hai chốt dùng
+    chung tabXemDuoc() nên luật chỉ nằm một chỗ.
+    ĐÂY LÀ CHỐT Ở GIAO DIỆN. Dữ liệu vẫn tải về máy qua Firestore,
+    muốn kín hẳn phải siết luật đọc phía Firestore — ghi vào mục
+    bảo mật, chưa làm ở bản này.
+
+ 2. KHÔNG AI HUỶ ĐƯỢC MỘT ĐẦU VIỆC
+    Trạng thái 'Huỷ' nằm trong VIEC_DA_KHEP, được khối 'Việc đã
+    đóng' đếm, được viecDaKhep() lọc — nhưng thử hết 7 trạng thái
+    × 4 vai thì doiDuocViec() không bao giờ cho đặt nó. Giao nhầm
+    một đầu việc là nó nằm đó vĩnh viễn; muốn dọn thì phải giả vờ
+    duyệt hoàn thành, làm hỏng luôn số đúng hạn.
+    Nay có nút 'Huỷ việc' cho người chủ trì và người phê duyệt,
+    bắt buộc ghi lý do, lưu vào nhật ký việc lẫn nhật ký chung.
+    Việc đã khép thì không huỷ ngược được — đó là xoá dấu vết.
+    'Từ chối' cố ý vẫn không có cửa: người duyệt không đồng ý thì
+    'Trả lại' cho làm lại, hoặc 'Huỷ việc' nếu bỏ hẳn.
+
+ 3. NÚT NÓI MỘT ĐẰNG LÀM MỘT NẺO
+    Ở bước phê duyệt, nút ghi 'Từ chối' (trên thẻ) và 'Từ chối,
+    trả lại' (màn chi tiết) nhưng cùng gọi traLaiViec() đưa việc
+    về 'Đang làm'. Người duyệt tưởng đã bác bỏ hẳn, thật ra chỉ
+    trả về cho làm lại — hai kết cục khác hẳn nhau. Nay cả hai
+    chỗ đều gọi đúng tên: 'Trả lại'.
+
+ 4. TIẾN ĐỘ NÓI NGƯỢC TRẠNG THÁI
+    chuyenTrangThaiViec chỉ đặt tienDo=0 khi tienDo đang rỗng, nên
+    đường quay ngược về 'Đang làm' (người xác nhận hoặc người phê
+    duyệt trả việc) giữ nguyên 100 — màn hình hiện 'Đang làm·100%'.
+    Nay về 'Đang làm' là ép xuống tối đa 80, khớp traLaiViec.
+
+ 5. TỔNG QUAN LẶP SỐ VỚI CHÍNH NÓ
+    Người không có quyền tài chính được thay ô 'Thu tháng này'
+    bằng ô 'Sĩ số TB mỗi lớp' — đúng con số đã nằm ở dòng nhỏ của
+    ô 'Tổng sĩ số' ngay bên trái. Bù ô trống bằng cách nói lại
+    chuyện vừa nói thì thà để ba ô.
+
+ 6. ĐÃ RÀ VÀ KHÔNG CÓ VẤN ĐỀ
+    - 16 quy trình: mã không trùng, mọi vai trỏ đúng vị trí có
+      thật, quy trình nào cũng có người phê duyệt. Hai quy trình
+      khuyết chủ trì (C4, C16) đều có ghi chú giải thích.
+    - 61 mục con trên 12 tab: không mục nào trùng khoá, không mục
+      nào 'rơi xuống' hiện nhầm màn khác (dựng thật cả 61 mục rồi
+      so chữ ký, không mục nào trùng nhau).
+    - switchSection đã chặn đúng từ trước.
+    - Luồng tạo việc đã bắt đủ: tên việc, chủ trì, phê duyệt,
+      sản phẩm bàn giao.
+    - Tổng quan đã tự ẩn khối tiền với người không có quyền.
+
+ 7. RÀ SÂU 5 TAB (Học vụ, Tuyển sinh, In ấn, Khảo thí, Công việc)
+    a) CHUỖI IN ẤN MÙ TRẠNG THÁI. Cả năm hàm đổi bước đều gác
+       quyền nhưng không hàm nào hỏi phiếu đang ở bước nào. Gọi
+       luuThanhToanIn() trên phiếu còn 'Chờ duyệt' là nhảy thẳng
+       sang 'Hoàn tất, daThanhToan=true' — ghi nhận đã trả tiền
+       cho thứ chưa ai duyệt, chưa đặt in, chưa nhận hàng. Thao
+       tác bình thường không ra lỗi vì nút chỉ hiện đúng bước,
+       nhưng cửa sổ mở sẵn rồi phiếu đổi bước nơi khác, bấm hai
+       lần, hay gọi thẳng từ Console thì lọt. Nay có một cửa gác
+       chung dungBuocIn() với bảng dãy bước hợp lệ duy nhất.
+    b) NÚT BÀY RA RỒI BỊ CHẶN. Nút "Điểm danh" trên từng lớp vẽ
+       cho mọi vai, nhưng moDiemDanh() chặn ai không có quyền
+       'diemDanh' — mà 8 trên 12 vị trí không có, kể cả Giám đốc
+       và Phó Giám đốc. Ngày nào bấm cũng ăn toast từ chối. Nay
+       chỉ bày khi dùng được; Xuất Excel và In vẫn giữ để xem.
+    c) CHỦ TRÌ TRÙNG NGƯỜI PHÊ DUYỆT. Một người tự giao, tự làm,
+       tự duyệt thì bước phê duyệt mất tác dụng soát. Cảnh báo
+       khi giao việc chứ không chặn cứng, vì ở trung tâm nhỏ có
+       lúc Phó Giám đốc vừa làm vừa duyệt là hợp lệ.
+    d) Đã quét và SẠCH: 109 lời gọi canQuyen không chỗ nào gác
+       nhầm tên hàm khác; 8 hàm ghi Firestore không có chốt đúng
+       bằng danh sách MIEN_GAC đã khai lý do; 295 lượt dựng màn
+       theo 12 vị trí không còn nút nào bày ra rồi bị chặn;
+       62 màn dựng với dữ liệu RỖNG HOÀN TOÀN không ra NaN,
+       undefined, Invalid Date hay [object Object].
+
+ 8. RÀ HIỂN THỊ VÀ CẢNH BÁO
+    a) CẢNH BÁO ĐẾM ĐÔI. V1.29.0 gom mọi hàng đợi duyệt vào bảng
+       chung HANG_DOI_DUYET và thuThapCanhBao() gọi bảng đó —
+       nhưng hai cảnh báo Truyền thông viết tay cũ không được gỡ.
+       Tổng quan báo mỗi sản phẩm chờ duyệt HAI LẦN, huy hiệu
+       cộng đôi con số. Nay xoá hai cái viết tay, để bảng chung
+       lo. Giữ "chờ tôi nhận" vì đó là nhận việc, không phải duyệt.
+    b) MÀU LẠC TẦNG. "N ngày chưa chốt báo cáo" là tầng 1 nhưng
+       để màu vàng, nên hiện chấm vàng lạc giữa khối đỏ "Cần xử
+       lý hôm nay" và con số vàng giữa dãy số đỏ. Nay đổi sang đỏ.
+    c) CÂU CHỮ GHÉP MÁY MÓC TRÊN MÀN CHÍNH. Dòng cảnh báo dựng
+       bằng nhan + ' chờ tôi duyệt', mà nhan đã chứa sẵn chữ
+       "chờ", nên ra "sản phẩm truyền thông chờ duyệt nội dung
+       chờ tôi duyệt". Thêm toLowerCase() biến "Ban Giám đốc"
+       thành "ban giám đốc" ngay trên Tổng quan của Ban lãnh đạo.
+       Biên bản đối soát thì là chờ KÝ chứ không phải chờ duyệt.
+       Nay mỗi hàng đợi khai sẵn một câu viết đúng ngữ pháp.
+    d) CHỮ CẮT KHÔNG ĐỌC ĐỦ ĐƯỢC. Mã lớp dài trên thanh "Sĩ số so
+       chuẩn" bị cắt cụt ở khổ điện thoại mà không có title, không
+       cách nào xem hết tên. Nay có title.
+    e) Đã quét và SẠCH, mỗi phép quét chạy kèm MỘT BẢN CỐ Ý NHÉT
+       LỖI để chứng minh bộ dò bắt được trước khi tin con số 0:
+       13 cảnh báo đều bấm tới mục có thật, tầng khớp màu, không
+       cặp nào trùng nội dung; 62 màn không lọt ngày thô dạng
+       2026-11-06, không số tiền nào thiếu dấu chấm phân cách;
+       chữ người dùng gõ được thoát đúng — thử chèn thẻ img kèm
+       onerror thì ra chữ thường, không tạo thẻ, không chạy mã;
+       quét chữ bị cắt ở bốn khổ 390/760/1100/1600px, không còn
+       chỗ nào thiếu title.
+
+ 9. Bộ kiểm thử thứ 38: dựng máy trạng thái bằng cách THỬ mọi
+    nước đi (7 trạng thái × 7 đích × 4 vai) thay vì đọc mã suy
+    luận, và gọi thẳng switchTab bằng tài khoản không quyền.
+    Thử đột biến 14 phép, bắt hết 14.
+------------------------------------------------------------------
+ V1.31.5 – 05/11/2026 – CON SỐ KHÔNG NHÚC NHÍCH ĐƯỢC THÌ KHÔNG
+ PHẢI THÔNG TIN
+
+ 1. THANH TIẾN ĐỘ MÀN CÔNG VIỆC VĨNH VIỄN ĐỨNG 0%
+    const chay = ds.filter(viecConChay);        // LOẠI Hoàn thành
+    const xong = chay.filter(tt === 'Hoàn thành');  // rồi ĐẾM nó
+    Hai câu ngược nhau nên tử số luôn 0: thanh màu luôn trống,
+    phần trăm luôn 0%, người xem đọc ra là cả đội chưa xong việc
+    nào. Nay mẫu số là TOÀN BỘ việc trừ Từ chối và Huỷ — hai
+    trạng thái đó là việc không làm nữa, tính vào tiến độ thì
+    sai cả hai chiều.
+
+ 2. CHÚ GIẢI LẶP TIÊU ĐỀ CỘT KANBAN
+    Dòng 'Mới tạo 3 · Đang làm 0 · …' lặp y hệt năm tiêu đề cột
+    ngay dưới, cách chưa tới một dòng. Nay chỉ giữ ở chế độ Bảng.
+
+ 3. CỘT "HOÀN THÀNH" CỦA KANBAN KHÔNG BAO GIỜ NHẬN VIỆC NÀO
+    Cùng lỗi với mục 1, chỗ khác: cột dựng từ chay, mà chay đã
+    loại Hoàn thành ra. Vĩnh viễn hiện '0' và 'Không có việc
+    nào', kể cả khi cả đội vừa đóng xong hai chục việc. Nay bảng
+    còn bốn cột việc đang chạy; việc đã xong nằm ở khối 'Việc đã
+    đóng' cuối màn như trước. Lọc theo VIEC_DA_KHEP chứ không gõ
+    tay tên cột, để thêm trạng thái đóng mới thì cột tự biến mất.
+    COT_KANBAN vẫn giữ đủ năm trạng thái cho thanh tiến độ.
+
+ 4. HUY HIỆU CHỈ HIỆN Ở TAB ĐANG MỞ
+    Mục con chỉ vẽ cho tab đang mở, mà số lại nằm ở mục con —
+    muốn biết tab Tài chính có việc gấp không thì phải bấm vào
+    mới biết, ngược hẳn công dụng của huy hiệu. Nay cộng dồn lên
+    tab cha, lấy màu của mục nặng nhất, chỉ đếm mục có quyền xem.
+
+ 5. TỶ LỆ CHUYỂN ĐỔI (Tuyển sinh › Điều hành) ĐỨNG IM
+    Mẫu số là toàn bộ leadList từ ngày mở phần mềm, mà dòng chữ
+    bên dưới lại ghi 'trên tổng khách đang giữ' — vừa sai nghĩa
+    vừa đứng im. Nó nằm ngay cạnh ô 'Học viên chốt được' vốn
+    tính theo tháng. Nay tính trên khách thu về 90 ngày, dùng
+    đúng quy tắc của tuyenSinhTrongKy().
+
+ 6. HAI CHỖ HIỆN CÙNG MỘT BỘ SỐ HAI LẦN
+    - Báo cáo điều hành: ba ô Khách mới / Đã liên hệ / Chốt được
+      rồi ngay dưới là phễu lặp lại đúng ba nhãn, đúng ba số.
+      Giữ phễu (nói thêm hình dạng rơi rụng, bấm xem được), bỏ ô.
+    - Tổng quan: hàng 'lớp đang học / HV trung bình/lớp / lớp
+      dưới tối thiểu' dưới biểu đồ tròn lặp lại bốn ô đầu màn.
+    Kèm sửa một bẫy thụt lề: dòng bdPheuKy nằm thụt vào như thể
+    thuộc nhánh if nhưng không có ngoặc nên vẫn luôn chạy.
+
+ 7. ĐÃ QUÉT TOÀN BỘ, KHÔNG CÒN CHỖ NÀO KHÁC
+    - Viết công cụ dò lỗi 'lọc bỏ trạng thái X rồi đếm X': quét
+      23 biến dựng bằng phép loại trừ, còn 0 chỗ. Công cụ được
+      kiểm chứng bằng cách dựng lại lỗi gốc, nó bắt được.
+    - Soi cả 10 phép tính phần trăm: 6 chỗ đã đúng kỳ từ trước
+      (tuyenSinhTrongKy, tỷ lệ đạt kỳ thi, hiệu quả chiến dịch,
+      tỷ lệ Renew, báo cáo tháng), 4 chỗ đã sửa ở V1.31.4–V1.31.5.
+    - Dò nhãn-số lặp trên cả 62 màn: 14 cặp, 2 cặp là lỗi thật
+      (đã sửa), 12 cặp còn lại là lặp theo dòng danh sách, bình
+      thường.
+    - Phát hiện BỘ DỮ LIỆU THỬ của chính mình sai: fixture ghi mã
+      điểm danh 'C' trong khi phần mềm dùng 'CM', nên mọi con số
+      chuyên cần trong các lần quét trước đều vô nghĩa. Đã sửa
+      fixture và quét lại — phần mềm vốn đúng.
+
+ 8. Bộ kiểm thử thứ 37: con số phải ĐỔI được. Cho năm bộ dữ liệu
+    khác nhau rồi đòi năm kết quả khác nhau — một con số kẹt cứng
+    vẫn qua được mọi phép thử nếu phép thử chỉ chạy một bộ dữ
+    liệu. Thử đột biến 14 phép, bắt hết 14.
+------------------------------------------------------------------
+ V1.31.4 – 05/11/2026 – Ô SỐ PHẢI TRẢ LỜI ĐƯỢC "GIỜ LÀM GÌ"
+ Rà toàn bộ 134 ô thống kê trên 62 màn. Quy tắc áp dụng: một ô số
+ chỉ đáng chỗ nếu nó trả lời được "giờ phải làm gì" hoặc "kỳ này
+ làm ăn ra sao". Con số chỉ biết tăng mà không ai hành động theo
+ thì thuộc tab Báo cáo, không thuộc màn làm việc.
+
+ 1. CẢNH BÁO HỌC VỤ — sửa gốc, không sửa con số hiển thị
+ - Khoá cảnh báo cũ kẹp luôn mức độ vào trong ('cc|G1|60'). Học vụ
+   xử lý em chuyên cần 60%, em đi học thêm một buổi thành 64% →
+   khoá đổi → cảnh báo BẬT LẠI như mới. Gọi phụ huynh lần nữa,
+   đẻ thêm một hồ sơ xử lý. Đó chính là lý do ô 'Đã xử lý' phình
+   lên 1203 trong khi trung tâm chỉ có mấy trăm em.
+ - Nay khoá chỉ giữ danh tính vấn đề, mức nặng tách ra trường
+   'nang'. Cảnh báo chỉ hiện lại khi NẶNG HƠN lúc đã xử lý: em
+   khá lên thì im, em xấu đi thì gọi. Vắng 3 buổi xử lý rồi mà
+   vắng tiếp buổi 4 vẫn báo — đúng như trước.
+ - Hồ sơ xử lý cũ (chưa có 'nang') suy ra mức nặng từ khoá cũ,
+   KHÔNG sửa dữ liệu trên Firestore. Màn hình hôm nay giữ nguyên,
+   không có cảnh báo cũ nào bật lại.
+ - 'Đã xử lý' → 'Đã xử lý 30 ngày', dòng nhỏ so với 30 ngày
+   trước. CỐ Ý không hiện tổng 1203: con số đó bị thổi lên bởi
+   đúng cái lỗi vừa sửa, nên nó không có nghĩa 'đã giải quyết
+   1203 vấn đề' mà là 'đã bấm nút 1203 lần, nhiều lần trùng'.
+   Hiện một con số đã biết là sai, dù chữ nhỏ, vẫn là nói sai.
+ - Ghi rõ đơn vị: '75 học viên' kèm dòng nhỏ '79 cảnh báo' — một
+   em có thể cùng lúc vắng nhiều, nợ phí và nguy cơ bỏ học.
+ - Thêm chip 'Nguy cơ bỏ học' (nhóm nặng nhất, trước không có chip
+   nên muốn xem riêng phải tự dò). Kèm sửa phép lọc: nhóm này nằm
+   ở cờ nguyCo chứ không nằm trong vanDe — thiếu chỗ đó thì bấm
+   chip ra danh sách rỗng.
+
+ 2. TỶ LỆ CHẤT LƯỢNG BỊ ĐÓNG BĂNG — lỗi nặng hơn con số 1203
+ - 'Xử lý đúng hạn' (Phản ánh), 'Duyệt ngay vòng đầu' và 'Bàn giao
+   đúng hạn' (Yêu cầu thiết kế) chia trên TOÀN BỘ hồ sơ từ ngày mở
+   phần mềm. Sau 200 phiếu thì một tháng làm tệ chỉ nhích 0,5%:
+   lãnh đạo nhìn mãi thấy 94% và không học được gì. Nay tính trong
+   90 ngày, số đứng im thành số biết nói.
+ - Hai ô việc cần làm ('Chưa xử lý xong', 'Quá hạn', 'Đang làm',
+   'Trễ hạn') vẫn hiện ĐỦ, kể cả hồ sơ từ năm ngoái chưa ai đóng.
+
+ 3. ĐỔI KỲ CHO CÁC Ô CHỈ BIẾT TĂNG
+ - Phản ánh: 'Tổng tiếp nhận' → 'Tiếp nhận 90 ngày'
+ - Yêu cầu thiết kế: 'Đã phát hành' → 'Phát hành 90 ngày'
+ - Chiến dịch: 'Tổng đã chi' → 'Chi năm 2026'
+ - Hoá đơn: 'Đã xuất' → 'Đã xuất tháng này'
+   Cả bốn ô giữ tổng cũ ở dòng nhỏ bên dưới, không mất số liệu.
+
+ 4. ĐÃ SOI VÀ GIỮ NGUYÊN (ghi lại để lần sau không soi lại)
+ - Tái phí 'Đã xử lý', Buổi dạy 'Tổng buổi dạy', Đối soát NR 'Tổng
+   lượt ghi danh', Miễn giảm 'Miễn giảm năm nay', Phiếu in 'Chi
+   tháng này', Khảo thí 'Thí sinh': đã có kỳ hoặc đã lọc theo
+   phạm vi — đúng rồi.
+ - 'Kỳ gần nhất so kỳ trước' chỉ vẽ khi có đủ hai kỳ, không bịa 0.
+
+ 5. Rà trùng: 'Đã bỏ qua' đếm số CẶP riêng biệt thay vì cộng dồn
+   rồi chia 2. Cách cũ đúng khi hai chiều ghi đủ, nhưng một chiều
+   ghi lỗi là màn hình hiện '2,5 cặp'.
+
+ 6. Bộ kiểm thử thứ 36: không ô số nào được là bộ đếm vô hạn, và
+   không tỷ lệ chất lượng nào được chia trên mẫu số toàn thời gian.
+------------------------------------------------------------------
+ V1.31.3 – 05/11/2026 – SỐ LIỆU HAI NƠI PHẢI KHỚP NHAU
+ - Ô 'Việc chờ tôi' ở Tổng quan hiện 125, huy hiệu cột phải ngay
+   bên cạnh hiện 6. Cùng nguồn, hai số: Tổng quan cộng soLuong
+   (số VIỆC), cột phải lấy ds.length (số DÒNG). Nay cột phải gọi
+   soViecCanhBao() — một hàm đếm duy nhất cho cả hai nơi.
+ - Huy hiệu đếm TOÀN BỘ nhóm, kể cả nhóm bị cắt khỏi 6 dòng vẽ,
+   và ghi rõ 'và N nhóm nữa'.
+ - Đổi tên khối cột phải cho khớp Tổng quan: 'Chờ tôi duyệt' →
+   'Cần xử lý hôm nay', 'Cần để ý' → 'Cần theo dõi'. Tên cũ còn
+   SAI nghĩa: trong đó có '64 khách quá hạn gọi lại', không ai
+   duyệt việc đó cả.
+ - Dòng chi tiết gói một dòng, đủ chữ để trong title. Trước đây
+   một dòng chiếm 5 hàng, đẩy khối khác xuống dưới tầm mắt.
+ - Bộ kiểm thử thứ 34: đặt hai con số cạnh nhau mà so. Lỗi loại
+   này không bộ nào bắt được vì từng màn dựng ra đều đúng cả.
+ - BỎ TRẦN 60 DÒNG ở màn Thí sinh. Kỳ 98 em chỉ hiện 60, phải
+   gõ tìm hoặc tải Excel mới soát hết. Trần đặt ra vì sợ chậm;
+   đo thật thì 1.000 em dựng mất 35 ms, 2.000 em mất 56 ms.
+ - Ô TÌM cho 14 màn danh sách. Trước đó chỉ 13 trên 53 màn có,
+   mà màn Công nợ 150 học viên lại nằm trong nhóm không có.
+   Một hàm vẽ, một hàm lọc dùng chung — viết 14 lần là 14 kiểu
+   bỏ dấu khác nhau. Ô tìm chỉ hiện khi danh sách từ 8 dòng.
 ------------------------------------------------------------------
  V1.31.2 – 04/11/2026 – BIỂU ĐỒ VÀ THANH HIỂN THỊ
  - Thêm hình ở 5 chỗ số liệu khó đọc bằng bảng: cơ cấu thu của
@@ -878,6 +1269,9 @@
       flex:0 0 auto;padding:7px 10px;border:0;border-radius:7px;margin-bottom:1px;
       font-size:13.5px;font-weight:600;color:#cfe2f8;text-align:left;white-space:normal;}
     .cot-trai .tabbar button .bieu{flex:0 0 17px;text-align:center;margin:0;}
+    /* Huy hiệu cộng dồn của tab đẩy sát mép phải. Chỉ nhắm con TRỰC TIẾP của
+       .tabbar nên không đụng huy hiệu của mục con trong .muc-long. */
+    .cot-trai .tabbar > button .dem-muc{margin-left:auto;flex:0 0 auto;}
     .cot-trai .tabbar button:hover{background:rgba(255,255,255,.08);color:#fff;}
     .cot-trai .tabbar button.active{background:var(--giay);color:var(--son);font-weight:700;}
     .cot-trai .muc-long{display:block;margin:2px 0 6px 30px;padding-left:9px;
@@ -945,10 +1339,8 @@
   .section-nhom .sn-hang button.active{background:var(--son);color:#fff;
     border-color:var(--son);font-weight:650;}
   /* Con số đỏ trên tab chính — biết có việc chờ mình mà không phải mở tab */
-  .dem-tab{display:inline-flex;align-items:center;justify-content:center;
-    min-width:17px;height:17px;border-radius:9px;padding:0 5px;margin-left:6px;
-    background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;
-    vertical-align:1px;}
+  /* .dem-tab đã xoá ở V1.31.5 — tab Công việc từng có huy hiệu riêng với CSS
+     riêng; nay mọi tab dùng chung .dem-muc. */
   .dem-muc{min-width:17px;height:17px;border-radius:9px;font-size:10.5px;font-weight:700;
     display:inline-flex;align-items:center;justify-content:center;padding:0 5px;}
 
@@ -1483,10 +1875,89 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.31.2';
-const NGAY_PHIEN_BAN = '04/11/2026';
+const PHIEN_BAN = 'V1.31.9';
+const NGAY_PHIEN_BAN = '05/11/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.31.9', ngay:'06/11/2026', muc:[
+    {loai:'Giao diện', nd:'Cùng một chữ nhưng hai màu. Đo màu thật của 40 nhãn trạng thái trên cả 62 màn thì nhãn "Chưa đóng" ra màu ĐỎ ở màn Học phí học viên nhưng màu CAM ở màn Công nợ — hai màn nằm cạnh nhau trong cùng tab Tài chính, nên người dùng vừa học xong "đỏ là chưa đóng" thì màn sau lại thấy cam. Soi kỹ thì mỗi màn có một thang riêng và cả hai đều hợp lý: màn Học phí xếp theo còn thiếu bao nhiêu (đã đủ, còn một phần, chưa đóng gì), màn Công nợ xếp theo có quá hạn không (quá hạn, chưa đóng gì, đã đóng một phần). Va chạm nằm ở chỗ hai thang dùng CÙNG MỘT CHỮ cho hai mức khác nhau, chứ không phải ở màu. Nay đổi chữ bên màn Công nợ thành "Chưa đóng đồng nào" và "Đóng một phần", giữ nguyên cả hai thang màu.'},
+    {loai:'Giao diện', nd:'Nhãn "Còn nợ" trên màn CÔNG NỢ không nói được gì, vì cả màn đều là người còn nợ. Thông tin thật sự phân biệt dòng đó với dòng khác là em ấy đã đóng được một phần, nên nhãn mới là "Đóng một phần".'},
+    {loai:'Sửa lỗi', nd:'Bốn ô thống kê hiện một chữ "0" nằm chơ vơ dưới nhãn, không đơn vị và không nghĩa: Newsale, Renew, So kỳ trước và Quá hạn đợt. Nguyên nhân chung là dòng tiền phụ dựng bằng fmtTrieu(), hàm này trả "96tr" từ một triệu trở lên nhưng dưới mức đó trả số trần không đơn vị, và trả đúng chữ "0" khi bằng không. Nay có hàm dùng chung tienPhu(): không tiền thì không vẽ dòng nào, dưới một triệu thì kèm đơn vị đ, từ một triệu trở lên thì rút gọn kiểu tr như các ô khác. Sửa ở gốc nên bốn chỗ cùng hết, và chỗ thứ năm sau này dùng hàm chung là tự đúng.'},
+    {loai:'Ghi chú', nd:'Đã đo và KHÔNG phải lỗi, ghi lại để lần sau khỏi sửa nhầm. Nhìn ảnh chụp thì tưởng nút trong dòng danh sách to nhỏ lệch nhau giữa các màn, nhưng đo chiều cao thật của 437 nút trên mọi màn thì TẤT CẢ đều đúng 27px — ảnh trông to là do chụp ở tỉ lệ 1.6, suýt nữa đi sửa cái đang đúng. Hai màn Học viên và Công nợ mang 255 trên 437 nút của cả phần mềm, bốn nút mỗi dòng; có cân nhắc gom bớt vào một menu phụ theo cách nhiều sản phẩm nước ngoài làm, nhưng KHÔNG làm vì bốn việc đó là việc hằng ngày của Học vụ và Kế toán, giấu đi là thêm một cú bấm cho mỗi lần dùng.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 41 với 23 phép, canh hai điều: một chữ chỉ được mang một mức nặng, và không con số nào được đứng chơ vơ dưới nhãn mà thiếu đơn vị. Kèm phép thử ba nhãn trên màn Công nợ phải khác nhau từng đôi một và không nhãn nào là tập con của nhãn khác. Đột biến 10 phép, bắt hết 10. Hai phép quét mới đều chạy kèm một bản cố ý nhét lỗi để chứng minh bộ dò bắt được trước khi tin con số 0.'}
+  ]},
+  {v:'V1.31.8', ngay:'06/11/2026', muc:[
+    {loai:'Mới', nd:'Dò va chạm lịch đầy đủ. Tham khảo phần mềm quản lý lớp cùng loại trong nước và quốc tế thì sản phẩm nào cũng có conflict checking ngay lúc đặt lịch; phần mềm mình mới có một nửa. Thiếu thứ nhất: chỉ dò trùng PHÒNG, không dò giáo viên bị xếp hai lớp cùng giờ — ở trung tâm mà phần lớn lớp đều 18:00 đến 20:15 thì đây là va chạm dễ xảy ra nhất mà lại không ai thấy. Thiếu thứ hai: chỉ dò ở màn Thời khoá biểu, tức phát hiện sau khi đã lưu, người xếp lớp lưu xong vẫn tưởng ổn. Nay có một cửa duy nhất vaChamLich() dò cả phòng lẫn giáo viên, dùng chung cho màn Thời khoá biểu và cho lúc lưu lớp nên hai nơi không thể hiểu khác nhau về thế nào là trùng.'},
+    {loai:'Mới', nd:'Lưu lớp mà đè lịch lớp đang chạy thì hỏi lại ngay, nêu rõ đụng lớp nào, trùng phòng hay trùng giáo viên, vào thứ mấy và giờ nào. Chỉ hỏi chứ không chặn cứng, vì xếp hai lớp lệch tuần hay một giáo viên dạy ghép vẫn có trường hợp hợp lệ — nhưng người xếp lớp phải biết mình đang làm gì. Nhiều va chạm thì nêu bốn cái đầu rồi tóm tắt phần còn lại, không đổ một hộp thoại dài. Giáo viên so bằng MÃ chứ không so tên gõ tay, vì hai người trùng tên là hai người; tên chỉ là đường lui cho bản ghi cũ chưa có mã. Lớp Online không tính trùng phòng vì nhiều lớp online cùng giờ là bình thường, nhưng vẫn tính trùng giáo viên vì người thì chỉ có một.'},
+    {loai:'Giao diện', nd:'Hai cặp mục trùng tên trong menu: "Học viên" có ở cả Học vụ lẫn Tuyển sinh, "Điều hành" có ở cả Tuyển sinh lẫn Báo cáo. Dựng cả bốn màn ra so thì chúng là bốn màn khác nhau thật, mỗi màn đã có câu mô tả riêng bên trong — vấn đề chỉ là nhìn thanh menu không phân biệt được, phải bấm vào mới biết. Đổi tên hai mục bên Tuyển sinh thành "Học viên đã chốt" và "Phễu tuyển sinh"; Học vụ và Báo cáo giữ nguyên tên cũ.'},
+    {loai:'Ghi chú', nd:'Đối chiếu với phần mềm cùng loại trong nước (CloudEMS, Easy Edu, EduSpace, iLeader, MONA, Center Online, Faceworks) và quốc tế (Teachworks, TutorCruncher, Jackrabbit, Pike13, TutorBird, Tutorbase, Oases Online, Teach n Go). Ba thứ thị trường có mà mình chưa có, ghi lại để bàn chứ chưa làm vì đều là việc lớn: cổng phụ huynh và học viên (gần như sản phẩm nào cũng có); lương giáo viên tính thành tiền (mình đã đếm buổi dạy và giờ công nhưng dừng ở đếm); thanh toán trực tuyến kèm form đăng ký online. Riêng nhắn Zalo và SMS tự động thì đã cân nhắc và chốt từ V1.30.0: phần mềm chạy trên trình duyệt nên không nhắn thay người được, chỉ mở Zalo và gọi thẳng đúng số — giữ nguyên cách đó, nói thật còn hơn nút ghi gửi mà không gửi.'},
+    {loai:'Ghi chú', nd:'Ngược lại, những thứ mình có mà không sản phẩm nào trong danh sách tham khảo có: 16 quy trình kèm chuỗi chủ trì - phối hợp - xác nhận - phê duyệt và nhật ký lưu vết; đối soát hai bên với khoá sổ và biên bản; khảo thí trọn gói gồm kho đề, phôi chứng chỉ, lệ phí, đối tác và định mức chi; sổ in ấn với số giấy đề nghị dùng chung. Không đụng tới nhóm này — đây là phần hợp với cách trung tâm đang vận hành.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 40 với 34 phép. Đột biến 13 phép, bắt hết 13 — trong đó có đúng một đột biến dựng lại lỗi vừa mắc khi soạn chính bản này: lệnh thay chuỗi máy móc đã đổi nhầm tên màn "Báo cáo điều hành" thành "Phễu tuyển sinh" vì mẫu khớp trúng dòng của Báo cáo thay vì dòng của Tuyển sinh. Không bộ kiểm thử nào khác bắt được, chỉ phép thử tên mục bắt.'}
+  ]},
+  {v:'V1.31.7', ngay:'06/11/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Màn Danh mục lớp xếp lớp đã kết thúc lên trên lớp đang học. Dựng thử 29 lớp trong đó 27 đã kết thúc từ năm 2024: lớp đang học bị đẩy xuống vị trí thứ 28, ba dòng đầu màn là lớp đóng từ hai năm trước. Hai nguyên nhân cùng lúc: màn này không có bộ lọc trạng thái nào nên mọi lớp từ ngày mở phần mềm đều nằm đây vĩnh viễn, và phép sắp xếp chỉ theo nhóm chương trình rồi mã lớp nên "Đã kết thúc" với "Đang học" nằm lẫn lộn theo bảng chữ cái. Nay mặc định ẩn lớp đã kết thúc và sắp xếp theo bậc trạng thái: Đang học, Sắp khai giảng, Tạm dừng, Đã kết thúc; trong mỗi bậc thì lớp khai giảng mới nhất lên trước, vì với danh sách dài dần theo năm thì mới nhất hữu ích hơn thứ tự chữ cái. Lớp mang trạng thái lạ xếp xuống cuối chứ không bị lọc mất.'},
+    {loai:'Sửa lỗi', nd:'Tiêu đề nhóm chương trình đếm riêng lớp đang học, ví dụ "Ôn thi UDCNTT nâng cao · 1 lớp đang học · 9 học viên", nhưng ngay bên dưới lại đổ ra cả 29 dòng gồm cả lớp đã đóng — đếm một tập, hiện một tập khác, người đọc không biết tin con số nào. Nay tiêu đề mô tả đúng những dòng nằm dưới nó: khi ẩn lớp đã kết thúc thì chỉ nói số lớp đang học, khi hiện thì nói thêm "· N đã kết thúc".'},
+    {loai:'Mới', nd:'Thêm nút "Hiện N lớp đã kết thúc" cạnh bộ lọc, cùng kiểu với nút "Xem cả lớp đã kết thúc" vốn đã có sẵn bên màn Điểm danh. Con số trên nút đếm SAU khi đã lọc nhóm, năm và ô tìm, nên nút ghi 9 thì bấm vào ra đúng 9 lớp chứ không phải 27 lớp của cả ba năm. Lớp đã kết thúc vẽ mờ 62% để mắt lướt qua không nhầm với lớp đang chạy.'},
+    {loai:'Mới', nd:'Thêm bộ lọc năm khai giảng, lấy danh sách năm từ chính dữ liệu và xếp năm mới nhất trước. Chỉ vẽ ô lọc khi có từ hai năm trở lên, một năm thì không bày thêm cho rối. Lớp thiếu ngày khai giảng thì lấy năm theo ngày kết thúc để không bỏ sót. Chọn một năm cũ mà lớp năm đó đã đóng hết thì màn KHÔNG để trắng trơn: báo rõ "Không lớp nào đang chạy trong năm 2024. Còn 9 lớp đã kết thúc" kèm nút hiện ra ngay — trắng trơn thì người dùng tưởng mất dữ liệu.'},
+    {loai:'Cải tiến', nd:'Chặn trên 20 lớp đã kết thúc mỗi nhóm chương trình, kèm dòng "và N lớp đã kết thúc nữa — chọn năm hoặc gõ mã lớp vào ô tìm để xem". Thử với 229 lớp thì màn vẫn chỉ vẽ đúng 22 dòng, không phình theo số năm hoạt động.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 39 với 38 phép, dựng đúng cảnh 29 lớp ba năm và cả cảnh 229 lớp. Thử đột biến 14 phép, bắt hết 14 — trong đó một phép lúc đầu LỌT: gỡ hẳn ô lọc năm ra khỏi giao diện mà bộ thử vẫn báo đạt, vì mọi phép sau đó chỉ đặt thẳng biến lọc chứ không ai kiểm ô lọc có thật sự được vẽ ra hay không. Đã bổ sung phép thử ô lọc phải có mặt và có đủ các năm.'}
+  ]},
+  {v:'V1.31.6', ngay:'06/11/2026', muc:[
+    {loai:'Bảo mật', nd:'Chốt quyền tab trước đây chỉ là ẩn nút. Thanh điều hướng lọc nút theo quyền nhưng switchTab() không hỏi lại câu nào, nên gọi thẳng hàm là vào được. Dựng một tài khoản giáo viên không có quyền nào rồi gọi switchTab cho từng tab: 11 trên 12 tab vẫn dựng ra nội dung đầy đủ — mở Console gõ switchTab(\'taiChinh\') là thấy học phí, công nợ và lương của cả trung tâm. Nay chặn ngay trong switchTab, chặn lần hai trong render() vì render gọi được thẳng sau khi đặt tay currentTab. Cả hai chốt cùng hỏi tabXemDuoc() nên luật chỉ nằm một chỗ, và người đủ quyền vẫn đi lại bình thường cả 12 tab. LƯU Ý: đây là chốt ở tầng giao diện. Dữ liệu vẫn được Firestore tải hết về máy, muốn kín hẳn thì phải siết luật đọc phía Firestore — việc đó thuộc mục bảo mật, chưa làm ở bản này.'},
+    {loai:'Sửa lỗi', nd:'Không ai huỷ được một đầu việc. Trạng thái \'Huỷ\' nằm trong VIEC_DA_KHEP, được khối "Việc đã đóng" đếm, được viecDaKhep() lọc — nhưng thử hết 7 trạng thái nhân 4 vai thì doiDuocViec() không bao giờ cho phép đặt nó, tức là cả hệ thống chờ đợi một trạng thái mà không cửa nào mở được. Giao nhầm một đầu việc là nó nằm đó vĩnh viễn; muốn dọn thì phải giả vờ duyệt hoàn thành, vừa sai sự thật vừa làm hỏng số liệu đúng hạn. Nay có nút "Huỷ việc" cho người chủ trì và người phê duyệt, bắt buộc ghi lý do, lưu vào cả nhật ký của đầu việc lẫn nhật ký chung của trung tâm. Việc đã khép rồi thì không huỷ ngược được — huỷ một việc đã hoàn thành là xoá dấu vết chứ không phải dọn dẹp. Người xác nhận không huỷ được vì vai đó chỉ soát, không quyết.'},
+    {loai:'Sửa lỗi', nd:'Nút nói một đằng làm một nẻo. Ở bước phê duyệt, nút ghi "Từ chối" trên thẻ và "Từ chối, trả lại" ở màn chi tiết, nhưng cả hai cùng gọi traLaiViec() đưa việc về trạng thái \'Đang làm\'. Người duyệt bấm vào tưởng đã bác bỏ hẳn đầu việc, thật ra chỉ trả về cho chủ trì làm lại — hai kết cục khác hẳn nhau. Nay cả hai chỗ đều gọi đúng tên hành động: "Trả lại". Muốn bỏ hẳn đầu việc thì dùng nút Huỷ việc mới thêm.'},
+    {loai:'Sửa lỗi', nd:'Tiến độ nói ngược trạng thái. chuyenTrangThaiViec chỉ đặt tienDo=0 khi tienDo đang rỗng, nhưng doiDuocViec() cho phép người xác nhận và người phê duyệt đẩy việc ngược về \'Đang làm\' — lúc đó tienDo đang là 100 (đặt khi nộp sản phẩm) nên màn hình hiện "Đang làm · 100%", đúng cái mâu thuẫn mà dòng ghi chú ngay trên nó tuyên bố là đã chặn. Nay về \'Đang làm\' là ép tiến độ xuống tối đa 80, khớp với traLaiViec để hai cửa cùng một số.'},
+    {loai:'Giao diện', nd:'Màn Tổng quan lặp số với chính nó: người không có quyền tài chính được thay ô "Thu tháng này" bằng ô "Sĩ số TB mỗi lớp", đúng con số đã nằm ở dòng nhỏ của ô "Tổng sĩ số" ngay bên trái. Bù một ô trống bằng cách nói lại chuyện vừa nói thì thà để ba ô. Người có quyền tài chính không đổi gì.'},
+    {loai:'Ghi chú', nd:'Đã rà và KHÔNG có vấn đề, ghi lại để lần sau khỏi rà lại: 16 quy trình không trùng mã, mọi vai (chủ trì, phối hợp, xác nhận, phê duyệt) đều trỏ tới vị trí có thật trong danh mục, quy trình nào cũng có người phê duyệt — hai quy trình khuyết chủ trì là C4 và C16 đều có ghi chú giải thích rõ lý do. 61 mục con trên 12 tab: không mục nào trùng khoá, không quyền nào trỏ ra ngoài PERM_LIST, và không mục nào "rơi xuống" hiện nhầm màn khác (dựng thật cả 61 mục rồi so chữ ký nội dung, không cặp nào trùng nhau). switchSection vốn đã chặn đúng từ trước. Luồng tạo việc đã bắt đủ bốn trường bắt buộc. Màn Tổng quan vốn đã tự ẩn khối tiền với người không có quyền tài chính.'},
+    {loai:'Sửa lỗi', nd:'Chuỗi In ấn mù trạng thái. Cả năm hàm đổi bước (duyetPhieuIn, tuChoiPhieuIn, luuDatIn, luuNhanHang, luuThanhToanIn) đều gác quyền nhưng không hàm nào hỏi phiếu đang ở bước nào. Gọi luuThanhToanIn() trên một phiếu còn "Chờ duyệt" là nó nhảy thẳng sang "Hoàn tất, daThanhToan=true" — ghi nhận đã trả tiền cho thứ chưa ai duyệt, chưa đặt in, chưa nhận hàng. Thao tác bình thường không ra lỗi vì nút chỉ hiện đúng bước, nhưng cửa sổ mở sẵn rồi phiếu đổi bước ở nơi khác, bấm hai lần, hoặc gọi thẳng từ Console thì lọt — đúng lý do đã chặn ở chuyenTrangThaiViec() trước đây. Nay có một cửa gác chung dungBuocIn() với bảng BUOC_IN_HOP_LE khai dãy bước hợp lệ duy nhất, nên thêm bước mới chỉ sửa một chỗ. Cũng chặn luôn duyệt hai lần và thanh toán hai lần.'},
+    {loai:'Giao diện', nd:'Nút "Điểm danh" trên từng lớp vẽ cho mọi vai, nhưng moDiemDanh() chặn ai không có quyền "diemDanh" — mà 8 trên 12 vị trí không có quyền đó, kể cả Giám đốc và Phó Giám đốc. Họ thấy nút trên từng lớp, bấm vào ăn toast từ chối, ngày nào cũng vậy. Nay chỉ bày nút khi bấm vào dùng được thật; hai nút Xuất Excel và In vẫn giữ để xem và đối chiếu.'},
+    {loai:'Giao diện', nd:'Khi giao việc mà người chủ trì trùng người phê duyệt, phần mềm hỏi lại trước khi lưu: một người tự giao, tự làm rồi tự duyệt hoàn thành thì bước phê duyệt không còn tác dụng kiểm soát. Chỉ cảnh báo chứ không chặn cứng, vì ở trung tâm nhỏ có lúc Phó Giám đốc vừa làm vừa duyệt là hợp lệ. Hỏi sau các phép kiểm bắt buộc để không hỏi xong rồi vẫn báo thiếu trường.'},
+    {loai:'Ghi chú', nd:'Rà sâu 5 tab Học vụ, Tuyển sinh, In ấn, Khảo thí, Công việc và KHÔNG tìm thêm vấn đề nào ngoài ba mục trên: 109 lời gọi canQuyen không chỗ nào gác nhầm tên hàm khác (lỗi chép gác từ hàm bên cạnh rồi quên đổi tên); 8 hàm ghi Firestore không có chốt quyền đúng bằng danh sách MIEN_GAC đã khai lý do, không thừa hàm nào; dựng 295 lượt màn theo đủ 12 bộ quyền vị trí thật, không còn nút nào bày ra rồi bấm vào bị chặn; dựng cả 62 màn với dữ liệu RỖNG HOÀN TOÀN, không màn nào ra NaN, undefined, Invalid Date, Infinity hay [object Object].'},
+    {loai:'Sửa lỗi', nd:'Cảnh báo Tổng quan đếm đôi hàng đợi Truyền thông. V1.29.0 gom mọi hàng đợi duyệt vào bảng chung HANG_DOI_DUYET và thuThapCanhBao() có gọi bảng đó, nhưng hai cảnh báo viết tay cũ "N sản phẩm chờ tôi duyệt nội dung" và "chờ tôi duyệt phát hành" không được gỡ đi. Hậu quả: mỗi sản phẩm chờ duyệt hiện HAI dòng trên Tổng quan và huy hiệu cột phải cộng đôi con số. Nay xoá hai cái viết tay để bảng chung lo, đúng như V1.29.0 đã định là thêm hàng đợi mới chỉ khai một dòng vào bảng. Giữ lại cảnh báo "chờ tôi nhận" vì đó là nhận việc về làm, không nằm trong bảng hàng đợi duyệt.'},
+    {loai:'Giao diện', nd:'Cảnh báo "N ngày chưa chốt báo cáo" thuộc tầng 1 nhưng để màu vàng, trong khi cả khối tầng 1 "Cần xử lý hôm nay" vẽ màu đỏ — nên nó hiện một chấm vàng lạc giữa khối đỏ ở cột phải, và một con số vàng giữa dãy số đỏ trên Tổng quan. Chốt báo cáo ngày là việc đến hạn chứ không phải việc để theo dõi, nên đúng màu của nó là đỏ.'},
+    {loai:'Giao diện', nd:'Câu chữ trên dòng cảnh báo Tổng quan được ghép máy móc từ nhan + " chờ tôi duyệt", mà nhan của vài hàng đợi đã chứa sẵn chữ "chờ" nên ra "sản phẩm truyền thông chờ duyệt nội dung chờ tôi duyệt". Thêm nữa toLowerCase() biến "Ban Giám đốc" thành "ban giám đốc" và "Hành chính" thành "hành chính" ngay trên màn chính của Ban lãnh đạo. Biên bản đối soát thì đúng ra là chờ KÝ chứ không phải chờ duyệt. Nay mỗi hàng đợi khai sẵn một câu viết đúng ngữ pháp thay vì để phần mềm tự ghép.'},
+    {loai:'Giao diện', nd:'Mã lớp dài trên thanh "Sĩ số so chuẩn" ở Tổng quan bị cắt cụt bằng dấu ba chấm mà không có title, nên ở khổ điện thoại không có cách nào đọc hết tên lớp. Nay có title để rê chuột hoặc chạm giữ là xem đủ.'},
+    {loai:'Ghi chú', nd:'Rà hiển thị và cảnh báo, mỗi phép quét chạy kèm MỘT BẢN CỐ Ý NHÉT LỖI để chứng minh bộ dò bắt được trước khi tin con số 0 — vì trong đợt rà trước có một phép thử chạy xong báo sạch mà thật ra 62 màn dựng ra 0 ký tự. Kết quả sau khi sửa ba mục trên: 13 cảnh báo đều bấm tới mục có thật, tầng khớp màu, không cặp nào trùng nội dung; 62 màn không để lọt ngày thô dạng 2026-11-06 ra giao diện và không số tiền nào thiếu dấu chấm phân cách; chữ người dùng gõ được thoát đúng (thử chèn thẻ img kèm onerror thì hiện ra chữ thường, không tạo thẻ, không chạy mã); quét chữ bị cắt ở bốn khổ màn 390, 760, 1100 và 1600px không còn chỗ nào thiếu title.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 38 dựng máy trạng thái của một đầu việc bằng cách THỬ mọi nước đi — 7 trạng thái nhân 7 đích nhân 4 vai — thay vì đọc mã rồi suy luận, nên trạng thái nào không ai tới được sẽ lộ ra ngay thay vì nằm im nhiều tháng. Chốt quyền được thử bằng cách gọi thẳng switchTab bằng tài khoản không có quyền nào, đúng kiểu người dùng mở Console. Kèm phép thử chiều ngược lại: tài khoản đủ quyền phải vào được cả 12 tab, vì chốt quá tay còn tệ hơn không chốt. Thử đột biến 14 phép, bắt hết 14.'}
+  ]},
+  {v:'V1.31.5', ngay:'05/11/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Thanh "Tiến độ" ở màn Công việc vĩnh viễn đứng 0%. Mã cũ lấy mẫu số là việc ĐANG CHẠY (viecConChay đã loại bỏ Hoàn thành, Từ chối, Huỷ) rồi lại đếm việc "Hoàn thành" BÊN TRONG tập đó — hai câu ngược nhau nên tử số luôn bằng 0. Thanh màu luôn trống, chú giải luôn ghi "Hoàn thành 0", phần trăm luôn 0%; người xem đọc ra là cả đội chưa làm xong việc nào trong khi thật ra đã xong vài việc. Nay mẫu số là toàn bộ việc trong phạm vi đang xem, trừ Từ chối và Huỷ — hai trạng thái đó là việc không làm nữa, tính vào tiến độ thì sai cả hai chiều: coi là xong cũng sai, coi là còn phải làm cũng sai. Năm trạng thái còn lại đúng bằng năm cột Kanban nên các đoạn màu cộng lại luôn đủ 100%.'},
+    {loai:'Giao diện', nd:'Chú giải dưới thanh tiến độ lặp y hệt tiêu đề năm cột Kanban nằm cách đó chưa tới một dòng. Nay chỉ vẽ ở chế độ Bảng, nơi không có tiêu đề cột nào nói thay.'},
+    {loai:'Sửa lỗi', nd:'Cột "Hoàn thành" trên bảng Kanban không bao giờ nhận được việc nào — cùng một lỗi với thanh tiến độ, chỉ khác chỗ xuất hiện: cột dựng từ chay, mà chay đã loại Hoàn thành ra rồi. Nó vĩnh viễn hiện "0" và "Không có việc nào", kể cả khi cả đội vừa đóng xong hai chục việc. Nay bảng còn bốn cột đúng bằng bốn trạng thái việc còn chạy; việc đã xong vẫn xem được ở khối "Việc đã đóng" cuối màn như trước. Lọc cột theo VIEC_DA_KHEP chứ không gõ tay tên cột, để mai mốt thêm trạng thái đóng nào thì cột đó tự biến mất. COT_KANBAN vẫn giữ đủ năm trạng thái vì thanh tiến độ cần đoạn màu Hoàn thành — đó mới đúng là chỗ phải thấy việc đã xong.'},
+    {loai:'Ghi chú', nd:'Một thứ đã thêm rồi GỠ RA: ban đầu tưởng "Việc của tôi (5)" mà bảng chỉ vẽ 3 thẻ là người dùng không biết hai việc kia đi đâu, nên thêm dòng "N việc đã từ chối hoặc huỷ, không hiện trên bảng" kèm lối bấm sang chế độ Bảng. Chụp màn hình ra mới thấy cuối bảng Kanban vốn đã có khối "Việc đã đóng · N" mở ra xem được tại chỗ, gom đủ cả Hoàn thành lẫn Từ chối và Huỷ. Dòng thêm vào vừa nói lại chuyện cũ vừa chỉ sang chỗ bất tiện hơn — đúng thứ lộn xộn mà bản này đang đi dọn, nên đã gỡ.'},
+    {loai:'Giao diện', nd:'Huy hiệu đếm việc chỉ hiện ở tab ĐANG MỞ. Mục con chỉ được vẽ cho tab đang mở mà số lại nằm ở mục con, nên muốn biết tab Tài chính có việc gấp không thì phải bấm vào mới biết — ngược hẳn công dụng của huy hiệu. Nay cộng dồn số của mọi mục con lên nút tab cha, lấy màu của mục nặng nhất (xám < vàng < đỏ), đẩy sát mép phải ở cột dọc. Chỉ cộng mục người dùng CÓ QUYỀN xem, dùng chung mucCuaTab() với chỗ vẽ mục con nên hai nơi không thể lệch; nếu không thì tab hiện số 8 mà bấm vào chỉ thấy 3, tệ hơn là không hiện gì. Tab đang mở thì bỏ số ở cha vì mục con ngay dưới đã nói chi tiết hơn.'},
+    {loai:'Sửa lỗi', nd:'Ô "Tỷ lệ chuyển đổi" ở Tuyển sinh › Điều hành chia trên toàn bộ leadList từ ngày mở phần mềm, mà dòng chữ bên dưới lại ghi "trên tổng khách đang giữ" — vừa sai nghĩa vừa đứng im: sau vài nghìn khách thì một tháng chốt tốt hay tệ cũng không kéo nổi con số nhúc nhích. Nó lại nằm ngay cạnh ô "Học viên chốt được" vốn tính theo tháng và có so với tháng trước, nên hai ô cạnh nhau nói về hai khoảng thời gian khác hẳn nhau. Nay tính trên khách thu về trong 90 ngày và loại khách nhập hàng loạt, dùng ĐÚNG quy tắc của tuyenSinhTrongKy() để hai nơi cùng gọi là "tỷ lệ chuyển đổi" thì ra cùng một cách tính.'},
+    {loai:'Giao diện', nd:'Hai chỗ hiện cùng một bộ số hai lần. Báo cáo điều hành vẽ ba ô Khách mới / Đã liên hệ / Chốt được rồi ngay dưới vẽ phễu lặp lại đúng ba nhãn ấy với đúng ba con số ấy — giữ phễu vì phễu nói thêm hình dạng rơi rụng giữa các khâu và bấm vào xem được danh sách, bỏ ba ô, đưa tỷ lệ chuyển đổi (con số duy nhất phễu không nói) lên dòng tiêu đề. Màn Tổng quan có hàng ba số "lớp đang học / HV trung bình/lớp / lớp dưới tối thiểu" dưới biểu đồ tròn, cả ba đã nằm nguyên trong bốn ô đầu màn cách đó chừng một màn hình — đã bỏ.'},
+    {loai:'Sửa lỗi', nd:'Ở mục Tuyển sinh của Báo cáo điều hành, dòng gán bdPheuKy nằm thụt vào như thể thuộc nhánh if(ts.khachMoi) nhưng nhánh đó không có ngoặc nên dòng ấy vẫn luôn chạy. Không sai kết quả, nhưng mã nói một đằng chạy một nẻo thì sớm muộn có người sửa nhầm. Nay đóng ngoặc rõ ràng.'},
+    {loai:'Ghi chú', nd:'Đã quét toàn bộ phần mềm tìm cùng loại bệnh, không còn chỗ nào khác. Viết công cụ dò tự động loại lỗi "lọc bỏ trạng thái X rồi đếm X": quét 23 biến được dựng bằng phép loại trừ, còn 0 chỗ nghi vấn — và công cụ đã được kiểm chứng bằng cách dựng lại đúng lỗi gốc, nó bắt được. Soi cả 10 phép tính phần trăm trong phần mềm: 6 chỗ vốn đã đúng kỳ (tuyenSinhTrongKy, tỷ lệ đạt kỳ thi, hiệu quả chiến dịch, tỷ lệ Renew, báo cáo tháng), 4 chỗ còn lại đã sửa ở V1.31.4 và V1.31.5. Dò nhãn-số lặp trên cả 62 màn ra 14 cặp, trong đó 2 cặp là lỗi thật đã sửa, 12 cặp còn lại là lặp theo từng dòng danh sách nên bình thường.'},
+    {loai:'Ghi chú', nd:'Phát hiện bộ dữ liệu thử của chính bộ kiểm thử bị sai: fixture ghi mã điểm danh là "C" trong khi phần mềm dùng "CM", nên mọi con số chuyên cần trong các lần quét 62 màn trước đây đều vô nghĩa (tỷ lệ có mặt luôn ra 0%). Phần mềm vốn đúng, fixture sai. Đã sửa fixture và quét lại toàn bộ.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 37 canh đúng loại bệnh này: con số phải ĐỔI ĐƯỢC. Cách canh là cho năm bộ dữ liệu khác nhau rồi đòi năm kết quả khác nhau (0%, 25%, 50%, 75%, 100%) — vì một con số kẹt cứng vẫn qua được mọi phép thử giá trị đơn lẻ nếu phép thử chỉ chạy một bộ dữ liệu. Thử đột biến 14 phép, bắt hết 14; trong đó có một phép lúc đầu LỌT: phép thử chỉ kiểm hằng số thứ tự màu mà chưa kiểm chính hàm chọn màu, đổi dấu so sánh vẫn không ai bắt. Đã bổ sung phép thử dựng tab có cả mục vàng lẫn mục đỏ rồi đòi ra đỏ.'}
+  ]},
+  {v:'V1.31.4', ngay:'05/11/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Ô "Đã xử lý" ở màn Cảnh báo học vụ hiện 1203 trong khi trung tâm chỉ có mấy trăm em. Nguyên nhân không nằm ở ô hiển thị mà nằm ở KHOÁ cảnh báo: khoá cũ kẹp luôn mức độ vào trong, ví dụ "cc|G1|60" cho em chuyên cần 60%. Học vụ gọi phụ huynh, đánh dấu xử lý. Em đi học thêm một buổi, chuyên cần lên 64%, khoá thành "cc|G1|64" — khác khoá đã xử lý nên cảnh báo BẬT LẠI như mới. Học vụ gọi lần nữa, đẻ thêm một hồ sơ. Em càng tiến bộ càng bị gọi nhiều. Nay khoá chỉ giữ danh tính vấn đề ("cc|G1"), mức nặng tách ra trường nang, và cảnh báo chỉ hiện lại khi NẶNG HƠN lúc đã xử lý. Vắng 3 buổi xử lý rồi mà vắng tiếp buổi thứ 4 thì vẫn báo, vì 4 nặng hơn 3 — hành vi đó giữ nguyên như cũ.'},
+    {loai:'Sửa lỗi', nd:'Hồ sơ xử lý ghi trước V1.31.4 không có trường nang. Thay vì sửa dữ liệu trên Firestore, phần mềm suy mức nặng ra từ khoá cũ: vang và boHoc thì con số cuối khoá vốn đã càng lớn càng nặng nên dùng thẳng; chuyên cần lưu phần trăm CÓ MẶT (càng lớn càng tốt) nên phải đổi dấu; noLau lưu tiến độ chia 10 nên nhân lại 10; dotQuaHan thì số cuối là số ĐỢT chứ không phải mức nặng nên coi như đã xử lý ở mức nặng nhất. Kết quả: màn hình hôm nay giữ nguyên, không có cảnh báo cũ nào bật lại, và không dòng dữ liệu nào bị ghi đè.'},
+    {loai:'Sửa lỗi', nd:'Ba tỷ lệ chất lượng chia trên mẫu số TOÀN THỜI GIAN nên không bao giờ nhúc nhích: "Xử lý đúng hạn" bên Phản ánh, "Duyệt ngay vòng đầu" và "Bàn giao đúng hạn" bên Yêu cầu thiết kế. Sau 200 phiếu thì một tháng làm tệ chỉ kéo tỷ lệ xuống 0,5%, lãnh đạo nhìn mãi thấy 94% và không biết tháng này tốt hay xấu. Nay cả ba tính trong 90 ngày. Đây là lỗi nặng hơn con số 1203: con số 1203 chỉ vô dụng, còn tỷ lệ đóng băng thì khiến người đọc tin là mọi thứ ổn.'},
+    {loai:'Giao diện', nd:'Rà toàn bộ 134 ô thống kê trên 62 màn theo một quy tắc: một ô số chỉ đáng chỗ nếu trả lời được "giờ phải làm gì" hoặc "kỳ này làm ăn ra sao". Bốn ô chỉ biết tăng được đổi kỳ: Phản ánh "Tổng tiếp nhận" → "Tiếp nhận 90 ngày", Yêu cầu thiết kế "Đã phát hành" → "Phát hành 90 ngày", Chiến dịch "Tổng đã chi" → "Chi năm 2026", Hoá đơn "Đã xuất" → "Đã xuất tháng này". Cả bốn giữ tổng cũ ở dòng nhỏ bên dưới nên không mất số liệu. Các ô việc cần làm (Chưa xử lý xong, Quá hạn, Đang làm, Trễ hạn) vẫn hiện ĐỦ không giới hạn thời gian, vì phản ánh từ năm ngoái chưa ai đóng thì vẫn là việc chưa xong.'},
+    {loai:'Giao diện', nd:'Ô "Đã xử lý" thành "Đã xử lý 30 ngày", dòng nhỏ bên dưới so với 30 ngày trước để biết kỳ này làm nhiều hay ít hơn kỳ trước. Riêng ô này CỐ Ý không hiện tổng toàn thời gian, khác với ba ô cùng loại bên Phản ánh, Yêu cầu thiết kế và Hoá đơn. Lý do: con số 1203 bị thổi lên bởi đúng cái lỗi vừa sửa — mỗi lần cảnh báo bật lại oan là Học vụ bấm xử lý thêm một lần — nên nó không có nghĩa "đã giải quyết 1203 vấn đề" mà là "đã bấm nút 1203 lần, nhiều lần trùng nhau". Hiện một con số đã biết là sai, dù để chữ nhỏ, vẫn là nói sai. Ba ô kia không dính lỗi này nên vẫn giữ tổng cũ.'},
+    {loai:'Giao diện', nd:'Ô "Học viên cần xử lý" ghi thêm dòng nhỏ "N cảnh báo" bên dưới. Hai con số đứng cạnh nhau mà một là số HỌC VIÊN, một là số CẢNH BÁO — một em có thể cùng lúc vắng nhiều, nợ phí và nguy cơ bỏ học — nên phải ghi rõ con nào là con nào.'},
+    {loai:'Giao diện', nd:'Thêm chip lọc "Nguy cơ bỏ học", là nhóm nặng nhất mà trước đây bị lọc ra khỏi hàng chip, muốn xem riêng thì phải tự dò cả danh sách. Kèm theo phải sửa phép lọc: nhóm này không nằm trong vanDe mà ở cờ nguyCo (xem gomTheoHocVien), nên nếu chỉ thêm chip mà không sửa phép lọc thì bấm vào ra danh sách rỗng.'},
+    {loai:'Sửa lỗi', nd:'Màn Rà hồ sơ trùng: ô "Đã bỏ qua" trước đây cộng dồn độ dài khongTrungVoi của mọi hồ sơ rồi chia 2. Đúng khi cả hai chiều đều ghi được, nhưng nếu một chiều ghi lỗi thì màn hình hiện "2,5 cặp". Nay đếm số cặp riêng biệt qua khoaCapTrung nên không bao giờ ra số lẻ.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 36 canh hai điều: không ô thống kê nào được là bộ đếm vô hạn từ ngày mở phần mềm, và không tỷ lệ chất lượng nào được chia trên mẫu số toàn thời gian. Kèm phép thử dựng lại đúng tình huống 1203: xử lý em chuyên cần 60%, cho em khá lên 64%, cảnh báo phải IM; cho em xấu đi 45%, cảnh báo phải HIỆN LẠI.'},
+    {loai:'Ghi chú', nd:'Đã soi và GIỮ NGUYÊN, ghi lại để lần sau không soi lại: Tái phí "Đã xử lý" (chỉ tính cohort lớp sắp hết, không phải toàn thời gian), Buổi dạy "Tổng buổi dạy" và Đối soát NR "Tổng lượt ghi danh" (đã lọc theo khoảng ngày), Miễn giảm "Miễn giảm năm nay" và Phiếu in "Chi tháng này" (đã có kỳ), Khảo thí "Thí sinh" (đã lọc theo kỳ thi đang chọn), Rà trùng "Đã gộp" (bị chặn trên bởi số hồ sơ). Ô "Kỳ gần nhất so kỳ trước" chỉ vẽ khi có đủ hai kỳ, không bịa số 0 — đúng rồi.'}
+  ]},
+  {v:'V1.31.3', ngay:'05/11/2026', muc:[
+    {loai:'Sửa lỗi', nd:'Ban lãnh đạo chụp màn hình 05/11/2026: ô "Việc chờ tôi" ở Tổng quan hiện 125 trong khi huy hiệu cột phải ngay bên cạnh hiện 6. Cùng một nguồn dữ liệu, hai con số, không chỗ nào ghi rõ đang đếm gì. Nguyên nhân: Tổng quan cộng soLuong tức số VIỆC, còn huy hiệu cột phải lấy ds.length tức số DÒNG, mà mỗi dòng gộp nhiều việc. Nay cả hai cùng gọi soViecCanhBao() — một hàm đếm duy nhất. Đây là lỗi mới sinh ra ở V1.31.1 khi dựng cột phải, không phải lỗi cũ.'},
+    {loai:'Sửa lỗi', nd:'Huy hiệu còn đếm trên danh sách ĐÃ CẮT còn 6 dòng, nên nhóm thứ bảy trở đi không được tính. Nay đếm toàn bộ nhóm rồi mới cắt phần hiển thị, và ghi rõ "và N nhóm nữa" để người đọc biết còn thứ chưa hiện.'},
+    {loai:'Sửa lỗi', nd:'Tên khối ở cột phải không khớp Tổng quan: cột phải gọi "Chờ tôi duyệt" và "Cần để ý" trong khi Tổng quan gọi "Cần xử lý hôm nay" và "Cần theo dõi" — cùng một dữ liệu, hai bộ từ, người dùng tưởng là hai thứ khác nhau. Tên cũ còn SAI nghĩa: khối đó chứa "64 khách quá hạn gọi lại" và "31 cảnh báo học vụ", không ai duyệt những việc ấy cả, phải đi gọi và đi xử lý. Nay dùng đúng từ của Tổng quan.'},
+    {loai:'Giao diện', nd:'Dòng chi tiết trong cột phải gói gọn một dòng, dài thì cắt bằng dấu ba chấm và giữ đủ chữ trong title để rê chuột xem. Trước đây dòng "13 mốc kỳ thi quá hạn" chiếm năm hàng chữ, đẩy khối Cần theo dõi và Hoạt động của tôi xuống dưới tầm mắt. Cột phải là để liếc, không để đọc.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 34 chuyên canh một loại lỗi: hai nơi nói cùng một thứ phải nói cùng một số. 22 phép thử. Loại lỗi này KHÔNG bộ nào trước đây bắt được, vì từng màn dựng ra đều đúng cả — chỉ khi đặt hai con số cạnh nhau mới thấy lệch. Dữ liệu thử cố ý để mỗi dòng gộp nhiều việc, vì nếu dòng nào cũng một việc thì đếm dòng hay đếm việc đều ra như nhau và phép thử mất tác dụng mà không ai biết. Thử đột biến 10 phép, bắt hết 10.'},
+    {loai:'Sửa lỗi', nd:'Màn Thí sinh chỉ hiện 60 em trong khi kỳ có 98 — Ban lãnh đạo phát hiện 05/11/2026. Trần 60 dòng là do em đặt ở V1.31.0 vì sợ kỳ Cambridge đông hơn ba trăm thí sinh sẽ làm chậm máy. Nay đo thật trong trình duyệt: dựng cả màn và gắn vào trang mất 8 ms với 98 em, 35 ms với 1.000 em, 56 ms với 2.000 em — không ai cảm nhận được. Lo thừa, mà cái trần thì gây hại thật: Khảo thí muốn soát đủ danh sách phải gõ tìm hoặc tải Excel. Nay hiện ĐỦ, chỉ ghi rõ đang hiện bao nhiêu em, và khi đang lọc thì nói cả tổng của kỳ để không ai tưởng kỳ chỉ có ngần ấy. Ô tìm vẫn giữ.'},
+    {loai:'Mới', nd:'Thêm ô tìm cho 14 màn danh sách: Công nợ, Kỳ thi, Đối tác, Kho đề, Phản ánh, Học bù, Hoàn phí, Phiếu in, Tồn kho, Miễn giảm, Hoá đơn chờ xuất, Buổi dạy, Cảnh báo học vụ, Tái đăng ký. Ban lãnh đạo hỏi 05/11/2026 "ô tìm đâu" — quét ra chỉ 13 trên 53 màn có, mà màn Công nợ đang 150 học viên lại nằm trong nhóm không có. Trước đó đã hai lần trả lời sai là "ô tìm có sẵn ở các màn danh sách dài", vì quét bằng cách tìm chữ "Tìm" trong nhãn ô nhập nên sót cả hai chiều: sót màn có ô mà nhãn viết khác, và không kiểm màn nào ĐÁNG có mà không có.'},
+    {loai:'Nguyên tắc', nd:'Ô tìm làm MỘT CỬA: một hàm vẽ ô, một hàm lọc, một dòng báo kết quả. Viết riêng cho từng màn thì 14 chỗ, 14 kiểu gõ, 14 kiểu bỏ dấu, sớm muộn lệch nhau. Bỏ dấu cả hai vế nên gõ "quynh" ra "Quỳnh", gõ "d" ra cả "đ". Ô tìm chỉ hiện khi danh sách từ 8 dòng trở lên — nhét ô tìm lên danh sách bốn dòng là rác màn hình; nhưng nếu người dùng đang gõ dở thì vẫn giữ ô lại, không thì chữ vừa gõ biến mất cùng cái ô.'},
+    {loai:'Nguyên tắc', nd:'Khi lọc không khớp ai, màn nói THẲNG là do ô tìm kèm nút xoá tìm, không hiện câu "chưa có dữ liệu" để người dùng tưởng danh sách rỗng. Màn Phiếu in lọc TRƯỚC khi chia nhóm, nếu không thì tiêu đề nhóm ghi "Chờ duyệt · 12" mà dưới chỉ có 2 dòng.'},
+    {loai:'Kiểm thử', nd:'Bộ kiểm thử thứ 35 cho ô tìm: 85 phép thử, 6 nhóm, gồm dựng màn thật rồi gõ tìm và soi kết quả. Thử đột biến 16 phép. Hai phép thử của chính bộ này lúc đầu RỖNG RUỘT: phép kiểm chống chèn mã gọi hàm trong khi ô tìm đang là chữ thường nên tất nhiên không thấy thẻ script nào. Đã sửa thành gõ thật đoạn mã vào ô tìm rồi mới soi, và dựng thêm ba đột biến bỏ mã hoá — bắt đủ cả ba. Một đột biến khác bị loại vì không phải lỗi thật: bỏ phép tắt sớm khi chưa gõ gì thì bộ lọc vẫn trả đủ, vì tìm chuỗi rỗng trong chuỗi nào cũng khớp.'},
+    {loai:'Lưu ý', nd:'Một chỗ nghi là lỗi nhưng kiểm ra thì không: huy hiệu đỏ trên tab Công việc. Tưởng hàm vẽ thanh dọc mới đã xoá mất nó vì dựng lại toàn bộ thanh tab, chạy thử trong trình duyệt thật thì nó vẫn còn — render() gọi lại veSoChoDuyetTab() sau khi vẽ. Nó không hiện vì đếm theo cách thứ ba: chỉ hàng đợi duyệt và việc được giao, không tính cảnh báo.'}
+  ]},
   {v:'V1.31.2', ngay:'04/11/2026', muc:[
     {loai:'Giao diện', nd:'Ban lãnh đạo nêu 04/11/2026: một số tab chưa trực quan. Thêm hình ở NĂM chỗ mà cái hình thật sự đổi được quyết định, không rải biểu đồ khắp 12 tab — rải khắp nơi là trang trí chứ không phải thông tin. Năm chỗ: cơ cấu thu của lớp ở Học phí học viên, xếp hạng lớp nợ nặng nhất ở Công nợ, phễu tư vấn ở Điều hành tuyển sinh, tiến độ buổi dạy trên từng thẻ lớp, và giờ công so chỉ tiêu ở Lịch ca.'},
     {loai:'Mới', nd:'Phễu tư vấn là hạng mục đáng giá nhất trong đợt này. Năm trạng thái khách đã có sẵn từ lâu nhưng hiện thành năm con số rời nhau, nhìn mãi không biết khâu nào rụng nhiều. Nay xếp thành phễu kèm tỉ lệ rụng so với bậc ngay trên, bấm vào thanh là sang đúng danh sách khách của bậc đó. Nhìn một cái biết nên dồn người vào khâu nào.'},
@@ -2329,6 +2800,64 @@ function fmtTs(ts){ if(!ts) return ''; return new Date(ts).toLocaleString('vi-VN
 function stripDia(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase(); }
 function hasPerm(k){ return !!(currentUser && currentUser.quyen && currentUser.quyen[k]); }
 
+/* ===== Ô TÌM DÙNG CHUNG CHO MỌI MÀN DANH SÁCH =====
+   Ban lãnh đạo hỏi 05/11/2026 "ô tìm đâu" — quét ra chỉ 13 trên 53 màn có,
+   trong khi màn Công nợ đang có 150 học viên mà phải cuộn tay tìm.
+   Viết riêng cho từng màn thì 14 chỗ, 14 kiểu gõ, 14 kiểu bỏ dấu, sớm muộn
+   lệch nhau. Nên làm MỘT cửa: một hàm vẽ ô, một hàm lọc, một dòng báo.
+   Bỏ dấu cả hai vế nên gõ "quynh" ra "Quỳnh", gõ "d" ra cả "đ". */
+const timMan = {};
+function datTimMan(khoa){
+  const el = $('tim_' + khoa);
+  timMan[khoa] = el ? el.value : '';
+  render();
+}
+function xoaTimMan(khoa){ timMan[khoa] = ''; render(); }
+function chuTim(khoa){ return stripDia(timMan[khoa] || ''); }
+/* Ô tìm, đặt ở ĐẦU cột giữa. phu = nút hoặc chữ đặt cạnh ô.
+   soDong: số dòng danh sách đang có. Dưới 8 dòng thì KHÔNG vẽ ô tìm — nhét ô
+   tìm lên một danh sách bốn dòng là rác màn hình, mắt nhìn một cái là thấy
+   hết rồi. Nhưng nếu người dùng ĐANG gõ dở thì vẫn giữ ô lại, không thì gõ
+   xong danh sách ngắn đi là ô biến mất cùng chữ vừa gõ. */
+const TIM_TU_DONG = 8;
+function oTimMan(khoa, goiY, phu, soDong){
+  const v = timMan[khoa] || '';
+  if(soDong !== undefined && soDong < TIM_TU_DONG && !v) return '';
+  return '<div class="card"><div class="row wrap" style="gap:8px;">'
+    + '<input id="tim_' + khoa + '" placeholder="' + esc(goiY || 'Tìm…') + '" '
+    + 'value="' + esc(v) + '" oninput="datTimMan(\'' + khoa + '\')" '
+    + 'style="flex:1;min-width:160px;">'
+    + (v ? '<button class="btn btn-sm" onclick="xoaTimMan(\'' + khoa + '\')">Xoá tìm</button>' : '')
+    + (phu || '')
+    + '</div></div>';
+}
+/* Lọc một danh sách theo ô tìm. layChu(x) trả chuỗi gom mọi thứ tìm được.
+   Chưa gõ gì thì trả NGUYÊN danh sách, không đụng vào. */
+function locTimMan(khoa, ds, layChu){
+  const q = chuTim(khoa);
+  if(!q) return ds || [];
+  return (ds || []).filter(function(x){
+    let s = '';
+    try{ s = layChu(x) || ''; }catch(e){ s = ''; }
+    return stripDia(String(s)).indexOf(q) >= 0;
+  });
+}
+/* Dòng báo kết quả lọc. Nói rõ đang lọc từ bao nhiêu, và khi không khớp ai
+   thì nói thẳng là do ô tìm chứ không để người dùng tưởng danh sách rỗng. */
+function dongKetQuaTim(khoa, soHien, soTong, donVi){
+  if(!chuTim(khoa)) return '';
+  const dv = donVi || 'dòng';
+  if(!soHien)
+    return '<div class="card" style="border-color:var(--warn);"><div class="small">'
+      + 'Không có ' + esc(dv) + ' nào khớp "<b>' + esc(timMan[khoa]) + '</b>" '
+      + 'trong ' + soTong + ' ' + esc(dv) + '. '
+      + '<span style="color:var(--son);cursor:pointer;" onclick="xoaTimMan(\'' + khoa
+      + '\')">Xoá tìm</span></div></div>';
+  return '<div class="small muted" style="margin-bottom:6px;">Hiện <b>' + soHien
+    + '</b> trên ' + soTong + ' ' + esc(dv) + ' — đang lọc theo "'
+    + esc(timMan[khoa]) + '".</div>';
+}
+
 
 /* ===== CHỐT QUYỀN Ở TẦNG GHI =====
    Trước V1.21.9 phần mềm bảo vệ bằng cách ẨN NÚT: màn hình hỏi hasPerm rồi mới
@@ -2473,7 +3002,8 @@ const MIEN_GAC = {
   baoDamDoiSoat:     'hàm phụ, chỉ gọi từ khoaDanhSachLop và khoaSoThu đã gác',
   datTienDo:         'đã tự gác bằng suaDuocTienDo — luật theo vai trong việc, không theo quyền',
   chuyenTrangThaiViec:'đã tự gác bằng doiDuocViec — luật theo vai trong việc',
-  traLaiViec:        'đã tự gác bằng doiDuocViec — luật theo vai trong việc'
+  traLaiViec:        'đã tự gác bằng doiDuocViec — luật theo vai trong việc',
+  huyViec:           'đã tự gác bằng huyDuocViec — chủ trì hoặc người phê duyệt, bắt ghi lý do'
 };
 
 /* Một câu hỏi duy nhất cho mọi hàm ghi. Trả true là được đi tiếp. */
@@ -2534,6 +3064,10 @@ function ngayVaoMacDinh(lop){
       ô "Quá hạn" ở màn Tổng quan và ô "Quá hạn" ở màn Công việc đếm trên hai
       tập khác nhau. Trạng thái 'Huỷ' còn được lọc ở bốn chỗ dù không hề có
       trong TRANG_THAI_VIEC, tức là không select nào đặt được. */
+/* 'Từ chối' CỐ Ý không có cửa nào đặt được — giữ trong danh sách này chỉ để
+   phân loại nếu gặp dữ liệu cũ hoặc dữ liệu nhập tay mang trạng thái đó. Người
+   duyệt không đồng ý thì có hai đường rõ ràng: "Trả lại" cho làm lại, hoặc
+   "Huỷ việc" nếu bỏ hẳn. Đừng đi tìm nút Từ chối, không có. */
 const VIEC_DA_KHEP = ['Hoàn thành', 'Từ chối', 'Huỷ'];
 function viecDaKhep(v){
   return VIEC_DA_KHEP.indexOf(v && v.trangThai) >= 0;
@@ -3216,52 +3750,60 @@ function viecChoToiXuLy(){
    Khai hàng đợi mới thì THÊM MỘT DÒNG vào bảng này, không sửa chỗ nào
    khác. Phép phân tích tĩnh 23 chặn việc sinh hàng đợi mà quên khai. */
 const HANG_DOI_DUYET = [
-  {ma:'mienGiam', nhan:'Đề nghị miễn giảm học phí', quyen:'duyetMienGiam',
+  {ma:'mienGiam', nhan:'Đề nghị miễn giảm học phí',
+   nhanCB:'đề nghị miễn giảm học phí chờ tôi duyệt', quyen:'duyetMienGiam',
    tab:'taiChinh', sec:'mienGiam',
    lay:function(){ return (mienGiamList||[]).filter(function(m){ return m.trangThai==='Chờ duyệt'; }); },
    dong:function(m){ return {ten:m.tenHocVien||'', phu:'Lớp '+(m.maLop||'—')
      +(m.uuDaiTen? ' · '+m.uuDaiTen : '')+(m.lyDo? ' · '+m.lyDo : ''),
      ai:m.nguoiDeNghi||'', ngay:m.ngayDeNghi||'', tien:uocTongCamKet(m)}; }},
 
-  {ma:'hoanPhi', nhan:'Đề nghị hoàn phí, bảo lưu, chuyển lớp', quyen:'duyetHoanPhi',
+  {ma:'hoanPhi', nhan:'Đề nghị hoàn phí, bảo lưu, chuyển lớp',
+   nhanCB:'đề nghị hoàn phí, bảo lưu, chuyển lớp chờ tôi duyệt', quyen:'duyetHoanPhi',
    tab:'taiChinh', sec:'hoanPhi',
    lay:function(){ return (hoanPhiList||[]).filter(function(x){ return x.trangThai==='Chờ duyệt'; }); },
    dong:function(x){ return {ten:x.tenHocVien||'', phu:(x.loai||'')+' · lớp '+(x.maLop||'—')
      +(x.lyDo? ' · '+x.lyDo : ''),
      ai:x.nguoiDeXuat||'', ngay:x.ngayDeXuat||'', tien:Number(x.soTien)||0}; }},
 
-  {ma:'khoHanhChinh', nhan:'Phiếu xuất kho chờ Hành chính duyệt', quyen:'quanLyKho',
+  {ma:'khoHanhChinh', nhan:'Phiếu xuất kho chờ Hành chính duyệt',
+   nhanCB:'phiếu xuất kho chờ tôi duyệt (bước Hành chính)', quyen:'quanLyKho',
    tab:'taiSan', sec:'kho',
    lay:function(){ return (phieuKhoList||[]).filter(function(p){ return p.trangThai==='Chờ Hành chính duyệt'; }); },
    dong:function(p){ return {ten:p.maPhieu||'', phu:(p.lyDo||'')+' · bộ phận '+(p.tenBoPhan||'—'),
      ai:p.nguoiLap||'', ngay:p.ngayLap||'', tien:0}; }},
 
-  {ma:'khoBanGiamDoc', nhan:'Phiếu xuất kho chờ Ban Giám đốc duyệt', quyen:'duyetXuatKho',
+  {ma:'khoBanGiamDoc', nhan:'Phiếu xuất kho chờ Ban Giám đốc duyệt',
+   nhanCB:'phiếu xuất kho chờ tôi duyệt (bước Ban Giám đốc)', quyen:'duyetXuatKho',
    tab:'taiSan', sec:'kho',
    lay:function(){ return (phieuKhoList||[]).filter(function(p){ return p.trangThai==='Chờ Ban Giám đốc duyệt'; }); },
    dong:function(p){ return {ten:p.maPhieu||'', phu:(p.lyDo||'')+' · bộ phận '+(p.tenBoPhan||'—'),
      ai:p.nguoiLap||'', ngay:p.ngayLap||'', tien:0}; }},
 
-  {ma:'phieuIn', nhan:'Giấy đề nghị in', quyen:'duyetIn',
+  {ma:'phieuIn', nhan:'Giấy đề nghị in',
+   nhanCB:'giấy đề nghị in chờ tôi duyệt', quyen:'duyetIn',
    tab:'inAn', sec:'phieu',
    lay:function(){ return (phieuInList||[]).filter(function(p){ return p.trangThai==='Chờ duyệt'; }); },
    dong:function(p){ return {ten:p.veViec||p.hangMuc||'', phu:(p.soGDN? 'Số '+p.soGDN+' · ' : '')
      +(p.soLuong? p.soLuong+' '+(p.donViTinh||'') : ''),
      ai:p.nguoiDeXuatTen||'', ngay:p.ngayCanCo||'', tien:Number(p.thanhTien)||0}; }},
 
-  {ma:'ttNoiDung', nhan:'Sản phẩm truyền thông chờ duyệt nội dung', quyen:'duyetNoiDungTT',
+  {ma:'ttNoiDung', nhan:'Sản phẩm truyền thông chờ duyệt nội dung',
+   nhanCB:'sản phẩm truyền thông chờ tôi duyệt nội dung', quyen:'duyetNoiDungTT',
    tab:'truyenThong', sec:'yeuCau',
    lay:function(){ return (yeuCauTTList||[]).filter(function(y){ return y.trangThai==='Chờ duyệt nội dung'; }); },
    dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }},
 
-  {ma:'ttPhatHanh', nhan:'Sản phẩm truyền thông chờ duyệt phát hành', quyen:'duyetPhatHanhTT',
+  {ma:'ttPhatHanh', nhan:'Sản phẩm truyền thông chờ duyệt phát hành',
+   nhanCB:'sản phẩm truyền thông chờ tôi duyệt phát hành', quyen:'duyetPhatHanhTT',
    tab:'truyenThong', sec:'yeuCau',
    lay:function(){ return (yeuCauTTList||[]).filter(function(y){ return y.trangThai==='Chờ duyệt phát hành'; }); },
    dong:function(y){ return {ten:y.tieuDe||'', phu:y.maPhieu||'', ai:'', ngay:y.hanChot||'', tien:0}; }},
 
   /* Biên bản đối soát tháng: chỉ chờ ký khi CẢ HAI bên đã khoá số. Một bên
      chưa khoá thì việc đang nằm ở bên đó, không phải chờ Ban lãnh đạo. */
-  {ma:'bienBanDoiSoat', nhan:'Biên bản đối soát tháng chờ ký', quyen:'duyetBienBanDoiSoat',
+  {ma:'bienBanDoiSoat', nhan:'Biên bản đối soát tháng chờ ký',
+   nhanCB:'biên bản đối soát tháng chờ tôi ký', quyen:'duyetBienBanDoiSoat',
    tab:'taiChinh', sec:'doiSoat',
    lay:function(){
      return (doiSoatList||[]).filter(function(d){
@@ -3310,7 +3852,8 @@ function moiThuChoToiDuyet(){
     const dong = ds.map(function(x){
       try{ return q.dong(x); }catch(e){ return {ten:'', phu:'', ai:'', ngay:'', tien:0}; }
     });
-    ra.push({ma:q.ma, nhan:q.nhan, tab:q.tab, sec:q.sec, so:ds.length, dong:dong,
+    ra.push({ma:q.ma, nhan:q.nhan, nhanCB:q.nhanCB || q.nhan.toLowerCase(),
+      tab:q.tab, sec:q.sec, so:ds.length, dong:dong,
       tien: dong.reduce(function(s, d){ return s + (Number(d.tien)||0); }, 0)});
   });
   return ra;
@@ -3392,9 +3935,9 @@ const SECTIONS = {
              {k:'phanAnh',ten:'Phản ánh',nhom:'Học viên'},
              {k:'giaoVien',ten:'Giáo viên',nhom:'Giáo viên'},
              {k:'buoiDay',ten:'Buổi dạy',nhom:'Giáo viên'}],
-  tuyenSinh:[{k:'dieuHanh',ten:'Điều hành',can:'quanLyLead'},
+  tuyenSinh:[{k:'dieuHanh',ten:'Phễu tuyển sinh',can:'quanLyLead'},
              {k:'khach',ten:'Khách tiềm năng',can:'quanLyLead'},
-             {k:'dsHocVien',ten:'Học viên',can:'quanLyLead'},{k:'doiSoatNR',ten:'Newsale & Renew',can:'quanLyLead'},
+             {k:'dsHocVien',ten:'Học viên đã chốt',can:'quanLyLead'},{k:'doiSoatNR',ten:'Newsale & Renew',can:'quanLyLead'},
              {k:'xepLop',ten:'Kiểm tra đầu vào',can:'xemPhieuTest'},
              {k:'gia',ten:'Giá và kịch bản'}],
   truyenThong:[{k:'yeuCau',ten:'Phiếu yêu cầu'},{k:'chienDich',ten:'Chiến dịch và chi phí'},{k:'dinhMucTT',ten:'Định mức thời gian'}],
@@ -3439,9 +3982,17 @@ function veThanhDieuHuong(){
   if(!el) return;
   el.innerHTML = TAB_CHINH.filter(function(t){ return tabXemDuoc(t.k); }).map(function(t){
     const mo = (t.k === currentTab);
+    /* Huy hiệu cộng dồn của cả tab. Trước V1.31.5 số chỉ nằm ở mục con, mà mục
+       con chỉ được vẽ cho tab ĐANG MỞ — nên muốn biết tab Tài chính có việc gấp
+       không thì phải bấm vào mới biết, ngược hẳn công dụng của huy hiệu. Tab
+       đang mở thì bỏ số ở cha, vì mục con ngay dưới đã nói chi tiết hơn. */
+    const tong = mo ? null : demTongTab(t.k);
     const nut = '<button data-tab="' + t.k + '" class="' + (mo ? 'active' : '') + '" '
       + 'onclick="switchTab(\'' + t.k + '\')">'
       + '<span class="bieu">' + t.bieu + '</span><span class="chu">' + esc(t.ten) + '</span>'
+      + (tong ? '<span class="dem-muc" style="background:' + MAU_DEM[tong.mau] + ';'
+          + (tong.mau === 'xam' ? 'color:var(--text-2);' : 'color:#fff;')
+          + '">' + tong.so + '</span>' : '')
       + '</button>';
     if(!mo) return nut;
     const secs = mucCuaTab(t.k);
@@ -3482,11 +4033,27 @@ function nhatKyCuaToi(gioiHan){
     return (a.nguoi || '') === (currentUser.hoTen || '');
   }).slice(0, gioiHan || 6);
 }
-function khoiPhai(tieuDe, bieu, ds, mauDem, veDong, nhan, bam){
+/* Đếm SỐ VIỆC của một nhóm cảnh báo, không đếm số dòng.
+   Ban lãnh đạo báo 05/11/2026: ô "Việc chờ tôi" ở Tổng quan hiện 125 trong
+   khi huy hiệu cột phải hiện 6 — cùng một nguồn dữ liệu, hai con số, nằm
+   cạnh nhau. Nguyên nhân: huy hiệu lấy ds.length tức SỐ DÒNG, còn Tổng quan
+   cộng x.soLuong tức SỐ VIỆC. Mỗi dòng là một nhóm gộp nhiều việc.
+   Từ nay mọi nơi đếm "có bao nhiêu việc" đều gọi hàm này. */
+function soViecCanhBao(ds){
+  return (ds || []).reduce(function(s, x){ return s + (Number(x.soLuong) || 0); }, 0);
+}
+/* ds = TOÀN BỘ nhóm của tầng đó (để đếm cho đúng), soDong = số dòng được vẽ.
+   Đếm trên danh sách đã cắt bớt thì huy hiệu lại nói dối lần nữa. */
+function khoiPhai(tieuDe, bieu, ds, mauDem, veDong, nhan, bam, soDong){
   if(!ds.length) return '';
+  const tong = soViecCanhBao(ds);
+  const hien = ds.slice(0, soDong || 6);
+  const con = ds.length - hien.length;
   return '<div class="hop-phai"><h4>' + bieu + ' ' + esc(tieuDe)
-    + '<span class="dem" style="background:' + mauDem + ';">' + ds.length + '</span></h4>'
-    + ds.map(veDong).join('')
+    + '<span class="dem" style="background:' + mauDem + ';">' + tong + '</span></h4>'
+    + hien.map(veDong).join('')
+    + (con > 0 ? '<div class="gio" style="margin-top:5px;">và ' + con
+        + ' nhóm nữa</div>' : '')
     + (nhan ? '<span class="nhan" onclick="' + bam + '">' + esc(nhan) + ' →</span>' : '')
     + '</div>';
 }
@@ -3499,17 +4066,30 @@ function veCotPhai(){
   const dongCB = function(x){
     return '<div class="dong" onclick="toiHangDoi(\'' + x.tab + '\',\'' + x.sec + '\')" '
       + 'style="cursor:pointer;"><span class="cham" style="background:'
-      + (MAU_CHAM[x.mau] || 'var(--son)') + ';"></span><div>' + esc(x.tieuDe)
-      + (x.chiTiet ? '<div class="gio">' + esc(x.chiTiet) + '</div>' : '')
+      + (MAU_CHAM[x.mau] || 'var(--son)') + ';"></span><div style="min-width:0;">'
+      + esc(x.tieuDe)
+      /* Chi tiết gói trong MỘT dòng, dài thì cắt bằng dấu ba chấm và để đủ
+         trong title cho ai muốn rê chuột xem. Cột phải là để LIẾC, một dòng
+         chi tiết dài năm hàng đẩy mọi thứ khác xuống dưới tầm mắt. */
+      + (x.chiTiet
+         ? '<div class="gio" style="overflow:hidden;text-overflow:ellipsis;'
+           + 'white-space:nowrap;" title="' + esc(x.chiTiet) + '">' + esc(x.chiTiet)
+           + '</div>'
+         : '')
       + '</div></div>';
   };
   const toi = cb.filter(function(x){ return x.tang === 1; });
   const deY = cb.filter(function(x){ return x.tang !== 1; });
   const lk = nhatKyCuaToi(6);
 
-  let h = khoiPhai('Chờ tôi duyệt', '⏳', toi.slice(0, 6), 'var(--danger)', dongCB,
-                   'Xem tất cả', 'toiHangDoi(\'congViec\',\'choDuyet\')')
-        + khoiPhai('Cần để ý', '⚠️', deY.slice(0, 6), 'var(--warn)', dongCB,
+  /* Dùng ĐÚNG từ của màn Tổng quan. Trước đây cột phải gọi "Chờ tôi duyệt"
+     và "Cần để ý" trong khi Tổng quan gọi "Cần xử lý hôm nay" và "Cần theo
+     dõi" — cùng một dữ liệu, hai bộ từ, người dùng tưởng là hai thứ khác
+     nhau. Tệ hơn, "Chờ tôi duyệt" SAI nghĩa: trong đó có "64 khách quá hạn
+     gọi lại" và "31 cảnh báo học vụ", không ai duyệt những việc đó cả. */
+  let h = khoiPhai('Cần xử lý hôm nay', '🔴', toi, 'var(--danger)', dongCB,
+                   'Xem tất cả', 'switchTab(\'tongQuan\')')
+        + khoiPhai('Cần theo dõi', '🟡', deY, 'var(--warn)', dongCB,
                    'Xem tất cả', 'switchTab(\'tongQuan\')');
   if(lk.length){
     h += '<div class="hop-phai"><h4>🕘 Hoạt động của tôi</h4>'
@@ -3531,6 +4111,22 @@ function veCotPhai(){
   el.innerHTML = h;
 }
 function switchTab(tab){
+  /* CHỐT QUYỀN THẬT, KHÔNG CHỈ ẨN NÚT.
+     Trước V1.31.6 thanh điều hướng lọc nút theo quyền nhưng hàm này không hỏi
+     lại câu nào. Một tài khoản giáo viên không có quyền nào, mở Console gõ
+     switchTab('taiChinh') là thấy học phí, công nợ và lương của cả trung tâm —
+     thử ra 11 trên 12 tab đều lọt. Ẩn nút là trang trí, chặn mới là khoá.
+     Cùng một lý do đã chặn ở chuyenTrangThaiViec(): nút vẽ theo vai thì hàm
+     ghi cũng phải hỏi lại vai.
+     Dùng chung tabXemDuoc() với chỗ vẽ nút nên luật chỉ nằm một chỗ.
+     Đây là chốt ở GIAO DIỆN. Dữ liệu vẫn tải về máy qua Firestore nên muốn kín
+     hẳn thì phải siết luật đọc phía Firestore — việc đó ghi vào mục bảo mật,
+     chưa làm ở bản này. */
+  if(currentUser && !tabXemDuoc(tab)){
+    showToast('Bạn không có quyền xem mục này');
+    if(currentTab !== tab && tabXemDuoc(currentTab)) return;
+    tab = 'tongQuan';
+  }
   currentTab = tab;
   canChayHieuUng = true;
   const secs = mucCuaTab(tab);
@@ -3569,12 +4165,36 @@ function demMucSection(tab, k){
         return moi ? {so:moi, mau:'vang'} : null;
       }
     }
+    /* V1.31.5 — dọn về MỘT CỬA.
+       Trước đây tab Công việc có huy hiệu riêng do hàm veSoChoDuyetTab() chèn
+       thẳng vào DOM, chạy theo luật khác hẳn mọi tab còn lại: hiện cả khi tab
+       đang mở, dùng class CSS khác, và đếm theo cách thứ ba. Kết quả là trên
+       một thanh menu có hai kiểu huy hiệu với hai ý nghĩa. Nay số này vào
+       chung demMucSection như mọi mục khác, hàm kia đã xoá. */
+    if(tab === 'congViec' && k === 'choDuyet'){
+      const n = soChoToiDuyet();
+      return n ? {so:n, mau:'do'} : null;
+    }
   }catch(e){ console.warn('Không đếm được mục ' + k, e); }
   return null;
 }
 const MAU_DEM = {do:'var(--danger)', vang:'var(--warn)', xam:'var(--border)'};
 /* Nút một mục con. Tách riêng vì cả thanh dọc lẫn thanh ngang đều dùng —
    viết hai bản là sớm muộn một bên thiếu huy hiệu đếm việc. */
+/* Cộng số của mọi mục con trong tab, lấy màu nặng nhất. Chỉ cộng mục người này
+   CÓ QUYỀN xem — nếu không thì tab hiện số 8 mà bấm vào chỉ thấy 3, tệ hơn là
+   không hiện gì. Dùng chung mucCuaTab() với chỗ vẽ mục con nên không thể lệch. */
+const THU_TU_MAU_DEM = ['xam', 'vang', 'do'];
+function demTongTab(tab){
+  let so = 0, mau = 'xam';
+  mucCuaTab(tab).forEach(function(s){
+    const d = demMucSection(tab, s.k);
+    if(!d || !d.so) return;
+    so += d.so;
+    if(THU_TU_MAU_DEM.indexOf(d.mau) > THU_TU_MAU_DEM.indexOf(mau)) mau = d.mau;
+  });
+  return so ? {so: so, mau: mau} : null;
+}
 function veNutMuc(tab, secs){
   return secs.map(function(s){
     const d = demMucSection(tab, s.k);
@@ -3610,6 +4230,9 @@ function render(){
   const aid = (ae && ae.id) ? ae.id : null;
   let apos = null;
   if(aid){ try{ apos = ae.selectionStart; }catch(e){} }
+  /* Chốt lần hai: render() gọi được thẳng sau khi đã đặt currentTab bằng tay,
+     không qua switchTab. Hai chốt cùng hỏi tabXemDuoc nên luật vẫn một chỗ. */
+  if(!tabXemDuoc(currentTab)) currentTab = 'tongQuan';
   try{
     if(currentTab==='tongQuan') el.innerHTML = viewTongQuan();
     else if(currentTab==='hocVu') el.innerHTML = viewHocVu();
@@ -3636,23 +4259,10 @@ function render(){
      (gõ tìm kiếm, lưu xong, dữ liệu về từ máy chủ) thì hiện thẳng kết quả. */
   if(canChayHieuUng){ canChayHieuUng = false; chayHieuUngBieuDo(); }
   else datNgayKetQua();
-  veSoChoDuyetTab();
-}
-
-/* Con số đỏ trên tab Công việc. Nhìn thanh menu là biết có việc chờ mình,
-   không phải mở từng tab ra mới biết. */
-function veSoChoDuyetTab(){
-  const b = document.querySelector('#tabbar button[data-tab="congViec"]');
-  if(!b) return;
-  let so = 0;
-  try{ so = soChoToiDuyet(); }catch(e){ so = 0; }
-  const cu = b.querySelector('.dem-tab');
-  if(!so){ if(cu) cu.remove(); return; }
-  const chu = so > 99 ? '99+' : String(so);
-  if(cu){ if(cu.textContent !== chu) cu.textContent = chu; return; }
-  const s = document.createElement('span');
-  s.className = 'dem-tab'; s.textContent = chu;
-  b.appendChild(s);
+  /* Vẽ lại thanh điều hướng SAU mỗi lần render, không chỉ khi đổi tab. Thiếu
+     dòng này thì mọi huy hiệu đếm việc đứng im cho tới lúc người dùng bấm
+     sang tab khác: xử lý xong một cảnh báo mà số trên menu vẫn y nguyên. */
+  veThanhDieuHuong();
 }
 
 function emptyBox(ico, txt){ return '<div class="empty"><div class="ico">'+ico+'</div>'+esc(txt)+'</div>'; }
@@ -4085,18 +4695,16 @@ function thuThapCanhBao(){
 
   /* ---- Tầng 1: việc có người chịu trách nhiệm, chờ chính người đang đăng nhập ---- */
   if(hasPerm('xemTruyenThong')){
-    const choDuyetPH = yeuCauTTList.filter(function(y){
-      return y.trangThai === 'Chờ duyệt phát hành' && hasPerm('duyetPhatHanhTT'); });
-    them({tang:1, mau:'danger', soLuong:choDuyetPH.length,
-      tieuDe: choDuyetPH.length + ' sản phẩm chờ tôi duyệt phát hành',
-      chiTiet: choDuyetPH.slice(0,3).map(function(y){ return y.tieuDe; }).join(' · '),
-      tab:'truyenThong', sec:'yeuCau'});
-    const choDuyetND = yeuCauTTList.filter(function(y){
-      return y.trangThai === 'Chờ duyệt nội dung' && hasPerm('duyetNoiDungTT'); });
-    them({tang:1, mau:'danger', soLuong:choDuyetND.length,
-      tieuDe: choDuyetND.length + ' sản phẩm chờ tôi duyệt nội dung',
-      chiTiet: choDuyetND.slice(0,3).map(function(y){ return y.tieuDe; }).join(' · '),
-      tab:'truyenThong', sec:'yeuCau'});
+    /* V1.31.6 — BỎ HAI CẢNH BÁO VIẾT TAY ĐANG ĐẾM ĐÔI.
+       Trước đây chỗ này tự viết "N sản phẩm chờ tôi duyệt phát hành" và
+       "N sản phẩm chờ tôi duyệt nội dung". Nhưng V1.29.0 đã gom MỌI hàng đợi
+       duyệt vào bảng chung HANG_DOI_DUYET, trong đó có sẵn ttNoiDung và
+       ttPhatHanh, và hàm này gọi moiThuChoToiDuyet() ở phía dưới. Hai cái viết
+       tay ở đây không được gỡ, nên Tổng quan báo mỗi việc HAI LẦN và huy hiệu
+       cộng đôi con số. Nay xoá, để bảng chung lo — thêm hàng đợi mới chỉ khai
+       một dòng vào bảng, đúng như V1.29.0 đã định.
+       Giữ lại "chờ tôi nhận" bên dưới: đó là nhận việc về làm, không phải
+       duyệt, nên không nằm trong bảng hàng đợi duyệt. */
     const nhanViec = yeuCauTTList.filter(function(y){
       return y.trangThai === 'Đã gửi' && hasPerm('sanXuatTT'); });
     them({tang:1, mau:'danger', soLuong:nhanViec.length,
@@ -4157,7 +4765,13 @@ function thuThapCanhBao(){
      giảm, hoàn phí và phiếu xuất kho nằm im ở tab của nó. */
   moiThuChoToiDuyet().forEach(function(q){
     them({tang:1, mau:'danger', soLuong:q.so,
-      tieuDe: q.so + ' ' + q.nhan.toLowerCase() + ' chờ tôi duyệt'
+      /* Dùng nhanCB — câu viết sẵn cho dòng cảnh báo — thay vì ghép
+         nhan + ' chờ tôi duyệt'. Cách ghép cũ đẻ ra "sản phẩm truyền thông
+         chờ duyệt nội dung chờ tôi duyệt" vì nhan đã chứa sẵn chữ "chờ", và
+         toLowerCase() biến "Ban Giám đốc" thành "ban giám đốc" ngay trên màn
+         chính của Ban lãnh đạo. Biên bản đối soát thì là "chờ tôi ký" chứ
+         không phải "chờ tôi duyệt". */
+      tieuDe: q.so + ' ' + q.nhanCB
         + (q.tien ? ' · ' + fmtTien(q.tien) + 'đ' : ''),
       chiTiet: q.dong.slice(0,3).map(function(d){ return d.ten; }).filter(Boolean).join(' · '),
       tab:q.tab, sec:q.sec});
@@ -4341,7 +4955,11 @@ function thuThapCanhBao(){
              && khoanThu(g).some(function(x){ return x.ngay === n; }); });
       if(co) chuaChot.push(n);
     }
-    them({tang:1, mau:'warn', soLuong: chuaChot.length,
+    /* Tầng 1 là việc chờ chính mình hôm nay, cả khối vẽ màu đỏ. Dòng này để
+       mau:'warn' nên hiện chấm vàng lạc giữa khối đỏ và con số vàng giữa dãy
+       số đỏ trên Tổng quan. Chốt báo cáo ngày là việc đến hạn, không phải
+       việc để theo dõi, nên đúng màu của nó là đỏ. */
+    them({tang:1, mau:'danger', soLuong: chuaChot.length,
       tieuDe: chuaChot.length + ' ngày chưa chốt báo cáo',
       chiTiet: chuaChot.map(function(n){ return fmtDate(n); }).join(' · ') + ' — có hoạt động nhưng chưa chốt',
       tab:'baoCao', sec:'ngay'});
@@ -4765,11 +5383,12 @@ function viewTongQuan(){
     + oThongKe('Tổng sĩ số', tongSiSo, false,
         {ico:'👥', mau:'var(--c3)', nen:'var(--ok-bg)',
          phu:lopDangHoc.length ? 'Trung bình '+fmtNum(tongSiSo/lopDangHoc.length, 1)+' em mỗi lớp' : ''})
-    + oThongKe(xemTC ? 'Thu tháng này' : 'Sĩ số TB mỗi lớp',
-        xemTC ? fmtTrieu(thuThang)
-          : (lopDangHoc.length ? fmtNum(tongSiSo/lopDangHoc.length, 1) : '0'),
-        xemTC, {ico:xemTC?'💰':'📐', mau:'var(--c4)', nen:'var(--warn-bg)',
-                phu:xemTC ? 'Tháng '+Number(thang.slice(5))+'/'+thang.slice(0,4) : ''})
+    /* Người không có quyền tài chính trước đây được thay bằng ô "Sĩ số TB mỗi
+       lớp" — đúng con số đã nằm ở dòng nhỏ của ô "Tổng sĩ số" ngay bên trái.
+       Bù một ô trống bằng cách nói lại chuyện vừa nói thì thà để ba ô. */
+    + (xemTC ? oThongKe('Thu tháng này', fmtTrieu(thuThang), true,
+        {ico:'💰', mau:'var(--c4)', nen:'var(--warn-bg)',
+         phu:'Tháng '+Number(thang.slice(5))+'/'+thang.slice(0,4)}) : '')
     + oViecChoToi(viecChoToi, viecChoToi ? 'Xem khối đỏ bên dưới' : 'Không có việc nào chờ bạn')
     + '</div>';
 
@@ -4779,20 +5398,15 @@ function viewTongQuan(){
   let traiHtml = '';
   if(nhom.length){
     traiHtml = '<div class="card"><h3>Sĩ số theo nhóm chương trình</h3>'
+      /* V1.31.5 — BỎ HÀNG BA SỐ DƯỚI BIỂU ĐỒ TRÒN.
+         Hàng đó hiện lại 'lớp đang học', 'HV trung bình/lớp' và 'lớp dưới tối
+         thiểu' — cả ba đã nằm nguyên trong bốn ô ngay đầu màn, cách chừng một
+         màn hình phía trên ('Lớp đang học 9 · 9 lớp dưới sĩ số tối thiểu' và
+         'Tổng sĩ số 26 · Trung bình 2,9 em mỗi lớp'). Biểu đồ tròn đã có phần
+         chia theo nhóm chương trình và tổng sĩ số ở giữa; thêm ba số cũ chỉ
+         khiến người đọc phải đối chiếu xem có phải mình nhìn nhầm không. */
       + bdDonut(nhom, {tamDuoi:'học viên', bam:'xemNhomCT'})
-      + '<div style="display:flex;gap:9px;margin-top:13px;padding-top:11px;'
-        + 'border-top:1px solid var(--border-2);">'
-      + '<div style="flex:1;text-align:center;"><div style="font-size:18px;font-weight:800;">'
-        + lopDangHoc.length + '</div><div class="small muted">lớp đang học</div></div>'
-      + '<div style="flex:1;text-align:center;border-left:1px solid var(--border-2);">'
-        + '<div style="font-size:18px;font-weight:800;">'
-        + (lopDangHoc.length ? fmtNum(tongSiSo/lopDangHoc.length, 1) : '0')
-        + '</div><div class="small muted">HV trung bình/lớp</div></div>'
-      + '<div style="flex:1;text-align:center;border-left:1px solid var(--border-2);">'
-        + '<div style="font-size:18px;font-weight:800;'
-        + (duoiToiThieu?'color:var(--danger-ink);':'') + '">' + duoiToiThieu
-        + '</div><div class="small muted">lớp dưới tối thiểu</div></div>'
-      + '</div></div>';
+      + '</div>';
   }
   let phaiHtml = '';
   if(xemTC){
@@ -4831,7 +5445,10 @@ function viewTongQuan(){
             : x.ss >= x.moc.toiDa ? 'var(--c6)' : 'var(--ok)';
           return '<div style="padding:6px 0;'+(i?'border-top:1px solid var(--border-2);':'')+'">'
             + '<div class="row" style="margin-bottom:4px;">'
-            + '<b style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'
+            /* title để rê chuột đọc đủ: mã lớp dài bị cắt cụt ở khổ điện
+               thoại, không có title thì không cách nào xem hết tên. */
+            + '<b title="'+esc(x.lop.maLop||'')+'" style="min-width:0;overflow:hidden;'
+            + 'text-overflow:ellipsis;white-space:nowrap;">'
             + esc(x.lop.maLop||'—')+'</b>'
             + '<span class="small muted" style="flex-shrink:0;">'+x.ss+' / '+x.moc.toiDa
             + (x.ss < x.moc.toiThieu ? ' · tối thiểu '+x.moc.toiThieu
@@ -4883,39 +5500,112 @@ function viewHocVu(){
   return '';
 }
 
-let filterLopText='', filterLopNhom='';
-function setFilterLop(){ filterLopText=$('fLopText').value; filterLopNhom=$('fLopNhom').value; render(); }
+let filterLopText='', filterLopNhom='', filterLopNam='';
+let lopXemKetThuc = false;
+function setFilterLop(){
+  filterLopText=$('fLopText').value; filterLopNhom=$('fLopNhom').value;
+  const n=$('fLopNam'); if(n) filterLopNam=n.value;
+  render();
+}
+function doiXemLopKT(){ lopXemKetThuc = !lopXemKetThuc; render(); }
+
+/* ===== DANH MỤC LỚP: LỚP CHẾT KHÔNG ĐƯỢC CHE LỚP SỐNG =====
+   Ban lãnh đạo hỏi 06/11/2026: lớp đã kết thúc sao lại nằm trên, và vài năm
+   nữa hàng trăm lớp thì sao. Dựng thử 29 lớp trong đó 27 đã kết thúc từ 2024:
+   lớp đang học bị đẩy xuống thứ 28, ba dòng đầu màn là lớp đóng từ hai năm
+   trước. Nguyên nhân: không có bộ lọc trạng thái nào, và sắp xếp chỉ theo
+   nhóm rồi mã lớp nên 'Đã kết thúc' hay 'Đang học' nằm lẫn lộn theo bảng chữ.
+   Kèm một lỗi nữa: tiêu đề nhóm đếm riêng lớp đang học ('1 lớp đang học')
+   nhưng bên dưới đổ ra cả 29 dòng — đếm một tập, hiện một tập khác. */
+const BAC_LOP = {'Đang học':0, 'Sắp khai giảng':1, 'Tạm dừng':2, 'Đã kết thúc':3};
+const LOP_KT_TOI_DA = 20;
+function bacLop(l){
+  const b = BAC_LOP[l && l.trangThai];
+  return b === undefined ? 9 : b;      /* trạng thái lạ xuống cuối, không mất */
+}
+function namCuaLop(l){ return String((l && (l.ngayKG || l.ngayKT)) || '').slice(0, 4); }
+function cacNamCoLop(){
+  const o = {};
+  (lopList||[]).forEach(function(l){ const n = namCuaLop(l); if(n) o[n] = true; });
+  return Object.keys(o).sort().reverse();
+}
 
 function viewDanhMucLop(){
+  /* Lọc nhóm, năm và chữ trước; trạng thái lọc sau. Có vậy con số trên nút
+     "Hiện N lớp đã kết thúc" mới đúng bằng số lớp hiện ra khi bấm — đếm trên
+     toàn bộ lopList thì nút ghi 27 mà bấm vào ra 9. */
+  const q = stripDia(filterLopText);
+  const coSan = (lopList||[]).filter(function(l){
+    if(filterLopNhom && l.nhomCT!==filterLopNhom) return false;
+    if(filterLopNam && namCuaLop(l)!==filterLopNam) return false;
+    if(q && stripDia((l.maLop||'')+' '+(l.gvPhuTrach||'')+' '+(l.idTheoDoi||'')).indexOf(q)<0) return false;
+    return true;
+  });
+  const soKT = coSan.filter(function(l){ return l.trangThai==='Đã kết thúc'; }).length;
+  const nam = cacNamCoLop();
+
   let h = '<div class="card"><div class="row wrap" style="gap:8px;">'
     + '<input id="fLopText" placeholder="Tìm mã lớp, giáo viên…" value="'+esc(filterLopText)+'" oninput="setFilterLop()" style="flex:1;min-width:160px;">'
     + '<select id="fLopNhom" onchange="setFilterLop()" style="width:auto;min-width:150px;"><option value="">Tất cả nhóm CT</option>'
     + (settings.nhomCT||[]).map(function(n){ return '<option '+(filterLopNhom===n?'selected':'')+'>'+esc(n)+'</option>'; }).join('')
     + '</select>'
+    + (nam.length>1 ? '<select id="fLopNam" onchange="setFilterLop()" style="width:auto;min-width:110px;">'
+        + '<option value="">Tất cả năm</option>'
+        + nam.map(function(n){ return '<option value="'+n+'" '+(filterLopNam===n?'selected':'')+'>Năm '+n+'</option>'; }).join('')
+        + '</select>' : '')
+    + (soKT ? '<button class="btn" onclick="doiXemLopKT()">'
+        + (lopXemKetThuc ? 'Ẩn lớp đã kết thúc' : 'Hiện '+soKT+' lớp đã kết thúc') + '</button>' : '')
     + (hasPerm('suaLop')?'<button class="btn btn-primary" onclick="formLop()">+ Mở lớp</button>':'')
     + '</div></div>';
 
-  const q = stripDia(filterLopText);
-  let ds = lopList.filter(function(l){
-    if(filterLopNhom && l.nhomCT!==filterLopNhom) return false;
-    if(q && stripDia((l.maLop||'')+' '+(l.gvPhuTrach||'')+' '+(l.idTheoDoi||'')).indexOf(q)<0) return false;
-    return true;
+  const ds = coSan.filter(function(l){
+    return lopXemKetThuc || l.trangThai!=='Đã kết thúc'; });
+  ds.sort(function(a,b){
+    return (a.nhomCT||'').localeCompare(b.nhomCT||'','vi')
+      || bacLop(a) - bacLop(b)
+      || String(b.ngayKG||'').localeCompare(String(a.ngayKG||''))
+      || (a.maLop||'').localeCompare(b.maLop||'','vi');
   });
-  ds.sort(function(a,b){ return (a.nhomCT||'').localeCompare(b.nhomCT||'','vi') || (a.maLop||'').localeCompare(b.maLop||'','vi'); });
 
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('🏫','Chưa có lớp nào. Bấm "Mở lớp" để thêm.');
-  else {
-    let nhomHienTai = null;
+  if(!ds.length){
+    /* Chọn năm cũ mà lớp năm đó đóng hết thì màn trắng trơn, người dùng tưởng
+       mất dữ liệu. Nói rõ còn gì và cho bấm một cái là thấy. */
+    /* emptyBox() thoát HTML nên không nhét nút vào trong nó được — nhét vào
+       thì người dùng đọc thấy nguyên đoạn thẻ <button>. Vẽ nút tách ra ngoài. */
+    if(soKT) h += emptyBox('🏫', 'Không lớp nào đang chạy'
+        + (filterLopNam ? ' trong năm ' + filterLopNam : '')
+        + '. Còn ' + soKT + ' lớp đã kết thúc.')
+      + '<div style="text-align:center;margin:-6px 0 14px;">'
+      + '<button class="btn btn-sm" onclick="doiXemLopKT()">Hiện ' + soKT + ' lớp đã kết thúc</button></div>';
+    else h += emptyBox('🏫', (filterLopText||filterLopNhom||filterLopNam)
+      ? 'Không lớp nào khớp bộ lọc' : 'Chưa có lớp nào. Bấm "Mở lớp" để thêm.');
+  } else {
+    let nhomHienTai = null, daVeKT = 0, tongKTNhom = 0;
     ds.forEach(function(l){
       if(l.nhomCT!==nhomHienTai){
-        nhomHienTai = l.nhomCT;
-        const cung = ds.filter(function(x){ return x.nhomCT===nhomHienTai && x.trangThai==='Đang học'; });
-        const ss = cung.reduce(function(s,x){ return s+siSoLop(x.id); },0);
-        h += '<div class="grp-head">'+esc(nhomHienTai||'(chưa phân nhóm)')+' · '+cung.length+' lớp đang học · '+ss+' học viên</div>';
+        nhomHienTai = l.nhomCT; daVeKT = 0;
+        const cung = ds.filter(function(x){ return x.nhomCT===nhomHienTai; });
+        const song = cung.filter(function(x){ return x.trangThai==='Đang học'; });
+        tongKTNhom = cung.filter(function(x){ return x.trangThai==='Đã kết thúc'; }).length;
+        const ss = song.reduce(function(s,x){ return s+siSoLop(x.id); },0);
+        /* Tiêu đề phải mô tả ĐÚNG những dòng nằm dưới nó, kể cả lớp đã kết thúc */
+        h += '<div class="grp-head">'+esc(nhomHienTai||'(chưa phân nhóm)')
+          + ' · '+song.length+' lớp đang học · '+ss+' học viên'
+          + (tongKTNhom ? ' <span class="muted">· '+tongKTNhom+' đã kết thúc</span>' : '')
+          + '</div>';
+      }
+      if(l.trangThai==='Đã kết thúc'){
+        daVeKT++;
+        if(daVeKT === LOP_KT_TOI_DA+1)
+          h += '<div class="list-row"><div class="small muted">và '
+            + (tongKTNhom - LOP_KT_TOI_DA)
+            + ' lớp đã kết thúc nữa — chọn năm hoặc gõ mã lớp vào ô tìm để xem</div></div>';
+        if(daVeKT > LOP_KT_TOI_DA) return;
       }
       const c = canhBaoLop(l);
-      h += '<div class="list-row"><div style="min-width:0;">'
+      const mo = l.trangThai==='Đã kết thúc';
+      h += '<div class="list-row"'+(mo?' style="opacity:.62;"':'')+'><div style="min-width:0;">'
          + '<div><b>'+esc(l.maLop)+'</b> <span class="small muted">· '+esc(l.idTheoDoi||'')+'</span></div>'
          + '<div class="small muted">'+esc(tenGiaoVienCuaLop(l)||'—')+' · '+esc(l.lichHoc||'')+' · '+esc(l.gioHoc||'')+' · '+esc(l.phongHoc||'')+'</div>'
          + '<div class="small muted">'+fmtDate(l.ngayKG)+' → '+fmtDate(l.ngayKT)+' · buổi '+soBuoiDaHoc(l.id)+'/'+(l.soBuoiKH||'?')+'</div>'
@@ -5070,6 +5760,21 @@ function luuLop(id){
   };
   const trung = lopList.some(function(l){ return l.id!==id && l.idTheoDoi===data.idTheoDoi; });
   if(trung){ showToast('Đã có lớp '+maLop+' khai giảng cùng ngày. Đổi mã lớp hoặc ngày khai giảng.'); return; }
+
+  /* Cảnh báo va chạm lịch NGAY LÚC LƯU, không để tới khi ai đó mở Thời khoá
+     biểu mới lộ. Không chặn cứng: xếp hai lớp cùng phòng lệch tuần, hay một
+     giáo viên dạy ghép, vẫn có trường hợp hợp lệ. Nhưng người xếp lớp phải
+     biết mình đang làm gì. Dùng chung vaChamLich() với màn Thời khoá biểu. */
+  const va = vaChamLich(data, id);
+  if(va.length){
+    const mo = va.slice(0, 4).map(function(v){
+      return '· Trùng ' + v.loai + (v.ten ? ' ' + v.ten : '') + ' với lớp ' + v.b.maLop
+        + ' (' + v.thu.map(function(t){ return TEN_THU[t]; }).join(', ')
+        + ' · ' + (v.b.gioHoc || '') + ')'; }).join('\n');
+    if(!confirm('Lớp này đè lịch với lớp đang chạy:\n\n' + mo
+        + (va.length > 4 ? '\n· và ' + (va.length - 4) + ' va chạm nữa' : '')
+        + '\n\nVẫn lưu?')) return;
+  }
   const p = id? db.collection('fcv_lop').doc(id).update(data) : db.collection('fcv_lop').add(data);
   p.then(function(){ closeModal(); showToast('✅ Đã lưu lớp '+maLop); logAct((id?'Sửa':'Mở')+' lớp '+maLop); }).catch(fsErr);
 }
@@ -6084,6 +6789,73 @@ function chamNguyCoBoHoc(gd){
 }
 
 /* Gom toàn bộ cảnh báo học vụ, mỗi mục có khoá riêng để đánh dấu đã xử lý */
+/* Mức nặng đã từng được xử lý của một cảnh báo, hoặc null nếu chưa từng.
+
+   Trước V1.31.4 khoá cảnh báo kẹp luôn con số vào cuối ('cc|G1|60'), nên khi
+   học viên KHÁ LÊN thì khoá đổi và cảnh báo đã xử lý hiện lại y như mới: xử lý
+   em chuyên cần 60%, em đi học thêm một buổi thành 64%, cảnh báo bật lại. Học
+   vụ xử lý lần nữa, đẻ thêm một hồ sơ. Đó là lý do ô "Đã xử lý" phình lên 1203
+   trong khi cả trung tâm chỉ có mấy trăm em.
+
+   Nay khoá chỉ còn danh tính của vấn đề, mức nặng tách ra trường nang (càng lớn
+   càng nặng). Cảnh báo chỉ hiện lại khi NẶNG HƠN lúc đã xử lý. */
+function nangTuKhoaCu(k, ng){
+  /* Hồ sơ xử lý cũ không có trường nang. Với vang/boHoc con số cuối khoá vốn đã
+     càng lớn càng nặng nên dùng thẳng; chuyên cần lưu phần trăm có mặt (càng
+     lớn càng TỐT) nên phải đổi dấu; noLau lưu tiến độ chia 10. Những loại không
+     kẹp số thì coi như đã xử lý ở mức nặng nhất — giữ nguyên đúng những gì đang
+     hiện trên màn hình hôm nay, không bịa thêm cảnh báo cũ. */
+  const p = String(k == null ? '' : k).split('|');
+  if(p.length < 3) return Infinity;
+  const n = Number(p[2]);
+  if(isNaN(n)) return Infinity;
+  if(p[0] === 'cc') return (ng || nguongCanhBao()).chuyenCan - n;
+  if(p[0] === 'noLau') return n * 10;
+  if(p[0] === 'dotQuaHan') return Infinity;   /* số cuối là số ĐỢT, không phải mức nặng */
+  return n;
+}
+function nangDaXuLy(khoa, ng){
+  const tien = khoa + '|';
+  let ra = null;
+  (xuLyCBList || []).forEach(function(y){
+    const k = String(y.khoa == null ? '' : y.khoa);
+    if(k !== khoa && k.indexOf(tien) !== 0) return;
+    const n = (y.nang === undefined || y.nang === null)
+      ? nangTuKhoaCu(k, ng) : Number(y.nang);
+    const nn = isNaN(n) ? Infinity : n;
+    if(ra === null || nn > ra) ra = nn;
+  });
+  return ra;
+}
+/* Tổng số CẢNH BÁO trong danh sách gom theo học viên — khác số HỌC VIÊN, vì một
+   em có thể cùng lúc vắng nhiều, nợ phí và nguy cơ bỏ học. Hai con số đứng cạnh
+   nhau thì phải ghi rõ con nào là con nào. */
+function soCanhBaoTrongDs(dsHv){
+  return (dsHv || []).reduce(function(s, m){
+    return s + ((m && m.vanDe) ? m.vanDe.length : 0); }, 0);
+}
+/* Số cảnh báo đã xử lý trong n ngày gần đây. Ô "Đã xử lý" cũ đếm từ ngày mở
+   phần mềm nên chỉ tăng, không ai dùng được để biết tuần này làm được bao nhiêu. */
+function soXuLyGanDay(soNgay){
+  const moc = addDaysISO(todayISO(), -(soNgay || 30));
+  return (xuLyCBList || []).filter(function(y){
+    if(y.ngayXuLy) return y.ngayXuLy >= moc;
+    if(y.ts) return new Date(y.ts).toISOString().slice(0, 10) >= moc;
+    return false;
+  }).length;
+}
+/* Cùng độ dài cửa sổ nhưng lùi về một kỳ, để đặt cạnh nhau mà so. Một con số
+   đứng một mình không nói được tháng này làm nhiều hay ít hơn tháng trước. */
+function soXuLyKyTruoc(soNgay){
+  const n = soNgay || 30;
+  const dau = addDaysISO(todayISO(), -2 * n);
+  const cuoi = addDaysISO(todayISO(), -n);
+  return (xuLyCBList || []).filter(function(y){
+    const d = y.ngayXuLy || (y.ts ? new Date(y.ts).toISOString().slice(0, 10) : '');
+    return d && d >= dau && d < cuoi;
+  }).length;
+}
+
 function gomCanhBaoHocVu(){
   const ng = nguongCanhBao();
   const ra = [];
@@ -6102,7 +6874,7 @@ function gomCanhBaoHocVu(){
     if(vlt >= ng.vangBao)
       ra.push(Object.assign({}, chung, {
         loai: 'vang', nhom: 'Vắng liên tiếp cần báo phụ huynh',
-        khoa: 'vang|' + gd.id + '|' + vlt,
+        khoa: 'vang|' + gd.id, nang: vlt,
         mucDo: vlt >= 3 ? 'Cao' : 'Trung bình',
         noiDung: 'Vắng ' + vlt + ' buổi liên tiếp',
         goiY: 'Gọi phụ huynh hỏi lý do và phối hợp xử lý'}));
@@ -6112,7 +6884,7 @@ function gomCanhBaoHocVu(){
     if(cc !== null && cc < ng.chuyenCan)
       ra.push(Object.assign({}, chung, {
         loai: 'chuyenCan', nhom: 'Chuyên cần thấp',
-        khoa: 'cc|' + gd.id + '|' + Math.round(cc),
+        khoa: 'cc|' + gd.id, nang: Math.round(ng.chuyenCan - cc),
         mucDo: cc < 60 ? 'Cao' : 'Trung bình',
         noiDung: 'Chuyên cần ' + fmtNum(cc, 0) + '%, dưới ngưỡng ' + ng.chuyenCan + '%',
         goiY: 'Trao đổi với phụ huynh, cân nhắc xếp buổi học bù'}));
@@ -6125,7 +6897,7 @@ function gomCanhBaoHocVu(){
         && !dangChoMienGiam(gd))
       ra.push(Object.assign({}, chung, {
         loai: 'chuaDong', nhom: 'Đang học nhưng chưa đóng học phí',
-        khoa: 'chuaDong|' + gd.id,
+        khoa: 'chuaDong|' + gd.id, nang: soBuoiDaQua,
         mucDo: 'Cao',
         noiDung: 'Đã học ' + soBuoiDaQua + ' buổi, chưa đóng đồng nào · phải đóng '
           + fmtTien(hocPhiPhaiDong(gd)) + 'đ',
@@ -6136,7 +6908,7 @@ function gomCanhBaoHocVu(){
     if(dotHan && dotHan.quaHan && !dangChoMienGiam(gd))
       ra.push(Object.assign({}, chung, {
         loai: 'dotQuaHan', nhom: 'Đợt đóng học phí quá hạn',
-        khoa: 'dotQuaHan|' + gd.id + '|' + dotHan.so,
+        khoa: 'dotQuaHan|' + gd.id + '|' + dotHan.so, nang: dotHan.soNgayQua,
         mucDo: dotHan.soNgayQua >= 14 ? 'Cao' : 'Trung bình',
         noiDung: dotHan.ten + ' thiếu ' + fmtTien(dotHan.thieu) + 'đ · quá hạn '
           + dotHan.soNgayQua + ' ngày (hạn ' + fmtDate(dotHan.hanDong) + ')',
@@ -6149,7 +6921,7 @@ function gomCanhBaoHocVu(){
     if(no > 0 && daDong > 0 && !keHoachDong(gd).length && td !== null && td >= 40)
       ra.push(Object.assign({}, chung, {
         loai: 'noLau', nhom: 'Nợ học phí kéo dài',
-        khoa: 'noLau|' + gd.id + '|' + Math.round(td / 10),
+        khoa: 'noLau|' + gd.id, nang: Math.round(td),
         mucDo: td >= 70 ? 'Cao' : 'Trung bình',
         noiDung: 'Còn nợ ' + fmtTien(no) + 'đ trong khi đã học ' + fmtNum(td, 0) + '% số buổi',
         goiY: 'Liên hệ thu phần còn lại trước khi hết khoá'}));
@@ -6166,15 +6938,18 @@ function gomCanhBaoHocVu(){
     if(ng2)
       ra.push(Object.assign({}, chung, {
         loai: 'boHoc', nhom: 'Nguy cơ bỏ học',
-        khoa: 'boHoc|' + gd.id + '|' + ng2.diem,
+        khoa: 'boHoc|' + gd.id, nang: ng2.diem,
         mucDo: ng2.mucDo,
         noiDung: ng2.viSao,
         goiY: 'Gặp trực tiếp phụ huynh, tìm hướng giữ học viên'}));
   });
 
-  /* Lọc bỏ những cảnh báo đã xử lý */
+  /* Lọc bỏ những cảnh báo đã xử lý. Chỉ hiện lại khi NẶNG HƠN lúc xử lý —
+     em khá lên thì không gọi phụ huynh lần nữa, em xấu đi thì phải gọi. */
   return ra.filter(function(x){
-    return !xuLyCBList.some(function(y){ return y.khoa === x.khoa; });
+    const daXL = nangDaXuLy(x.khoa, ng);
+    if(daXL === null) return true;
+    return Number(x.nang) > daXL;
   }).sort(function(a, b){
     if(a.mucDo !== b.mucDo) return a.mucDo === 'Cao' ? -1 : 1;
     return (a.maLop || '').localeCompare(b.maLop || '', 'vi');
@@ -6256,6 +7031,9 @@ function luuXuLyNhieu(khoaList){
   Promise.all(cacCb.map(function(x){
     return db.collection('fcv_xulycb').add({
       khoa: x.khoa, loai: x.loai, nhom: x.nhom,
+      /* nang = mức nặng lúc xử lý. Thiếu nó thì cảnh báo không biết khi nào
+         được phép hiện lại — xem nangDaXuLy. */
+      nang: Number(x.nang) || 0,
       hocVienId: x.hocVienId, hoTen: x.hoTen, lopId: x.lopId, maLop: x.maLop,
       noiDung: x.noiDung, cach: cach, ghiChu: ghiChu,
       nguoiXuLy: currentUser.hoTen, viTri: currentUser.maViTri,
@@ -6313,37 +7091,65 @@ function viewCanhBaoHocVu(){
   if(cbXemDaXuLy) return h + khoiDaXuLy();
 
   const dsHv = gomTheoHocVien();
-  const locHv = cbLocNhom
-    ? dsHv.filter(function(m){ return m.vanDe.some(function(v){ return v.nhom === cbLocNhom; }); })
-    : dsHv;
+  /* Nguy cơ bỏ học không nằm trong vanDe mà ở cờ nguyCo (xem gomTheoHocVien),
+     nên lọc theo nhóm phải xét riêng — thiếu chỗ này thì bấm chip ra danh sách rỗng. */
+  let locHv = !cbLocNhom ? dsHv
+    : cbLocNhom === 'Nguy cơ bỏ học'
+      ? dsHv.filter(function(m){ return m.nguyCo; })
+      : dsHv.filter(function(m){ return m.vanDe.some(function(v){ return v.nhom === cbLocNhom; }); });
   const soHvCao = dsHv.filter(function(m){ return m.mucDo === 'Cao'; }).length;
 
   h += '<div class="grid" style="margin-bottom:12px;">'
-    + '<div class="stat"><div class="lbl">Học viên cần xử lý</div><div class="val">' + dsHv.length + '</div></div>'
+    + '<div class="stat"><div class="lbl">Học viên cần xử lý</div><div class="val">' + dsHv.length + '</div>'
+    + '<div class="small muted">' + soCanhBaoTrongDs(dsHv) + ' cảnh báo</div></div>'
     + '<div class="stat" style="' + (soHvCao ? 'background:var(--danger-bg);' : '') + '">'
     + '<div class="lbl" style="' + (soHvCao ? 'color:var(--danger);' : '') + '">Mức cao</div>'
-    + '<div class="val" style="' + (soHvCao ? 'color:var(--danger);' : '') + '">' + soHvCao + '</div></div>'
-    + '<div class="stat"><div class="lbl">Đã xử lý</div><div class="val" style="color:var(--ok);">'
-    + xuLyCBList.length + '</div></div>'
+    + '<div class="val" style="' + (soHvCao ? 'color:var(--danger);' : '') + '">' + soHvCao + '</div>'
+    + '<div class="small muted">học viên</div></div>'
+    /* KHÔNG hiện tổng toàn thời gian ở đây, khác với ba ô cùng loại bên Phản
+       ánh, Yêu cầu thiết kế và Hoá đơn. Lý do: con số 1203 đó bị thổi lên bởi
+       đúng cái lỗi vừa sửa — mỗi lần cảnh báo bật lại oan là Học vụ bấm xử lý
+       thêm một lần, nên nó không có nghĩa "đã giải quyết 1203 vấn đề" mà là
+       "đã bấm nút 1203 lần, nhiều lần trùng nhau". Hiện một con số đã biết là
+       sai, dù để chữ nhỏ, vẫn là nói sai. Thay bằng kỳ trước để so được. */
+    + '<div class="stat"><div class="lbl">Đã xử lý 30 ngày</div><div class="val" style="color:var(--ok);">'
+    + soXuLyGanDay(30) + '</div>'
+    + '<div class="small muted">30 ngày trước: ' + soXuLyKyTruoc(30) + '</div></div>'
     + '</div>';
 
   /* Chip lọc theo nhóm */
   if(Object.keys(nhomDem).length){
     h += '<div class="card"><div style="display:flex;gap:6px;flex-wrap:wrap;">'
-      + Object.keys(nhomDem).filter(function(n){ return n !== 'Nguy cơ bỏ học'; })
-        .sort(function(a, b){ return nhomDem[b] - nhomDem[a]; })
+      /* Nguy cơ bỏ học đứng đầu và không bị lọc ra nữa: đây là nhóm nặng nhất,
+         trước đây không có chip nên muốn xem riêng thì phải tự dò cả danh sách. */
+      + Object.keys(nhomDem)
+        .sort(function(a, b){
+          if((a === 'Nguy cơ bỏ học') !== (b === 'Nguy cơ bỏ học'))
+            return a === 'Nguy cơ bỏ học' ? -1 : 1;
+          return nhomDem[b] - nhomDem[a]; })
         .map(function(n){
+          const nang = n === 'Nguy cơ bỏ học';
           return '<button class="btn btn-sm ' + (cbLocNhom === n ? 'btn-primary' : '') + '" '
-            + 'style="border-radius:20px;" onclick="locNhomCB(\'' + esc(n).replace(/'/g, '') + '\')">'
-            + esc(n) + ' · ' + nhomDem[n] + '</button>'; }).join('')
+            + 'style="border-radius:20px;'
+            + (nang && cbLocNhom !== n ? 'border-color:var(--danger);color:var(--danger);' : '')
+            + '" onclick="locNhomCB(\'' + esc(n).replace(/'/g, '') + '\')">'
+            + (nang ? '⚠️ ' : '') + esc(n) + ' · ' + nhomDem[n] + '</button>'; }).join('')
       + (cbLocNhom ? '<button class="btn btn-sm" style="border-radius:20px;" onclick="locNhomCB(\'\')">Bỏ lọc</button>' : '')
       + '</div>'
       + '<div class="small muted" style="margin-top:6px;">Mỗi học viên một dòng, liệt kê đủ vấn đề. '
       + 'Gọi phụ huynh một lần giải quyết hết.</div></div>';
   }
 
+  const cbTruoc = locHv.length;
+  h += oTimMan('canhBao', 'Tìm tên học viên, lớp, nội dung cảnh báo…', '', cbTruoc);
+  locHv = locTimMan('canhBao', locHv, function(m){
+    return (m.hoTen || '') + ' ' + (m.maLop || '')
+      + ' ' + (m.vanDe || []).map(function(v){ return v.nd || v.nhom || ''; }).join(' '); });
+  h += dongKetQuaTim('canhBao', locHv.length, cbTruoc, 'học viên');
+
   h += '<div class="card">';
-  if(!locHv.length)
+  if(!locHv.length && chuTim('canhBao')) h += '';
+  else if(!locHv.length)
     h += emptyBox('👍', cbLocNhom ? 'Không còn học viên nào ở nhóm này'
       : 'Không có cảnh báo nào. Mọi lớp đang chạy bình thường.');
   else {
@@ -6507,8 +7313,14 @@ function viewRaTrung(){
   if(!hasPerm('suaHocVien'))
     return '<div class="card">' + emptyBox('🔒', 'Bạn không có quyền dùng công cụ này') + '</div>';
   const cap = capNghiTrung();
-  const daBoQua = (hocVienList || []).reduce(function(s, h){
-    return s + ((h.khongTrungVoi || []).length); }, 0) / 2;
+  /* Đếm số CẶP đã bỏ qua. Cách cũ là cộng dồn rồi chia 2 — đúng khi hai chiều
+     ghi đủ, nhưng nếu một chiều ghi lỗi thì màn hình hiện "2,5 cặp". Đếm cặp
+     riêng biệt thì không bao giờ ra số lẻ. */
+  const capBoQua = {};
+  (hocVienList || []).forEach(function(h){
+    (h.khongTrungVoi || []).forEach(function(k){ capBoQua[khoaCapTrung(h.id, k)] = true; });
+  });
+  const daBoQua = Object.keys(capBoQua).length;
   const daGop = (hocVienList || []).filter(function(h){ return h.gopVao; }).length;
 
   let h = '<div class="card"><h3>Rà hồ sơ học viên trùng</h3>'
@@ -6914,6 +7726,18 @@ function viewTaiPhi(){
   h += khoiBoQuaTaiPhi();
 
   if(!tong) return h + '<div class="card">' + emptyBox('👍', 'Chưa có lớp nào sắp kết thúc') + '</div>';
+
+  /* Lọc cả ba nhóm cùng lúc: gõ một lần là ba khối cùng thu hẹp, không phải
+     ba ô tìm riêng cho ba khối của cùng một màn. */
+  h += oTimMan('taiPhi', 'Tìm tên học viên, mã lớp…', '', tong);
+  const locTP = function(ds){
+    return locTimMan('taiPhi', ds, function(x){
+      return (x.hoTen || (x.hv && x.hv.hoTen) || '') + ' '
+        + (x.maLop || (x.lop && x.lop.maLop) || ''); });
+  };
+  n.canGoi = locTP(n.canGoi); n.xepLop = locTP(n.xepLop); n.xong = locTP(n.xong);
+  const conLaiTP = n.canGoi.length + n.xepLop.length + n.xong.length;
+  h += dongKetQuaTim('taiPhi', conLaiTP, tong, 'học viên');
 
   h += khoiNhomTaiPhi(n.canGoi, 'canGoi', 'var(--danger)', '① Cần gọi mời',
         'Không còn em nào phải gọi — các em sắp hết khoá đều đã có cam kết.');
@@ -7586,7 +8410,14 @@ function viewChonLopDiemDanh(){
       + '<div class="small muted">'+esc(l.gvPhuTrach||'—')+' · '+esc(l.lichHoc||'')+' '+esc(l.gioHoc||'')+' · buổi '+dh+'/'+(l.soBuoiKH||'?')+'</div></div>'
       + '<div style="text-align:right;">'+(buoiHomNay?badge('ok','Đã điểm danh hôm nay'):'')
       + '<div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;">'
-      + '<button class="btn btn-primary btn-sm" onclick="moDiemDanh(\''+l.id+'\')">'+(buoiHomNay?'Sửa':'Điểm danh')+'</button>'
+      /* Chỉ bày nút khi bấm vào dùng được thật. Trước V1.31.6 nút này vẽ cho
+         mọi vai, nhưng moDiemDanh() chặn ai không có quyền 'diemDanh' — mà
+         8 trên 12 vị trí không có quyền đó, kể cả Giám đốc và Phó Giám đốc.
+         Họ thấy nút "Điểm danh" trên từng lớp, bấm vào ăn toast từ chối, ngày
+         nào cũng vậy. Hai nút Xuất Excel và In vẫn giữ để xem và đối chiếu. */
+      + (hasPerm('diemDanh')
+          ? '<button class="btn btn-primary btn-sm" onclick="moDiemDanh(\''+l.id+'\')">'+(buoiHomNay?'Sửa':'Điểm danh')+'</button>'
+          : '')
       + (dh ? '<button class="btn btn-sm" onclick="xuatExcelDiemDanh(\''+l.id+'\')">Xuất Excel</button>'
             + '<button class="btn btn-sm" onclick="inBangDiemDanh(\''+l.id+'\')">In</button>' : '')
       + '</div></div></div>';
@@ -8218,6 +9049,13 @@ function viewCongViec(){
   if(ds.length)
     h += '<div class="card" style="padding:11px 14px;">'+thanhTienDoCV(ds)+'</div>';
 
+  /* KHÔNG thêm dòng "N việc đã từ chối/huỷ" ở đây. Đã thử thêm rồi gỡ ra:
+     cuối bảng Kanban vốn đã có khối "Việc đã đóng · N" mở ra xem được tại chỗ,
+     gom đủ cả Hoàn thành lẫn Từ chối và Huỷ. Thêm một dòng nữa nói cùng chuyện
+     ấy, lại chỉ sang chế độ Bảng thay vì mở ngay, là đúng thứ lộn xộn mà bản
+     này đang đi dọn. Chênh lệch giữa "Việc của tôi (5)" và 3 thẻ trên bảng đã
+     được khối kia giải thích. */
+
   if(!ds.length) return h + '<div class="card">'+emptyBox('✅','Không có việc nào')+'</div>';
   if(cvCheDo === 'kanban') return h + kanbanCongViec(ds);
   return h + '<div class="card">'
@@ -8270,8 +9108,13 @@ function nutTrenThe(v){
       'Chờ xác nhận':['Xác nhận thông tin đúng','Xác nhận'],
       'Chờ phê duyệt':['Phê duyệt hoàn thành','Duyệt']})[v.trangThai];
     nut = g(buocTiep, nhan[0], nhan[1], 'btn-primary');
+    /* Nút này gọi traLaiViec(), tức là đưa việc VỀ 'Đang làm' cho chủ trì làm
+       lại. Trước V1.31.6 ở bước phê duyệt nó ghi là "Từ chối" — người duyệt
+       bấm vào tưởng đã bác bỏ hẳn đầu việc, thật ra chỉ trả về làm tiếp. Một
+       hành động thì một tên gọi, ở cả thẻ lẫn màn chi tiết. Muốn bỏ hẳn đầu
+       việc thì dùng nút Huỷ việc. */
     if(doiDuocViec(v, 'Đang làm') && v.trangThai !== 'Mới tạo' && v.trangThai !== 'Đang làm')
-      nut += traLai(v.trangThai === 'Chờ xác nhận' ? 'Trả lại' : 'Từ chối');
+      nut += traLai('Trả lại');
   }
   return nut ? '<div class="row" style="gap:6px;margin-top:9px;">' + nut + '</div>' : '';
 }
@@ -8310,11 +9153,23 @@ function theCongViec(v){
 function kanbanCongViec(ds){
   const dong = ds.filter(viecDaKhep);
   const chay = ds.filter(viecConChay);
-  const theoCot = COT_KANBAN.map(function(c){
+  /* V1.31.5 — BỎ CỘT "HOÀN THÀNH" KHỎI BẢNG.
+     Cột ấy dựng từ chay, mà chay đã loại Hoàn thành ra rồi, nên nó KHÔNG BAO
+     GIỜ nhận được việc nào: vĩnh viễn hiện "0" và "Không có việc nào", kể cả
+     khi cả đội vừa đóng xong hai chục việc. Cùng một lỗi với thanh tiến độ ở
+     trên, chỉ khác chỗ xuất hiện. Việc đã xong nằm ở khối "Việc đã đóng" cuối
+     màn — một chỗ duy nhất, mở ra xem được.
+     Lọc theo VIEC_DA_KHEP chứ không gõ tay tên cột: mai mốt thêm trạng thái
+     đóng nào thì cột đó tự biến mất, không phải nhớ sửa ở đây.
+     COT_KANBAN vẫn giữ đủ năm trạng thái vì thanh tiến độ cần đoạn màu
+     "Hoàn thành" — đó mới đúng là chỗ phải thấy việc đã xong. */
+  const COT_CHAY = COT_KANBAN.filter(function(c){
+    return VIEC_DA_KHEP.indexOf(c.tt) < 0; });
+  const theoCot = COT_CHAY.map(function(c){
     return {c:c, ds:chay.filter(function(v){ return v.trangThai === c.tt; })}; });
   /* Việc có trạng thái lạ vẫn phải thấy được, không để nó biến mất khỏi bảng */
   const lac = chay.filter(function(v){
-    return COT_KANBAN.every(function(c){ return c.tt !== v.trangThai; }); });
+    return COT_CHAY.every(function(c){ return c.tt !== v.trangThai; }); });
 
   let h = '<div class="kb">' + theoCot.map(function(x){
     const gap = !!cvCotGap[x.c.tt];
@@ -8343,30 +9198,48 @@ function kanbanCongViec(ds){
   return h;
 }
 
-/* Thanh tiến độ chung: nhìn một phát biết việc đọng ở khâu nào */
+/* Thanh tiến độ chung: nhìn một phát biết việc đọng ở khâu nào.
+
+   V1.31.5 — SỬA LỖI THANH NÀY VĨNH VIỄN ĐỨNG 0%.
+   Bản cũ lấy mẫu số là việc ĐANG CHẠY (viecConChay loại bỏ Hoàn thành, Từ
+   chối, Huỷ) rồi lại đếm việc 'Hoàn thành' BÊN TRONG tập đó. Hai câu ngược
+   nhau, nên tử số luôn bằng 0: thanh màu luôn trống, chú giải luôn ghi
+   'Hoàn thành 0', phần trăm luôn 0%. Người xem đọc ra là cả đội chưa làm
+   xong việc nào, trong khi thật ra đã xong vài việc.
+
+   Nay mẫu số là TOÀN BỘ việc trong phạm vi đang xem, trừ Từ chối và Huỷ —
+   hai trạng thái đó là việc không làm nữa, tính vào tiến độ thì sai cả hai
+   chiều (coi là xong cũng sai, coi là còn phải làm cũng sai). Năm trạng thái
+   còn lại đúng bằng năm cột Kanban nên các đoạn màu cộng lại luôn đủ 100%. */
 function thanhTienDoCV(ds){
-  const chay = ds.filter(viecConChay);
-  if(!chay.length) return '';
-  const xong = chay.filter(function(v){ return v.trangThai === 'Hoàn thành'; }).length;
+  const tinh = (ds || []).filter(function(v){
+    return v && v.trangThai !== 'Từ chối' && v.trangThai !== 'Huỷ'; });
+  if(!tinh.length) return '';
+  const xong = tinh.filter(function(v){ return v.trangThai === 'Hoàn thành'; }).length;
+  const chuGiai = cvCheDo === 'kanban' ? ''
+    /* Ở chế độ Kanban, chú giải này lặp y hệt tiêu đề năm cột ngay bên dưới
+       (Mới tạo 3 · Đang làm 0 · …), cách nhau chưa tới một dòng. Chỉ giữ ở
+       chế độ Bảng, nơi không có tiêu đề cột nào nói thay. */
+    : '<div class="legend" style="margin-top:7px;">'
+      + COT_KANBAN.map(function(c){
+          const n = tinh.filter(function(v){ return v.trangThai === c.tt; }).length;
+          return '<span><i style="background:' + c.mau + ';"></i>'
+            + esc(c.tt) + ' ' + n + '</span>'; }).join('')
+      + '</div>';
   return '<div style="margin-top:11px;">'
     + '<div class="row" style="margin-bottom:5px;">'
-      + '<span class="small muted" style="font-weight:600;">Tiến độ ' + chay.length
-      + ' việc đang chạy</span>'
+      + '<span class="small muted" style="font-weight:600;">Tiến độ ' + tinh.length
+      + ' việc</span>'
       + '<span class="small"><b>' + xong + '</b> <span class="muted">hoàn thành · '
-      + fmtNum(xong / chay.length * 100, 0) + '%</span></span></div>'
+      + fmtNum(xong / tinh.length * 100, 0) + '%</span></span></div>'
     + '<div style="display:flex;height:9px;border-radius:99px;overflow:hidden;gap:2px;'
       + 'background:var(--nen-2);">'
     + COT_KANBAN.map(function(c){
-        const n = chay.filter(function(v){ return v.trangThai === c.tt; }).length;
-        return n ? '<div style="width:' + (n / chay.length * 100).toFixed(1)
+        const n = tinh.filter(function(v){ return v.trangThai === c.tt; }).length;
+        return n ? '<div style="width:' + (n / tinh.length * 100).toFixed(1)
           + '%;background:' + c.mau + ';"></div>' : ''; }).join('')
     + '</div>'
-    + '<div class="legend" style="margin-top:7px;">'
-    + COT_KANBAN.map(function(c){
-        const n = chay.filter(function(v){ return v.trangThai === c.tt; }).length;
-        return '<span><i style="background:' + c.mau + ';"></i>' + esc(c.tt) + ' ' + n + '</span>';
-      }).join('')
-    + '</div></div>';
+    + chuGiai + '</div>';
 }
 
 function dongCongViec(v){
@@ -8510,6 +9383,16 @@ function luuGiaoViec(){
   if(!pheDuyet){ showToast('Phải có người phê duyệt'); return; }
   const sanPham=$('mVSanPham').value.trim();
   if(!sanPham){ showToast('Phải ghi rõ sản phẩm bàn giao'); return; }
+  /* Chủ trì trùng người phê duyệt thì bước phê duyệt mất tác dụng soát: một
+     người tự giao, tự làm, tự duyệt, không ai đọc lại. Không chặn cứng vì ở
+     trung tâm nhỏ có lúc Phó Giám đốc vừa làm vừa duyệt là hợp lệ — nhưng
+     phải nói ra để người giao biết mình đang bỏ bước soát, chứ không im lặng
+     cho qua. Gọi sau các phép kiểm bắt buộc để không hỏi rồi vẫn báo thiếu. */
+  if(chuTri === pheDuyet && !confirm(
+      'Người chủ trì cũng chính là người phê duyệt.\n\n'
+      + 'Việc này sẽ không có ai soát độc lập: một người tự làm rồi tự duyệt '
+      + 'hoàn thành. Nhật ký vẫn ghi đủ nhưng bước phê duyệt không còn tác dụng '
+      + 'kiểm soát.\n\nVẫn giao việc như vậy?')) return;
   const phoiHop = Array.prototype.filter.call($('mVPhoiHop').options, function(o){ return o.selected; }).map(function(o){ return o.value; });
   const tenCua = function(id){ const u=usersList.find(function(x){ return x.id===id; }); return u? u.hoTen : ''; };
   db.collection('fcv_congviec').add({
@@ -8616,8 +9499,17 @@ function moViec(id){
   }
   if(v.trangThai==='Chờ phê duyệt' && laPheDuyet){
     nut += '<button class="btn btn-primary btn-block" onclick="chuyenTrangThaiViec(\''+v.id+'\',\'Hoàn thành\',\'Phê duyệt hoàn thành\')">Phê duyệt</button>'
-        + '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="traLaiViec(\''+v.id+'\')">Từ chối, trả lại</button>';
+        + '<button class="btn btn-danger btn-block" style="margin-top:8px;" onclick="traLaiViec(\''+v.id+'\')">Trả lại chủ trì</button>';
   }
+  /* Huỷ hẳn đầu việc. Trước V1.31.6 trạng thái 'Huỷ' nằm trong VIEC_DA_KHEP,
+     được khối "Việc đã đóng" đếm, được viecDaKhep() lọc — nhưng KHÔNG CÓ CỬA
+     NÀO đặt được nó: thử hết 7 trạng thái × 4 vai, doiDuocViec() không bao giờ
+     cho phép. Giao nhầm một đầu việc là nó nằm đó vĩnh viễn, muốn dọn thì phải
+     giả vờ duyệt hoàn thành — làm hỏng luôn số liệu đúng hạn.
+     Cho người phê duyệt và người chủ trì huỷ, bắt buộc ghi lý do. */
+  if(huyDuocViec(v))
+    nut += '<button class="btn btn-block" style="margin-top:8px;color:var(--danger);'
+      + 'border-color:var(--danger);" onclick="huyViec(\''+v.id+'\')">Huỷ việc</button>';
   if(nut) h += '<div style="margin-bottom:12px;">'+nut+'</div>';
 
   h += '<div class="small muted" style="margin-bottom:4px;"><b>Nhật ký lưu vết</b></div>';
@@ -8665,7 +9557,12 @@ function chuyenTrangThaiViec(id, tt, hanhDong){
   const data = {trangThai:tt, lichSu:ls};
   /* Tiến độ đi theo trạng thái để hai con số không bao giờ nói ngược nhau:
      vừa nhận việc là 0, đã nộp sản phẩm là 100. */
-  if(tt === 'Đang làm' && !v.tienDo) data.tienDo = 0;
+  /* Về 'Đang làm' thì tiến độ KHÔNG được còn 100. doiDuocViec() cho phép người
+     xác nhận và người phê duyệt đẩy việc ngược về 'Đang làm'; lúc đó tienDo
+     đang là 100 (đặt khi nộp sản phẩm), nên nếu chỉ gán khi tienDo rỗng thì
+     màn hình hiện "Đang làm · 100%" — đúng cái mâu thuẫn mà dòng ghi chú này
+     nói là đã chặn. Lấy 80 cho khớp traLaiViec(), để hai cửa cùng một số. */
+  if(tt === 'Đang làm') data.tienDo = Math.min(Number(v.tienDo) || 0, 80);
   if(['Chờ xác nhận','Chờ phê duyệt','Hoàn thành'].indexOf(tt) >= 0) data.tienDo = 100;
   if(tt==='Hoàn thành'){
     data.tsHoanThanh = Date.now();
@@ -8674,6 +9571,29 @@ function chuyenTrangThaiViec(id, tt, hanhDong){
   db.collection('fcv_congviec').doc(id).update(data).then(function(){
     closeModal(); showToast('✅ '+hanhDong); logAct(hanhDong+': '+v.tieuDe);
   }).catch(fsErr);
+}
+/* Ai được huỷ hẳn một đầu việc: người phê duyệt (người chịu trách nhiệm cuối)
+   và người chủ trì (người đang gánh việc). Việc đã khép rồi thì thôi — huỷ một
+   việc đã hoàn thành là xoá dấu vết, không phải dọn dẹp. */
+function huyDuocViec(v){
+  if(!v || !currentUser || viecDaKhep(v)) return false;
+  return v.pheDuyetUserId === currentUser.id || v.chuTriUserId === currentUser.id;
+}
+function huyViec(id){
+  const v = congViecList.find(function(x){ return x.id===id; });
+  if(!v) return;
+  /* Hỏi lại trong hàm ghi, không tin vào việc nút có hiện hay không */
+  if(!huyDuocViec(v)){
+    showToast('Chỉ người chủ trì hoặc người phê duyệt mới huỷ được việc này'); return; }
+  const lyDo = prompt('Lý do huỷ việc (bắt buộc ghi rõ, lưu vào nhật ký):');
+  if(!lyDo || !lyDo.trim()) return;
+  const ls = (v.lichSu||[]).slice();
+  ls.push({ts:Date.now(), nguoi:currentUser.hoTen, hanhDong:'Huỷ việc — '+lyDo.trim()});
+  db.collection('fcv_congviec').doc(id)
+    .update({trangThai:'Huỷ', lyDoHuy:lyDo.trim(), tsHuy:Date.now(), lichSu:ls})
+    .then(function(){
+      closeModal(); showToast('Đã huỷ việc'); logAct('Huỷ việc: '+v.tieuDe+' — '+lyDo.trim());
+    }).catch(fsErr);
 }
 function traLaiViec(id){
   const v = congViecList.find(function(x){ return x.id===id; });
@@ -8878,7 +9798,47 @@ function xuatExcelTuan(){
 /* ================= IN ẤN & NHÀ IN ================= */
 const TT_IN = ['Đề xuất','Chờ duyệt','Đã duyệt','Đã đặt in','Đã nhận hàng','Hoàn tất','Từ chối'];
 
+/* ===== MỘT CỬA GÁC BƯỚC CHO PHIẾU IN =====
+   Rà 06/11/2026: cả năm hàm đổi bước của phiếu in đều gác quyền nhưng KHÔNG
+   hàm nào hỏi phiếu đang ở bước nào. Gọi luuThanhToanIn() trên một phiếu còn
+   'Chờ duyệt' là nó nhảy thẳng sang 'Hoàn tất, daThanhToan=true' — bỏ qua
+   phê duyệt, đặt in và nhận hàng, ghi nhận đã trả tiền cho thứ chưa ai duyệt.
+   Nút trên màn chỉ hiện đúng bước nên thao tác bình thường không ra lỗi,
+   nhưng cửa sổ mở sẵn rồi phiếu đổi bước ở nơi khác, hay bấm hai lần, hay gọi
+   thẳng từ Console thì lọt. Đúng lý do đã chặn ở chuyenTrangThaiViec().
+   Bảng dưới là dãy bước hợp lệ DUY NHẤT; ai thêm bước mới sửa đúng một chỗ. */
+const BUOC_IN_HOP_LE = {
+  'Đã duyệt':     ['Đề xuất','Chờ duyệt'],
+  'Từ chối':      ['Đề xuất','Chờ duyệt'],
+  'Đã đặt in':    ['Đã duyệt'],
+  'Đã nhận hàng': ['Đã đặt in'],
+  'Hoàn tất':     ['Đã nhận hàng']
+};
+function dungBuocIn(p, buocDich){
+  if(!p){ showToast('Không tìm thấy phiếu in'); return false; }
+  const tu = BUOC_IN_HOP_LE[buocDich];
+  if(!tu) return true;                       /* bước không khai thì không chặn */
+  if(tu.indexOf(p.trangThai) >= 0) return true;
+  showToast('Phiếu đang ở bước "' + (p.trangThai || '—')
+    + '", không chuyển thẳng sang "' + buocDich + '" được');
+  return false;
+}
+
 function fmtTien(n){ return dinhDangSo(Math.round(Number(n)||0), 0); }
+/* Dòng tiền nhỏ nằm dưới nhãn của một ô thống kê.
+   fmtTrieu() trả "96tr" từ một triệu trở lên, nhưng DƯỚI mức đó trả số trần
+   không đơn vị, và trả đúng chữ "0" khi bằng không — thành một con số trống
+   nghĩa nằm chơ vơ dưới nhãn. Quét 62 màn thấy bốn chỗ như vậy: Newsale,
+   Renew, So kỳ trước và Quá hạn đợt. Không tiền thì đừng vẽ dòng nào. */
+function tienPhu(n){
+  const v = Number(n) || 0;
+  if(!v) return '';
+  return v >= 1000000 ? fmtTrieu(v) : fmtTien(v) + 'đ';
+}
+function oTienPhu(n){
+  const t = tienPhu(n);
+  return t ? '<div class="small muted">' + t + '</div>' : '';
+}
 function fmtTrieu(n){
   const v = Number(n)||0;
   if(v >= 1000000) return dinhDangSo(v/1000000, 2)+'tr';
@@ -8944,16 +9904,27 @@ function viewPhieuIn(){
     {ten:'Từ chối',        loc:function(p){ return p.trangThai==='Từ chối'; }}
   ];
 
+  /* Lọc TRƯỚC khi chia nhóm, để con số trên từng nhóm cũng theo ô tìm —
+     lọc sau thì nhóm ghi "Chờ duyệt · 12" mà dưới chỉ có 2 dòng. */
+  const piTruoc = phieuInList.length;
+  h += oTimMan('phieuIn', 'Tìm về việc, hạng mục, nhà in, số GĐN…', '', piTruoc);
+  const piLoc = locTimMan('phieuIn', phieuInList, function(p){
+    return (p.veViec || '') + ' ' + (p.hangMuc || '') + ' ' + (p.nhaInChon || '')
+      + ' ' + (p.soGDN || '') + ' ' + (p.maPhieu || '') + ' '
+      + (p.nguoiDeXuatTen || '') + ' ' + (p.quyCach || ''); });
+  h += dongKetQuaTim('phieuIn', piLoc.length, piTruoc, 'phiếu in');
+
   h += '<div class="card">';
   let coDong = false;
   nhom.forEach(function(n){
-    const ds = phieuInList.filter(n.loc).sort(function(a,b){ return (a.ngayCanCo||'').localeCompare(b.ngayCanCo||''); });
+    const ds = piLoc.filter(n.loc).sort(function(a,b){ return (a.ngayCanCo||'').localeCompare(b.ngayCanCo||''); });
     if(!ds.length) return;
     coDong = true;
     h += '<div class="grp-head">'+esc(n.ten)+' · '+ds.length+'</div>';
     h += ds.map(function(p){ return dongPhieuIn(p); }).join('');
   });
-  if(!coDong) h += emptyBox('🖨️','Chưa có phiếu in nào. Bấm "Đề xuất in" để tạo.');
+  if(!coDong && chuTim('phieuIn')) h += '';
+  else if(!coDong) h += emptyBox('🖨️','Chưa có phiếu in nào. Bấm "Đề xuất in" để tạo.');
   h += '</div>';
   return h;
 }
@@ -9529,6 +10500,7 @@ function chonBaoGia(phieuId, idx){
 function duyetPhieuIn(id){
   if(!canQuyen('duyetPhieuIn')) return;
   const p = phieuInList.find(function(x){ return x.id===id; });
+  if(!dungBuocIn(p, 'Đã duyệt')) return;
   if(!confirm('Phê duyệt in "'+p.hangMuc+'"?\nGiá trị: '+fmtTien(p.thanhTien)+'đ · Nhà in: '+p.nhaInChon)) return;
   db.collection('fcv_phieuin').doc(id).update({
     trangThai:'Đã duyệt', nguoiDuyetTen:currentUser.hoTen, ngayDuyet:todayISO(),
@@ -9540,6 +10512,7 @@ function tuChoiPhieuIn(id){
   const lyDo = prompt('Lý do từ chối (bắt buộc):');
   if(!lyDo) return;
   const p = phieuInList.find(function(x){ return x.id===id; });
+  if(!dungBuocIn(p, 'Từ chối')) return;
   db.collection('fcv_phieuin').doc(id).update({
     trangThai:'Từ chối', lyDoTuChoi:lyDo,
     lichSu: themLichSu(p, 'Từ chối — '+lyDo)
@@ -9560,6 +10533,7 @@ function formDatIn(id){
 function luuDatIn(id){
   if(!canQuyen('luuDatIn')) return;
   const p = phieuInList.find(function(x){ return x.id===id; });
+  if(!dungBuocIn(p, 'Đã đặt in')) return;
   const coc = Number($('mDCoc').value)||0;
   db.collection('fcv_phieuin').doc(id).update({
     trangThai:'Đã đặt in', ngayDat:$('mDNgayDat').value, ngayHenGiao:$('mDNgayGiao').value, tienCoc:coc,
@@ -9588,6 +10562,7 @@ function checkLechNhan(soDat){
 function luuNhanHang(id){
   if(!canQuyen('luuNhanHang', id)) return;
   const p = phieuInList.find(function(x){ return x.id===id; });
+  if(!dungBuocIn(p, 'Đã nhận hàng')) return;
   const sl = Number($('mNSoLuong').value)||0;
   const gc = $('mNGhiChu').value.trim();
   if(sl!==Number(p.soLuong) && !gc){ showToast('Số nhận lệch số đặt — phải ghi rõ nguyên nhân'); return; }
@@ -9617,6 +10592,7 @@ function formThanhToanIn(id){
 function luuThanhToanIn(id){
   if(!canQuyen('luuThanhToanIn')) return;
   const p = phieuInList.find(function(x){ return x.id===id; });
+  if(!dungBuocIn(p, 'Hoàn tất')) return;
   db.collection('fcv_phieuin').doc(id).update({
     trangThai:'Hoàn tất', daThanhToan:true, ngayThanhToan:$('mTNgay').value,
     soPhieuChi:$('mTPhieuChi').value.trim(),
@@ -12127,6 +13103,21 @@ function viewDieuHanhTS(){
   const chotTruoc = hvChotTrongKhoang(thangTruoc + '-01', thangTruoc + '-31', dhCuaToi);
   const chenh = chotThang.length - chotTruoc.length;
 
+  /* Tỷ lệ chuyển đổi tính trên khách THU VỀ TRONG 90 NGÀY.
+     Trước V1.31.5 mẫu số là toàn bộ leadList từ ngày mở phần mềm, mà dòng chữ
+     bên dưới lại ghi "trên tổng khách đang giữ" — vừa sai nghĩa vừa đứng im:
+     sau vài nghìn khách thì một tháng chốt tốt hay tệ cũng không kéo nổi con số
+     nhúc nhích. Nó lại nằm ngay cạnh ô "Học viên chốt được" vốn tính theo
+     tháng, nên hai ô cạnh nhau nói về hai khoảng thời gian khác hẳn nhau.
+     Loại khách nhập hàng loạt, dùng ĐÚNG quy tắc của tuyenSinhTrongKy() để
+     hai nơi cùng gọi là "tỷ lệ chuyển đổi" thì ra cùng một cách tính. */
+  const moc90TS = addDaysISO(todayISO(), -90);
+  const ds90 = ds.filter(function(l){
+    if(l.nhapHangLoat) return false;
+    const n = l.ngayThuThap || l.ngayTao || '';
+    return n >= moc90TS; });
+  const chot90 = ds90.filter(function(l){ return l.trangThai === 'Đã nhập học'; });
+
   let h = '<div class="card"><div class="row wrap"><div><h3 style="margin:0;">Bảng điều hành tuyển sinh</h3>'
     + '<div class="small muted" style="margin-top:4px;">Toàn bộ dòng chảy từ data thô đến học viên đã vào lớp</div></div>'
     + '<select id="dhPhamVi" onchange="doiPhamViDH()" style="width:auto;margin:0;">'
@@ -12198,8 +13189,8 @@ function viewDieuHanhTS(){
         : (chenh < 0 ? ' · <span style="color:var(--danger);">giảm '+Math.abs(chenh)+'</span>' : ''))
       + '</div></div>'
     + '<div class="stat"><div class="lbl">Tỷ lệ chuyển đổi</div>'
-      + '<div class="val">'+(ds.length ? fmtNum(ds.filter(function(l){ return l.trangThai==='Đã nhập học'; }).length / ds.length * 100, 1)+'%' : '—')+'</div>'
-      + '<div class="small muted">trên tổng khách đang giữ</div></div>'
+      + '<div class="val">'+(ds90.length ? fmtNum(chot90.length / ds90.length * 100, 1)+'%' : '—')+'</div>'
+      + '<div class="small muted">'+ds90.length+' khách thu về 90 ngày qua</div></div>'
     + '</div></div>';
 
   /* Danh sách học viên đã chốt, kèm lớp và học phí */
@@ -13518,7 +14509,7 @@ function xuatDsVN290(kyId, chiDotMoi){
 function viewDoiTacKhaoThi(){
   const cacKy = cacKyGanDay(dtSoKy);
   const tk = thongKeDoiTac(cacKy);
-  const dt = tk.filter(function(x){ return x.loai === 'doiTac'; });
+  let dt = tk.filter(function(x){ return x.loai === 'doiTac'; });
   const tongTS = tk.reduce(function(s, x){ return s + x.tong; }, 0);
   const tsDoiTac = dt.reduce(function(s, x){ return s + x.tong; }, 0);
   const dangHT = doiTacList.filter(function(d){ return d.dangHopTac !== false; }).length;
@@ -13604,6 +14595,12 @@ function viewDoiTacKhaoThi(){
   h += '</div>';
 
   /* Bảng đối tác */
+  const dtTruoc = dt.length;
+  h += oTimMan('doiTac', 'Tìm tên đối tác, người liên hệ…', '', dtTruoc);
+  dt = locTimMan('doiTac', dt, function(x){
+    return (x.ten || '') + ' ' + (x.nguoiLienHe || '') + ' ' + (x.sdt || '')
+      + ' ' + (x.ghiChu || ''); });
+  h += dongKetQuaTim('doiTac', dt.length, dtTruoc, 'đối tác');
   h += '<div class="card"><h3>Đối tác · ' + dt.length + '</h3>';
   if(!dt.length)
     h += emptyBox('🤝', doiTacList.length
@@ -14401,7 +15398,7 @@ function viewKyThi(){
   if(ktKyId) return viewKyThiChiTiet();
   /* Kỳ sắp diễn ra lên đầu, gần nhất trước; kỳ đã qua xuống dưới, mới nhất trước */
   const hn = todayISO();
-  const ds = (ltPhamVi === 'tatCa' ? kyThiList.slice() : kyThiTrongPhamVi(ltPhamVi))
+  let ds = (ltPhamVi === 'tatCa' ? kyThiList.slice() : kyThiTrongPhamVi(ltPhamVi))
     .sort(function(a,b){
       const na = a.ngayThi||'', nb = b.ngayThi||'';
       const aToi = na >= hn, bToi = nb >= hn;
@@ -14419,8 +15416,17 @@ function viewKyThi(){
     + '<button class="btn btn-sm" onclick="xuatExcelLichThi()">📤 Xuất lịch thi</button>'
     + (hasPerm('quanLyKyThi')?'<button class="btn btn-primary btn-sm" onclick="formKyThi()">+ Tạo kỳ thi</button>':'')
     + '</div></div></div>';
+  const kyTruocTim = ds.length;
+  h += oTimMan('kyThi', 'Tìm tên kỳ thi, khoá, phòng thi…', '', kyTruocTim);
+  ds = locTimMan('kyThi', ds, function(k){
+    return (k.ten || '') + ' ' + (k.khoa || '') + ' ' + (k.phongThi || '')
+      + ' ' + (timLoaiKyThi(k.loai) || {}).ten;
+  });
+  h += dongKetQuaTim('kyThi', ds.length, kyTruocTim, 'kỳ thi');
+
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📝', ltPhamVi === 'tatCa'
+  if(!ds.length && chuTim('kyThi')) h += '';
+  else if(!ds.length) h += emptyBox('📝', ltPhamVi === 'tatCa'
     ? 'Chưa có kỳ thi nào'
     : 'Không có kỳ thi nào từ hôm nay tới hết phạm vi đã chọn');
   else h += ds.map(function(k){
@@ -15181,9 +16187,12 @@ function chepHoiDongKyTruoc(kyId){
 <script>
 /* ================= THÍ SINH ================= */
 let tsKyId = '', filterTsText='';
-/* Trần số dòng: kỳ Cambridge của Trung tâm từng có hơn ba trăm thí sinh.
-   Đổ hết ra một màn thì không ai cuộn nổi, mà tìm một em cũng không ra. */
-const TS_TOI_DA = 60;
+/* V1.31.3 — BỎ TRẦN SỐ DÒNG. Trước đây chặn ở 60 em vì sợ kỳ đông đổ hết ra
+   thì máy chậm. Đo thật mới biết là lo thừa: dựng cả màn và gắn vào trang
+   mất 8 ms với 98 em, 35 ms với 1.000 em, 56 ms với 2.000 em — không ai cảm
+   nhận được. Trong khi cái trần thì gây hại thật: Khảo thí mở danh sách 98
+   em chỉ thấy 60, phải gõ tìm hoặc tải Excel mới soát hết được.
+   Vẫn giữ ô tìm để thu hẹp khi cần. */
 let tsChiThieu = false;
 function doiKyThiSinh(){ tsKyId = $('tsChonKy').value; tsChiThieu = false; veLaiCoHieuUng(); }
 function setFilterTs(){ filterTsText = $('fTsText').value; render(); }
@@ -15300,10 +16309,14 @@ function viewThiSinh(){
 
   h += '<div class="card">';
   const tongDs = ds.length;
-  if(tongDs > TS_TOI_DA){
-    ds = ds.slice(0, TS_TOI_DA);
-    h += '<div class="small muted" style="margin-bottom:6px;">Hiện <b>' + TS_TOI_DA
-      + '</b> trên ' + tongDs + ' thí sinh — gõ vào ô tìm để thu hẹp, hoặc tải danh sách tổng.</div>';
+  /* Hiện ĐỦ, chỉ nói rõ đang hiện bao nhiêu. Khi đang lọc thì nói cả tổng
+     của kỳ, để không ai tưởng kỳ chỉ có ngần ấy em. */
+  if(tongDs){
+    const tongKy = thiSinhCuaKy(tsKyId).length;
+    h += '<div class="small muted" style="margin-bottom:6px;">Hiện đủ <b>' + tongDs
+      + '</b> thí sinh'
+      + (tongDs < tongKy ? ' · đang lọc từ ' + tongKy + ' em của kỳ' : '')
+      + '.</div>';
   }
   if(!ds.length) h += emptyBox('👤','Chưa có thí sinh nào trong kỳ này');
   else h += ds.map(function(t){
@@ -15811,9 +16824,16 @@ function viewKhoDe(){
     + 'Kỳ Cambridge VN290 do đơn vị khảo thí cung cấp đề, Trung tâm không quản.</div></div>'
     + (hasPerm('quanLyKhoDe')?'<button class="btn btn-primary btn-sm" onclick="formKhoDe()">+ Nhập đề</button>':'')+'</div></div>';
 
+  const kdTruoc = khoDeList.length;
+  h += oTimMan('khoDe', 'Tìm mã đề, cấp độ, loại kỳ thi…', '', kdTruoc);
+  const kdLoc = locTimMan('khoDe', khoDeList, function(d){
+    return (d.capDo || '') + ' ' + (d.maDe || '') + ' ' + (d.ghiChu || '')
+      + ' ' + (timLoaiKyThi(d.loaiKyThi) || {}).ten; });
+  h += dongKetQuaTim('khoDe', kdLoc.length, kdTruoc, 'đầu đề');
   h += '<div class="card"><h3>Tồn kho</h3>';
-  if(!khoDeList.length) h += emptyBox('📄','Chưa có đề nào trong kho');
-  else h += khoDeList.slice().sort(function(a,b){ return (a.loaiKyThi||'').localeCompare(b.loaiKyThi||''); })
+  if(!kdLoc.length && chuTim('khoDe')) h += '';
+  else if(!kdLoc.length) h += emptyBox('📄','Chưa có đề nào trong kho');
+  else h += kdLoc.slice().sort(function(a,b){ return (a.loaiKyThi||'').localeCompare(b.loaiKyThi||''); })
     .map(function(d){
       const con = (Number(d.tongSo)||0) - (Number(d.daDung)||0);
       return '<div class="list-row"><div style="min-width:0;"><div><b>'+esc(d.capDo||d.maDe||'')+'</b></div>'
@@ -17307,7 +18327,7 @@ function gomCongNo(){
 
 function viewMienGiam(){
   const ds = (mienGiamList || []).slice().sort(function(a, b){ return (b.ts||0) - (a.ts||0); });
-  const cho = ds.filter(function(m){ return m.trangThai === 'Chờ duyệt'; });
+  let cho = ds.filter(function(m){ return m.trangThai === 'Chờ duyệt'; });
   const duyet = ds.filter(function(m){ return m.trangThai === 'Đã duyệt'; });
   const khac = ds.filter(function(m){
     return m.trangThai === 'Từ chối' || m.trangThai === 'Thu hồi'; });
@@ -17355,7 +18375,14 @@ function viewMienGiam(){
   };
 
   h += '<div class="card"><h3>Đang chờ Ban lãnh đạo duyệt</h3>';
-  if(!cho.length) h += emptyBox('✅', 'Không có đề nghị nào đang chờ');
+  const mgTruoc = cho.length;
+  h += oTimMan('mienGiam', 'Tìm tên học viên, lớp, lý do, gói ưu đãi…', '', mgTruoc);
+  cho = locTimMan('mienGiam', cho, function(m){
+    return (m.hoTen || '') + ' ' + (m.maLop || '') + ' ' + (m.lyDo || '')
+      + ' ' + (m.goi || '') + ' ' + (m.loai || ''); });
+  h += dongKetQuaTim('mienGiam', cho.length, mgTruoc, 'đề nghị');
+  if(!cho.length && chuTim('mienGiam')) h += '';
+  else if(!cho.length) h += emptyBox('✅', 'Không có đề nghị nào đang chờ');
   else {
     h += '<div class="tbl-wrap"><table><thead><tr><th>Học viên</th><th>Lớp</th><th>Miễn</th>'
       + '<th>Căn cứ</th><th>Minh chứng</th>' + (laBLD ? '<th></th>' : '') + '</tr></thead><tbody>';
@@ -17474,7 +18501,7 @@ function viewCongNoChiTiet(){
       + 'onclick="doiLocCongNo(\'quaHan\')">'
       + '<div class="lbl" style="' + (soQuaHan ? 'color:var(--danger);' : '') + '">Quá hạn đợt</div>'
       + '<div class="val" style="' + (soQuaHan ? 'color:var(--danger);' : '') + '">' + soQuaHan + '</div>'
-      + '<div class="small muted">' + fmtTrieu(noQuaHan) + '</div></div>'
+      + oTienPhu(noQuaHan) + '</div>'
     + '<div class="stat" style="cursor:pointer;" onclick="doiLocCongNo(\'chuaDong\')">'
       + '<div class="lbl">Chưa đóng đồng nào</div>'
       + '<div class="val" style="' + (chuaDong ? 'color:var(--warn);' : '') + '">' + chuaDong + '</div></div>'
@@ -17515,8 +18542,19 @@ function viewCongNoChiTiet(){
       + (cnLoc === 'quaHan' ? 'quá hạn đợt' : (cnLoc === 'chuaDong' ? 'chưa đóng đồng nào' : 'có kế hoạch đợt'))
       + '</b></span><button class="btn btn-sm" onclick="doiLocCongNo(\'tatCa\')">Bỏ lọc</button></div></div>';
 
+  /* Ô tìm. Màn này đang có 150 học viên còn nợ, không có ô tìm thì phải
+     cuộn tay — Ban lãnh đạo nêu 05/11/2026. */
+  const soTruocTim = ds.length;
+  h += oTimMan('congNo', 'Tìm tên học viên, lớp, số điện thoại…', '', soTruocTim);
+  ds = locTimMan('congNo', ds, function(x){
+    return (x.hv.hoTen || '') + ' ' + (x.lop.maLop || '') + ' '
+      + (x.hv.sdtPH || '') + ' ' + (x.hv.sdt || '');
+  });
+  h += dongKetQuaTim('congNo', ds.length, soTruocTim, 'học viên');
+
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('👍', 'Không có ai còn nợ ở nhóm này');
+  if(!ds.length && !chuTim('congNo')) h += emptyBox('👍', 'Không có ai còn nợ ở nhóm này');
+  else if(!ds.length) h += '';
   else {
     let lopHienTai = null;
     ds.slice(0, 200).forEach(function(x){
@@ -17556,7 +18594,8 @@ function viewCongNoChiTiet(){
         + '</div></div>'
         + '<div style="text-align:right;flex-shrink:0;">'
         + '<div style="font-weight:700;color:var(--danger);">' + fmtTien(x.no) + '</div>'
-        + (x.quaHan ? badge('danger', 'Quá hạn') : (x.da === 0 ? badge('warn', 'Chưa đóng') : badge('gray', 'Còn nợ')))
+        + (x.quaHan ? badge('danger', 'Quá hạn')
+             : (x.da === 0 ? badge('warn', 'Chưa đóng đồng nào') : badge('gray', 'Đóng một phần')))
         + '</div></div>';
     });
   }
@@ -18682,9 +19721,17 @@ function viewHoanPhi(){
   let h = '<div class="card"><div class="row"><div><h3 style="margin:0;">Hoàn phí, bảo lưu và chuyển lớp</h3>'
     + '<div class="small muted" style="margin-top:4px;">QĐ 14 mục 3.5: phải có đề nghị của học viên, xác nhận của Học vụ và phê duyệt trước khi chi</div></div>'
     + (hasPerm('ghiNhanThu')||hasPerm('khoaDsLop')?'<button class="btn btn-primary btn-sm" onclick="formHoanPhi()">+ Tạo đề nghị</button>':'')+'</div></div>';
-  const ds = hoanPhiList.slice().sort(function(a,b){ return (b.ngayDeXuat||'').localeCompare(a.ngayDeXuat||''); });
+  let ds = hoanPhiList.slice().sort(function(a,b){ return (b.ngayDeXuat||'').localeCompare(a.ngayDeXuat||''); });
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📄','Chưa có đề nghị nào');
+  const hpTruoc = ds.length;
+  h += oTimMan('hoanPhi', 'Tìm tên học viên, lớp, lý do…', '', hpTruoc);
+  const hpLoc = locTimMan('hoanPhi', ds, function(x){
+    return (x.hoTen || '') + ' ' + (x.maLop || '') + ' ' + (x.lyDo || '')
+      + ' ' + (x.loai || '') + ' ' + (x.trangThai || ''); });
+  h += dongKetQuaTim('hoanPhi', hpLoc.length, hpTruoc, 'đề nghị');
+  ds = hpLoc;
+  if(!ds.length && chuTim('hoanPhi')) h += '';
+  else if(!ds.length) h += emptyBox('📄','Chưa có đề nghị nào');
   else h += ds.map(function(x){
     const ttMau = {'Chờ Học vụ xác nhận':'warn','Chờ duyệt':'warn','Đã duyệt':'info','Từ chối':'danger','Đã chi':'ok'};
     return '<div class="list-row" style="align-items:flex-start;"><div style="min-width:0;flex:1;">'
@@ -18854,8 +19901,17 @@ function gomYeuCauHoaDon(){
 
 function viewHoaDon(){
   const tatCa = gomYeuCauHoaDon();
-  const cho = tatCa.filter(function(x){ return !x.daXuat; });
+  let cho = tatCa.filter(function(x){ return !x.daXuat; });
+  const hdTruoc = cho.length;
+  cho = locTimMan('hoaDon', cho, function(x){
+    return (x.hoTen || '') + ' ' + (x.maLop || '') + ' ' + (x.noiDung || '')
+      + ' ' + (x.loai || '') + ' ' + (x.soPhieuThu || ''); });
   const daXong = tatCa.filter(function(x){ return x.daXuat; });
+  /* Ô "Đã xuất" trước đây đếm từ ngày mở phần mềm nên chỉ tăng, không nói được
+     tháng này kế toán xuất được bao nhiêu. Nay đếm theo tháng, tổng cũ để nhỏ bên dưới. */
+  const thangXuat = todayISO().slice(0, 7);
+  const daXongThang = daXong.filter(function(x){
+    return (x.ngayXuat || x.ngayThu || '').slice(0, 7) === thangXuat; });
   const tongCho = cho.reduce(function(s, x){ return s + x.soTien; }, 0);
 
   let h = '<div class="card"><h3>Hoá đơn chờ xuất</h3>'
@@ -18871,13 +19927,17 @@ function viewHoaDon(){
     + '<div class="val" style="' + (cho.length ? 'color:var(--danger);' : '') + '">' + cho.length + '</div></div>'
     + '<div class="stat"><div class="lbl">Tổng tiền chờ xuất</div>'
     + '<div class="val" style="font-size:17px;">' + fmtTrieu(tongCho) + '</div></div>'
-    + '<div class="stat"><div class="lbl">Đã xuất</div>'
-    + '<div class="val" style="color:var(--ok);">' + daXong.length + '</div></div>'
+    + '<div class="stat"><div class="lbl">Đã xuất tháng này</div>'
+    + '<div class="val" style="color:var(--ok);">' + daXongThang.length + '</div>'
+    + '<div class="small muted">' + daXong.length + ' từ đầu</div></div>'
     + '</div>';
+
+  h += oTimMan('hoaDon', 'Tìm người mua, nội dung, số phiếu thu…', '', hdTruoc);
+  h += dongKetQuaTim('hoaDon', cho.length, hdTruoc, 'khoản');
 
   h += '<div class="card">';
   if(!cho.length)
-    h += emptyBox('🧾', 'Không còn khoản nào chờ xuất hoá đơn');
+    h += (chuTim('hoaDon') ? '' : emptyBox('🧾', 'Không còn khoản nào chờ xuất hoá đơn'));
   else {
     h += '<div class="tbl-wrap"><table><thead><tr>'
       + '<th>Người mua</th><th>Mã số thuế</th><th>Nội dung</th>'
@@ -19302,22 +20362,31 @@ function viewBaoCaoDieuHanh(){
   h += '</div>';
 
   /* Tuyển sinh */
-  h += '<div class="card"><h3>Tuyển sinh</h3><div class="grid">'
-    + '<div class="stat"><div class="lbl">Khách mới</div><div class="val">' + ts.khachMoi + '</div></div>'
-    + '<div class="stat"><div class="lbl">Đã liên hệ</div><div class="val">' + ts.daLienHe + '</div></div>'
-    + '<div class="stat"><div class="lbl">Chốt được</div>'
-    + '<div class="val" style="color:var(--ok);">' + ts.chot + '</div></div>'
-    + '<div class="stat"><div class="lbl">Tỷ lệ chuyển đổi</div><div class="val">'
-    + (ts.tyLe === null ? '—' : fmtNum(ts.tyLe, 1) + '%') + '</div></div>'
-    + '</div>';
-  if(ts.khachMoi)
-    h += '<div class="small muted" style="margin:11px 0 3px;">Phễu tuyển sinh trong kỳ</div>'
+  /* V1.31.5 — BỎ BA Ô LẶP.
+     Trước đây mục này vẽ ba ô Khách mới / Đã liên hệ / Chốt được, rồi ngay
+     dưới vẽ phễu lặp lại ĐÚNG ba nhãn ấy với ĐÚNG ba con số ấy, cách nhau
+     chưa tới một dòng. Phễu nói được nhiều hơn: cùng ba số, thêm hình dạng
+     rơi rụng giữa các khâu, lại bấm vào xem được danh sách. Nên giữ phễu, bỏ
+     ba ô, và đưa tỷ lệ chuyển đổi — con số duy nhất phễu không nói — lên trên.
+
+     Dòng bdPheuKy trước nằm thụt vào như thể thuộc nhánh if nhưng không có
+     ngoặc nên vẫn luôn chạy. Không sai kết quả, nhưng mã nói một đằng chạy
+     một nẻo thì sớm muộn có người sửa nhầm. Nay đóng ngoặc rõ ràng. */
+  bdPheuKy = {tu:k.tu, den:k.den};
+  h += '<div class="card"><h3>Tuyển sinh</h3>';
+  if(ts.khachMoi){
+    h += '<div class="row" style="margin-bottom:4px;">'
+      + '<span class="small muted" style="font-weight:600;">Phễu tuyển sinh trong kỳ</span>'
+      + '<span class="small">Chuyển đổi <b>'
+      + (ts.tyLe === null ? '—' : fmtNum(ts.tyLe, 1) + '%') + '</b></span></div>'
       + bdThanhNgang([
           {ten:'Khách mới',  gt:ts.khachMoi, mau:'var(--c1)'},
           {ten:'Đã liên hệ', gt:ts.daLienHe, mau:'var(--c1)'},
           {ten:'Chốt được',  gt:ts.chot,     mau:'var(--c3)'}
         ], {rongTen:84, bam:'xemKhauPheu'});
-    bdPheuKy = {tu:k.tu, den:k.den};
+  } else {
+    h += '<div class="small muted">Chưa có khách mới nào trong kỳ này.</div>';
+  }
   if(ts.nguonTot)
     h += '<div class="small muted" style="margin-top:8px;">Nguồn hiệu quả nhất: '
       + esc(ts.nguonTot.ten) + ' ' + fmtNum(ts.nguonTot.tyLe, 0) + '% trên ' + ts.nguonTot.tong + ' khách</div>';
@@ -19334,7 +20403,7 @@ function viewBaoCaoDieuHanh(){
       + '<div class="stat"><div class="lbl">So kỳ trước</div><div class="val" style="font-size:17px;color:'
       + (chenhThu === null ? 'inherit' : (chenhThu >= 0 ? 'var(--ok)' : 'var(--danger)')) + ';">'
       + (chenhThu === null ? '—' : (chenhThu >= 0 ? '+' : '') + fmtNum(chenhThu, 0) + '%') + '</div>'
-      + '<div class="small muted">' + fmtTrieu(thuTruoc.tong) + '</div></div>'
+      + oTienPhu(thuTruoc.tong) + '</div>'
       + '<div class="stat"><div class="lbl">Tiền mặt / chuyển khoản'
         + ((thu.quetThe || 0) > 0 ? ' / quẹt thẻ' : '') + '</div>'
       + '<div class="val" style="font-size:15px;">' + fmtTrieu(thu.tienMat) + ' / ' + fmtTrieu(thu.chuyenKhoan)
@@ -20620,9 +21689,17 @@ function viewHocBu(){
     h += '</div>';
   }
 
-  const ds = hocBuList.slice().sort(function(a,b){ return (b.ngay||'').localeCompare(a.ngay||''); });
+  let ds = hocBuList.slice().sort(function(a,b){ return (b.ngay||'').localeCompare(a.ngay||''); });
   h += '<div class="card"><h3>Buổi đã sắp xếp</h3>';
-  if(!ds.length) h += emptyBox('📅','Chưa sắp xếp buổi nào');
+  const hbTruoc = ds.length;
+  h += oTimMan('hocBu', 'Tìm tên học viên, lớp, lý do…', '', hbTruoc);
+  const hbLoc = locTimMan('hocBu', ds, function(x){
+    return (x.hoTen || '') + ' ' + (x.maLop || '') + ' ' + (x.lyDo || '')
+      + ' ' + (x.ghiChu || '') + ' ' + (x.loai || ''); });
+  h += dongKetQuaTim('hocBu', hbLoc.length, hbTruoc, 'buổi');
+  ds = hbLoc;
+  if(!ds.length && chuTim('hocBu')) h += '';
+  else if(!ds.length) h += emptyBox('📅','Chưa sắp xếp buổi nào');
   else h += ds.map(function(x){
     const ttMau = {'Đã hẹn':'info','Đã học':'ok','Huỷ':'gray'};
     return '<div class="list-row"><div style="min-width:0;flex:1;">'
@@ -20729,23 +21806,58 @@ function khoangGio(lop){
   if(cac.length===1) return {tu:phutTuGio(cac[0]), den:phutTuGio(cac[0])+90};
   return null;
 }
-function timTrungPhong(){
+/* ===== VA CHẠM LỊCH =====
+   V1.31.8 — trước đây chỉ dò TRÙNG PHÒNG, và chỉ dò ở màn Thời khoá biểu.
+   Thiếu hai thứ so với cách mọi phần mềm quản lý lớp trên thị trường làm:
+   · Không dò GIÁO VIÊN bị xếp hai lớp cùng giờ. Ở trung tâm mà phần lớn lớp
+     đều 18:00–20:15 thì đây là va chạm dễ xảy ra nhất, lại không ai thấy.
+   · Chỉ phát hiện SAU, ở một màn khác. Người xếp lớp lưu xong vẫn tưởng ổn,
+     tới khi ai đó mở Thời khoá biểu mới lộ. Các sản phẩm cùng loại đều chặn
+     ngay lúc đặt lịch.
+   Nay một cửa duy nhất: vaChamLich() cho một lớp, timTrungLich() cho cả
+   trung tâm. Màn Thời khoá biểu và lúc lưu lớp dùng chung hàm này nên hai
+   nơi không thể hiểu khác nhau về thế nào là trùng. */
+function deGioNhau(a, b){
+  const ta = thuCuaLop(a), tb = thuCuaLop(b);
+  const chung = ta.filter(function(x){ return tb.indexOf(x) >= 0; });
+  if(!chung.length) return null;
+  const ga = khoangGio(a), gb = khoangGio(b);
+  if(!ga || !gb) return null;                /* thiếu giờ thì không đoán bừa */
+  return (ga.tu < gb.den && gb.tu < ga.den) ? chung : null;
+}
+/* Va chạm của MỘT lớp (có thể là lớp đang nhập, chưa lưu) với các lớp khác */
+function vaChamLich(lop, boQuaId){
   const ra = [];
-  const dang = lopList.filter(function(l){ return l.trangThai==='Đang học' && l.phongHoc; });
-  for(let i=0;i<dang.length;i++){
-    for(let j=i+1;j<dang.length;j++){
-      const a=dang[i], b=dang[j];
-      if(stripDia(a.phongHoc)!==stripDia(b.phongHoc)) continue;
-      if(stripDia(a.phongHoc).indexOf('online')>=0) continue;
-      const ta=thuCuaLop(a), tb=thuCuaLop(b);
-      const chung = ta.filter(function(x){ return tb.indexOf(x)>=0; });
-      if(!chung.length) continue;
-      const ga=khoangGio(a), gb=khoangGio(b);
-      if(!ga || !gb) continue;
-      if(ga.tu < gb.den && gb.tu < ga.den)
-        ra.push({a:a, b:b, thu:chung, phong:a.phongHoc});
-    }
-  }
+  if(!lop) return ra;
+  (lopList||[]).forEach(function(b){
+    if(!b || b.id === boQuaId || b.trangThai !== 'Đang học') return;
+    const thu = deGioNhau(lop, b);
+    if(!thu) return;
+    /* Phòng: bỏ qua lớp Online vì nhiều lớp online cùng giờ là bình thường */
+    const pA = stripDia(lop.phongHoc||''), pB = stripDia(b.phongHoc||'');
+    if(pA && pA === pB && pA.indexOf('online') < 0)
+      ra.push({loai:'phòng', ten:lop.phongHoc, b:b, thu:thu});
+    /* Giáo viên: so bằng MÃ trước, tên chỉ là đường lui cho bản ghi cũ chưa
+       có gvId — so bằng tên gõ tay thì hai người trùng tên thành một. */
+    const gA = lop.gvId || '', gB = b.gvId || '';
+    const tA = stripDia(lop.gvPhuTrach||''), tB = stripDia(b.gvPhuTrach||'');
+    if((gA && gA === gB) || (!gA && !gB && tA && tA === tB))
+      ra.push({loai:'giáo viên', ten:lop.gvPhuTrach, b:b, thu:thu});
+  });
+  return ra;
+}
+function timTrungLich(){
+  const ra = [], da = {};
+  (lopList||[]).filter(function(l){ return l.trangThai==='Đang học'; })
+    .forEach(function(a){
+      vaChamLich(a, a.id).forEach(function(v){
+        /* Mỗi cặp chỉ kể một lần, dù duyệt từ hai phía */
+        const k = [a.id, v.b.id].sort().join('|') + '|' + v.loai;
+        if(da[k]) return;
+        da[k] = true;
+        ra.push({loai:v.loai, ten:v.ten, a:a, b:v.b, thu:v.thu});
+      });
+    });
   return ra;
 }
 /* ================= LỊCH BUỔI HỌC CỦA MỘT LỚP =================
@@ -21247,17 +22359,18 @@ function inLichLop(lopId){
 
 function viewThoiKhoaBieu(){
   const dang = lopList.filter(function(l){ return l.trangThai==='Đang học'; });
-  const trung = timTrungPhong();
+  const trung = timTrungLich();
 
   let h = '<div class="card"><h3>Thời khoá biểu tuần</h3>'
     + '<div class="small muted">Dựng từ lịch học và giờ học của các lớp đang chạy. '
     + 'Lớp nào chưa ghi rõ thứ và giờ thì không hiện lên được.</div></div>';
 
   if(trung.length){
-    h += '<div class="card" style="border-color:var(--danger);"><h3 style="color:var(--danger);">⚠️ Trùng phòng học · '+trung.length+'</h3>';
+    h += '<div class="card" style="border-color:var(--danger);"><h3 style="color:var(--danger);">⚠️ Trùng lịch · '+trung.length+'</h3>';
     trung.forEach(function(x){
       h += '<div class="list-row"><div class="small">'
-        + '<b>'+esc(x.a.maLop)+'</b> và <b>'+esc(x.b.maLop)+'</b> cùng phòng '+esc(x.phong)
+        + '<b>'+esc(x.a.maLop)+'</b> và <b>'+esc(x.b.maLop)+'</b> cùng '
+        + esc(x.loai) + ' ' + esc(x.ten||'')
         + ' vào '+x.thu.map(function(t){ return TEN_THU[t]; }).join(', ')
         + '<div class="muted">'+esc(x.a.gioHoc||'')+' và '+esc(x.b.gioHoc||'')+'</div></div></div>';
     });
@@ -21309,10 +22422,17 @@ function phanAnhQuaHan(pa){
   return hanPhanAnh(pa) < todayISO();
 }
 function viewPhanAnh(){
-  const ds = phanAnhList.slice().sort(function(a,b){ return (b.ngayNhan||'').localeCompare(a.ngayNhan||''); });
+  let ds = phanAnhList.slice().sort(function(a,b){ return (b.ngayNhan||'').localeCompare(a.ngayNhan||''); });
   const chuaXong = ds.filter(function(x){ return x.trangThai!=='Đã xử lý'; });
   const quaHan = ds.filter(phanAnhQuaHan);
-  const daXuLy = ds.filter(function(x){ return x.trangThai==='Đã xử lý'; });
+  /* Hai ô báo cáo tính trong 90 ngày, hai ô việc cần làm thì KHÔNG giới hạn.
+     Tỷ lệ "Xử lý đúng hạn" trước đây chia trên toàn bộ phản ánh từ ngày mở phần
+     mềm, nên càng về sau càng đứng im: một tháng làm tệ cũng chỉ nhích 1%, lãnh
+     đạo nhìn vào không biết tháng này tốt hay xấu. Còn "Chưa xử lý xong" và
+     "Quá hạn" phải hiện đủ, kể cả phản ánh từ năm ngoái chưa ai đóng. */
+  const moc90 = addDaysISO(todayISO(), -90);
+  const gan90 = ds.filter(function(x){ return (x.ngayNhan || '') >= moc90; });
+  const daXuLy = gan90.filter(function(x){ return x.trangThai==='Đã xử lý'; });
   const dungHan = daXuLy.filter(function(x){ return x.ngayXuLy && x.ngayXuLy <= hanPhanAnh(x); });
 
   let h = '<div class="card"><div class="row wrap"><div><h3 style="margin:0;">Sổ tiếp nhận phản ánh</h3>'
@@ -21321,11 +22441,13 @@ function viewPhanAnh(){
     + (hasPerm('tiepNhanPhanAnh')?'<button class="btn btn-primary" onclick="formPhanAnh()">+ Tiếp nhận</button>':'')+'</div></div>';
 
   h += '<div class="grid" style="margin-bottom:12px;">'
-    + '<div class="stat"><div class="lbl">Tổng tiếp nhận</div><div class="val">'+ds.length+'</div></div>'
-    + '<div class="stat"><div class="lbl">Chưa xử lý xong</div><div class="val">'+chuaXong.length+'</div></div>'
+    + '<div class="stat"><div class="lbl">Tiếp nhận 90 ngày</div><div class="val">'+gan90.length+'</div>'
+    + '<div class="small muted">'+ds.length+' từ đầu</div></div>'
+    + '<div class="stat"><div class="lbl">Chưa xử lý xong</div><div class="val">'+chuaXong.length+'</div>'
+    + '<div class="small muted">mọi thời điểm</div></div>'
     + '<div class="stat" style="'+(quaHan.length?'background:var(--danger-bg);':'')+'"><div class="lbl" style="'+(quaHan.length?'color:var(--danger);':'')+'">Quá hạn</div>'
     + '<div class="val" style="'+(quaHan.length?'color:var(--danger);':'')+'">'+quaHan.length+'</div></div>'
-    + '<div class="stat"><div class="lbl">Xử lý đúng hạn</div><div class="val">'
+    + '<div class="stat"><div class="lbl">Đúng hạn 90 ngày</div><div class="val">'
     + (daXuLy.length? fmtNum(dungHan.length/daXuLy.length*100,0)+'%' : '—')+'</div>'
     + (daXuLy.length? '<div style="margin-top:7px;">'
         + bdMeter(dungHan.length/daXuLy.length*100, 100, {nho:true, nhan:false, moc:90,
@@ -21334,7 +22456,15 @@ function viewPhanAnh(){
     + '</div>';
 
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📨','Chưa có phản ánh nào được ghi nhận');
+  const paTruoc = ds.length;
+  h += oTimMan('phanAnh', 'Tìm tên học viên, lớp, nội dung phản ánh…', '', paTruoc);
+  const paLoc = locTimMan('phanAnh', ds, function(x){
+    return (x.hoTen || '') + ' ' + (x.maLop || '') + ' ' + (x.noiDung || '')
+      + ' ' + (x.nguoiPhanAnh || '') + ' ' + (x.huongXuLy || ''); });
+  h += dongKetQuaTim('phanAnh', paLoc.length, paTruoc, 'phản ánh');
+  ds = paLoc;
+  if(!ds.length && chuTim('phanAnh')) h += '';
+  else if(!ds.length) h += emptyBox('📨','Chưa có phản ánh nào được ghi nhận');
   else h += ds.map(function(x){
     const qh = phanAnhQuaHan(x);
     const ttMau = {'Mới tiếp nhận':'warn','Đang xử lý':'info','Đã xử lý':'ok','Chuyển Ban Giám đốc':'danger'};
@@ -21506,9 +22636,15 @@ function viewYeuCauTT(){
   const ds = yeuCauTTList.slice().sort(function(a,b){ return (a.hanChot||'').localeCompare(b.hanChot||''); });
   const dangLam = ds.filter(function(y){ return ['Đã gửi','Đang sản xuất','Chờ duyệt nội dung','Chờ duyệt phát hành'].indexOf(y.trangThai)>=0; });
   const treHan = ds.filter(ycTreHan);
+  /* Hai tỷ lệ chất lượng tính trong 90 ngày. Trước đây chia trên toàn bộ phiếu
+     đã phát hành từ ngày mở phần mềm nên không bao giờ nhúc nhích — xem lý do ở
+     ô tương tự bên màn Phản ánh. "Đang làm" và "Trễ hạn" vẫn hiện đủ. */
+  const mocYc90 = addDaysISO(todayISO(), -90);
+  const phatHanh90 = ds.filter(function(y){
+    return y.trangThai==='Đã phát hành' && (y.ngayBanGiao || y.hanChot || '') >= mocYc90; });
   const daPhatHanh = ds.filter(function(y){ return y.trangThai==='Đã phát hành'; });
-  const duyetVongDau = daPhatHanh.filter(function(y){ return (y.soVongSua||0)===0; });
-  const dungHan = daPhatHanh.filter(function(y){ return y.ngayBanGiao && y.hanChot && y.ngayBanGiao <= y.hanChot; });
+  const duyetVongDau = phatHanh90.filter(function(y){ return (y.soVongSua||0)===0; });
+  const dungHan = phatHanh90.filter(function(y){ return y.ngayBanGiao && y.hanChot && y.ngayBanGiao <= y.hanChot; });
 
   let h = '<div class="card"><div class="row wrap"><div><h3 style="margin:0;">Phiếu yêu cầu thiết kế</h3>'
     + '<div class="small muted" style="margin-top:4px;">Mẫu BM-TT-01 · brief thiếu trường bắt buộc thì không gửi được</div></div>'
@@ -21518,11 +22654,14 @@ function viewYeuCauTT(){
     + '<div class="stat"><div class="lbl">Đang làm</div><div class="val">'+dangLam.length+'</div></div>'
     + '<div class="stat" style="'+(treHan.length?'background:var(--danger-bg);':'')+'"><div class="lbl" style="'+(treHan.length?'color:var(--danger);':'')+'">Trễ hạn</div>'
     + '<div class="val" style="'+(treHan.length?'color:var(--danger);':'')+'">'+treHan.length+'</div></div>'
-    + '<div class="stat"><div class="lbl">Đã phát hành</div><div class="val">'+daPhatHanh.length+'</div></div>'
+    + '<div class="stat"><div class="lbl">Phát hành 90 ngày</div><div class="val">'+phatHanh90.length+'</div>'
+    + '<div class="small muted">'+daPhatHanh.length+' từ đầu</div></div>'
     + '<div class="stat"><div class="lbl">Duyệt ngay vòng đầu</div><div class="val">'
-    + (daPhatHanh.length? fmtNum(duyetVongDau.length/daPhatHanh.length*100,0)+'%' : '—')+'</div></div>'
+    + (phatHanh90.length? fmtNum(duyetVongDau.length/phatHanh90.length*100,0)+'%' : '—')+'</div>'
+    + '<div class="small muted">90 ngày</div></div>'
     + '<div class="stat"><div class="lbl">Bàn giao đúng hạn</div><div class="val">'
-    + (daPhatHanh.length? fmtNum(dungHan.length/daPhatHanh.length*100,0)+'%' : '—')+'</div></div>'
+    + (phatHanh90.length? fmtNum(dungHan.length/phatHanh90.length*100,0)+'%' : '—')+'</div>'
+    + '<div class="small muted">90 ngày</div></div>'
     + '</div>';
 
   const nhom = [
@@ -21907,6 +23046,8 @@ function chiPhiCuaChienDich(cdId){
 function viewChienDich(){
   const tongChi = chiPhiQCList.reduce(function(s,x){ return s+(Number(x.soTien)||0); },0);
   const thangNay = todayISO().slice(0,7);
+  const chiNam = chiPhiQCList.filter(function(x){ return (x.ngay||'').slice(0,4)===todayISO().slice(0,4); })
+    .reduce(function(s,x){ return s+(Number(x.soTien)||0); },0);
   const chiThang = chiPhiQCList.filter(function(x){ return (x.ngay||'').slice(0,7)===thangNay; })
     .reduce(function(s,x){ return s+(Number(x.soTien)||0); },0);
   const theoKenh = {};
@@ -21925,7 +23066,9 @@ function viewChienDich(){
   h += '<div class="grid" style="margin-bottom:12px;">'
     + '<div class="stat"><div class="lbl">Chiến dịch</div><div class="val">'+chienDichList.length+'</div></div>'
     + '<div class="stat"><div class="lbl">Chi tháng này</div><div class="val" style="font-size:17px;">'+fmtTien(chiThang)+'</div></div>'
-    + '<div class="stat"><div class="lbl">Tổng đã chi</div><div class="val" style="font-size:17px;">'+fmtTien(tongChi)+'</div></div>'
+    + '<div class="stat"><div class="lbl">Chi năm '+todayISO().slice(0,4)+'</div>'
+    + '<div class="val" style="font-size:17px;">'+fmtTien(chiNam)+'</div>'
+    + '<div class="small muted">'+fmtTien(tongChi)+'đ từ đầu</div></div>'
     + '</div>';
 
   if(Object.keys(theoKenh).length){
@@ -24854,7 +25997,7 @@ function lapPhieuXuatSach(hangId){
 
 function viewTonKho(){
   const laSach = khoNhom === 'Sách';
-  const ds = locTheoNhomKho(khoHangList.slice()).map(function(x){
+  let ds = locTheoNhomKho(khoHangList.slice()).map(function(x){
     return Object.assign({}, x, {ton: tonKhoHang(x.id)}); })
     .sort(function(a, b){
       if(a.nhom !== b.nhom) return (a.nhom || '').localeCompare(b.nhom || '', 'vi');
@@ -24938,8 +26081,16 @@ function viewTonKho(){
     h += '</div>';
   }
 
+  const tkTruoc = ds.length;
+  h += oTimMan('tonKho', 'Tìm tên mặt hàng, nhóm, đơn vị tính…', '', tkTruoc);
+  ds = locTimMan('tonKho', ds, function(x){
+    return (x.ten || '') + ' ' + (x.nhom || '') + ' ' + (x.dvt || '')
+      + ' ' + (x.ghiChu || '') + ' ' + (x.maHang || ''); });
+  h += dongKetQuaTim('tonKho', ds.length, tkTruoc, 'mặt hàng');
+
   h += '<div class="card">';
-  if(!ds.length) h += emptyBox('📦', 'Chưa có mặt hàng nào. Vào Danh mục hàng để thêm.');
+  if(!ds.length && chuTim('tonKho')) h += '';
+  else if(!ds.length) h += emptyBox('📦', 'Chưa có mặt hàng nào. Vào Danh mục hàng để thêm.');
   else {
     let nhomHT = null;
     /* Lọc nhóm Sách thì đổi cột cuối thành "Lớp đang dùng" — vị trí kệ không
@@ -25317,7 +26468,14 @@ function viewBuoiDayGV(){
   }
 
   h += '<div class="card">';
-  if(!kq.ds.length) h += emptyBox('👨‍🏫', 'Chưa có buổi dạy nào trong khoảng này');
+  const bdTruoc = kq.ds.length;
+  h += oTimMan('buoiDay', 'Tìm tên giáo viên, mã lớp, phòng học…', '', bdTruoc);
+  kq.ds = locTimMan('buoiDay', kq.ds, function(x){
+    return (x.gv || '') + ' ' + (x.maLop || '') + ' ' + (x.phong || '')
+      + ' ' + (x.tenGV || '') + ' ' + (x.lop && x.lop.maLop ? x.lop.maLop : ''); });
+  h += dongKetQuaTim('buoiDay', kq.ds.length, bdTruoc, 'buổi dạy');
+  if(!kq.ds.length && chuTim('buoiDay')) h += '';
+  else if(!kq.ds.length) h += emptyBox('👨‍🏫', 'Chưa có buổi dạy nào trong khoảng này');
   else {
     h += '<div class="tbl-wrap"><table><thead><tr>'
       + '<th>Giáo viên</th>'
@@ -25531,11 +26689,11 @@ function viewDoiSoatNR(){
     + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Newsale' ? 'background:var(--info-bg);' : '') + '" '
     + 'onclick="locNR(\'Newsale\')"><div class="lbl">Newsale</div>'
     + '<div class="val">' + kq.moi.length + '</div>'
-    + '<div class="small muted">' + fmtTrieu(kq.tienMoi) + '</div></div>'
+    + oTienPhu(kq.tienMoi) + '</div>'
     + '<div class="stat" style="cursor:pointer;' + (nrLoc === 'Renew' ? 'background:var(--ok-bg);' : '') + '" '
     + 'onclick="locNR(\'Renew\')"><div class="lbl">Renew</div>'
     + '<div class="val" style="color:var(--ok);">' + kq.cu.length + '</div>'
-    + '<div class="small muted">' + fmtTrieu(kq.tienCu) + '</div></div>'
+    + oTienPhu(kq.tienCu) + '</div>'
     + '<div class="stat"><div class="lbl">Tổng lượt ghi danh</div><div class="val">' + kq.ds.length + '</div></div>'
     + '<div class="stat"><div class="lbl">Tỷ lệ Renew</div><div class="val">'
     + (kq.ds.length ? fmtNum(kq.cu.length / kq.ds.length * 100, 0) + '%' : '—') + '</div></div>'
