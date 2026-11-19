@@ -2,7 +2,130 @@
 ==================================================================
  PHẦN MỀM QUẢN LÝ CÔNG VIỆC – BÁO CÁO  |  FLIC DNTU
  File: QuanLyCongViec-FLIC-V1.0.0.html
- Phiên bản: V1.39.0   |   Ngày: 16/11/2026
+ Phiên bản: V1.42.0   |   Ngày: 19/11/2026
+------------------------------------------------------------------
+ V1.42.0 – 19/11/2026 – CHUYÊN VIÊN HỌC VỤ PHỤ TRÁCH LỚP (CỘT STAFF)
+
+ Bảng tay "LỊCH THI 2026" có một cột Staff — chuyên viên học vụ theo
+ lớp. Nay hồ sơ lớp giữ trường hvPhuTrachId, chọn trong form Mở/Sửa
+ lớp, và tên hiện ở màn Lịch thi giữa kỳ – cuối kỳ.
+
+ VÌ SAO KHÔNG DỰNG THÀNH CỘT RIÊNG TRÊN MÀN HÌNH.
+ Đã dựng thử cả hai cách trên bản nháp rồi chụp ảnh đối chiếu:
+   · cột thứ 13: tên ba chữ rơi ba dòng, mọi dòng cao lên, và nút
+     Sửa bị đẩy ra ngoài khung — mất luôn đường thao tác;
+   · dòng phụ "HV: …" trong ô Giáo viên: vừa khung, không cắt chữ.
+ Chọn cách thứ hai. Trên màn hình bề ngang là tài nguyên có hạn;
+ thêm một cột là lấy chỗ của một cột khác, không phải thêm chỗ mới.
+ File Excel thì không vướng bề ngang nên ở đó Staff là cột riêng.
+
+ DANH SÁCH CHỌN LẤY THEO QUYỀN, KHÔNG LẤY HẾT.
+ Chỉ tài khoản có quyền suaLop mới hiện trong ô chọn — người được
+ xem Học vụ thì nhiều, người quản lớp thì ít. Có kèm người đang
+ được phân sẵn dù họ đã bị thu quyền, để giá trị cũ không âm thầm
+ biến mất khỏi hồ sơ lớp khi mở form ra sửa việc khác.
+
+------------------------------------------------------------------
+ V1.41.0 – 18/11/2026 – LỊCH THI GIỮA KỲ – CUỐI KỲ TỰ SINH
+
+ Chuyên môn và Học vụ đang gõ tay bảng "LỊCH THI 2026" trên Google
+ Sheet: mỗi lớp ba mốc Mid / Final Speaking / Final R-W-L. Gõ tay thì
+ mỗi lần lớp nghỉ bù là ba ngày đó sai mà không ai nhớ sửa lại.
+
+ 1. LUẬT SINH NGÀY THI — VÀ MỘT LẦN RÚT RA LUẬT SAI.
+    Lần đầu em dò ngược CẢ HAI tham số (ngày khai giảng, số buổi) cho
+    từng lớp sao cho ra đúng ba ngày trong bảng tay, rồi báo "khớp
+    11/11". Ép đủ tham số thì luật nào cũng khớp — con số đó không
+    phải bằng chứng. Anh Tinh đưa ngày khai giảng THẬT (18/11/2026):
+    luật cũ chỉ còn khớp 6/11 lớp.
+
+    Luật đúng:
+        Mid   = buổi THỰC DẠY thứ ceil(N/2)
+        Speak = buổi THỰC DẠY thứ N-1
+        R-W-L = buổi THỰC DẠY thứ N
+    BUỔI BÁO NGHỈ KHÔNG PHẢI MỘT BUỔI DẠY. Nghỉ một buổi là mọi mốc
+    phía sau lùi thêm một ô lịch. Buổi nghỉ đã hẹn ngày bù vẫn là một
+    buổi dạy, nhưng nằm đúng chỗ của NGÀY BÙ trong trình tự thời gian
+    — bù vào cuối khoá thì nó là buổi cuối, không còn ở chỗ cũ.
+
+    Luật này giải thích đủ 11/11 lớp, và chịu được phép thử phủ định:
+    số buổi nghỉ cần có chỉ là 0 hoặc 1 mỗi lớp, và bốn lớp cần 1 đúng
+    là bốn lớp khai giảng sớm nhất (23/09–05/10). B1.1 cần 0 ở mốc
+    giữa kỳ nhưng 1 ở hai mốc cuối — vì 01/01/2027 rơi vào thứ Sáu,
+    mà lớp đó học thứ 4–6; người lập bảng đã bỏ Tết Dương lịch ra.
+
+ 2. NGÀY LẤY TRÊN LỊCH BUỔI THẬT, KHÔNG CỘNG THEO TUẦN.
+    Dùng chung lichBuoiCuaLop() với màn Lịch buổi học, nên nghỉ lễ và
+    nghỉ bù đẩy ngày thi theo. Đây là việc bảng tay không làm được.
+    Buổi nghỉ đã hẹn bù thì mốc chạy theo ngày bù và ghi rõ "đã dời".
+    Buổi nghỉ CHƯA hẹn bù thì chưa đếm được: mốc nào vượt quá số buổi
+    đã biết ngày sẽ hiện "chưa xác định", mốc nào còn tính được nhưng
+    có buổi chưa bù nằm trước thì hiện ngày kèm câu "ngày sẽ lùi".
+    Không đoán thay người xếp lịch.
+
+ 3. THIẾU DỮ KIỆN THÌ BÁO RÕ, KHÔNG ĐOÁN.
+    Lớp chưa có ngày khai giảng, chưa tích thứ học, hay số buổi quá
+    ngắn thì nằm trong khối cảnh báo kèm lý do từng lớp. Một ngày thi
+    đoán bừa trông y hệt ngày thi đúng — Chuyên môn ra đề nhầm tuần.
+
+ 4. SỬA TAY ĐƯỢC, NHƯNG PHẢI NHÌN RA.
+    Phòng bận, giáo viên vướng thì Học vụ chỉnh được ngày (quyền
+    suaLop). Ô đã chỉnh hiện dấu riêng kèm tên người sửa và ngày máy
+    tính ra, bấm một nút là trả về máy tính. Chỉ lưu khi ngày nhập
+    KHÁC ngày máy tính — bằng nhau mà vẫn lưu thì sau này lớp nghỉ bù,
+    ngày thi đứng im và không ai hiểu vì sao.
+
+ 5. TÊN HAI CỘT CUỐI THEO NHÓM CHƯƠNG TRÌNH.
+    Lớp Tin học, MOS, Robotics không thi nói. Vẫn đủ ba cột (anh Tinh
+    chốt), nhưng nhóm không có bài thi nói thì hai cột cuối gọi là
+    "Final 1 / Final 2" thay vì "Speaking / R-W-L". Dò theo TỪ KHOÁ vì
+    tên nhóm sửa được trong Tham số; dò hụt thì rơi về cách gọi chung,
+    không bao giờ gọi tên một bài thi mà lớp đó không thi.
+
+ 6. CHƯA LÀM — CHỜ ANH TINH CHỐT NGHĨA.
+    Ba cột "Khoá học", "Khoá mới", "Staff" trong bảng tay chưa có chỗ
+    trong dữ liệu lớp. Không dựng cột rỗng để lấp chỗ.
+------------------------------------------------------------------
+ V1.40.0 – 18/11/2026 – LUỒNG DUYỆT SẢN PHẨM TRUYỀN THÔNG
+
+ Anh Tinh cơ cấu Trưởng BP Marketing lên làm quản lý: tự tạo task,
+ giao Thiết kế thực hiện, xem được thì duyệt, không được thì trả lại.
+ Ban Giám đốc không ngồi duyệt từng bài. Chốt 18/11/2026.
+
+ 1. CHỐT CŨ HỎI NHẦM CÂU.
+    Nó hỏi "ai TẠO phiếu" rồi chặn người đó duyệt. Nhưng tạo phiếu
+    không phải là làm ra sản phẩm. Quản lý giao việc rồi nghiệm thu
+    là guồng bình thường — chốt cũ chặn oan đúng người quản lý, trong
+    khi người thật sự cần chặn thì nó không nhìn tới.
+    Nay chốt đọc nguoiThucHien (hàm nhanViecTT đã ghi sẵn từ trước):
+    NGƯỜI LÀM RA SẢN PHẨM không tự nghiệm thu sản phẩm của mình.
+    Phiếu cũ chưa có nguoiThucHien thì VẪN CHẶN — không biết ai làm
+    thì không đoán — kèm câu chỉ rõ cách gỡ.
+
+ 2. GỘP HAI NÚT DUYỆT LÀM MỘT.
+    Ai có cả hai quyền duyệt thì hai nút chỉ là hai lần bấm của cùng
+    một người, không phải hai lớp kiểm soát. Bày ra như hai lớp là
+    nói dối người dùng. Nay hiện một nút "Duyệt và phát hành".
+    Bỏ luôn chốt "người duyệt nội dung không tự duyệt phát hành":
+    đã cho một người ký cả hai cổng thì giữ chốt cấm chính việc đó
+    là tự mâu thuẫn.
+
+ 3. KHÔNG NỚI BẢNG CHUYỂN TRẠNG THÁI.
+    Bảng CHUYEN_DUOC_TT không cho đi thẳng từ "Chờ duyệt nội dung"
+    sang "Đã phát hành", và giữ nguyên như vậy. Nới ra thì người CHỈ
+    có quyền duyệt phát hành cũng nhảy cóc qua cổng nội dung — đúng
+    con bọ mà máy trạng thái sinh ra để chặn. Hàm gộp tự kiểm đúng
+    MỘT trạng thái nguồn, chặt hơn tra bảng.
+
+ 4. CỔNG GIẤY TỜ HÌNH ẢNH HỌC VIÊN GIỮ NGUYÊN.
+    Thiếu văn bản đồng ý thì KHÔNG gộp nút: duyệt nội dung được,
+    nhưng phát hành phải chờ đủ giấy. Đây là chỗ dính tới phụ huynh
+    và quyền hình ảnh, không gộp mất được.
+
+ 5. Trưởng BP Marketing nhận thêm duyetPhatHanhTT trong bộ mặc định.
+    LƯU Ý VẬN HÀNH: bộ mặc định chỉ áp cho tài khoản TẠO MỚI. Tài
+    khoản đang tồn tại KHÔNG tự nhận quyền này — phải vào Hệ thống →
+    Tài khoản, tick tay rồi lưu.
 ------------------------------------------------------------------
  V1.39.0 – 16/11/2026 – CHO QUẢN TRỊ NHÌN THẤY, VÀ THÔI PHƠI MẬT KHẨU
 
@@ -2285,6 +2408,27 @@
   .hop-phai .nhan{display:block;margin-top:7px;font-size:11px;font-weight:700;
     color:var(--son);cursor:pointer;}
 
+  /* V1.41.0 — bảng lịch thi: nhiều cột, cuộn ngang, đầu bảng dính */
+  .bang-thi{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;}
+  .bang-thi th,.bang-thi td{border:1px solid var(--vien-2);padding:6px 8px;vertical-align:middle;}
+  .bang-thi thead th{background:var(--nen-2);font-weight:700;text-align:center;
+    position:sticky;top:0;z-index:1;}
+  .bang-thi tr.soc td{background:var(--nen-2);}
+  .bang-thi td.o-ca{text-align:center;font-weight:700;background:var(--nen-2);}
+  /* Ba cột ngày thi: cho XUỐNG DÒNG và chặn trần bề rộng. Để nowrap thì
+     một dòng chú thích hiếm gặp ("máy tính: 17/11/2026", "sửa tay · tên
+     người") ép bề rộng của CẢ CỘT trên mọi dòng, và cộng lại đẩy cột cuối
+     cùng ra khỏi khung — đúng cột người ta cần xem nhất. (18/11/2026) */
+  .bang-thi .cot-thi{text-align:center;white-space:normal;min-width:112px;max-width:150px;}
+  /* Khoá học (nhóm chương trình) nằm làm DÒNG PHỤ trong ô Lớp, không
+     chiếm một cột riêng. Thử cột riêng rồi: tên nhóm dài 31 ký tự, để
+     nowrap thì nó đẩy ba cột ngày thi ra khỏi khung nhìn — đúng thứ người
+     ta mở màn này để xem; cho xuống dòng thì mỗi dòng cao gấp bốn mà ba
+     cột kia vẫn khuất. Bảng này cạnh tranh bề ngang với cột phải, nên
+     cách đúng là BỚT MỘT CỘT chứ không phải nắn bề rộng. (18/11/2026) */
+  .bang-thi .duoi-lop{white-space:normal;max-width:150px;}
+  .bang-thi .duoi-gv{white-space:normal;max-width:150px;}
+  .bang-thi thead th.cot-thi{background:#DBEAFE;}
   .section-tab{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;background:var(--nen);}
   .section-tab button{flex:0 0 auto;padding:7px 13px;border-radius:7px;border:1px solid var(--vien);
     background:var(--giay);font-size:12.5px;color:var(--muc-2);white-space:nowrap;cursor:pointer;
@@ -2841,10 +2985,32 @@ let db = null, storage = null;
    2. Thêm một mục vào LICH_SU_PHIEN_BAN (ghi rõ sửa gì, vì sao)
    3. Cập nhật khối chú thích bàn giao ở đầu file
    4. Đặt tên file tải về kèm số phiên bản mới                        */
-const PHIEN_BAN = 'V1.39.0';
-const NGAY_PHIEN_BAN = '16/11/2026';
+const PHIEN_BAN = 'V1.42.0';
+const NGAY_PHIEN_BAN = '19/11/2026';
 
 const LICH_SU_PHIEN_BAN = [
+  {v:'V1.42.0', ngay:'19/11/2026', muc:[
+    {loai:'Mới', nd:'Hồ sơ lớp có thêm trường Chuyên viên học vụ phụ trách (hvPhuTrachId). Danh sách chọn chỉ liệt kê tài khoản có quyền suaLop — người thật sự quản lớp — cộng người đang được phân sẵn, để giá trị cũ không biến mất khi người đó bị thu quyền. Để trống được.'},
+    {loai:'Mới', nd:'Bảng Lịch thi giữa kỳ – cuối kỳ hiện tên chuyên viên học vụ thành dòng phụ "HV: …" trong ô Giáo viên, đầu cột ghi "Giáo viên / và học vụ". KHÔNG dựng thành cột thứ 13: bảng đã 12 cột, thêm cột là đẩy nút Sửa ra ngoài khung — đã dựng thử cả hai cách và chụp ảnh đối chiếu trước khi chốt.'},
+    {loai:'Mới', nd:'File Excel xuất ra có cột Staff riêng, đặt sau cột Giáo viên. Excel không vướng bề ngang nên ở đó cột riêng là đúng kiểu bảng tay của Chuyên môn.'},
+    {loai:'Sửa', nd:'Mục V1.41.0 bên dưới từng ghi "ba cột Khoá học / Khoá mới / Staff chưa dựng" trong khi cùng mục đó đã ghi cột Khoá học là làm rồi — một dòng tự mâu thuẫn. Nay ghi đúng: V1.41.0 còn treo hai cột Khoá mới và Staff.'},
+    {loai:'Giữ', nd:'Cột Khoá mới trong bảng tay vẫn chưa dựng — chưa chốt được nghĩa của nó, nên không đoán. Thà thiếu một cột còn hơn bày ra một cột không ai biết nó đếm cái gì.'}
+  ]},
+  {v:'V1.41.0', ngay:'18/11/2026', muc:[
+    {loai:'Mới', nd:'Học vụ → Lịch thi giữa kỳ – cuối kỳ: ba mốc thi của mỗi lớp do máy tính từ lịch buổi học — giữa kỳ là buổi thực dạy thứ ceil(N/2), hai mốc cuối là buổi thực dạy thứ N-1 và N. Luật đối chiếu với 11 lớp đang chạy và ngày khai giảng thật.'},
+    {loai:'Mới', nd:'Buổi báo nghỉ KHÔNG tính là một buổi dạy: nghỉ một buổi là mọi mốc phía sau lùi thêm một ô lịch. Buổi đã hẹn ngày bù vẫn là buổi dạy nhưng nằm đúng chỗ của ngày bù trong trình tự thời gian, nên bù vào cuối khoá thì nó thành buổi cuối.'},
+    {loai:'Mới', nd:'Buổi nghỉ chưa hẹn ngày bù: mốc vượt quá số buổi đã biết ngày hiện "chưa xác định"; mốc còn tính được nhưng có buổi chưa bù nằm trước thì kèm câu "ngày sẽ lùi". Lớp thiếu ngày khai giảng hoặc chưa tích thứ học nằm trong khối cảnh báo kèm lý do từng lớp.'},
+    {loai:'Mới', nd:'Bảng có thêm cột Khoá học, lấy thẳng nhóm chương trình của lớp (Cambridge, Tin học thiếu nhi, Aptis ESOL...).'},
+    {loai:'Mới', nd:'Chỉnh tay được ba ngày thi (quyền suaLop), ô đã chỉnh hiện tên người sửa và ngày máy tính ra, một nút trả về máy tính. Chỉ lưu khi ngày nhập khác ngày máy tính.'},
+    {loai:'Mới', nd:'Xuất Excel bảng lịch thi để gửi Chuyên môn, thay cho bảng gõ tay trên Google Sheet.'},
+    {loai:'Giữ', nd:'Hai cột Khoá mới / Staff trong bảng tay chưa dựng — chưa có chỗ trong dữ liệu lớp, chờ chốt nghĩa.'}
+  ]},
+  {v:'V1.40.0', ngay:'18/11/2026', muc:[
+    {loai:'Sửa', nd:'Chốt duyệt sản phẩm truyền thông hỏi nhầm câu: nó hỏi "ai tạo phiếu" thay vì "ai làm ra sản phẩm", nên chặn oan người quản lý giao việc rồi nghiệm thu. Nay chốt theo nguoiThucHien — người làm không tự duyệt sản phẩm của mình.'},
+    {loai:'Mới', nd:'Người có cả hai quyền duyệt thấy một nút "Duyệt và phát hành" thay cho hai nút. Hai lần bấm của cùng một người không phải hai lớp kiểm soát, nên không bày ra như vậy nữa.'},
+    {loai:'Sửa', nd:'Trưởng BP Marketing nhận thêm quyền duyetPhatHanhTT trong bộ mặc định. Tài khoản đang tồn tại phải tick tay, bộ mặc định chỉ áp cho tài khoản tạo mới.'},
+    {loai:'Giữ', nd:'Không nới bảng chuyển trạng thái. Cổng văn bản đồng ý hình ảnh học viên vẫn chặn phát hành khi chưa đủ giấy.'}
+  ]},
   {v:'V1.39.0', ngay:'16/11/2026', muc:[
     {loai:'Mới', nd:'Màn Hệ thống → Tài khoản đếm và đánh dấu tài khoản còn mật khẩu mặc định hoặc chưa đặt mật khẩu. Trước đây cảnh báo chỉ nói với chính chủ, nên Quản trị — người duy nhất đặt lại được mật khẩu cho người khác — không nhìn ra còn ai chưa đổi.'},
     {loai:'Sửa', nd:'Ô Mật khẩu ở hộp Sửa tài khoản từng hiện nguyên chữ mật khẩu của người khác; ai có quyền quản lý tài khoản đều đọc được bằng cách nhìn qua vai. Nay che ký tự và để trống khi sửa, với quy ước để trống = giữ nguyên.'},
@@ -3846,7 +4012,10 @@ const QUYEN_MAC_DINH = {
   'FLIC-PGD-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemHeThong','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','duyetHoanPhi','duyetMienGiam','xuLyPhanAnh','quanLyGiaoVien','giaoViec','quanLyTaiKhoan','duyetBienBanDoiSoat','duyetIn','suaBangGia','xemTruyenThong','duyetPhatHanhTT','nhapDuLieu','xemPhieuTest','taoPhieuTest','tuVanSauTest','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','quanLyLead','quanLyKyThi','quanLyThiSinh','capChungChi','suaThamSo','xemTaiSan','duyetXuatKho','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
   'FLIC-KT-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','giaoViec','deXuatIn','quanLyKyThi','quanLyThiSinh','nhapDiem','capChungChi','quanLyKhoDe','nhapDuLieu','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa','duyetLichCa'],
   'FLIC-HV-01':   ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','khoaDsLop','chotBaoCaoNgay','quanLyGiaoVien','quanLyHocBu','tiepNhanPhanAnh','xuLyPhanAnh','quanLyThiSinh','suaLop','suaHocVien','diemDanh','chotBaoCaoTuan','giaoViec','deXuatIn','chotNhapHoc','nhapDuLieu','xemHeThong','xemPhieuTest','taoPhieuTest','tuVanSauTest','nhapKetQuaTest','quanLyLead','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa','chotMoLopOn'],
-  'FLIC-MKT-01':  ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
+  /* V1.40.0 — Trưởng BP Marketing chốt sản phẩm cuối cùng (anh Tinh chốt
+     18/11/2026). LƯU Ý: bộ mặc định chỉ áp cho tài khoản TẠO MỚI; tài khoản
+     đang tồn tại KHÔNG tự nhận, phải vào Hệ thống → Tài khoản tick tay. */
+  'FLIC-MKT-01':  ['duyetPhatHanhTT','xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTruyenThong','giaoViec','deXuatIn','quanLyLead','taoYeuCauTT','duyetNoiDungTT','quanLyChiPhiQC','nhapDuLieu','xemPhieuTest','xemHeThong','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
   'FLIC-CRE-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','sanXuatTT','xemTaiSan','deNghiXuatKho','xemLichCa','dangKyCa'],
   'FLIC-EVT-01':  ['xemCongViec','xemInAn','xemTruyenThong','deXuatIn','xemLichCa','dangKyCa'],
   'FLIC-HCKT-01': ['xemHocVu','xemCongViec','xemBaoCao','xemInAn','xemTuyenSinh','xemKhaoThi','xemTaiChinh','chotBaoCaoNgay','ghiNhanThu','khoaSoThu','xuatHoaDon','baoGiaIn','nhanHangIn','thanhToanIn','xemTaiSan','quanLyKho','deNghiXuatKho','nhapDuLieu','xemHeThong','xemLichCa','dangKyCa','xacNhanDoiSoat'],
@@ -4242,6 +4411,12 @@ const QUYEN_GHI = {
   luuHocBu:'quanLyHocBu', doiTrangThaiHocBu:'quanLyHocBu',
   /* Báo nghỉ một buổi là sửa lịch lớp, nên đi cùng quyền sửa lớp */
   luuNghiBuoi:'suaLop', boNghiBuoi:'suaLop',
+  /* Chốt cứng ngày thi cũng là sửa lịch lớp.
+     V1.41.0 bản đầu viết canQuyen('suaLop') — SAI: canQuyen tra bảng này
+     theo TÊN HÀM, nên 'suaLop' không có trong bảng và hàm trả về true,
+     cổng ghi mở toang. Nhìn thì y hệt một cổng quyền thật. Phải khai ở
+     đây thì cổng mới đóng. (18/11/2026) */
+  luuNgayThi:'suaLop',
   /* Tick từng em là việc của Kế toán; ký biên bản tháng là việc của Ban lãnh đạo */
   doiSoatHocPhi:'xacNhanDoiSoat', xacNhanDoiSoatKy:'duyetBienBanDoiSoat',
   luuPhanAnh:'tiepNhanPhanAnh',
@@ -5573,6 +5748,7 @@ const SECTIONS = {
              {k:'lichBuoi',ten:'Lịch buổi học',nhom:'Lớp & lịch'},
              {k:'diemDanh',ten:'Điểm danh',nhom:'Lớp & lịch'},
              {k:'hocBu',ten:'Học bù',nhom:'Lớp & lịch'},
+             {k:'lichThi',ten:'Lịch thi giữa kỳ – cuối kỳ',nhom:'Lớp & lịch'},
              {k:'hocVien',ten:'Học viên',nhom:'Học viên'},
              {k:'choXep',ten:'Chờ xếp lớp',nhom:'Học viên'},
              {k:'lopChoMo',ten:'Lớp chờ mở',nhom:'Học viên'},
@@ -7215,6 +7391,371 @@ function hangHaiCot(trai, phai, tlTrai, tlPhai){
   return '<div class="hai-cot" style="--ct:'+(tlTrai||'1fr')+';--cp:'+(tlPhai||'1fr')+';">'
     + trai + phai + '</div>';
 }
+
+/* ===================================================================
+   LỊCH THI GIỮA KỲ – CUỐI KỲ                              (V1.41.0)
+   -------------------------------------------------------------------
+   LUẬT (học ngược từ 11 lớp trong bảng tay, khớp 11/11):
+       Mid   = buổi ceil(N/2) · Speak = buổi N-1 · R-W-L = buổi N
+   N là SỐ BUỔI ĐẾM ĐƯỢC trên lịch thật, không phải số người gõ vào ô
+   "số buổi kế hoạch": lớp khai giảng sát cuối năm có thể dựng hụt buổi,
+   lấy theo số gõ thì chỉ số vượt mảng và ngày thi thành rỗng lặng lẽ.
+   =================================================================== */
+var MOC_THI = [
+  {ma:'mid',   ten:'Mid',           tenKhac:'Mid'},
+  {ma:'speak', ten:'Final Speaking', tenKhac:'Final 1'},
+  {ma:'rwl',   ten:'Final R-W-L',    tenKhac:'Final 2'}
+];
+function buoiThiCuaSo(N){
+  return {mid: Math.ceil(N/2), speak: N-1, rwl: N};
+}
+/* Nhóm chương trình CÓ bài thi nói. Lớp Tin học, MOS, Robotics không
+   thi nói, nên hai cột cuối gọi là "Final 1 / Final 2" — vẫn đúng buổi,
+   chỉ không gọi tên một bài thi mà lớp đó không thi. Dò theo TỪ KHOÁ vì
+   tên nhóm sửa được trong Tham số; dò hụt thì rơi về cách gọi chung. */
+var TU_KHOA_CO_THI_NOI = ['cambridge','tieng anh','ielts','toeic','aptis'];
+function lopCoThiNoi(l){
+  const t = stripDia(String((l && l.nhomCT) || '')).toLowerCase();
+  return TU_KHOA_CO_THI_NOI.some(function(k){ return t.indexOf(k) >= 0; });
+}
+function tenMocThi(l, ma){
+  const m = MOC_THI.find(function(x){ return x.ma === ma; });
+  if(!m) return '';
+  return lopCoThiNoi(l) ? m.ten : m.tenKhac;
+}
+/* DANH SÁCH BUỔI THỰC DẠY, xếp theo thời gian.
+   -------------------------------------------------------------------
+   Đây là chỗ bản đầu của V1.41.0 làm SAI: nó lấy lich.buoi[k-1], tức ô
+   lịch thứ k, nên lớp nào có một buổi nghỉ là ba mốc thi sớm hơn thực tế
+   đúng một buổi. Đối chiếu với ngày khai giảng thật ngày 18/11/2026 mới
+   lộ ra: luật cũ khớp 6/11 lớp, luật này khớp 11/11.
+
+   Ba loại ô lịch:
+   · ô bình thường          → một buổi dạy, vào ngày của ô
+   · ô nghỉ ĐÃ hẹn ngày bù  → vẫn là một buổi dạy, nhưng vào NGÀY BÙ, nên
+                              phải nằm đúng chỗ của ngày bù trong trình tự
+                              thời gian. Bù vào cuối khoá thì nó là buổi
+                              cuối, không còn đứng ở chỗ cũ.
+   · ô nghỉ CHƯA hẹn bù     → chưa thành buổi dạy nào cả, không đếm.     */
+function buoiThucDay(lich){
+  const ds = [], oChoBu = [];
+  ((lich && lich.buoi) || []).forEach(function(b){
+    if(b.nghi && !b.ngayBu){ oChoBu.push(b.buoiSo); return; }
+    ds.push({ngay: b.nghi ? b.ngayBu : b.ngay, oLich: b.buoiSo,
+             doi: !!b.nghi, lyDoNghi: b.nghi ? (b.lyDo || '') : ''});
+  });
+  /* Sắp theo NGÀY. Chuỗi yyyy-mm-dd so bằng chữ là đúng thứ tự thời gian.
+     Cùng ngày thì giữ thứ tự ô lịch cho kết quả không đổi giữa hai lần chạy. */
+  ds.sort(function(a, b){
+    if(a.ngay !== b.ngay) return a.ngay < b.ngay ? -1 : 1;
+    return a.oLich - b.oLich;
+  });
+  ds.forEach(function(x, i){ x.buoiDay = i + 1; });
+  return {ds: ds, oChoBu: oChoBu};
+}
+/* Trả về ba mốc thi, HOẶC lý do vì sao chưa tính được. Không bao giờ
+   trả ngày đoán: một ngày thi đoán bừa trông y hệt ngày thi đúng. */
+function ngayThiCuaLop(lop){
+  const ra = {duoc:false, lyDo:'', mid:null, speak:null, rwl:null};
+  if(!lop) { ra.lyDo = 'không có hồ sơ lớp'; return ra; }
+  const lich = lichBuoiCuaLop(lop);
+  if(lich.thieuNgayKG){ ra.lyDo = 'chưa có ngày khai giảng'; return ra; }
+  if(lich.thieuThu){    ra.lyDo = 'chưa tích thứ học';       return ra; }
+  const N = lich.buoi.length;
+  if(N < 4){ ra.lyDo = 'lịch chỉ dựng được ' + N + ' buổi, quá ngắn để chia giữa kỳ'; return ra; }
+  const vt = buoiThiCuaSo(N);
+  const td = buoiThucDay(lich);
+  const tc = (lop.thiTuChinh && typeof lop.thiTuChinh === 'object') ? lop.thiTuChinh : {};
+  const lay = function(ma, so){
+    const m = {ma:ma, buoiSo:so};
+    const b = td.ds[so-1];
+    if(!b){
+      /* Chưa đủ buổi đã biết ngày — còn buổi nghỉ chưa hẹn bù ở phía trước.
+         Nói thẳng là chưa xác định, thay vì đưa ra một ngày sẽ phải đổi. */
+      m.treo = true; m.soChoBu = td.oChoBu.length; return m;
+    }
+    m.oLich = b.oLich; m.ngayMay = b.ngay; m.ngay = b.ngay;
+    if(b.doi){ m.doi = true; m.lyDoNghi = b.lyDoNghi; }
+    /* Buổi nghỉ chưa hẹn bù nằm TRƯỚC mốc này: xếp bù xong là mốc lùi.
+       Ngày đang hiện là ngày tốt nhất biết được, nhưng phải nói rõ. */
+    const truoc = td.oChoBu.filter(function(o){ return o < b.oLich; }).length;
+    if(truoc) m.seLui = truoc;
+    const t = tc[ma];
+    if(t && t.ngay && t.ngay !== m.ngayMay){
+      m.ngay = t.ngay; m.tuChinh = true;
+      m.nguoiSua = t.nguoi || ''; m.ngaySua = t.ngaySua || '';
+    }
+    return m;
+  };
+  ra.duoc = true;
+  ra.mid = lay('mid', vt.mid); ra.speak = lay('speak', vt.speak); ra.rwl = lay('rwl', vt.rwl);
+  return ra;
+}
+/* Danh sách lớp của màn — dùng chung cho bảng, cảnh báo và file Excel,
+   để ba chỗ không bao giờ nói ba con số khác nhau. */
+let ltTim = '', ltNhom = '';
+function dsLichThi(){
+  const tim = stripDia(ltTim || '').trim().toLowerCase();
+  return lopList.filter(function(l){
+    if(l.trangThai !== 'Đang học') return false;
+    if(ltNhom && l.nhomCT !== ltNhom) return false;
+    if(tim){
+      const kho = stripDia((l.maLop||'') + ' ' + (tenGiaoVienCuaLop(l)||'') + ' '
+                         + (l.phongHoc||'') + ' ' + (l.capDo||'')).toLowerCase();
+      if(kho.indexOf(tim) < 0) return false;
+    }
+    return true;
+  }).map(function(l){ return {l:l, t:ngayThiCuaLop(l)}; });
+}
+function setLocLichThi(){
+  ltTim  = $('fLTTim')  ? $('fLTTim').value  : '';
+  ltNhom = $('fLTNhom') ? $('fLTNhom').value : '';
+  render();
+}
+function oMocThi(m){
+  if(!m) return '<span class="muted">—</span>';
+  if(m.treo) return '<span style="color:var(--danger);font-weight:600;">chưa xác định</span>'
+    + '<div class="small" style="color:var(--danger);">còn ' + (m.soChoBu || 0)
+    + ' buổi nghỉ chưa hẹn ngày bù</div>';
+  const sapToi = m.ngay >= todayISO() && m.ngay <= addDaysISO(todayISO(), 7);
+  let mau = '';
+  if(m.ngay < todayISO()) mau = 'color:var(--muc-3);';
+  else if(sapToi) mau = 'color:var(--danger);';
+  let h = '<span style="font-weight:600;' + mau + '">' + fmtDate(m.ngay) + '</span>';
+  if(m.tuChinh) h += '<div class="small" style="color:var(--warn-ink);">✎ sửa tay'
+    + (m.nguoiSua ? ' · ' + esc(m.nguoiSua) : '')
+    + '<br>máy tính: ' + fmtDate(m.ngayMay) + '</div>';
+  else if(m.doi)  h += '<div class="small" style="color:var(--warn-ink);">đã dời theo buổi bù</div>';
+  if(m.seLui) h += '<div class="small" style="color:var(--warn-ink);">còn ' + m.seLui
+    + ' buổi nghỉ chưa hẹn bù nằm trước — ngày này sẽ lùi</div>';
+  return h;
+}
+/* Tên chuyên viên học vụ phụ trách lớp. Trả CHUỖI RỖNG khi lớp chưa phân
+   hoặc khi tài khoản đó đã bị xoá — không bịa, không trả về mã id cho người
+   đọc. Ô trống nói đúng sự thật "chưa phân"; một mã id hiện ra giữa bảng thì
+   không ai biết đó là người nào. */
+function tenChuyenVienHV(l){
+  if(!l || !l.hvPhuTrachId) return '';
+  const u = (usersList || []).find(function(x){ return x.id === l.hvPhuTrachId; });
+  return u ? (u.hoTen || '') : '';
+}
+function viewLichThi(){
+  const nhomCo = [];
+  lopList.forEach(function(l){ if(l.nhomCT && nhomCo.indexOf(l.nhomCT) < 0) nhomCo.push(l.nhomCT); });
+  nhomCo.sort(function(a, b){ return a.localeCompare(b, 'vi'); });
+  const noi = nhomCo.filter(function(n){ return lopCoThiNoi({nhomCT:n}); });
+
+  let h = '<div class="card"><div class="row wrap">'
+    + '<div style="min-width:0;"><h3 style="margin:0;">Lịch thi giữa kỳ – cuối kỳ</h3>'
+    + '<div class="small muted" style="margin-top:4px;">Ba mốc thi của mỗi lớp do <b>máy tính</b> '
+    + 'từ lịch buổi học: giữa kỳ là buổi giữa khoá, hai mốc cuối là buổi áp chót và buổi cuối. '
+    + 'Lớp nghỉ bù thì ngày thi tự chạy theo. Muốn đổi ngày khai giảng hay số buổi thì sửa trong '
+    + 'Danh mục lớp.</div></div>'
+    + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+    + '<button class="btn btn-sm" onclick="xuatExcelLichThiLop()">Xuất Excel</button></div>'
+    + '</div></div>';
+
+  h += '<div class="card"><div class="row wrap" style="gap:8px;">'
+    + '<div style="flex:2;min-width:160px;"><input id="fLTTim" value="' + esc(ltTim) + '" '
+    + 'placeholder="Tìm mã lớp, giáo viên, phòng, trình độ" oninput="setLocLichThi()"></div>'
+    + '<div style="flex:2;min-width:160px;"><select id="fLTNhom" onchange="setLocLichThi()">'
+    + '<option value="">Tất cả nhóm chương trình</option>'
+    + nhomCo.map(function(n){ return '<option ' + (ltNhom===n?'selected':'') + '>' + esc(n) + '</option>'; }).join('')
+    + '</select></div></div></div>';
+
+  const ds = dsLichThi();
+  const chua = ds.filter(function(x){ return !x.t.duoc; });
+  const duoc = ds.filter(function(x){ return  x.t.duoc; });
+
+  if(chua.length){
+    h += '<div class="card" style="border-color:var(--warn-br);"><div class="small" style="color:var(--warn-ink);">'
+      + '<b>' + chua.length + ' lớp chưa tính được ngày thi:</b><div style="margin-top:4px;">'
+      + chua.map(function(x){ return '· ' + esc(x.l.maLop || '(chưa có mã)') + ' — ' + esc(x.t.lyDo); }).join('<br>')
+      + '</div><div style="margin-top:4px;">Vào <b>Danh mục lớp</b> bổ sung cho đủ. Phần mềm '
+      + '<b>không đoán</b> ngày thi — đoán sai thì Chuyên môn ra đề nhầm tuần.</div></div></div>';
+  }
+  if(!duoc.length) return h + '<div class="card">' + emptyBox('📝','Chưa lớp nào đủ dữ kiện để tính ngày thi') + '</div>';
+
+  /* Gom theo CA HỌC đúng như bảng tay: 2-4, 3-5, 4-6 thành từng cụm */
+  const cum = {};
+  duoc.forEach(function(x){
+    const k = thuCuaLop(x.l).join('-') || 'chưa rõ';
+    (cum[k] = cum[k] || []).push(x);
+  });
+  const khoa = Object.keys(cum).sort();
+  const suaDuoc = hasPerm('suaLop');
+
+  h += '<div class="card" style="padding:0;overflow:auto;max-height:70vh;">'
+    + '<table class="bang-thi"><thead><tr>'
+    + '<th>Stt</th><th>Ngày<br>/Ca học</th><th>Lớp<div class="small muted" style="font-weight:400;">và khoá học</div></th><th>Trình độ</th><th>Giờ học</th>'
+    + '<th>Phòng</th><th>Giáo viên<div class="small muted" style="font-weight:400;">và học vụ</div></th><th>SL</th>'
+    + '<th class="cot-thi">Giữa kỳ</th>'
+    + '<th class="cot-thi">Cuối kỳ<br>bài 1</th><th class="cot-thi">Cuối kỳ<br>bài 2</th>'
+    + (suaDuoc ? '<th></th>' : '')
+    + '</tr></thead><tbody>';
+  let stt = 0;
+  khoa.forEach(function(k, iK){
+    cum[k].sort(function(a, b){ return String(a.t.rwl && a.t.rwl.ngay || '')
+      .localeCompare(String(b.t.rwl && b.t.rwl.ngay || '')); });
+    cum[k].forEach(function(x, i){
+      stt++;
+      h += '<tr' + (iK % 2 ? ' class="soc"' : '') + '>'
+        + '<td>' + stt + '</td>'
+        + (i === 0 ? '<td class="o-ca" rowspan="' + cum[k].length + '">' + esc(k) + '</td>' : '')
+        + '<td><b>' + esc(x.l.maLop || '') + '</b>'
+        + (x.l.nhomCT ? '<div class="small muted duoi-lop">' + esc(x.l.nhomCT) + '</div>' : '')
+        + '</td>'
+        + '<td>' + esc(x.l.capDo || '') + '</td>'
+        + '<td>' + esc(x.l.gioHoc || '') + '</td>'
+        + '<td>' + esc(x.l.phongHoc || '') + '</td>'
+        + '<td>' + esc(tenGiaoVienCuaLop(x.l) || '')
+        + (tenChuyenVienHV(x.l)
+            ? '<div class="small muted duoi-gv">HV: ' + esc(tenChuyenVienHV(x.l)) + '</div>' : '')
+        + '</td>'
+        + '<td style="text-align:center;">' + siSoLop(x.l.id) + '</td>'
+        + '<td class="cot-thi"><div class="small muted">' + esc(tenMocThi(x.l,'mid')) + '</div>'   + oMocThi(x.t.mid)   + '</td>'
+        + '<td class="cot-thi"><div class="small muted">' + esc(tenMocThi(x.l,'speak')) + '</div>' + oMocThi(x.t.speak) + '</td>'
+        + '<td class="cot-thi"><div class="small muted">' + esc(tenMocThi(x.l,'rwl')) + '</div>'   + oMocThi(x.t.rwl)   + '</td>'
+        + (suaDuoc ? '<td><button class="btn btn-sm" onclick="formSuaNgayThi(\'' + x.l.id + '\')">Sửa</button></td>' : '')
+        + '</tr>';
+    });
+  });
+  h += '</tbody></table></div>';
+
+  h += '<div class="card"><div class="small muted">'
+    + '<b>Cách đọc:</b> ô <span style="color:var(--danger);font-weight:600;">đỏ</span> là mốc thi '
+    + 'trong 7 ngày tới · ô mờ là mốc đã qua · “đã dời theo buổi bù” là ngày máy tự đẩy khi lớp nghỉ · '
+    + '“✎ sửa tay” là ngày người chỉnh, có kèm ngày máy tính ra để đối chiếu.'
+    + '<br><b>Tên bài thi:</b> nhóm có bài thi nói hiện “Final Speaking / Final R-W-L”'
+    + (noi.length ? ' — đang áp cho: ' + esc(noi.join(' · ')) : '')
+    + '. Nhóm còn lại hiện “Final 1 / Final 2” vì lớp đó không thi nói.'
+    + '</div></div>';
+  return h;
+}
+
+/* ---------- Sửa tay ba mốc thi ----------
+   CHỈ LƯU KHI KHÁC NGÀY MÁY TÍNH. Bằng nhau mà vẫn ghi đè thì sau này
+   lớp nghỉ bù, ngày thi đứng im và không ai hiểu vì sao nó không chạy. */
+let lopSuaNgayThiId = '';
+function formSuaNgayThi(id){
+  if(!hasPerm('suaLop')){ showToast('Cần quyền sửa lớp mới chỉnh được ngày thi'); return; }
+  const l = lopList.find(function(x){ return x.id === id; });
+  if(!l){ showToast('Không tìm thấy lớp'); return; }
+  const t = ngayThiCuaLop(l);
+  if(!t.duoc){ showToast('Chưa tính được ngày thi của lớp này: ' + t.lyDo); return; }
+  lopSuaNgayThiId = id;
+  let h = '<h3>Sửa ngày thi · ' + esc(l.maLop || '') + '</h3>'
+    + '<div class="small muted" style="margin-bottom:8px;">Để đúng ngày máy tính thì phần mềm '
+    + '<b>không lưu gì</b> — ngày sẽ tiếp tục tự chạy khi lớp nghỉ bù. Nhập ngày khác là chốt cứng.</div>';
+  MOC_THI.forEach(function(m){
+    const o = t[m.ma] || {};
+    h += '<label>' + esc(tenMocThi(l, m.ma)) + ' · buổi dạy thứ ' + (o.buoiSo || '?') + '</label>'
+      + '<input type="date" id="mNT_' + m.ma + '" value="' + esc(o.ngay || '') + '">'
+      + '<div class="small muted" style="margin:-2px 0 8px;">'
+      + (o.treo
+         ? '<span style="color:var(--danger);">Máy chưa tính được: còn ' + (o.soChoBu || 0)
+           + ' buổi nghỉ chưa hẹn ngày bù. Nhập tay thì ngày này sẽ KHÔNG tự chạy lại.</span>'
+         : 'Máy tính: <b>' + fmtDate(o.ngayMay || '') + '</b>'
+           + (o.tuChinh ? ' · đang chốt cứng' + (o.nguoiSua ? ' bởi ' + esc(o.nguoiSua) : '') : ''))
+      + '</div>';
+  });
+  openModal(h
+    + '<button class="btn btn-block" style="margin-top:14px;" onclick="traVeNgayMay()">Trả cả ba về ngày máy tính</button>'
+    + '<div class="row" style="margin-top:8px;gap:8px;">'
+    + '<button class="btn btn-block" onclick="closeModal()">Đóng</button>'
+    + '<button class="btn btn-primary btn-block" onclick="luuNgayThi()">Lưu</button></div>');
+}
+function traVeNgayMay(){
+  const l = lopList.find(function(x){ return x.id === lopSuaNgayThiId; });
+  if(!l) return;
+  const t = ngayThiCuaLop(l);
+  if(!t.duoc) return;
+  MOC_THI.forEach(function(m){
+    const o = $('mNT_' + m.ma);
+    if(o) o.value = (t[m.ma] && t[m.ma].ngayMay) || '';
+  });
+}
+function luuNgayThi(){
+  if(!canQuyen('luuNgayThi')) return;
+  const l = lopList.find(function(x){ return x.id === lopSuaNgayThiId; });
+  if(!l){ showToast('Không tìm thấy lớp'); return; }
+  const t = ngayThiCuaLop(l);
+  if(!t.duoc){ showToast('Chưa tính được ngày thi của lớp này: ' + t.lyDo); return; }
+  const tc = {};
+  let hong = '';
+  MOC_THI.forEach(function(m){
+    const o = $('mNT_' + m.ma); if(!o) return;
+    const v = String(o.value || '').trim();
+    const may = (t[m.ma] && t[m.ma].ngayMay) || '';
+    if(!v || v === may) return;                /* bằng máy tính thì KHÔNG ghi */
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ hong = tenMocThi(l, m.ma); return; }
+    tc[m.ma] = {ngay:v, nguoi:currentUser.hoTen, ngaySua:todayISO()};
+  });
+  if(hong){ showToast('Ngày của mốc "' + hong + '" không đọc được'); return; }
+  const cu = (l.thiTuChinh && typeof l.thiTuChinh === 'object') ? l.thiTuChinh : {};
+  const soMoc = Object.keys(tc).length;
+  if(!soMoc && !Object.keys(cu).length){ showToast('Không có gì thay đổi'); closeModal(); return; }
+  db.collection('fcv_lop').doc(l.id).update({thiTuChinh: tc}).then(function(){
+    showToast(soMoc ? ('Đã chốt cứng ' + soMoc + ' mốc thi') : 'Đã trả ngày thi về máy tính');
+    logAct('Sửa ngày thi lớp ' + (l.maLop || '') + ': ' + (soMoc ? soMoc + ' mốc chốt cứng' : 'trả về máy tính'));
+    closeModal();
+  }).catch(fsErr);
+}
+
+/* ---------- Xuất Excel ----------
+   Tên khác xuatExcelLichThi() của tab Khảo thí: màn đó xuất lịch KỲ THI,
+   màn này xuất lịch thi của LỚP. Trùng tên là một hàm đè hàm kia. */
+function xuatExcelLichThiLop(){
+  if(typeof ExcelJS === 'undefined'){ showToast('Thư viện Excel chưa tải xong, thử lại sau vài giây'); return; }
+  const ds = dsLichThi();
+  const duoc = ds.filter(function(x){ return x.t.duoc; });
+  if(!duoc.length){ showToast('Không có lớp nào tính được ngày thi để xuất'); return; }
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'FLIC DNTU';
+  const ws = wb.addWorksheet('Lich thi lop');
+  ws.addRow(['LỊCH THI GIỮA KỲ – CUỐI KỲ · lập ngày ' + fmtDate(todayISO())]);
+  ws.getRow(1).font = {bold: true, size: 13};
+  ws.addRow([]);
+  ws.addRow(['Stt','Ngày/Ca học','Lớp','Khoá học','Trình độ','Giờ học','Phòng','Giáo viên','Staff','SL',
+             'Giữa kỳ','Buổi','Cuối kỳ bài 1','Buổi','Cuối kỳ bài 2','Buổi','Ghi chú']);
+  ws.getRow(3).font = {bold: true};
+  const ghiChu = function(m){
+    if(!m) return '';
+    if(m.treo) return 'chưa xác định — còn ' + (m.soChoBu || 0) + ' buổi nghỉ chưa hẹn bù';
+    if(m.tuChinh) return 'sửa tay' + (m.nguoiSua ? ' bởi ' + m.nguoiSua : '');
+    if(m.doi)  return 'đã dời theo buổi bù';
+    if(m.seLui) return 'còn ' + m.seLui + ' buổi nghỉ chưa hẹn bù nằm trước — ngày sẽ lùi';
+    return '';
+  };
+  duoc.forEach(function(x, i){
+    const gc = [x.t.mid, x.t.speak, x.t.rwl].map(ghiChu).filter(function(v){ return v; }).join(' · ');
+    ws.addRow([i + 1, thuCuaLop(x.l).join('-'), x.l.maLop || '', x.l.nhomCT || '', x.l.capDo || '',
+      x.l.gioHoc || '', x.l.phongHoc || '', tenGiaoVienCuaLop(x.l) || '',
+      tenChuyenVienHV(x.l), siSoLop(x.l.id),
+      x.t.mid   ? fmtDate(x.t.mid.ngay)   : '', x.t.mid   ? x.t.mid.buoiSo   : '',
+      x.t.speak ? fmtDate(x.t.speak.ngay) : '', x.t.speak ? x.t.speak.buoiSo : '',
+      x.t.rwl   ? fmtDate(x.t.rwl.ngay)   : '', x.t.rwl   ? x.t.rwl.buoiSo   : '',
+      gc]);
+  });
+  const chua = ds.filter(function(x){ return !x.t.duoc; });
+  if(chua.length){
+    ws.addRow([]);
+    ws.addRow(['Chưa tính được ngày thi: ' + chua.length + ' lớp']);  /* khối cuối file */
+    chua.forEach(function(x){ ws.addRow(['', x.l.maLop || '', x.t.lyDo]); });
+  }
+  [6,12,12,30,16,16,10,20,18,6,14,7,14,7,14,7,34]
+    .forEach(function(w2, i){ ws.getColumn(i + 1).width = w2; });
+  wb.xlsx.writeBuffer().then(function(buf){
+    const blob = new Blob([buf], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'FLIC-Lich-thi-giua-ky-cuoi-ky-' + todayISO() + '.xlsx';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    logAct('Xuất Excel lịch thi giữa kỳ – cuối kỳ: ' + duoc.length + ' lớp');
+  }).catch(fsErr);
+}
+
 function viewHocVu(){
   const sec = currentSection.hocVu || 'lop';
   if(sec==='lop') return viewDanhMucLop();
@@ -7229,6 +7770,7 @@ function viewHocVu(){
   if(sec==='lichBuoi') return viewLichBuoiHoc();
   if(sec==='hocBu') return viewHocBu();
   if(sec==='tkb') return viewThoiKhoaBieu();
+  if(sec==='lichThi') return viewLichThi();
   if(sec==='phanAnh') return viewPhanAnh();
   return '';
 }
@@ -7420,6 +7962,15 @@ function formLop(id){
       : '<div class="small muted">Chưa có giáo viên trong danh mục. Vào Học vụ → Giáo viên để thêm.</div>')
     +'<input id="mLopGV" value="'+esc(v.gvPhuTrach||'')+'" placeholder="hoặc gõ tay tên giáo viên" style="margin-top:6px;">'
     +'<div class="small muted">Nên chọn từ danh mục để thống kê giờ dạy và đúng giờ không bị lệch.</div>'
+    +'<label>Chuyên viên học vụ phụ trách</label>'
+    +'<select id="mLopHvId">'
+      +'<option value="">— chưa phân —</option>'
+      + (usersList||[]).filter(function(u){
+          return (u.quyen && u.quyen.suaLop) || u.id === v.hvPhuTrachId; })
+        .map(function(u){ return '<option value="'+u.id+'" '+(v.hvPhuTrachId===u.id?'selected':'')
+          +'>'+esc(u.hoTen||'')+'</option>'; }).join('')
+    +'</select>'
+    +'<div class="small muted">Hiện ở màn Lịch thi giữa kỳ – cuối kỳ, dòng “HV:” dưới tên giáo viên. Để trống nếu chưa phân.</div>'
     +'<label>Phòng học</label><input id="mLopPhong" value="'+esc(v.phongHoc||'')+'" placeholder="VD: G404 hoặc Online">'
     +'<label>Trạng thái</label><select id="mLopTT">'
       +TT_LOP.map(function(t){ return '<option '+(v.trangThai===t?'selected':'')+'>'+t+'</option>'; }).join('')
@@ -7520,6 +8071,9 @@ function luuLop(id){
     cacThu:thuDaTich(), lichHoc:chuoiThu(thuDaTich()), gioHoc:$('mLopGio').value.trim(),
     gvId: ($('mLopGvId')? $('mLopGvId').value : ''),
     gvPhuTrach:$('mLopGV').value.trim(), phongHoc:$('mLopPhong').value.trim(),
+    /* Ô chưa có trên form (bản cũ mở lại) thì GIỮ giá trị đang lưu, không ghi
+       rỗng đè lên. Đọc $ rồi mới quyết, y như gvId và kyThiId phía trên. */
+    hvPhuTrachId: ($('mLopHvId') ? $('mLopHvId').value : (v2.hvPhuTrachId || '')),
     trangThai:$('mLopTT').value, ghiChu:$('mLopGC').value.trim(),
     /* Đích của lớp ôn: một bài thi trong một kỳ thi cụ thể */
     kyThiId: ($('mLopKyThi') ? $('mLopKyThi').value : (v2.kyThiId || '')),
@@ -28034,7 +28588,16 @@ function nutYeuCauTT(y, thieuAnh){
   if(y.trangThai==='Đang sản xuất' && hasPerm('sanXuatTT'))
     n += '<button class="btn btn-sm btn-primary" onclick="formBanGiaoTT(\''+y.id+'\')">Bàn giao sản phẩm</button>';
   if(y.trangThai==='Chờ duyệt nội dung' && hasPerm('duyetNoiDungTT')){
-    n += '<button class="btn btn-sm btn-primary" onclick="duyetNoiDungTT(\''+y.id+'\')">Duyệt nội dung</button>';
+    /* V1.40.0 — một nút cho người ký cả hai cổng. Thiếu văn bản đồng ý hình
+       ảnh thì KHÔNG gộp: vẫn duyệt nội dung được, nhưng phát hành phải chờ
+       đủ giấy. Cổng giấy tờ hình ảnh học viên không được gộp mất. */
+    if(hasPerm('duyetPhatHanhTT') && !thieuAnh.length){
+      n += '<button class="btn btn-sm btn-primary" onclick="duyetVaPhatHanhTT(\''+y.id+'\')">Duyệt và phát hành</button>';
+    } else {
+      if(hasPerm('duyetPhatHanhTT') && thieuAnh.length)
+        n += '<span class="small" style="color:var(--danger);">Chưa đủ văn bản đồng ý hình ảnh — duyệt nội dung trước, phát hành sau khi đủ</span>';
+      n += '<button class="btn btn-sm btn-primary" onclick="duyetNoiDungTT(\''+y.id+'\')">Duyệt nội dung</button>';
+    }
     n += '<button class="btn btn-sm btn-danger" onclick="traLaiSuaTT(\''+y.id+'\')">Trả lại sửa</button>';
   }
   if(y.trangThai==='Chờ duyệt phát hành' && hasPerm('duyetPhatHanhTT')){
@@ -28264,19 +28827,41 @@ function luuBanGiaoTT(id){
    Không gỡ quyền (đó là việc tổ chức, anh Tinh quyết); chặn ở HÀM: người
    tạo yêu cầu không tự duyệt yêu cầu của mình, và người đã duyệt nội dung
    không tự duyệt phát hành. (Ban thẩm định 12/11/2026) */
-function laNguoiTaoYC(y){
+/* V1.40.0 — CHỐT CŨ HỎI NHẦM CÂU.
+   Chốt cũ hỏi "ai TẠO phiếu". Nhưng tạo phiếu không phải là làm ra sản phẩm.
+   Quản lý giao việc cho nhân viên rồi nghiệm thu là guồng bình thường, không
+   phải xung đột nhiệm vụ — chính vì hỏi nhầm câu mà nó chặn oan người quản lý.
+   Thứ PHẢI chặn là người LÀM RA sản phẩm tự nghiệm thu sản phẩm của mình.
+   nhanViecTT() đã ghi sẵn nguoiThucHien từ trước, chốt chỉ cần đọc đúng trường. */
+function laNguoiLamSanPham(y){
   if(!y || !currentUser) return false;
-  if(y.nguoiYeuCauId) return y.nguoiYeuCauId === currentUser.id;
-  return !!y.nguoiYeuCauTen && y.nguoiYeuCauTen === currentUser.hoTen;
+  return !!y.nguoiThucHien && y.nguoiThucHien === currentUser.hoTen;
 }
+/* Phiếu cũ chưa có nguoiThucHien thì KHÔNG BIẾT ai làm. Không biết thì chặn,
+   không đoán — nhưng phải nói rõ cách gỡ, nếu không người ta đứng im ở đó. */
+function chanDuyetTT(y, viec){
+  if(laNguoiLamSanPham(y)){
+    showToast('Sản phẩm này do chính anh chị làm — người làm không tự '
+      + viec + '. Nhờ người khác duyệt.');
+    return true;
+  }
+  if(!y || !y.nguoiThucHien){
+    showToast('Phiếu này chưa ghi người thực hiện nên không biết ai làm ra sản '
+      + 'phẩm. Nhờ người làm bấm "Nhận việc" rồi "Bàn giao" lại, hoặc nhờ '
+      + 'người khác duyệt.');
+    return true;
+  }
+  return false;
+}
+/* V1.40.0 — ĐÃ XOÁ laNguoiTaoYC().
+   Nó là hàm của luật cũ "người TẠO yêu cầu không tự duyệt". Luật đó bị thay
+   ngày 18/11/2026 bằng "người LÀM RA sản phẩm không tự duyệt" (chanDuyetTT).
+   Để một hàm chết mang tên luật đã bỏ nằm lại thì người sau dễ nối lại nhầm,
+   và nối lại là chặn oan người quản lý y như cũ. */
 function duyetNoiDungTT(id){
   if(!canQuyen('duyetNoiDungTT')) return;
   const y = yeuCauTTList.find(function(x){ return x.id===id; });
-  if(laNguoiTaoYC(y)){
-    showToast('Yêu cầu này do chính anh chị tạo — người tạo không tự duyệt '
-      + 'nội dung của mình. Nhờ người khác có quyền duyệt nội dung.');
-    return;
-  }
+  if(chanDuyetTT(y, 'duyệt nội dung')) return;
   if(chanBuocTT(y, 'Chờ duyệt phát hành', 'duyệt nội dung')) return;
   db.collection('fcv_yeucautt').doc(id).update({
     trangThai:'Chờ duyệt phát hành', nguoiDuyetNoiDung:currentUser.hoTen,
@@ -28297,17 +28882,14 @@ function traLaiSuaTT(id){
 function duyetPhatHanhTT(id){
   if(!canQuyen('duyetPhatHanhTT')) return;
   const y = yeuCauTTList.find(function(x){ return x.id===id; });
-  if(laNguoiTaoYC(y)){
-    showToast('Yêu cầu này do chính anh chị tạo — người tạo không tự duyệt '
-      + 'phát hành. Nhờ người khác ký cổng này.');
-    return;
-  }
-  /* Hai cổng mà cùng một người bấm thì chỉ còn là hai lần bấm. */
-  if(y && y.nguoiDuyetNoiDung && y.nguoiDuyetNoiDung === (currentUser || {}).hoTen){
-    showToast('Anh chị đã duyệt NỘI DUNG của yêu cầu này. Cổng phát hành phải '
-      + 'do người khác ký, nếu không hai cổng chỉ là hai lần bấm của một người.');
-    return;
-  }
+  /* V1.40.0 — BỎ chốt "người duyệt nội dung không tự duyệt phát hành".
+     Anh Tinh chốt ngày 18/11/2026: Trưởng bộ phận Marketing duyệt sản phẩm
+     cuối cùng, Ban Giám đốc không ngồi duyệt từng bài. Đã cho một người ký
+     cả hai cổng thì giữ chốt cấm chính việc đó là tự mâu thuẫn.
+     Người có CẢ HAI quyền dùng nút gộp "Duyệt và phát hành" — xem
+     duyetVaPhatHanhTT() — chứ không bấm hai lần giả vờ là hai lớp.
+     Chốt THẬT còn lại: người làm ra sản phẩm không tự duyệt. */
+  if(chanDuyetTT(y, 'duyệt phát hành')) return;
   if(chanBuocTT(y, 'Đã phát hành', 'duyệt phát hành')) return;
   const thieu = ycThieuDongYAnh(y);
   if(thieu.length){
@@ -28318,6 +28900,49 @@ function duyetPhatHanhTT(id){
     trangThai:'Đã phát hành', nguoiDuyetPhatHanh:currentUser.hoTen, ngayPhatHanh:todayISO(),
     lichSu:themLichSuTT(y,'Duyệt phát hành')
   }).then(function(){ showToast('✅ Đã duyệt phát hành'); logAct('Duyệt phát hành: '+y.tieuDe); }).catch(fsErr);
+}
+
+/* V1.40.0 — MỘT NÚT CHO NGƯỜI KÝ CẢ HAI CỔNG.
+   Ai có cả duyetNoiDungTT và duyetPhatHanhTT thì hai nút chỉ là hai lần bấm
+   của cùng một người. Gộp làm một, và nói đúng tên việc: duyệt rồi phát hành.
+
+   KHÔNG NỚI BẢNG CHUYEN_DUOC_TT. Bảng đó không cho đi thẳng từ "Chờ duyệt
+   nội dung" sang "Đã phát hành", và phải giữ nguyên như vậy: nới ra thì
+   người CHỈ có quyền duyệt phát hành cũng nhảy cóc qua cổng nội dung — đúng
+   con bọ mà máy trạng thái sinh ra để chặn.
+   Hàm này tự kiểm ĐÚNG MỘT trạng thái nguồn, chặt hơn tra bảng, và chỉ chạy
+   khi người bấm có đủ cả hai quyền. */
+function duyetVaPhatHanhTT(id){
+  if(!canQuyen('duyetNoiDungTT')) return;
+  if(!hasPerm('duyetPhatHanhTT')){
+    showToast('Nút này chỉ dành cho người có cả quyền duyệt nội dung và '
+      + 'duyệt phát hành.');
+    return;
+  }
+  const y = yeuCauTTList.find(function(x){ return x.id===id; });
+  if(chanDuyetTT(y, 'duyệt')) return;
+  if(y.trangThai !== 'Chờ duyệt nội dung'){
+    showToast('Không duyệt được: phiếu đang ở bước "' + (y.trangThai || '—')
+      + '", nút này chỉ dùng khi phiếu đang chờ duyệt nội dung.');
+    return;
+  }
+  const thieu = ycThieuDongYAnh(y);
+  if(thieu.length){
+    showToast('Chưa đủ văn bản đồng ý hình ảnh: ' + thieu.join(', '));
+    return;
+  }
+  let ls = themLichSuTT(y, 'Duyệt nội dung');
+  ls = ls.concat([{ts:Date.now(), nguoi:currentUser.hoTen,
+                   hanhDong:'Duyệt phát hành (cùng người, một lần bấm)'}]);
+  db.collection('fcv_yeucautt').doc(id).update({
+    trangThai:'Đã phát hành',
+    nguoiDuyetNoiDung:currentUser.hoTen,
+    nguoiDuyetPhatHanh:currentUser.hoTen,
+    ngayPhatHanh:todayISO(), lichSu:ls
+  }).then(function(){
+    showToast('✅ Đã duyệt và phát hành');
+    logAct('Duyệt và phát hành: ' + y.tieuDe);
+  }).catch(fsErr);
 }
 
 /* ================= CHIẾN DỊCH VÀ CHI PHÍ QUẢNG CÁO ================= */
